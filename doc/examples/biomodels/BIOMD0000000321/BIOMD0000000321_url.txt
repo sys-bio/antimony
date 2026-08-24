@@ -1,0 +1,251 @@
+// Created by libAntimony v3.2.0
+model *BIOMD0000000321()
+
+  // Compartments and Species:
+  compartment gut, Vdopa, V_3_OMD;
+  species C_dopa in Vdopa, C_OMD in V_3_OMD;
+  substanceOnly species A_dopa in gut;
+
+  // Assignment Rules:
+  F_b := F_H*F_G;
+  F_H := 1 - CL_H/Q;
+  CL_H := f_H*CL_dopa;
+  CL_dopa := CL_AADC + CL_rest + CL_COMT;
+  CL_AADC := CL_dopa0*f_AADC;
+  CL_rest := CL_dopa0*f_rest;
+  CL_COMT := CL_dopa0*f_COMT;
+  f_rest := 1 - (f_AADC + f_COMT);
+
+  // Reactions:
+  l_dopa_absorption: A_dopa => C_dopa; ka_b*A_dopa*F_b;
+  l_dopa_blood_hepa_clearance: A_dopa => ; ka_b*A_dopa*(1 - F_b);
+  AADC_clearance: C_dopa => ; CL_AADC*C_dopa;
+  COMT_clearance: C_dopa => C_OMD; CL_COMT*C_dopa;
+  rest_clearance: C_dopa => ; CL_rest*C_dopa;
+  _3_OMD_clearance: C_OMD => ; CL_OMD*C_OMD;
+
+  // Species initializations:
+  A_dopa = L_Dopa_per_kg_rat*rat_body_mass;
+  C_dopa = 0;
+  C_OMD = 0;
+
+  // Compartment initializations:
+  gut = 1;
+  Vdopa = 0.496;
+  V_3_OMD = 0.196;
+
+  // Variable initializations:
+  L_Dopa_per_kg_rat = 404;
+  rat_body_mass = 0.25;
+  F_b has dimensionless;
+  F_H has dimensionless;
+  F_G = 0.24;
+  F_G has dimensionless;
+  CL_H has l_per_h;
+  Q = 0.828;
+  f_H = 0.13;
+  f_H has dimensionless;
+  CL_dopa has l_per_h;
+  CL_AADC has l_per_h;
+  CL_rest has l_per_h;
+  CL_COMT has l_per_h;
+  f_rest has dimensionless;
+  f_AADC = 0.69;
+  f_AADC has dimensionless;
+  f_COMT = 0.1;
+  f_COMT has dimensionless;
+  CL_dopa0 = 0.823;
+  CL_dopa0 has l_per_h;
+  ka_b = 2.11;
+  ka_b has per_h;
+  CL_OMD = 0.012;
+
+  // Other declarations:
+  var F_b, F_H, CL_H, CL_dopa, CL_AADC, CL_rest, CL_COMT, f_rest;
+  const gut, Vdopa, V_3_OMD, L_Dopa_per_kg_rat, rat_body_mass, F_G, Q, f_H;
+  const f_AADC, f_COMT, CL_dopa0, ka_b, CL_OMD;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
+  unit umol_per_kg = 1e-9 mole / kilogram;
+  unit per_h = 1 / 3600 second;
+  unit l_per_h = litre / 3600 second;
+  unit time_unit = 3600 second;
+
+  // Display Names:
+  substance is "micromole";
+  umol_per_kg is "micromole_per_kg";
+  time_unit is "hours";
+  Vdopa is "V_L_Dopa";
+  C_OMD is "C_3-OMD";
+  CL_OMD is "CL_3_OMD";
+  l_dopa_absorption is "L_Dopa absorption from gut";
+  l_dopa_blood_hepa_clearance is "hepatic and blood L-Dopa clearance";
+  AADC_clearance is "L-Dopa clearance via AADC ";
+  COMT_clearance is "L-Dopa clearance via COMT";
+  rest_clearance is "rest clearance of L-Dopa";
+  _3_OMD_clearance is "3-OMD clearance";
+
+  // SBO terms:
+  gut.sboTerm = 290
+  Vdopa.sboTerm = 290
+  V_3_OMD.sboTerm = 290
+  A_dopa.sboTerm = 247
+  L_Dopa_per_kg_rat.sboTerm = 197
+  rat_body_mass.sboTerm = 2
+  C_dopa.sboTerm = 247
+  C_OMD.sboTerm = 247
+  F_b.sboTerm = 381
+  F_H.sboTerm = 381
+  F_G.sboTerm = 381
+  CL_H.sboTerm = 35
+  Q.sboTerm = 2
+  f_H.sboTerm = 381
+  CL_dopa.sboTerm = 35
+  CL_AADC.sboTerm = 35
+  CL_rest.sboTerm = 35
+  CL_COMT.sboTerm = 35
+  f_rest.sboTerm = 381
+  f_AADC.sboTerm = 381
+  f_COMT.sboTerm = 381
+  CL_dopa0.sboTerm = 35
+  ka_b.sboTerm = 35
+  CL_OMD.sboTerm = 35
+  l_dopa_absorption.sboTerm = 185
+  l_dopa_absorption.kineticLaw.sboTerm = 49
+  l_dopa_blood_hepa_clearance.sboTerm = 179
+  l_dopa_blood_hepa_clearance.kineticLaw.sboTerm = 49
+  AADC_clearance.sboTerm = 399
+  AADC_clearance.kineticLaw.sboTerm = 49
+  COMT_clearance.sboTerm = 214
+  COMT_clearance.kineticLaw.sboTerm = 49
+  rest_clearance.sboTerm = 179
+  rest_clearance.kineticLaw.sboTerm = 49
+  _3_OMD_clearance.sboTerm = 179
+  _3_OMD_clearance.kineticLaw.sboTerm = 49
+
+  // CV terms:
+  gut isVersionOf "http://identifiers.org/bto/BTO:0000648"
+  Vdopa isVersionOf "http://identifiers.org/fma/FMA:7563"
+  V_3_OMD isVersionOf "http://identifiers.org/fma/FMA:7563"
+  A_dopa identity "http://identifiers.org/chebi/CHEBI:15765",
+                  "http://identifiers.org/pubchem.compound/6047"
+  A_dopa isVersionOf "http://identifiers.org/kegg.compound/C00355"
+  C_dopa identity "http://identifiers.org/chebi/CHEBI:15765",
+                  "http://identifiers.org/kegg.compound/C00355",
+                  "http://identifiers.org/pubchem.compound/6047"
+  C_OMD isVersionOf "http://identifiers.org/chebi/CHEBI:25212"
+  C_OMD identity "http://identifiers.org/pubchem.compound/9307"
+  l_dopa_absorption isVersionOf "http://identifiers.org/go/GO:0050892"
+  l_dopa_blood_hepa_clearance hasVersion "http://identifiers.org/go/GO:0042737"
+  l_dopa_blood_hepa_clearance identity "http://identifiers.org/go/GO:0030421"
+  AADC_clearance isVersionOf "http://identifiers.org/reactome/REACT_15382.1"
+  AADC_clearance isVersionOf "http://identifiers.org/ec-code/4.1.1.28"
+  AADC_clearance isVersionOf "http://identifiers.org/go/GO:0042737"
+  COMT_clearance isVersionOf "http://identifiers.org/ec-code/2.1.1.6"
+  COMT_clearance isVersionOf "http://identifiers.org/go/GO:0042737"
+  rest_clearance hasVersion "http://identifiers.org/go/GO:0007588"
+  rest_clearance hasVersion "http://identifiers.org/go/GO:0042737"
+  _3_OMD_clearance hasVersion "http://identifiers.org/go/GO:0042737"
+  _3_OMD_clearance hasVersion "http://identifiers.org/go/GO:0007588"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1103250000"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000321"
+  model publication "http://identifiers.org/pubmed/11587490"
+  model hasTaxon "http://identifiers.org/taxonomy/10116"
+  model isVersionOf "http://identifiers.org/go/GO:0051583"
+  model hasProperty "http://identifiers.org/doid/DOID:14330"
+  model created "2009-10-27T14:45:40Z"
+  model modified "2017-05-18T11:32:28Z"
+  model creator1.givenName "Lukas"
+  model creator1.familyName "Endler"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "lukas@ebi.ac.uk"
+  model creator2.givenName "Vijayalakshmi"
+  model creator2.familyName "Chelliah"
+  model creator2.organization "EMBL-EBI"
+  model creator2.email "viji@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Grange2001 - L-dopa PK model 
+
+
+A pharmacokinetics of L-dopa in rats after administration of L-dopa alone (this model:
+BIOMD0000000321) or L-dopa combined with a peripheral AADC (amino-acid-decarboxylase)
+inhibitor (BIOMD0000000320) has been studied using noncompartmental analysis.
+
+
+This model is described in the article:
+
+
+[A pharmacokinetic model to predict the PK interaction of L-dopa and benserazide in rats.](http://identifiers.org/pubmed/11587490 "Access to this publication") 
+
+
+Grange S, Holford NH, Guentert TW 
+
+Pharmaceutical Research [2001, 18(8):1174-1184] 
+Abstract:
+
+
+**PURPOSE:** To study the PK interaction of L-dopa/benserazide
+in rats. METHODS: Male rats received a single oral dose of 80 mg/kg L-dopa or 20
+mg/kg benserazide or 80/20 mg/kg L-dopa/benserazide. Based on plasma concentrations
+the kinetics of L-dopa, 3-O-methyldopa (3-OMD), benserazide, and its metabolite Ro
+04-5127 were characterized by noncompartmental analysis and a compartmental model
+where total L-dopa clearance was the sum of the clearances mediated by amino-acid-decarboxylase
+(AADC), catechol-O-methyltransferase and other enzymes. In the model Ro 04-5127 inhibited
+competitively the L-dopa clearance by AADC. 
+
+**RESULTS:** The coadministration of L-dopa/benserazide
+resulted in a major increase in systemic exposure to L-dopa and 3-OMD and a decrease
+in L-dopa clearance. The compartmental model allowed an adequate description of the
+observed L-dopa and 3-OMD concentrations in the absence and presence of benserazide.
+It had an advantage over noncompartmental analysis because it could describe the
+temporal change of inhibition and recovery of AADC. 
+
+**CONCLUSIONS:** Our study is the first investigation
+where the kinetics of benserazide and Ro 04-5127 have been described by a compartmental
+model. The L-dopa/benserazide model allowed a mechanism-based view of the L-dopa/benserazide
+interaction and supports the hypothesis that Ro 04-5127 is the primary active metabolite
+of benserazide. 
+
+
+The model has a species (A-dopa) whose initial concentration is calculated from a
+*listOfInitialAssignments* . While running for the first time the
+time-course (24hrs) for this model in COPASI (up to version 4.6, Build 33), the resulting
+graph displays only straight lines for all the species. Any subsequent runs should
+provide proper plots (i.e. without making any change to the model, just by clicking
+the "run" button again). 
+
+The above issue is caused by some initial assignments which are not calculated when
+COPASI imports the file. This issue should not be present in newer releases of COPASI.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [MODEL1103250000](http://identifiers.org/biomodels.db/MODEL1103250000) . 
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication") . 
+
+
+To the extent possible under law, all copyright and related orneighbouring rights
+to this encoded model have been dedicated to the publicdomain worldwide. Please refer
+to [CC0 Public DomainDedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+  A_dopa notes "amount of L-Dopa in the gut"
+  C_dopa notes "amount of L-Dopa in the central compartment"
+  C_OMD notes "amount of 3-OMD in the central compartment"
+  F_b notes "bioavailability of L-Dopa"
+  F_H notes "hepatic bioavailability of L-Dopa"
+  F_G notes "gastro-intestinal bioavailability of L-Dopa"
+  CL_H notes "hepatic blood clearance of L-Dopa"
+  Q notes "hepatic blood flow"
+  f_H notes "hepatically cleared fraction of l-dopa"
+  CL_dopa notes "total clearance speed of L-Dopa"
+  CL_AADC notes "L-Dopa clearance by AADC"
+  CL_rest notes "L-Dopa clearance via unspecified elimination pathways"
+  CL_COMT notes "catechol-O-methyltransferase mediated L-Dopa clearance"
+  CL_dopa0 notes "total clearance of L-Dopa"
+  ka_b notes "absorption rate constant of L_DOPA in the gut"
+end
+
+BIOMD0000000321 is "Grange2001 - L Dopa PK model"

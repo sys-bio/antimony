@@ -1,0 +1,208 @@
+// Created by libAntimony v3.2.0
+model *testid()
+
+  // Compartments and Species:
+  compartment cytosol;
+  species FeIII in cytosol, FeII in cytosol, FeII_O2 in cytosol, FeIII_star in cytosol;
+  species FeII_star in cytosol, FeII_star_O2 in cytosol, FeIII_NO in cytosol;
+  species FeII_NO in cytosol, $NADPH in cytosol, $O2 in cytosol, $citrulline in cytosol;
+  species $NO3 in cytosol, $NO in cytosol, $NADPplus in cytosol, FeIII_t in cytosol;
+
+  // Assignment Rules:
+  FeIII_t := FeIII + FeIII_star;
+
+  // Reactions:
+  r1: FeIII + $NADPH => FeII + $NADPplus; cytosol*k1*FeIII;
+  r2: FeII + $O2 => FeII_O2; cytosol*k2*FeII*O2;
+  r3: FeII_O2 => FeIII_star; cytosol*k3*FeII_O2;
+  r4: FeIII_star + 0.5 $NADPH => FeII_star + 0.5 $NADPplus; cytosol*k4*FeIII_star;
+  r5: FeII_star + $O2 => FeII_star_O2; cytosol*k5*FeII_star*O2;
+  r6: FeII_star_O2 => FeIII_NO + $citrulline; cytosol*k6*FeII_star_O2;
+  rF: FeIII_NO => FeIII + $NO; cytosol*k7*FeIII_NO;
+  rG: FeIII_NO + 0.5 $NADPH => FeII_NO + 0.5 $NADPplus; cytosol*k8*FeIII_NO;
+  r9: FeII_NO => FeII + $NO; cytosol*k9*FeII_NO;
+  r10: FeII_NO + $O2 => FeIII + $NO3; cytosol*k10*FeII_NO*O2;
+
+  // Species initializations:
+  FeIII = 1;
+  FeII = 0;
+  FeII_O2 = 0;
+  FeIII_star = 0;
+  FeII_star = 0;
+  FeII_star_O2 = 0;
+  FeIII_NO = 0;
+  FeII_NO = 0;
+  NADPH = 40;
+  O2 = 140;
+  citrulline = 0;
+  NO3 = 0;
+  NO = 0;
+  NADPplus = 0;
+
+  // Compartment initializations:
+  cytosol = 1;
+
+  // Variable initializations:
+  k1 = 2.6;
+  k1 has persec;
+  k2 = 0.9;
+  k2 has peruMpersec;
+  k3 = 26;
+  k3 has persec;
+  k4 = 2.6;
+  k4 has persec;
+  k5 = 0.9;
+  k5 has peruMpersec;
+  k6 = 26;
+  k6 has persec;
+  k7 = 5;
+  k7 has persec;
+  k8 = 2.6;
+  k8 has persec;
+  k9 = 0.0001;
+  k9 has persec;
+  k10 = 0.0013;
+  k10 has peruMpersec;
+
+  // Other declarations:
+  const cytosol, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+  unit peruMpersec = litre / (1e-6 mole * second);
+  unit uM = 1e-6 mole / litre;
+  unit persec = 1 / second;
+
+  // Display Names:
+  substance is "micromole";
+  citrulline is "citruline";
+
+  // SBO terms:
+  FeIII.sboTerm = 297
+  FeII.sboTerm = 297
+  FeII_O2.sboTerm = 297
+  FeIII_star.sboTerm = 297
+  FeII_star.sboTerm = 297
+  FeII_star_O2.sboTerm = 297
+  FeIII_NO.sboTerm = 297
+  FeII_NO.sboTerm = 297
+  NADPH.sboTerm = 247
+  O2.sboTerm = 247
+  citrulline.sboTerm = 247
+  NO3.sboTerm = 247
+  NO.sboTerm = 247
+  NADPplus.sboTerm = 327
+  FeIII_t.sboTerm = 297
+  k1.sboTerm = 35
+  k2.sboTerm = 339
+  k3.sboTerm = 35
+  k4.sboTerm = 35
+  k5.sboTerm = 339
+  k6.sboTerm = 35
+  k7.sboTerm = 35
+  k8.sboTerm = 35
+  k9.sboTerm = 35
+  k10.sboTerm = 339
+  r1.sboTerm = 200
+  r2.sboTerm = 177
+  r3.sboTerm = 201
+  r4.sboTerm = 200
+  r5.sboTerm = 177
+  r6.sboTerm = 182
+  rF.sboTerm = 180
+  rG.sboTerm = 200
+  r9.sboTerm = 180
+  r10.sboTerm = 200
+
+  // CV terms:
+  cytosol identity "http://identifiers.org/go/GO:0005829"
+  FeIII hasPart "http://identifiers.org/chebi/CHEBI:29034",
+                "http://identifiers.org/chebi/CHEBI:17627",
+                "http://identifiers.org/uniprot/P29476"
+  FeII hasPart "http://identifiers.org/chebi/CHEBI:17627",
+               "http://identifiers.org/chebi/CHEBI:29033",
+               "http://identifiers.org/uniprot/P29476"
+  FeII_O2 identity "http://identifiers.org/chebi/CHEBI:15379",
+                   "http://identifiers.org/chebi/CHEBI:29033",
+                   "http://identifiers.org/chebi/CHEBI:17627",
+                   "http://identifiers.org/uniprot/P29476"
+  FeIII_star hasPart "http://identifiers.org/chebi/CHEBI:17627",
+                     "http://identifiers.org/chebi/CHEBI:29034",
+                     "http://identifiers.org/uniprot/P29476"
+  FeII_star hasPart "http://identifiers.org/chebi/CHEBI:17627",
+                    "http://identifiers.org/chebi/CHEBI:29033",
+                    "http://identifiers.org/uniprot/P29476"
+  FeII_star_O2 hasPart "http://identifiers.org/chebi/CHEBI:15379",
+                       "http://identifiers.org/chebi/CHEBI:17627",
+                       "http://identifiers.org/chebi/CHEBI:29033",
+                       "http://identifiers.org/uniprot/P29476"
+  FeIII_NO hasPart "http://identifiers.org/chebi/CHEBI:16480",
+                   "http://identifiers.org/chebi/CHEBI:17627",
+                   "http://identifiers.org/chebi/CHEBI:29034",
+                   "http://identifiers.org/uniprot/P29476"
+  FeII_NO hasPart "http://identifiers.org/chebi/CHEBI:16480",
+                  "http://identifiers.org/chebi/CHEBI:17627",
+                  "http://identifiers.org/chebi/CHEBI:29033",
+                  "http://identifiers.org/uniprot/P29476"
+  NADPH identity "http://identifiers.org/chebi/CHEBI:16474",
+                 "http://identifiers.org/kegg.compound/C00005"
+  O2 identity "http://identifiers.org/chebi/CHEBI:15379",
+              "http://identifiers.org/kegg.compound/C00007"
+  citrulline identity "http://identifiers.org/chebi/CHEBI:16349",
+                      "http://identifiers.org/kegg.compound/C00327"
+  NO3 identity "http://identifiers.org/chebi/CHEBI:17632",
+               "http://identifiers.org/kegg.compound/C00244"
+  NO identity "http://identifiers.org/chebi/CHEBI:16480",
+              "http://identifiers.org/kegg.compound/C00533"
+  NADPplus identity "http://identifiers.org/chebi/CHEBI:18009",
+                    "http://identifiers.org/kegg.compound/C00006"
+  FeIII_t hasPart "http://identifiers.org/chebi/CHEBI:29034",
+                  "http://identifiers.org/chebi/CHEBI:17627",
+                  "http://identifiers.org/uniprot/P29476"
+  r1 isVersionOf "http://identifiers.org/go/GO:0016651"
+  r4 isVersionOf "http://identifiers.org/go/GO:0016651"
+  rG isVersionOf "http://identifiers.org/go/GO:0016651"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL4734733125"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000199"
+  model publication "http://identifiers.org/pubmed/11038356"
+  model hasVersion "http://identifiers.org/mim/163731"
+  model isVersionOf "http://identifiers.org/go/GO:0004517"
+  model hasTaxon "http://identifiers.org/taxonomy/10116"
+  model created "2008-10-14T16:56:09Z"
+  model modified "2016-04-08T15:56:07Z"
+  model creator1.givenName "Lukas"
+  model creator1.familyName "Endler"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "lukas@ebi.ac.uk"
+  model creator2.givenName "Jérôme"
+  model creator2.familyName "Santolini"
+  model creator2.organization "CEA IBITEC-S"
+  model creator2.email "Jerome.SANTOLINI@cea.fr"
+  model creator3.givenName "Vijayalakshmi"
+  model creator3.familyName "Chelliah"
+  model creator3.organization "EMBL-EBI"
+  model creator3.email "viji@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+This is a model of neuronal Nitric Oxide Synthase expressed in Escherichia
+coli based on [ Santolini J. et al. J Biol Chem. (2001) 276(2):1233-43](http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=pubmed&dopt=Abstract&list_uids=11038356). 
+Differing from the article, oxygen explicitly included in the reaction 2, 5 and 10
+(numbers as in scheme 1 in the article). In the article the assumed oxygen concentration
+of 140 uM was included in the pseudo first order rate constant. 
+
+Fig 2E in the article shows different time courses for citrulline and NO than the
+ones produced by this model. Dr. Santolini, one of the authors of the article, wrote
+that the legends in fig. 2E might be mixed up and should rather denote NO and NO3
+instead of citrulline and NO. 
+
+This model originates from BioModels Database: A Database of Annotated Published
+Models. It is copyright (c) 2005-2009 The BioModels Team. 
+
+For more information see the [terms of use](http://www.ebi.ac.uk/biomodels/legal.html). 
+To cite BioModels Database, please use [ Le Novère N., Bornstein B., Broicher A., Courtot M., Donizelli M., Dharuri H., Li L., Sauro H., Schilstra M., Shapiro B., Snoep J.L., Hucka M. (2006) BioModels Database: A Free, Centralized Database of Curated, Published, Quantitative Kinetic Models of Biochemical and Cellular Systems Nucleic Acids Res., 34: D689-D691.](http://www.pubmedcentral.nih.gov/articlerender.fcgi?tool=pubmed&pubmedid=16381960)
+```
+end
+
+testid is "Santolini2001_nNOS_Mechanism_Regulation"

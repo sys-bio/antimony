@@ -1,0 +1,414 @@
+// Created by libAntimony v3.2.0
+model *BIOMD0000000105()
+
+  // Compartments and Species:
+  compartment cytosol;
+  substanceOnly species NatP in cytosol, MisP in cytosol, Ub in cytosol, E1 in cytosol;
+  substanceOnly species E2 in cytosol, E3 in cytosol, DUB in cytosol, Proteasome in cytosol;
+  substanceOnly species ROS in cytosol, E1_Ub in cytosol, E2_Ub in cytosol;
+  substanceOnly species E3_MisP in cytosol, MisP_Ub in cytosol, MisP_Ub2 in cytosol;
+  substanceOnly species MisP_Ub3 in cytosol, MisP_Ub4 in cytosol, MisP_Ub5 in cytosol;
+  substanceOnly species MisP_Ub6 in cytosol, MisP_Ub7 in cytosol, MisP_Ub8 in cytosol;
+  substanceOnly species MisP_Ub4_Proteasome in cytosol, MisP_Ub5_Proteasome in cytosol;
+  substanceOnly species MisP_Ub6_Proteasome in cytosol, MisP_Ub7_Proteasome in cytosol;
+  substanceOnly species MisP_Ub8_Proteasome in cytosol, $ATP in cytosol, $ADP in cytosol;
+  substanceOnly species $AMP in cytosol, $Source in cytosol, degUb4 in cytosol;
+  substanceOnly species degUb5 in cytosol, degUb6 in cytosol, degUb7 in cytosol;
+  substanceOnly species degUb8 in cytosol, totMisP in cytosol, refNatP in cytosol;
+  substanceOnly species AggP in cytosol, SeqAggP in cytosol, AggP_Proteasome in cytosol;
+
+  // Reactions:
+  ProteinSynthesis: $Source => NatP; k1*Source;
+  Misfolding: NatP + ROS => MisP + ROS + totMisP; k2*NatP*ROS;
+  Refolding: MisP => NatP + refNatP; k3*MisP;
+  MisPE3Binding: MisP + E3 => E3_MisP; k61*MisP*E3;
+  MisPE3Release: E3_MisP => MisP + E3; k61r*E3_MisP;
+  E1UbBinding: E1 + Ub + $ATP => E1_Ub + $AMP; k62*E1*Ub*ATP/(5000 + ATP);
+  E2UbBinding: E2 + E1_Ub => E2_Ub + E1; k63*E2*E1_Ub;
+  Monoubiquitination: E2_Ub + E3_MisP => MisP_Ub + E2 + E3; k64*E2_Ub*E3_MisP;
+  Polyubiquitination1: MisP_Ub + E2_Ub => MisP_Ub2 + E2; k65*MisP_Ub*E2_Ub;
+  Polyubiquitination2: MisP_Ub2 + E2_Ub => MisP_Ub3 + E2; k65*MisP_Ub2*E2_Ub;
+  Polyubiquitination3: MisP_Ub3 + E2_Ub => MisP_Ub4 + E2; k65*MisP_Ub3*E2_Ub;
+  Polyubiquitination4: MisP_Ub4 + E2_Ub => MisP_Ub5 + E2; k65*MisP_Ub4*E2_Ub;
+  Polyubiquitination5: MisP_Ub5 + E2_Ub => MisP_Ub6 + E2; k65*MisP_Ub5*E2_Ub;
+  Polyubiquitination6: MisP_Ub6 + E2_Ub => MisP_Ub7 + E2; k65*MisP_Ub6*E2_Ub;
+  Polyubiquitination7: MisP_Ub7 + E2_Ub => MisP_Ub8 + E2; k65*MisP_Ub7*E2_Ub;
+  Deubiqutination1: MisP_Ub8 + DUB => MisP_Ub7 + DUB + Ub; k66*MisP_Ub8*DUB;
+  Deubiqutination2: MisP_Ub7 + DUB => MisP_Ub6 + DUB + Ub; k66*MisP_Ub7*DUB;
+  Deubiqutination3: MisP_Ub6 + DUB => MisP_Ub5 + DUB + Ub; k66*MisP_Ub6*DUB;
+  Deubiqutination4: MisP_Ub5 + DUB => MisP_Ub4 + DUB + Ub; k66*MisP_Ub5*DUB;
+  Deubiqutination5: MisP_Ub4 + DUB => MisP_Ub3 + DUB + Ub; k66*MisP_Ub4*DUB;
+  Deubiqutination6: MisP_Ub3 + DUB => MisP_Ub2 + DUB + Ub; k66*MisP_Ub3*DUB;
+  Deubiqutination7: MisP_Ub2 + DUB => MisP_Ub + DUB + Ub; k66*MisP_Ub2*DUB;
+  Deubiqutination8: MisP_Ub + DUB => MisP + DUB + Ub; k66*MisP_Ub*DUB;
+  ProteasomeBinding1: MisP_Ub4 + Proteasome => MisP_Ub4_Proteasome; k67*MisP_Ub4*Proteasome;
+  ProteasomeBinding2: MisP_Ub5 + Proteasome => MisP_Ub5_Proteasome; k67*MisP_Ub5*Proteasome;
+  ProteasomeBinding3: MisP_Ub6 + Proteasome => MisP_Ub6_Proteasome; k67*MisP_Ub6*Proteasome;
+  ProteasomeBinding4: MisP_Ub7 + Proteasome => MisP_Ub7_Proteasome; k67*MisP_Ub7*Proteasome;
+  ProteasomeBinding5: MisP_Ub8 + Proteasome => MisP_Ub8_Proteasome; k67*MisP_Ub8*Proteasome;
+  DeubiquitinationBoundMisP5: MisP_Ub8_Proteasome + DUB => MisP_Ub7_Proteasome + Ub + DUB; k68*MisP_Ub8_Proteasome*DUB;
+  DeubiquitinationBoundMisP4: MisP_Ub7_Proteasome + DUB => MisP_Ub6_Proteasome + Ub + DUB; k68*MisP_Ub7_Proteasome*DUB;
+  DeubiquitinationBoundMisP3: MisP_Ub6_Proteasome + DUB => MisP_Ub5_Proteasome + Ub + DUB; k68*MisP_Ub6_Proteasome*DUB;
+  DeubiquitinationBoundMisP2: MisP_Ub5_Proteasome + DUB => MisP_Ub4_Proteasome + Ub + DUB; k68*MisP_Ub5_Proteasome*DUB;
+  DeubiquitinationBoundMisP1: MisP_Ub4_Proteasome + DUB => MisP_Ub3 + Proteasome + Ub + DUB; k68*MisP_Ub4_Proteasome*DUB;
+  ProteasomeActivity1: MisP_Ub4_Proteasome + $ATP => 4 Ub + Proteasome + $ADP + degUb4; k69*MisP_Ub4_Proteasome*ATP/(5000 + ATP);
+  ProteasomeActivity2: MisP_Ub5_Proteasome + $ATP => 5 Ub + Proteasome + $ADP + degUb5; k69*MisP_Ub5_Proteasome*ATP/(5000 + ATP);
+  ProteasomeActivity3: MisP_Ub6_Proteasome + $ATP => 6 Ub + Proteasome + $ADP + degUb6; k69*MisP_Ub6_Proteasome*ATP/(5000 + ATP);
+  ProteasomeActivity4: MisP_Ub7_Proteasome + $ATP => 7 Ub + Proteasome + $ADP + degUb7; k69*MisP_Ub7_Proteasome*ATP/(5000 + ATP);
+  ProteasomeActivity5: MisP_Ub8_Proteasome + $ATP => 8 Ub + Proteasome + $ADP + degUb8; k69*MisP_Ub8_Proteasome*ATP/(5000 + ATP);
+  Aggregation1: 2 MisP => AggP; k71*MisP*(MisP - 1)*0.5;
+  Aggregation2: MisP + AggP => 2 AggP; k71*MisP*AggP;
+  Aggregation3: 2 MisP_Ub => AggP; k72*MisP_Ub*(MisP_Ub - 1)*0.5;
+  Aggregation4: 2 MisP_Ub2 => AggP; k72*MisP_Ub2*(MisP_Ub2 - 1)*0.5;
+  Aggregation5: 2 MisP_Ub3 => AggP; k72*MisP_Ub3*(MisP_Ub3 - 1)*0.5;
+  Aggregation6: 2 MisP_Ub4 => AggP; k72*MisP_Ub4*(MisP_Ub4 - 1)*0.5;
+  Aggregation7: 2 MisP_Ub5 => AggP; k72*MisP_Ub5*(MisP_Ub5 - 1)*0.5;
+  Aggregation8: 2 MisP_Ub6 => AggP; k72*MisP_Ub6*(MisP_Ub6 - 1)*0.5;
+  Aggregation9: 2 MisP_Ub7 => AggP; k72*MisP_Ub7*(MisP_Ub7 - 1)*0.5;
+  Aggregation10: 2 MisP_Ub8 => AggP; k72*MisP_Ub8*(MisP_Ub8 - 1)*0.5;
+  Aggregation11: MisP_Ub + MisP => AggP; k72*MisP_Ub*MisP;
+  Aggregation12: MisP_Ub2 + MisP => AggP; k72*MisP_Ub2*MisP;
+  Aggregation13: MisP_Ub3 + MisP => AggP; k72*MisP_Ub3*MisP;
+  Aggregation14: MisP_Ub4 + MisP => AggP; k72*MisP_Ub4*MisP;
+  Aggregation15: MisP_Ub5 + MisP => AggP; k72*MisP_Ub5*MisP;
+  Aggregation16: MisP_Ub6 + MisP => AggP; k72*MisP_Ub6*MisP;
+  Aggregation17: MisP_Ub7 + MisP => AggP; k72*MisP_Ub7*MisP;
+  Aggregation18: MisP_Ub8 + MisP => AggP; k72*MisP_Ub8*MisP;
+  Aggregation19: MisP_Ub + AggP => 2 AggP; k72*MisP_Ub*AggP;
+  Aggregation20: MisP_Ub2 + AggP => 2 AggP; k72*MisP_Ub2*AggP;
+  Aggregation21: MisP_Ub3 + AggP => 2 AggP; k72*MisP_Ub3*AggP;
+  Aggregation22: MisP_Ub4 + AggP => 2 AggP; k72*MisP_Ub4*AggP;
+  Aggregation23: MisP_Ub5 + AggP => 2 AggP; k72*MisP_Ub5*AggP;
+  Aggregation24: MisP_Ub6 + AggP => 2 AggP; k72*MisP_Ub6*AggP;
+  Aggregation25: MisP_Ub7 + AggP => 2 AggP; k72*MisP_Ub7*AggP;
+  Aggregation26: MisP_Ub8 + AggP => 2 AggP; k72*MisP_Ub8*AggP;
+  Aggregation27: MisP_Ub + MisP_Ub2 => AggP; k72*MisP_Ub*MisP_Ub2;
+  Aggregation28: MisP_Ub + MisP_Ub3 => AggP; k72*MisP_Ub*MisP_Ub3;
+  Aggregation29: MisP_Ub + MisP_Ub4 => AggP; k72*MisP_Ub*MisP_Ub4;
+  Aggregation30: MisP_Ub + MisP_Ub5 => AggP; k72*MisP_Ub*MisP_Ub5;
+  Aggregation31: MisP_Ub + MisP_Ub6 => AggP; k72*MisP_Ub*MisP_Ub6;
+  Aggregation32: MisP_Ub + MisP_Ub7 => AggP; k72*MisP_Ub*MisP_Ub7;
+  Aggregation33: MisP_Ub + MisP_Ub8 => AggP; k72*MisP_Ub*MisP_Ub8;
+  Aggregation34: MisP_Ub2 + MisP_Ub3 => AggP; k72*MisP_Ub2*MisP_Ub3;
+  Aggregation35: MisP_Ub2 + MisP_Ub4 => AggP; k72*MisP_Ub2*MisP_Ub4;
+  Aggregation36: MisP_Ub2 + MisP_Ub5 => AggP; k72*MisP_Ub2*MisP_Ub5;
+  Aggregation37: MisP_Ub2 + MisP_Ub6 => AggP; k72*MisP_Ub2*MisP_Ub6;
+  Aggregation38: MisP_Ub2 + MisP_Ub7 => AggP; k72*MisP_Ub2*MisP_Ub7;
+  Aggregation39: MisP_Ub2 + MisP_Ub8 => AggP; k72*MisP_Ub2*MisP_Ub8;
+  Aggregation40: MisP_Ub3 + MisP_Ub4 => AggP; k72*MisP_Ub3*MisP_Ub4;
+  Aggregation41: MisP_Ub3 + MisP_Ub5 => AggP; k72*MisP_Ub3*MisP_Ub5;
+  Aggregation42: MisP_Ub3 + MisP_Ub6 => AggP; k72*MisP_Ub3*MisP_Ub6;
+  Aggregation43: MisP_Ub3 + MisP_Ub7 => AggP; k72*MisP_Ub3*MisP_Ub7;
+  Aggregation44: MisP_Ub3 + MisP_Ub8 => AggP; k72*MisP_Ub3*MisP_Ub8;
+  Aggregation45: MisP_Ub4 + MisP_Ub5 => AggP; k72*MisP_Ub4*MisP_Ub5;
+  Aggregation46: MisP_Ub4 + MisP_Ub6 => AggP; k72*MisP_Ub4*MisP_Ub6;
+  Aggregation47: MisP_Ub4 + MisP_Ub7 => AggP; k72*MisP_Ub4*MisP_Ub7;
+  Aggregation48: MisP_Ub4 + MisP_Ub8 => AggP; k72*MisP_Ub4*MisP_Ub8;
+  Aggregation49: MisP_Ub5 + MisP_Ub6 => AggP; k72*MisP_Ub5*MisP_Ub6;
+  Aggregation50: MisP_Ub5 + MisP_Ub7 => AggP; k72*MisP_Ub5*MisP_Ub7;
+  Aggregation51: MisP_Ub5 + MisP_Ub8 => AggP; k72*MisP_Ub5*MisP_Ub8;
+  Aggregation52: MisP_Ub6 + MisP_Ub7 => AggP; k72*MisP_Ub6*MisP_Ub7;
+  Aggregation53: MisP_Ub6 + MisP_Ub8 => AggP; k72*MisP_Ub6*MisP_Ub8;
+  Aggregation54: MisP_Ub7 + MisP_Ub8 => AggP; k72*MisP_Ub7*MisP_Ub8;
+  SequesteringOfAggregates: AggP => SeqAggP; k73*AggP;
+  ProteasomeInhibtion: AggP + Proteasome => AggP_Proteasome; k74*AggP*Proteasome;
+
+  // Species initializations:
+  NatP = 500;
+  MisP = 0;
+  Ub = 500;
+  E1 = 100;
+  E2 = 100;
+  E3 = 100;
+  DUB = 200;
+  Proteasome = 100;
+  ROS = 10;
+  E1_Ub = 0;
+  E2_Ub = 0;
+  E3_MisP = 0;
+  MisP_Ub = 0;
+  MisP_Ub2 = 0;
+  MisP_Ub3 = 0;
+  MisP_Ub4 = 0;
+  MisP_Ub5 = 0;
+  MisP_Ub6 = 0;
+  MisP_Ub7 = 0;
+  MisP_Ub8 = 0;
+  MisP_Ub4_Proteasome = 0;
+  MisP_Ub5_Proteasome = 0;
+  MisP_Ub6_Proteasome = 0;
+  MisP_Ub7_Proteasome = 0;
+  MisP_Ub8_Proteasome = 0;
+  ATP = 10000;
+  ADP = 1000;
+  AMP = 1000;
+  Source = 1;
+  degUb4 = 0;
+  degUb5 = 0;
+  degUb6 = 0;
+  degUb7 = 0;
+  degUb8 = 0;
+  totMisP = 0;
+  refNatP = 0;
+  AggP = 0;
+  SeqAggP = 0;
+  AggP_Proteasome = 0;
+
+  // Compartment initializations:
+  cytosol = 1;
+
+  // Variable initializations:
+  k1 = 0.01;
+  k2 = 2e-06;
+  k3 = 4e-06;
+  k61 = 1.7e-05;
+  k61r = 0.0002;
+  k62 = 0.0002;
+  k63 = 0.001;
+  k64 = 0.001;
+  k65 = 0.01;
+  k66 = 1e-05;
+  k67 = 1e-05;
+  k68 = 1e-05;
+  k69 = 0;
+  k71 = 1e-08;
+  k72 = 1e-08;
+  k73 = 0.001;
+  k74 = 1e-05;
+
+  // Other declarations:
+  const cytosol, k1, k2, k3, k61, k61r, k62, k63, k64, k65, k66, k67, k68;
+  const k69, k71, k72, k73, k74;
+
+  // Unit definitions:
+  unit substance = item;
+
+  // CV terms:
+  cytosol isVersionOf "http://identifiers.org/go/GO:0005829"
+  Ub isVersionOf "http://identifiers.org/interpro/IPR000626"
+  E1 isVersionOf "http://identifiers.org/interpro/IPR000011"
+  E2 isVersionOf "http://identifiers.org/interpro/IPR000608"
+  E3 isVersionOf "http://identifiers.org/interpro/IPR000569"
+  DUB isVersionOf "http://identifiers.org/interpro/IPR001394"
+  Proteasome isVersionOf "http://identifiers.org/go/GO:0000502"
+  ROS isVersionOf "http://identifiers.org/chebi/CHEBI:26523"
+  E1_Ub hasPart "http://identifiers.org/interpro/IPR000011",
+                "http://identifiers.org/interpro/IPR000626"
+  E2_Ub hasPart "http://identifiers.org/interpro/IPR000626",
+                "http://identifiers.org/interpro/IPR000608"
+  ATP identity "http://identifiers.org/chebi/CHEBI:15422"
+  ADP identity "http://identifiers.org/chebi/CHEBI:16761"
+  AMP identity "http://identifiers.org/chebi/CHEBI:16027"
+  ProteinSynthesis isVersionOf "http://identifiers.org/go/GO:0009059"
+  Misfolding hasVersion "http://identifiers.org/go/GO:0022417"
+  Refolding isVersionOf "http://identifiers.org/go/GO:0042026"
+  MisPE3Binding isVersionOf "http://identifiers.org/go/GO:0004842",
+                            "http://identifiers.org/go/GO:0005515"
+  MisPE3Release isVersionOf "http://identifiers.org/go/GO:0043624"
+  E1UbBinding isVersionOf "http://identifiers.org/go/GO:0005515",
+                          "http://identifiers.org/go/GO:0008641",
+                          "http://identifiers.org/go/GO:0006167"
+  E2UbBinding isVersionOf "http://identifiers.org/go/GO:0019787",
+                          "http://identifiers.org/go/GO:0005515"
+  Monoubiquitination isVersionOf "http://identifiers.org/go/GO:0006513"
+  Polyubiquitination1 isVersionOf "http://identifiers.org/go/GO:0000209"
+  Polyubiquitination2 isVersionOf "http://identifiers.org/go/GO:0000209"
+  Polyubiquitination3 isVersionOf "http://identifiers.org/go/GO:0000209"
+  Polyubiquitination4 isVersionOf "http://identifiers.org/go/GO:0000209"
+  Polyubiquitination5 isVersionOf "http://identifiers.org/go/GO:0000209"
+  Polyubiquitination6 isVersionOf "http://identifiers.org/go/GO:0000209"
+  Polyubiquitination7 isVersionOf "http://identifiers.org/go/GO:0000209"
+  Deubiqutination1 isVersionOf "http://identifiers.org/go/GO:0016579"
+  Deubiqutination2 isVersionOf "http://identifiers.org/go/GO:0016579"
+  Deubiqutination3 isVersionOf "http://identifiers.org/go/GO:0016579"
+  Deubiqutination4 isVersionOf "http://identifiers.org/go/GO:0016579"
+  Deubiqutination5 isVersionOf "http://identifiers.org/go/GO:0016579"
+  Deubiqutination6 isVersionOf "http://identifiers.org/go/GO:0016579"
+  Deubiqutination7 isVersionOf "http://identifiers.org/go/GO:0016579"
+  Deubiqutination8 isVersionOf "http://identifiers.org/go/GO:0016579"
+  ProteasomeBinding1 isVersionOf "http://identifiers.org/go/GO:0005515"
+  ProteasomeBinding2 isVersionOf "http://identifiers.org/go/GO:0005515"
+  ProteasomeBinding3 isVersionOf "http://identifiers.org/go/GO:0005515"
+  ProteasomeBinding4 isVersionOf "http://identifiers.org/go/GO:0005515"
+  ProteasomeBinding5 isVersionOf "http://identifiers.org/go/GO:0005515"
+  DeubiquitinationBoundMisP5 isVersionOf "http://identifiers.org/go/GO:0016579"
+  DeubiquitinationBoundMisP4 isVersionOf "http://identifiers.org/go/GO:0016579"
+  DeubiquitinationBoundMisP3 isVersionOf "http://identifiers.org/go/GO:0016579"
+  DeubiquitinationBoundMisP2 isVersionOf "http://identifiers.org/go/GO:0016579"
+  DeubiquitinationBoundMisP1 isVersionOf "http://identifiers.org/go/GO:0016579"
+  ProteasomeActivity1 isVersionOf "http://identifiers.org/go/GO:0016887",
+                                  "http://identifiers.org/go/GO:0008233"
+  ProteasomeActivity2 isVersionOf "http://identifiers.org/go/GO:0016887",
+                                  "http://identifiers.org/go/GO:0008233"
+  ProteasomeActivity3 isVersionOf "http://identifiers.org/go/GO:0016887",
+                                  "http://identifiers.org/go/GO:0008233"
+  ProteasomeActivity4 isVersionOf "http://identifiers.org/go/GO:0016887",
+                                  "http://identifiers.org/go/GO:0008233"
+  ProteasomeActivity5 isVersionOf "http://identifiers.org/go/GO:0016887",
+                                  "http://identifiers.org/go/GO:0008233"
+  Aggregation1 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation2 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation3 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation4 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation5 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation6 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation7 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation8 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation9 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation10 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation11 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation12 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation13 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation14 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation15 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation16 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation17 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation18 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation19 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation20 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation21 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation22 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation23 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation24 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation25 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation26 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation27 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation28 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation29 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation30 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation31 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation32 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation33 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation34 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation35 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation36 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation37 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation38 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation39 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation40 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation41 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation42 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation43 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation44 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation45 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation46 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation47 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation48 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation49 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation50 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation51 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation52 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation53 isVersionOf "http://identifiers.org/go/GO:0006461"
+  Aggregation54 isVersionOf "http://identifiers.org/go/GO:0006461"
+  SequesteringOfAggregates isVersionOf "http://identifiers.org/go/GO:0051220"
+  ProteasomeInhibtion isVersionOf "http://identifiers.org/go/GO:0008539"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL6540028317"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000105"
+  model publication "http://identifiers.org/pubmed/17408507"
+  model origin "http://identifiers.org/biomodels.db/BIOMD0000000091"
+  model hasProperty "http://identifiers.org/doid/DOID:1289"
+  model isVersionOf "http://identifiers.org/go/GO:0043161"
+  model hasTaxon "http://identifiers.org/taxonomy/2759"
+  model created "2007-04-02T09:08:41Z"
+  model modified "2014-08-11T14:38:13Z"
+  model creator1.givenName "Carole"
+  model creator1.familyName "Proctor"
+  model creator1.organization "University of Newcastle"
+  model creator1.email "c.j.proctor@ncl.ac.uk"
+  model creator2.givenName "Enuo"
+  model creator2.familyName "He"
+  model creator2.organization "BNMC"
+  model creator2.email "enuo@caltech.edu"
+
+  // Notes:
+  model notes ```
+Proctor2007 - Age related decline of proteolysis, ubiquitin-proteome system 
+
+
+This is a stochastic model of the ubiquitin-proteasome system for a generic pool
+of native proteins (NatP), which have a half-life of about 10 hours under normal
+conditions. It is assumed that these proteins are only degraded after they have
+lost their native structure due to a damage event. This is represented in the model
+by the misfolding reaction which depends on the level of reactive oxygen species
+(ROS) in the cell. Misfolded proteins (MisP) are first bound by an E3 ubiquitin
+ligase. Ubiquitin (Ub) is activated by E1 (ubiquitin-activating enzyme) and then
+passed to E2 (ubiquitin-conjugating enzyme). The E2 enzyme then passes the ubiquitin
+molecule to the E3/MisP complex with the net effect that the misfolded protein is
+monoubiquitinated and both E2 and E3 are released. Further ubiquitin molecules are
+added in a step-wise manner. When the chain of ubiquitin molecules is of length
+4 or more, the polyubiquitinated misfolded protein may bind to the proteasome. The
+model also includes de-ubiquitinating enzymes (DUB) which cleave ubiquitin molecules
+from the chain in a step-wise manner. They work on chains attached to misfolded
+proteins both unbound and bound to the proteasomes. Misfolded proteins bound to
+the proteasome may be degraded releasing ubiquitin. Misfolded proteins including
+ubiquitinated proteins may also aggregate. Aggregates (AggP) may be sequestered
+(Seq_AggP) which takes them out of harm&apos;s way or they may bind to the proteasome
+(AggP_Proteasome). Proteasomes bound by aggregates are no longer available for protein
+degradation.
+
+Figure 2 and Figure 3 has been simulated using Gillespie2.
+
+
+This model is described in the article:
+
+
+[An in silico model of the ubiquitin-proteasome system that incorporates normal homeostasis and age-related decline.](http://identifiers.org/pubmed/17408507 "Access to this publication") 
+
+
+Proctor CJ, Tsirigotis M, Gray DA. 
+
+BMC Syst Biol 2007; 1: 17 
+Abstract:
+
+
+BACKGROUND: The ubiquitin-proteasome system is responsible for homeostatic degradation
+of intact protein substrates as well as the elimination of damaged or misfolded
+proteins that might otherwise aggregate. During ageing there is a decline in 
+proteasome activity and an increase in aggregated proteins. Many neurodegenerative
+diseases are characterised by the presence of distinctive ubiquitin-positive inclusion
+bodies in affected regions of the brain. These inclusions consist of insoluble,
+unfolded, ubiquitinated polypeptides that fail to be targeted and degraded by
+the proteasome. We are using a systems biology approach to try and determine the
+primary event in the decline in proteolytic capacity with age and whether there
+is in fact a vicious cycle of inhibition, with accumulating aggregates further
+inhibiting proteolysis, prompting accumulation of aggregates and so on. A stochastic
+model of the ubiquitin-proteasome system has been developed using the Systems
+Biology Mark-up Language (SBML). Simulations are carried out on the BASIS (Biology
+of Ageing e-Science Integration and Simulation) system and the model output is
+compared to experimental data wherein levels of ubiquitin and ubiquitinated
+substrates are monitored in cultured cells under various conditions. The model
+can be used to predict the effects of different experimental procedures such as
+inhibition of the proteasome or shutting down the enzyme cascade responsible
+for ubiquitin conjugation. RESULTS: The model output shows good agreement with
+experimental data under a number of different conditions. However, our model predicts
+that monomeric ubiquitin pools are always depleted under conditions of proteasome
+inhibition, whereas experimental data show that monomeric pools were depleted
+in IMR-90 cells but not in ts20 cells, suggesting that cell lines vary in their
+ability to replenish ubiquitin pools and there is the need to incorporate ubiquitin
+turnover into the model. Sensitivity analysis of the model revealed which parameters
+have an important effect on protein turnover and aggregation kinetics. CONCLUSION:
+We have developed a model of the ubiquitin-proteasome system using an iterative
+approach of model building and validation against experimental data. Using 
+SBML to encode the model ensures that it can be easily modified and extended as
+more data become available. Important aspects to be included in subsequent models
+are details of ubiquitin turnover, models of autophagy, the inclusion of a pool
+of short-lived proteins and further details of the aggregation process.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000105](http://identifiers.org/biomodels.db/BIOMD0000000105).
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication").
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+  k69 notes ```
+This is the inhibiting proteasome activity situlation, k69=0. All the other
+parameters as in Tables2 and 3. If in the model is in the normal conditions, k69=1e-3.
+```
+end
+
+BIOMD0000000105 is "Proctor2007 - Age related decline of proteolysis, ubiquitin-proteome system"

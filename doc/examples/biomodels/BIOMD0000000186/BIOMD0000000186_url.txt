@@ -1,0 +1,315 @@
+// Created by libAntimony v3.2.0
+model *MODEL6655615431()
+
+  // Compartments and Species:
+  compartment Cytoplasm;
+  species Mad1_CMad2 in Cytoplasm, OMad2 in Cytoplasm, Mad1_CMad2_OMad2 in Cytoplasm;
+  species Cdc20 in Cytoplasm, Cdc20_CMad2 in Cytoplasm, Bub3_BubR1 in Cytoplasm;
+  species MCC in Cytoplasm, Bub3_BubR1_Cdc20 in Cytoplasm, APC in Cytoplasm;
+  species MCC_APC in Cytoplasm, APC_Cdc20 in Cytoplasm;
+
+  // Reactions:
+  R1: Mad1_CMad2 + OMad2 -> Mad1_CMad2_OMad2; Cytoplasm*(u*k1f*Mad1_CMad2*OMad2 - k1r*Mad1_CMad2_OMad2);
+  R2: Mad1_CMad2_OMad2 + Cdc20 => Mad1_CMad2 + Cdc20_CMad2; u*k2f*Mad1_CMad2_OMad2*Cytoplasm*Cdc20;
+  R3: Cdc20_CMad2 => Cdc20 + OMad2; k3f*Cdc20_CMad2*Cytoplasm;
+  R4: Cdc20_CMad2 + Bub3_BubR1 -> MCC; Cytoplasm*(u*k4f*Cdc20_CMad2*Bub3_BubR1 - k4r*MCC);
+  R5: Bub3_BubR1 + Cdc20 -> Bub3_BubR1_Cdc20; Cytoplasm*(u*k5f*Bub3_BubR1*Cdc20 - k5r*Bub3_BubR1_Cdc20);
+  R6: OMad2 + Cdc20 => Cdc20_CMad2; kf6*OMad2*Cdc20*Cytoplasm;
+  R7: MCC + APC => MCC_APC; u*k7f*MCC*APC*Cytoplasm;
+  R7a: MCC_APC => MCC + APC; u_prime*k7r*MCC_APC*Cytoplasm;
+  R8: APC + Cdc20 -> APC_Cdc20; Cytoplasm*(k8f*APC*Cdc20 - k8r*APC_Cdc20);
+
+  // Events:
+  mt_attachment: at time > 2000: u = const_val_0, u_prime = const_val_1;
+
+  // Species initializations:
+  Mad1_CMad2 = 5e-08;
+  Mad1_CMad2 has mole_per_volume;
+  OMad2 = 1.3e-07;
+  OMad2 has mole_per_volume;
+  Mad1_CMad2_OMad2 = 0;
+  Mad1_CMad2_OMad2 has mole_per_volume;
+  Cdc20 = 2.2e-07;
+  Cdc20 has mole_per_volume;
+  Cdc20_CMad2 = 0;
+  Cdc20_CMad2 has mole_per_volume;
+  Bub3_BubR1 = 1.27e-07;
+  Bub3_BubR1 has mole_per_volume;
+  MCC = 0;
+  MCC has mole_per_volume;
+  Bub3_BubR1_Cdc20 = 0;
+  Bub3_BubR1_Cdc20 has mole_per_volume;
+  APC = 9e-08;
+  APC has mole_per_volume;
+  MCC_APC = 0;
+  MCC_APC has mole_per_volume;
+  APC_Cdc20 = 0;
+  APC_Cdc20 has mole_per_volume;
+
+  // Compartment initializations:
+  Cytoplasm = 1;
+
+  // Variable initializations:
+  u = 1;
+  u has dimensionless;
+  const_val_0 = 0;
+  const_val_0 has dimensionless;
+  u_prime = 0;
+  u_prime has dimensionless;
+  const_val_1 = 1;
+  const_val_1 has dimensionless;
+  k1f = 200000;
+  k1f has pMp;
+  k1r = 0.2;
+  k1r has ps;
+  k2f = 100000000;
+  k2f has pMp;
+  k3f = 0.01;
+  k3f has ps;
+  k4f = 10000000;
+  k4f has pMp;
+  k4r = 0.02;
+  k4r has ps;
+  k5f = 10000;
+  k5f has pMp;
+  k5r = 0.2;
+  k5r has ps;
+  kf6 = 1000;
+  kf6 has pMp;
+  k7f = 100000000;
+  k7f has pMp;
+  k7r = 0.08;
+  k7r has ps;
+  k8f = 5000000;
+  k8f has pMp;
+  k8r = 0.08;
+  k8r has ps;
+
+  // Other declarations:
+  var u, u_prime;
+  const Cytoplasm, const_val_0, const_val_1, k1f, k1r, k2f, k3f, k4f, k4r;
+  const k5f, k5r, kf6, k7f, k7r, k8f, k8r;
+
+  // Unit definitions:
+  unit ps = 1 / second;
+  unit pMp = litre / (mole * second);
+  unit mole_per_volume = mole / litre;
+
+  // Display Names:
+  ps is "per second";
+  pMp is "liter per mole per second";
+  Mad1_CMad2 is "Mad1:C-Mad2";
+  OMad2 is "O-Mad2";
+  Mad1_CMad2_OMad2 is "Mad1:C-Mad2:O-Mad2*";
+  Cdc20_CMad2 is "Cdc20:C-Mad2";
+  Bub3_BubR1 is "Bub3:BubR1";
+  Bub3_BubR1_Cdc20 is "Bub3:BubR1:Cdc20";
+  MCC_APC is "MCC:APC";
+  APC_Cdc20 is "APC:Cdc20";
+  mt_attachment is "Microtubule attachment";
+
+  // CV terms:
+  Cytoplasm identity "http://identifiers.org/go/GO:0005737"
+  Mad1_CMad2 isVersionOf "http://identifiers.org/go/GO:0043234"
+  Mad1_CMad2 hasPart "http://identifiers.org/uniprot/Q13257",
+                     "http://identifiers.org/uniprot/Q9Y6D9"
+  OMad2 identity "http://identifiers.org/uniprot/Q13257"
+  Mad1_CMad2_OMad2 hasPart "http://identifiers.org/uniprot/Q13257",
+                           "http://identifiers.org/uniprot/Q9Y6D9"
+  Mad1_CMad2_OMad2 isVersionOf "http://identifiers.org/go/GO:0043234"
+  Cdc20 identity "http://identifiers.org/uniprot/Q12834"
+  Cdc20_CMad2 hasPart "http://identifiers.org/uniprot/Q13257",
+                      "http://identifiers.org/uniprot/Q12834"
+  Bub3_BubR1 hasPart "http://identifiers.org/uniprot/Q60566",
+                     "http://identifiers.org/uniprot/O43684"
+  MCC hasPart "http://identifiers.org/uniprot/Q12834",
+              "http://identifiers.org/uniprot/Q13257",
+              "http://identifiers.org/uniprot/Q60566",
+              "http://identifiers.org/uniprot/O43684"
+  MCC identity "http://identifiers.org/go/GO:0033597"
+  Bub3_BubR1_Cdc20 hasPart "http://identifiers.org/uniprot/Q12834",
+                           "http://identifiers.org/uniprot/Q60566",
+                           "http://identifiers.org/uniprot/O43684"
+  APC isVersionOf "http://identifiers.org/go/GO:0005680"
+  APC hasPart "http://identifiers.org/uniprot/Q8NHZ8",
+              "http://identifiers.org/uniprot/Q9BS18",
+              "http://identifiers.org/uniprot/Q9NYG5",
+              "http://identifiers.org/uniprot/Q9UM13",
+              "http://identifiers.org/uniprot/Q9UJX2",
+              "http://identifiers.org/uniprot/Q9UJX3",
+              "http://identifiers.org/uniprot/Q13042",
+              "http://identifiers.org/uniprot/Q9UJX4",
+              "http://identifiers.org/uniprot/Q9UJX5",
+              "http://identifiers.org/uniprot/P30260",
+              "http://identifiers.org/uniprot/Q9UJX6",
+              "http://identifiers.org/uniprot/Q9H1A4"
+  MCC_APC hasPart "http://identifiers.org/uniprot/Q12834",
+                  "http://identifiers.org/uniprot/Q13257",
+                  "http://identifiers.org/uniprot/Q60566",
+                  "http://identifiers.org/uniprot/O43684",
+                  "http://identifiers.org/uniprot/Q8NHZ8",
+                  "http://identifiers.org/uniprot/Q9BS18",
+                  "http://identifiers.org/uniprot/Q9NYG5",
+                  "http://identifiers.org/uniprot/Q9UM13",
+                  "http://identifiers.org/uniprot/Q9UJX2",
+                  "http://identifiers.org/uniprot/Q9UJX3",
+                  "http://identifiers.org/uniprot/Q13042",
+                  "http://identifiers.org/uniprot/Q9UJX4",
+                  "http://identifiers.org/uniprot/Q9UJX5",
+                  "http://identifiers.org/uniprot/P30260",
+                  "http://identifiers.org/uniprot/Q9UJX6",
+                  "http://identifiers.org/uniprot/Q9H1A4"
+  MCC_APC hasPart "http://identifiers.org/go/GO:0005680",
+                  "http://identifiers.org/go/GO:0033597"
+  APC_Cdc20 hasPart "http://identifiers.org/uniprot/Q12834",
+                    "http://identifiers.org/uniprot/Q8NHZ8",
+                    "http://identifiers.org/uniprot/Q9BS18",
+                    "http://identifiers.org/uniprot/Q9NYG5",
+                    "http://identifiers.org/uniprot/Q9UM13",
+                    "http://identifiers.org/uniprot/Q9UJX2",
+                    "http://identifiers.org/uniprot/Q9UJX3",
+                    "http://identifiers.org/uniprot/Q13042",
+                    "http://identifiers.org/uniprot/Q9UJX4",
+                    "http://identifiers.org/uniprot/Q9UJX5",
+                    "http://identifiers.org/uniprot/P30260",
+                    "http://identifiers.org/uniprot/Q9UJX6",
+                    "http://identifiers.org/uniprot/Q9H1A4"
+  R1 isVersionOf "http://identifiers.org/go/GO:0032092",
+                 "http://identifiers.org/go/GO:0043241",
+                 "http://identifiers.org/go/GO:0006461"
+  R2 isVersionOf "http://identifiers.org/go/GO:0032092",
+                 "http://identifiers.org/go/GO:0006461"
+  R3 isVersionOf "http://identifiers.org/go/GO:0043241"
+  R4 isVersionOf "http://identifiers.org/reactome/REACT_36.2",
+                 "http://identifiers.org/go/GO:0043241",
+                 "http://identifiers.org/go/GO:0006461"
+  R5 isVersionOf "http://identifiers.org/go/GO:0043241",
+                 "http://identifiers.org/go/GO:0006461"
+  R6 isVersionOf "http://identifiers.org/go/GO:0006461"
+  R7 isVersionOf "http://identifiers.org/go/GO:0043623",
+                 "http://identifiers.org/go/GO:0051436"
+  R7a isVersionOf "http://identifiers.org/go/GO:0043624"
+  R8 isVersionOf "http://identifiers.org/go/GO:0043623",
+                 "http://identifiers.org/go/GO:0007092"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL6655615431"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000186"
+  model publication "http://identifiers.org/pubmed/18253502"
+  model origin "http://identifiers.org/pubmed/15694304"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model isVersionOf "http://identifiers.org/reactome/REACT_2137.2",
+                    "http://identifiers.org/go/GO:0007094"
+  model isPartOf "http://identifiers.org/kegg.pathway/hsa04110"
+  model created "2008-09-02T15:06:57Z"
+  model modified "2014-05-27T23:06:28Z"
+  model creator1.givenName "Lukas"
+  model creator1.familyName "Endler"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "lukas@ebi.ac.uk"
+  model creator2.givenName "Bashar"
+  model creator2.familyName "Ibrahim"
+  model creator2.organization "German Cancer Research Center, Heidelberg"
+  model creator2.email "b.ibrahim@dkfz.de"
+  model creator3.givenName "Stephan"
+  model creator3.familyName "Diekmann"
+  model creator3.organization "Fritz Lipmann Institute, Jena, Germany"
+  model creator3.email "diekmann@fli-leibniz.de"
+  model creator4.givenName "Peter"
+  model creator4.familyName "Dittrich"
+  model creator4.organization "Friedrich-Schiller-University Jena, Germany"
+  model creator4.email "ditrich@minet.uni-jena.de"
+  model creator5.givenName "Eberhard"
+  model creator5.familyName "Schmitt"
+  model creator5.organization "Fritz Lipmann Institute, Jena, Germany"
+  model creator5.email "eschmitt@fli-leibniz.de"
+
+  // Notes:
+  model notes ```
+Ibrahim2008 - Mitotic Spindle Assembly Checkpoint - Dissociation variant 
+
+
+The Mitotic Spindle Assembly Checkpoint ((M)SAC) is an evolutionary conserved mechanism.
+This model incorporates the perspectives of three central control pathways, namely
+Mad1/Mad2 induced Cdc20 sequestering based on the Template Model, MCC formation,
+and APC inhibition. MCC:APC dissociation is described by two alternatives models,
+namely the "Dissociation" and the "Convey" model variants. Both
+these model are available in BioModels Database. This model corresponds to the "Dissociation"
+variant.
+
+
+This model is described in the article:
+
+
+[In-silico modeling of the mitotic spindle assembly checkpoint.](http://identifiers.org/pubmed/18253502 "Access to this publication") 
+
+
+Ibrahim B, Diekmann S, Schmitt E, Dittrich P 
+
+PLoS One. 2008 Feb 6;3(2):e1555. 
+Abstract:
+
+
+BACKGROUND: The Mitotic Spindle Assembly Checkpoint ((M)SAC) is an evolutionary conserved
+mechanism that ensures the correct segregation of chromosomes by restraining cell
+cycle progression from entering anaphase until all chromosomes have made proper bipolar
+attachments to the mitotic spindle. Its malfunction can lead to cancer.
+
+PRINCIPLE FINDINGS: We have constructed and validated for the human (M)SAC mechanism
+an in silico dynamical model, integrating 11 proteins and complexes. The model incorporates
+the perspectives of three central control pathways, namely Mad1/Mad2 induced Cdc20
+sequestering based on the Template Model, MCC formation, and APC inhibition. Originating
+from the biochemical reactions for the underlying molecular processes, non-linear
+ordinary differential equations for the concentrations of 11 proteins and complexes
+of the (M)SAC are derived. Most of the kinetic constants are taken from literature,
+the remaining four unknown parameters are derived by an evolutionary optimization
+procedure for an objective function describing the dynamics of the APC:Cdc20 complex.
+MCC:APC dissociation is described by two alternatives, namely the "Dissociation"
+and the "Convey" model variants. The attachment of the kinetochore to microtubuli
+is simulated by a switching parameter silencing those reactions which are stopped
+by the attachment. For both, the Dissociation and the Convey variants, we compare
+two different scenarios concerning the microtubule attachment dependent control of
+the dissociation reaction. Our model is validated by simulation of ten perturbation
+experiments.
+
+CONCLUSION: Only in the controlled case, our models show (M)SAC behaviour at meta-
+to anaphase transition in agreement with experimental observations. Our simulations
+revealed that for (M)SAC activation, Cdc20 is not fully sequestered; instead APC
+is inhibited by MCC binding.
+
+
+This model describes the controlled dissociation variant of the mitotic spindle assembly
+checkpoint. If the tool you use has problems with events, you can uncomment the assignment
+rules for u and u_prime and comment out the list of events.
+
+
+In accordance with the authors due to typos in the original publication some initial
+conditions and parameters were slightly changed in the model: 
+| | article | model |
+|-----------------------|-----------------------------------------------------------|-----------------------------------------------------------|
+| *[O-Mad2]* | 1.5e-7 M | 1.3e-7 M |
+| *[BubR1:Bub3]* | 1.30e-7 M | 1.27e-7 M |
+| *k -4* | 0.01 M -1 s -1 | 0.02 M -1 s -1 |
+| *k -5* | 0.1 M -1 s -1 | 0.2 M -1 s -1 |
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [MODEL6655615431](http://identifiers.org/biomodels.db/MODEL6655615431) . 
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication") . 
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+  OMad2 notes "Open conformation of Mad2"
+  u notes ```
+*u = 1 : kinetochore unattached* 
+*u = 0 : kinetochore attached*
+```
+  u_prime notes ```
+*u = 0 : kinetochore unattached* 
+*u = 1 : kinetochore attached*
+```
+end
+
+MODEL6655615431 is "Ibrahim2008 - Mitotic Spindle Assembly Checkpoint - Dissociation variant"

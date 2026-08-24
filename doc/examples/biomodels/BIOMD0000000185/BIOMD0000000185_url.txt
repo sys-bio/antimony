@@ -1,0 +1,196 @@
+// Created by libAntimony v3.2.0
+model *Locke2008_Circadian_Clock()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species X1 in compartment_, Y1 in compartment_, Z1 in compartment_, V1 in compartment_;
+  species X2 in compartment_, Y2 in compartment_, Z2 in compartment_, V2 in compartment_;
+
+  // Assignment Rules:
+  F := (1/2)*(V1 + V2);
+
+  // Reactions:
+  R1:  => X1; compartment_*v_1*K1^n/(K1^n + Z1^n);
+  R2: X1 => ; compartment_*v_2*X1/(K2 + X1);
+  R3:  => X1; compartment_*vc*K*F/(Kc + K*F);
+  R4:  => X1; compartment_*L;
+  R5:  => Y1; compartment_*k3*X1;
+  R6: Y1 => ; compartment_*v_4*Y1/(K4 + Y1);
+  R7:  => Z1; compartment_*k5*Y1;
+  R8: Z1 => ; compartment_*v_6*Z1/(K6 + Z1);
+  R9:  => V1; compartment_*k7*X1;
+  R10: V1 => ; compartment_*v_8*V1/(K8 + V1);
+  R11:  => X2; compartment_*v_1*K1^n/(K1^n + Z2^n);
+  R12: X2 => ; compartment_*v_2*X2/(K2 + X2);
+  R13:  => X2; compartment_*vc*K*F/(Kc + K*F);
+  R14:  => X2; compartment_*L;
+  R15:  => Y2; compartment_*k3*X2;
+  R16: Y2 => ; compartment_*v_4*Y2/(K4 + Y2);
+  R17:  => Z2; compartment_*k5*Y2;
+  R18: Z2 => ; compartment_*v_6*Z2/(K6 + Z2);
+  R19:  => V2; compartment_*k7*X2;
+  R20: V2 => ; compartment_*v_8*V2/(K8 + V2);
+
+  // Species initializations:
+  X1 = 4.25;
+  Y1 = 3.25;
+  Z1 = 2.25;
+  V1 = 2.5;
+  X2 = 0;
+  Y2 = 0;
+  Z2 = 0;
+  V2 = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+  F has nM;
+
+  // Variable initializations:
+  v_1 = 6.8355;
+  v_1 has nM_hr_1;
+  K1 = 2.7266;
+  K1 has nM;
+  n = 5.6645;
+  n has dimensionless;
+  v_2 = 8.4297;
+  v_2 has nM_hr_1;
+  K2 = 0.291;
+  K2 has nM;
+  vc = 6.7924;
+  vc has nM_hr_1;
+  K = 1;
+  K has dimensionless;
+  Kc = 4.8283;
+  Kc has nM;
+  L = 0;
+  L has nM_hr_1;
+  k3 = 0.1177;
+  k3 has hr_1;
+  v_4 = 1.0841;
+  v_4 has nM_hr_1;
+  K4 = 8.1343;
+  K4 has nM;
+  k5 = 0.3352;
+  k5 has hr_1;
+  v_6 = 4.6645;
+  v_6 has nM_hr_1;
+  K6 = 9.9849;
+  K6 has nM;
+  k7 = 0.2282;
+  k7 has hr_1;
+  v_8 = 3.5216;
+  v_8 has nM_hr_1;
+  K8 = 7.4519;
+  K8 has nM;
+
+  // Other declarations:
+  var F;
+  const compartment_, v_1, K1, n, v_2, K2, vc, K, Kc, L, k3, v_4, K4, k5;
+  const v_6, K6, k7, v_8, K8;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
+  unit time_unit = 3600 second;
+  unit nM = 1e-9 mole / litre;
+  unit nM_hr_1 = 1e-9 mole / (litre * 3600 second);
+  unit hr_1 = 1 / 3600 second;
+
+  // Display Names:
+  substance is "nano mole";
+  time_unit is "hour";
+  compartment_ is "Cell";
+  X1 is "clock gene mRNA";
+  Y1 is "clock protein";
+  Z1 is "Transcriptional repressor";
+  V1 is "Neuropeptide";
+  X2 is "clock gene mRNA";
+  Y2 is "clock protein";
+  Z2 is "Transcriptional repressor";
+  V2 is "Neuropeptide";
+  R1 is "Transcription";
+  R2 is "mRNA degradation";
+  R3 is "Neuropeptide dependent transcription activation";
+  R4 is "Light dependent transcription activation";
+  R5 is "Translation";
+  R6 is "Protein degradation";
+  R7 is "Transcriptional repressor synthesis";
+  R8 is "Transcriptional repressor degradation";
+  R9 is "Neuropeptide synthesis";
+  R10 is "Neuropeptide degradation";
+  R11 is "Transcription";
+  R12 is "mRNA degradation";
+  R13 is "Neuropeptide dependent transcription activation";
+  R14 is "Light dependent transcription activation";
+  R15 is "Translation";
+  R16 is "Protein degradation";
+  R17 is "Transcriptional repressor synthesis";
+  R18 is "Transcriptional repressor degradation";
+  R19 is "Neuropeptide synthesis";
+  R20 is "Neuropeptide degradation";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/go/GO:0005623"
+  X1 isVersionOf "http://identifiers.org/chebi/CHEBI:33699"
+  X1 encodes "http://identifiers.org/uniprot/O15516"
+  Y1 isHomologTo "http://identifiers.org/uniprot/O15516"
+  V1 isHomologTo "http://identifiers.org/uniprot/Q9VET0"
+  V1 hasVersion "http://identifiers.org/go/GO:0005184"
+  X2 encodes "http://identifiers.org/uniprot/O15516"
+  X2 isVersionOf "http://identifiers.org/chebi/CHEBI:33699"
+  Y2 isHomologTo "http://identifiers.org/uniprot/O15516"
+  V2 isHomologTo "http://identifiers.org/uniprot/Q9VET0"
+  V2 hasVersion "http://identifiers.org/go/GO:0005184"
+  R1 isVersionOf "http://identifiers.org/go/GO:0009299",
+                 "http://identifiers.org/go/GO:0006355"
+  R2 isVersionOf "http://identifiers.org/go/GO:0006402"
+  R3 isVersionOf "http://identifiers.org/go/GO:0045893"
+  R4 isVersionOf "http://identifiers.org/go/GO:0045893"
+  R5 isVersionOf "http://identifiers.org/go/GO:0006412"
+  R6 isVersionOf "http://identifiers.org/go/GO:0044257"
+  R8 isVersionOf "http://identifiers.org/go/GO:0044257"
+  R9 isVersionOf "http://identifiers.org/go/GO:0006412"
+  R10 isVersionOf "http://identifiers.org/go/GO:0044257"
+  R11 isVersionOf "http://identifiers.org/go/GO:0009299",
+                  "http://identifiers.org/go/GO:0006355"
+  R12 isVersionOf "http://identifiers.org/go/GO:0006402"
+  R13 isVersionOf "http://identifiers.org/go/GO:0045893"
+  R14 isVersionOf "http://identifiers.org/go/GO:0045893"
+  R15 isVersionOf "http://identifiers.org/go/GO:0006412"
+  R16 isVersionOf "http://identifiers.org/go/GO:0044257"
+  R18 isVersionOf "http://identifiers.org/go/GO:0044257"
+  R19 isVersionOf "http://identifiers.org/go/GO:0006412"
+  R20 isVersionOf "http://identifiers.org/go/GO:0044257"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL9223733527"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000185"
+  model publication "http://identifiers.org/pubmed/18312618"
+  model hasTaxon "http://identifiers.org/taxonomy/40674"
+  model isVersionOf "http://identifiers.org/go/GO:0048512",
+                    "http://identifiers.org/go/GO:0032922"
+  model created "2008-08-20T08:10:29Z"
+  model modified "2012-07-11T17:47:04Z"
+  model creator1.givenName "Harish"
+  model creator1.familyName "Dharuri"
+  model creator1.organization "California Institute of Technology"
+  model creator1.email "hdharuri@cds.caltech.edu"
+
+  // Notes:
+  model notes ```
+The model reproduces Fig 2A of the paper. Model successfully reproduced using Jarnac
+and MathSBML.
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Creative Commons CC0") for more information. 
+
+In summary, you are entitled to use this encoded model in absolutely any manner you
+deem suitable, verbatim, or with modification, alone or embedded it in a larger context,
+redistribute it, commercially or not, in a restricted way or not.
+
+
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+end
+
+Locke2008_Circadian_Clock is "Locke2008_Circadian_Clock"

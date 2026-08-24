@@ -1,0 +1,205 @@
+// Created by libAntimony v3.2.0
+model *Proctor2005_Hsp90()
+
+  // Compartments and Species:
+  compartment compartment_;
+  substanceOnly species Hsp90 in compartment_, HCom in compartment_, HSF1 in compartment_;
+  substanceOnly species MisP in compartment_, MCom in compartment_, TriH in compartment_;
+  substanceOnly species DiH in compartment_, NatP in compartment_, AggP in compartment_;
+  substanceOnly species HSE in compartment_, HSETriH in compartment_, X in compartment_;
+  substanceOnly species ROS in compartment_, ATP in compartment_, ADP in compartment_;
+  substanceOnly species $source in compartment_;
+
+  // Reactions:
+  proteinSynthesis: 0 $source => NatP; k1;
+  misfolding: NatP + ROS => MisP + ROS; k2*NatP*ROS;
+  Hsp90MisPBinding: MisP + Hsp90 => MCom; k3*MisP*Hsp90;
+  unsuccessulRefolding: MCom => MisP + Hsp90; k4*MCom;
+  refolding: MCom + ATP => Hsp90 + NatP + ADP; k5*MCom*ATP;
+  proteinDegradation: MisP + ATP => ADP; k6*MisP*ATP;
+  proteinAggregation1: 2 MisP => AggP; (MisP - 1)*k7*MisP/2;
+  proteinAggregation2: MisP + AggP => 2 AggP; k7*MisP*AggP;
+  Hsp90HSF1Binding: Hsp90 + HSF1 => HCom; k8*Hsp90*HSF1;
+  Hsp90HSF1Release: HCom => Hsp90 + HSF1; k9*HCom;
+  dimerisation: 2 HSF1 => DiH; (HSF1 - 1)*k10*HSF1/2;
+  trimerisation: HSF1 + DiH => TriH; k11*HSF1*DiH;
+  deTrimerisation: TriH => HSF1 + DiH; k12*TriH;
+  deDimerisation: DiH => 2 HSF1; k13*DiH;
+  HSETriHBinding: TriH + HSE => HSETriH; k14*HSE*TriH;
+  HSETriHRelease: HSETriH => HSE + TriH; k15*HSETriH;
+  Hsp90Transcription: HSETriH => HSETriH + Hsp90; k16*HSETriH;
+  Hsp90Degradation: Hsp90 + ATP => ADP; k17*Hsp90*ATP;
+  countTime: 0 $source => X; 1;
+  ATPformation: ADP => ATP; k18*ADP;
+  ATPconsumption: ATP => ADP; k19*ATP;
+  radicalFormation: 0 $source => ROS; k20;
+  radicalScavenging: ROS => ; k21*ROS;
+
+  // Species initializations:
+  Hsp90 = 300000;
+  HCom = 5900;
+  HSF1 = 100;
+  MisP = 0;
+  MCom = 0;
+  TriH = 0;
+  DiH = 0;
+  NatP = 6000000;
+  AggP = 0;
+  HSE = 1;
+  HSETriH = 0;
+  X = 0;
+  ROS = 100;
+  ATP = 10000;
+  ADP = 1000;
+  source = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  k1 = 10;
+  k2 = 2e-05;
+  k3 = 50;
+  k4 = 1e-05;
+  k5 = 4e-06;
+  k6 = 6e-07;
+  k7 = 1e-07;
+  k8 = 500;
+  k9 = 1;
+  k10 = 0.01;
+  k11 = 100;
+  k12 = 0.5;
+  k13 = 0.5;
+  k14 = 0.05;
+  k15 = 0.08;
+  k16 = 1000;
+  k17 = 8.02e-09;
+  k18 = 12;
+  k19 = 0.02;
+  k20 = 0.1;
+  k21 = 0.001;
+
+  // Other declarations:
+  const compartment_, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13;
+  const k14, k15, k16, k17, k18, k19, k20, k21;
+
+  // Unit definitions:
+  unit substance = item;
+
+  // Display Names:
+  unsuccessulRefolding is "unsuccessfulRefolding";
+
+  // CV terms:
+  compartment_ isVersionOf "http://identifiers.org/go/GO:0005623"
+  Hsp90 identity "http://identifiers.org/interpro/IPR001404"
+  HCom isVersionOf "http://identifiers.org/go/GO:0043234"
+  HSF1 isVersionOf "http://identifiers.org/interpro/IPR000232"
+  MCom isVersionOf "http://identifiers.org/go/GO:0043234"
+  TriH isVersionOf "http://identifiers.org/go/GO:0043234"
+  TriH hasPart "http://identifiers.org/interpro/IPR000232"
+  DiH isVersionOf "http://identifiers.org/go/GO:0043234"
+  DiH hasPart "http://identifiers.org/interpro/IPR000232"
+  ROS isVersionOf "http://identifiers.org/chebi/CHEBI:26523"
+  ATP identity "http://identifiers.org/chebi/CHEBI:15422",
+               "http://identifiers.org/kegg.compound/C00002"
+  ADP identity "http://identifiers.org/chebi/CHEBI:16761",
+               "http://identifiers.org/kegg.compound/C00008"
+  proteinSynthesis isVersionOf "http://identifiers.org/go/GO:0009059"
+  misfolding hasVersion "http://identifiers.org/go/GO:0022417"
+  Hsp90MisPBinding isVersionOf "http://identifiers.org/go/GO:0051879"
+  unsuccessulRefolding isVersionOf "http://identifiers.org/go/GO:0043624"
+  refolding isVersionOf "http://identifiers.org/go/GO:0042026",
+                        "http://identifiers.org/go/GO:0016887"
+  proteinDegradation isVersionOf "http://identifiers.org/go/GO:0016887"
+  proteinAggregation1 isVersionOf "http://identifiers.org/go/GO:0043623"
+  proteinAggregation2 isVersionOf "http://identifiers.org/go/GO:0043623"
+  Hsp90HSF1Binding isVersionOf "http://identifiers.org/go/GO:0051879"
+  Hsp90HSF1Release isVersionOf "http://identifiers.org/go/GO:0043624"
+  dimerisation isVersionOf "http://identifiers.org/go/GO:0043623"
+  trimerisation isVersionOf "http://identifiers.org/go/GO:0043623"
+  deTrimerisation isVersionOf "http://identifiers.org/go/GO:0043624"
+  deDimerisation isVersionOf "http://identifiers.org/go/GO:0043624"
+  HSETriHBinding isVersionOf "http://identifiers.org/go/GO:0043623"
+  HSETriHRelease isVersionOf "http://identifiers.org/go/GO:0043624"
+  Hsp90Transcription isVersionOf "http://identifiers.org/go/GO:0006351"
+  Hsp90Degradation isVersionOf "http://identifiers.org/go/GO:0044257",
+                               "http://identifiers.org/go/GO:0016887"
+  ATPformation isVersionOf "http://identifiers.org/go/GO:0006757"
+  ATPconsumption isVersionOf "http://identifiers.org/go/GO:0016887"
+  radicalFormation isPartOf "http://identifiers.org/go/GO:0006800"
+  radicalScavenging isVersionOf "http://identifiers.org/go/GO:0016209"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL2223638385"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000091"
+  model publication "http://identifiers.org/pubmed/15610770"
+  model isVersionOf "http://identifiers.org/go/GO:0051085",
+                    "http://identifiers.org/go/GO:0007569",
+                    "http://identifiers.org/go/GO:0009408"
+  model hasTaxon "http://identifiers.org/taxonomy/131567"
+  model hasVersion "http://identifiers.org/doid/DOID:10652",
+                   "http://identifiers.org/doid/DOID:14330",
+                   "http://identifiers.org/doid/DOID:83"
+  model created "2007-02-26T13:30:45Z"
+  model modified "2014-06-03T20:38:41Z"
+  model creator1.givenName "Carole"
+  model creator1.familyName "Proctor"
+  model creator1.organization "University of Newcastle"
+  model creator1.email "c.j.proctor@ncl.ac.uk"
+  model creator2.givenName "Enuo"
+  model creator2.familyName "He"
+  model creator2.organization "BNMC"
+  model creator2.email "enuo@caltech.edu"
+
+  // Notes:
+  model notes ```
+Proctor2005 - Actions of chaperones and theirrole in ageing 
+
+
+This model is described in the article:
+
+
+[Modelling the actions of chaperones and their role in ageing.](http://identifiers.org/pubmed/15610770 "Access to this publication") 
+
+
+Proctor CJ, Soti C, Boys RJ, Gillespie CS, Shanley DP, Wilkinson DJ, Kirkwood TB.
+
+
+Mech. Ageing Dev. 2005 Jan; 126(1): 119-131 
+Abstract:
+
+
+Many molecular chaperones are also known as heat shock proteins because they are
+synthesised in increased amounts after brief exposure of cells to elevated temperatures.
+They have many cellular functions and are involved in the folding of nascent
+proteins, the re-folding of denatured proteins, the prevention of protein aggregation,
+and assisting the targeting of proteins for degradation by the proteasome and
+lysosomes. They also have a role in apoptosis and are involved in modulating
+signals for immune and inflammatory responses. Stress-induced transcription of
+heat shock proteins requires the activation of heat shock factor (HSF). Under
+normal conditions, HSF is bound to heat shock proteins resulting in feedback
+repression. During stress, cellular proteins undergo denaturation and sequester
+heat shock proteins bound to HSF, which is then able to become transcriptionally
+active. The induction of heat shock proteins is impaired with age and there 
+is also a decline in chaperone function. Aberrant/damaged proteins accumulate
+with age and are implicated in several important age-related conditions (e.g.
+Alzheimer&apos;s disease, Parkinson&apos;s disease, and cataract). Therefore,
+the balance between damaged proteins and available free chaperones may be greatly
+disturbed during ageing. We have developed a mathematical model to describe the
+heat shock system. The aim of the model is two-fold: to explore the heat shock
+system and its implications in ageing; and to demonstrate how to build a model
+of a biological system using our simulation system (biology of ageing e-science
+integration and simulation (BASIS)).
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000091](http://identifiers.org/biomodels.db/BIOMD0000000091).
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication").
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+end
+
+Proctor2005_Hsp90 is "Proctor2005 - Actions of chaperones and their role in ageing"

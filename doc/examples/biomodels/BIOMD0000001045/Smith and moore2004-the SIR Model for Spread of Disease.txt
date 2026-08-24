@@ -1,0 +1,96 @@
+// Created by libAntimony v3.2.0
+model *Smith_Moore2004___The_SIR_Model_for_Spread_of_Disease()
+
+  // Compartments and Species:
+  compartment New_York_1968_69;
+  species Infected in New_York_1968_69, Recovered in New_York_1968_69, Susceptible in New_York_1968_69;
+
+  // Reactions:
+  Susceptible_to_Infected: Susceptible => Infected; New_York_1968_69*(beta*Infected*Susceptible);
+  Infected_to_Recovered: Infected => Recovered; New_York_1968_69*k*Infected;
+
+  // Species initializations:
+  Infected = 1.27e-06;
+  Recovered = 0;
+  Susceptible = 0.999999999999998;
+
+  // Compartment initializations:
+  New_York_1968_69 = 1;
+
+  // Variable initializations:
+  beta = 0.5;
+  k = 0.33;
+
+  // Other declarations:
+  const New_York_1968_69, beta, k;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1 / dimensionless^-0;
+  unit time_unit = 86400 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  New_York_1968_69 is "New York_1968_69";
+
+  // CV terms:
+  New_York_1968_69 isVersionOf "http://identifiers.org/ncit/C25632"
+  New_York_1968_69 isVersionOf "http://identifiers.org/ncit/C43468"
+  Infected isVersionOf "http://identifiers.org/ncit/C77737"
+  Infected isVersionOf "http://identifiers.org/ido/ido:0000511"
+  Recovered isVersionOf "http://identifiers.org/ncit/C77737"
+  Recovered isVersionOf "http://identifiers.org/ido/ido:0000592"
+  Susceptible isVersionOf "http://identifiers.org/ncit/C77737"
+  Susceptible isVersionOf "http://identifiers.org/ido/ido:0000514"
+  Susceptible_to_Infected isVersionOf "http://identifiers.org/ncit/C128320"
+  Susceptible_to_Infected isVersionOf "http://identifiers.org/ncit/C77737"
+  Infected_to_Recovered isVersionOf "http://identifiers.org/ncit/C25746"
+  Infected_to_Recovered isVersionOf "http://identifiers.org/ncit/C77737"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL2201270001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000001045"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000028"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000046"
+  model hasVersion "http://identifiers.org/doid/DOID:8469"
+  model hasTaxon "http://identifiers.org/taxonomy/506350"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model isDescribedBy "https://www.maa.org/press/periodicals/loci/joma/the-sir-model-for-spread-of-disease-the-differential-equation-model"
+  model hasProperty "http://identifiers.org/ncit/C3439",
+                    "http://identifiers.org/mamo/MAMO_0000028"
+  model created "2021-12-08T12:13:33Z"
+  model modified "2021-12-08T12:13:33Z"
+  model creator1.givenName "Lokesh"
+  model creator1.familyName "V"
+  model creator1.organization "IIT Bombay"
+  model creator1.email "kanagasundaramlokesh@gmail.com"
+  model creator2.givenName "Gayathri"
+  model creator2.familyName "Bhat"
+  model creator2.organization "Manipal Institute of Technology"
+  model creator2.email "gaayathrisbhat@gmail.com"
+  model creator3.givenName "Piyush"
+  model creator3.familyName "Pachauri"
+  model creator3.organization "ICGEB"
+  model creator3.email "contactpiyush9@gmail.com"
+  model creator4.givenName "Samyuktha"
+  model creator4.familyName "Srinivasan"
+  model creator4.organization "IIT Madras"
+  model creator4.email "samja9603@gmail.com"
+  model creator5.givenName "Shikha"
+  model creator5.familyName "Thakur"
+  model creator5.organization "CSIR-NCL Pune"
+  model creator5.email "creativeshikha2@gmail.com"
+  model creator6.givenName "Ayushi"
+  model creator6.familyName "Wadhera"
+  model creator6.organization "Manav Rachna International Institute of Research and Studies"
+  model creator6.email "ayushi.wadhera@gmail.com"
+
+  // Notes:
+  model notes ```
+This is the SIR model for disease spread of the Hong Kong flu in New York City in
+the late 1960&apos;s.
+```
+end
+
+Smith_Moore2004___The_SIR_Model_for_Spread_of_Disease is "Smith&Moore2004 - The SIR model for the spread of HongKong Flu"

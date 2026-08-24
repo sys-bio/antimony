@@ -1,0 +1,130 @@
+// Created by libAntimony v3.2.0
+model *hofmeyer()
+
+  // Compartments and Species:
+  compartment cell;
+  species A in cell, B in cell, C in cell, D in cell, E in cell, F in cell;
+  species $X in cell, $Y in cell, $Z in cell;
+
+  // Reactions:
+  R1: $X -> A; cell*((10*X - A)/(1 + X + A + B^2));
+  R2: A -> B; cell*((2*A - B)/(1 + A + B));
+  R3: B -> C; cell*((B - C)/(1 + B + C + D^2));
+  R4: C -> D; cell*((5*C - D)/(1 + C + D));
+  R5: D -> $Y; cell*((10*D - Y)/(1 + D + Y));
+  R6: B -> E; cell*((B - E)/(1 + B + E + F^2));
+  R7: E -> F; cell*((5*E - F)/(1 + E + F));
+  R8: F -> $Z; cell*((10*F - Z)/(1 + F + Z));
+
+  // Interactions:
+  _I0: B -| R1; ;
+  _I1: D -| R3; ;
+  _I2: F -| R6; ;
+
+  // Species initializations:
+  A = 0;
+  B = 0;
+  C = 0;
+  D = 0;
+  E = 0;
+  F = 0;
+  X = 10;
+  Y = 2;
+  Z = 1;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Other declarations:
+  const cell;
+
+  // Unit definitions:
+  unit substance = dimensionless;
+  unit time_unit = dimensionless;
+
+  // SBO terms:
+  cell.sboTerm = 290
+  A.sboTerm = 247
+  B.sboTerm = 247
+  C.sboTerm = 247
+  D.sboTerm = 247
+  E.sboTerm = 247
+  F.sboTerm = 247
+  X.sboTerm = 247
+  Y.sboTerm = 247
+  Z.sboTerm = 247
+  R1.sboTerm = 176
+  R1.kineticLaw.sboTerm = 430
+  R2.sboTerm = 176
+  R2.kineticLaw.sboTerm = 326
+  R3.sboTerm = 176
+  R3.kineticLaw.sboTerm = 430
+  R4.sboTerm = 176
+  R4.kineticLaw.sboTerm = 326
+  R5.sboTerm = 176
+  R5.kineticLaw.sboTerm = 326
+  R6.sboTerm = 176
+  R6.kineticLaw.sboTerm = 430
+  R7.sboTerm = 176
+  R7.kineticLaw.sboTerm = 326
+  R8.sboTerm = 176
+  R8.kineticLaw.sboTerm = 326
+
+  // CV terms:
+  cell identity "http://identifiers.org/go/GO:0005623"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1010190003"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000284"
+  model publication "http://identifiers.org/pubmed/3450367"
+  model isVersionOf "http://identifiers.org/go/GO:0008652"
+  model hasTaxon "http://identifiers.org/taxonomy/2"
+  model created "2010-10-10T10:10:10Z"
+  model modified "2012-07-05T14:47:32Z"
+  model creator1.givenName "Lukas"
+  model creator1.familyName "Endler"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "lukas@ebi.ac.uk"
+  model creator2.givenName "Kieran"
+  model creator2.familyName "Smallbone"
+  model creator2.organization "University of Manchester"
+  model creator2.email "kieran.smallbone@manchester.ac.uk"
+
+  // Notes:
+  model notes ```
+This model is the reaction sequence SEQFB, a model pathway of a branched system with
+sequential feedback interactions found in bacterial amino acid synthesis. Its steady
+state is presented in Fig 4.
+
+The model is described in: 
+**METAMOD: software for steady-state modelling and control analysis of metabolic
+pathways on the BBC microcomputer.** 
+JHS Hofmeyr and KJ van der Merwe, *Comput Appl Biosci* 1986
+2:243-9; PubmedID: [3450367](http://www.ncbi.nlm.nih.gov/pubmed/3450367) 
+Abstract: 
+METAMOD, a BBC microcomputer-based software package for steady-state modelling
+and control analysis of model metabolic pathways, is described, The package consists
+of two programs. METADEF allows the user to define the pathway in terms of reactions,
+rate equations and initial concentrations of metabolites. METACAL uses one of two
+algorithms to calculate the steady-state concentrations and fluxes. One algorithm
+uses the current ratio of production and consumption rates of variable metabolites
+to adjust iteratively their concentrations in such a way that they converge towards
+the steady state. The other algorithm solves the roots of the system equations by
+means of a quasi-Newtonian procedure. Control analysis allows the calculation of
+elasticity, control and response coefficients, by means of finite difference approximation.
+METAMOD is interactive and easy to use, and suitable for teaching and research purposes.
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Creative Commons CC0") for more information. 
+
+In summary, you are entitled to use this encoded model in absolutely any manner you
+deem suitable, verbatim, or with modification, alone or embedded it in a larger context,
+redistribute it, commercially or not, in a restricted way or not.
+
+
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novere N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+end
+
+hofmeyer is "Hofmeyer1986_SeqFb_Proc_AA_Synthesis"

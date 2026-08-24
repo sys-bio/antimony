@@ -1,0 +1,254 @@
+// Created by libAntimony v3.2.0
+model *Wodarz2007_CTL_inflation_Model_C()
+
+  // Compartments and Species:
+  compartment COMpartment;
+  species x in COMpartment, y_0 in COMpartment, y_1 in COMpartment, L in COMpartment;
+  species v in COMpartment, z_a in COMpartment, m_0 in COMpartment, m_1 in COMpartment;
+  species m_2 in COMpartment, m_3 in COMpartment, m_4 in COMpartment, m_5 in COMpartment;
+  species m_6 in COMpartment, m_7 in COMpartment, m_8 in COMpartment, z_i in COMpartment;
+
+  // Assignment Rules:
+  R0 := (lambda*eta/(d*a1*(a0 + eta)))*(beta + gamma_*phi/(phi + d));
+
+  // Reactions:
+  Host_cell_proliferation:  => x; COMpartment*lambda;
+  Host_cell_death: x => ; COMpartment*d*x;
+  Infection_1: x => y_0; COMpartment*(beta*v*x);
+  Infection_2: x => L; COMpartment*(gamma_*v*x);
+  Infected_cell_death_1: y_0 => ; COMpartment*a0*y_0;
+  Infected_cell_infection_progression_1: y_0 => y_1; COMpartment*eta*y_0;
+  Infected_cell_infection_progression_2: L => y_0; COMpartment*phi*L;
+  CTL_induced_infected_cell_death_1: y_0 => ; COMpartment*(pa*z_a*y_0);
+  Infected_cell_death_2: y_1 => ; COMpartment*a1*y_1;
+  CTL_induced_infected_cell_death_2: y_1 => ; COMpartment*(pa*z_a*y_1);
+  Infected_cell_death_3: L => ; COMpartment*d*L;
+  Virus_particle_production:  => v; COMpartment*(k*y_1);
+  Viral_particle_degradation: v => ; COMpartment*u*v;
+  Precursor_T_cell_differentiation_2:  => z_a; COMpartment*(alpha*m_8);
+  Infection_induced_CTL_proliferation_stimulation:  => z_a; COMpartment*(ca*(y_0 + y_1)*z_a);
+  CTL_cell_death: z_a => ; COMpartment*ba*z_a;
+  Naive_CTL_division_1: m_0 => 2 m_1; COMpartment*r*m_0;
+  Naive_CTL_division_2: m_1 => 2 m_2; COMpartment*r*m_1;
+  Naive_CTL_division_3: m_2 => 2 m_3; COMpartment*r*m_2;
+  Naive_CTL_division_4: m_3 => 2 m_4; COMpartment*r*m_3;
+  Naive_CTL_division_5: m_4 => 2 m_5; COMpartment*r*m_4;
+  Naive_CTL_division_6: m_5 => 2 m_6; COMpartment*r*m_5;
+  Naive_CTL_division_7: m_6 => 2 m_7; COMpartment*r*m_6;
+  Naive_CTL_division_8: m_7 => 2 m_8; COMpartment*r*m_7;
+  Precursor_T_cell_differentiation_1: m_8 => ; COMpartment*r*m_8;
+  NK_cell_production:  => z_i; COMpartment*xi;
+  NK_infection_induced_production:  => z_i; COMpartment*(ci*(y_0 + y_1)*z_i);
+  NK_cell_death: z_i => ; COMpartment*bi*z_i;
+  NK_induced_infected_cell_death_1: y_0 => ; COMpartment*(p_i*z_i*y_0);
+  NK_induced_infected_cell_death_2: y_1 => ; COMpartment*(p_i*z_i*y_1);
+
+  // Species initializations:
+  x = 1;
+  y_0 = 0;
+  y_1 = 0;
+  L = 0;
+  v = 1;
+  z_a = 1;
+  m_0 = 0;
+  m_1 = 0;
+  m_2 = 0;
+  m_3 = 0;
+  m_4 = 0;
+  m_5 = 0;
+  m_6 = 0;
+  m_7 = 0;
+  m_8 = 0;
+  z_i = 0.1;
+
+  // Compartment initializations:
+  COMpartment = 1;
+
+  // Variable initializations:
+  lambda = 10;
+  eta = 0.01;
+  d = 0.1;
+  a1 = 0.2;
+  a0 = 0.1;
+  beta = 0.1;
+  gamma_ = 0.5;
+  phi = 0.1;
+  k = 1;
+  u = 1;
+  alpha = 0.2;
+  pa = 1e-06;
+  ca = 15.5;
+  r = 1;
+  ba = 0.1;
+  p_i = 1;
+  ci = 12;
+  bi = 0.1;
+  xi = 0.01;
+
+  // Other declarations:
+  var R0;
+  const COMpartment, lambda, eta, d, a1, a0, beta, gamma_, phi, k, u, alpha;
+  const pa, ca, r, ba, p_i, ci, bi, xi;
+
+  // Unit definitions:
+  unit time_unit = 3600 second;
+
+  // Display Names:
+  time_unit is "time";
+  COMpartment is "Mouse";
+  gamma_ is "gamma";
+  Host_cell_proliferation is "Host cell proliferation";
+  Host_cell_death is "Host cell death";
+  Infection_1 is "Infection 1";
+  Infection_2 is "Infection 2";
+  Infected_cell_death_1 is "Infected cell death 1";
+  Infected_cell_infection_progression_1 is "Infected cell infection progression 1";
+  Infected_cell_infection_progression_2 is "Infected cell infection progression 2";
+  CTL_induced_infected_cell_death_1 is "CTL-induced infected cell death 1";
+  Infected_cell_death_2 is "Infected cell death 2";
+  CTL_induced_infected_cell_death_2 is "CTL-induced infected cell death 2";
+  Infected_cell_death_3 is "Infected cell death 3";
+  Virus_particle_production is "Virus particle production";
+  Viral_particle_degradation is "Viral particle degradation";
+  Precursor_T_cell_differentiation_2 is "Precursor T-cell differentiation 2";
+  Infection_induced_CTL_proliferation_stimulation is "Infection-induced CTL proliferation stimulation";
+  CTL_cell_death is "CTL cell death";
+  Naive_CTL_division_1 is "Naive CTL division 1";
+  Naive_CTL_division_2 is "Naive CTL division 2";
+  Naive_CTL_division_3 is "Naive CTL division 3";
+  Naive_CTL_division_4 is "Naive CTL division 4";
+  Naive_CTL_division_5 is "Naive CTL division 5";
+  Naive_CTL_division_6 is "Naive CTL division 6";
+  Naive_CTL_division_7 is "Naive CTL division 7";
+  Naive_CTL_division_8 is "Naive CTL division 8";
+  Precursor_T_cell_differentiation_1 is "Precursor T-cell differentiation 1";
+  NK_cell_production is "NK cell production";
+  NK_infection_induced_production is "NK infection-induced production";
+  NK_cell_death is "NK cell death";
+  NK_induced_infected_cell_death_1 is "NK-induced infected cell death 1";
+  NK_induced_infected_cell_death_2 is "NK-induced infected cell death 2";
+
+  // CV terms:
+  x isVersionOf "http://identifiers.org/cl/CL:0000000"
+  x hasProperty "http://identifiers.org/ncit/C16505"
+  x isVersionOf "http://identifiers.org/go/GO:0005623"
+  y_0 hasPart "http://identifiers.org/efo/0001062"
+  y_0 isVersionOf "http://identifiers.org/bto/BTO:0000152"
+  y_1 hasPart "http://identifiers.org/efo/0001062"
+  y_1 isVersionOf "http://identifiers.org/bto/BTO:0000152"
+  L hasPart "http://identifiers.org/efo/0001062"
+  L isVersionOf "http://identifiers.org/bto/BTO:0000152"
+  v isVersionOf "http://identifiers.org/efo/0001062"
+  v isVersionOf "http://identifiers.org/go/GO:0019012"
+  z_a isVersionOf "http://identifiers.org/bto/BTO:0000289"
+  z_a isVersionOf "http://identifiers.org/cl/CL:0000910"
+  m_0 isVersionOf "http://identifiers.org/cl/CL:0000898"
+  m_1 isVersionOf "http://identifiers.org/cl/CL:0000898"
+  m_2 isVersionOf "http://identifiers.org/cl/CL:0000898"
+  m_3 isVersionOf "http://identifiers.org/cl/CL:0000898"
+  m_4 isVersionOf "http://identifiers.org/cl/CL:0000898"
+  m_5 isVersionOf "http://identifiers.org/cl/CL:0000898"
+  m_6 isVersionOf "http://identifiers.org/cl/CL:0000898"
+  m_7 isVersionOf "http://identifiers.org/cl/CL:0000898"
+  m_8 isVersionOf "http://identifiers.org/cl/CL:0000898"
+  z_i isVersionOf "http://identifiers.org/cl/CL:0000623"
+  z_i isVersionOf "http://identifiers.org/bto/BTO:0000914"
+  Host_cell_proliferation isVersionOf "http://identifiers.org/go/GO:0008283"
+  Host_cell_death isVersionOf "http://identifiers.org/go/GO:0008219"
+  Infection_1 isVersionOf "urn:miriam:obi:OBI%3A1110021"
+  Infection_2 isVersionOf "urn:miriam:obi:OBI%3A1110021"
+  Infected_cell_death_1 isVersionOf "http://identifiers.org/go/GO:0008219"
+  CTL_induced_infected_cell_death_1 isVersionOf "http://identifiers.org/go/GO:0012501"
+  Infected_cell_death_2 isVersionOf "http://identifiers.org/go/GO:0008219"
+  CTL_induced_infected_cell_death_2 isVersionOf "http://identifiers.org/go/GO:0012501"
+  Infected_cell_death_3 isVersionOf "http://identifiers.org/go/GO:0008219"
+  Virus_particle_production isVersionOf "urn:miriam:sbo:SBO%3A0000393"
+  Viral_particle_degradation isVersionOf "urn:miriam:sbo:SBO%3A0000179"
+  Precursor_T_cell_differentiation_2 isVersionOf "http://identifiers.org/go/GO:0030217"
+  Infection_induced_CTL_proliferation_stimulation isVersionOf "http://identifiers.org/ncit/C20863"
+  CTL_cell_death isVersionOf "http://identifiers.org/go/GO:0008219"
+  Naive_CTL_division_1 isVersionOf "http://identifiers.org/go/GO:0051301"
+  Naive_CTL_division_2 isVersionOf "http://identifiers.org/go/GO:0051301"
+  Naive_CTL_division_3 isVersionOf "http://identifiers.org/go/GO:0051301"
+  Naive_CTL_division_4 isVersionOf "http://identifiers.org/go/GO:0051301"
+  Naive_CTL_division_5 isVersionOf "http://identifiers.org/go/GO:0051301"
+  Naive_CTL_division_6 isVersionOf "http://identifiers.org/go/GO:0051301"
+  Naive_CTL_division_7 isVersionOf "http://identifiers.org/go/GO:0051301"
+  Naive_CTL_division_8 isVersionOf "http://identifiers.org/go/GO:0051301"
+  Precursor_T_cell_differentiation_1 isVersionOf "http://identifiers.org/go/GO:0030217"
+  NK_cell_production isVersionOf "http://identifiers.org/go/GO:0001866"
+  NK_cell_death isVersionOf "http://identifiers.org/go/GO:0008219"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1006230097"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000688"
+  model publication "http://identifiers.org/pubmed/17251133"
+  model origin "http://identifiers.org/doi/10.1093/intimm/dxh303"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1006230097"
+  model hasPart "http://identifiers.org/bto/BTO:0000914"
+  model isVersionOf "http://identifiers.org/go/GO:0009615"
+  model hasTaxon "http://identifiers.org/taxonomy/10088"
+  model hasPart "http://identifiers.org/bto/BTO:0000289"
+  model isDescribedBy "http://identifiers.org/pubmed/17251133"
+  model hasPart "http://identifiers.org/efo/0001062"
+  model created "2010-06-25T13:17:04Z"
+  model modified "2018-03-12T10:38:08Z"
+  model creator1.givenName "Catherine"
+  model creator1.familyName "Lloyd"
+  model creator1.organization "University of Auckland"
+  model creator1.email "c.lloyd@auckland.ac.nz"
+  model creator2.givenName "Matthew Grant"
+  model creator2.familyName "Roberts"
+  model creator2.organization "EMBL-EBI"
+  model creator2.email "mroberts@embl.ac.uk"
+
+  // Notes:
+  model notes ```
+This a model from the article: 
+**Dynamics of killer T cell inflation in viral infections.** 
+Wodarz D, Sierro S, Klenerman P. *J R Soc Interface* 2007
+Jun 22;4(14):533-43 [17251133](http://www.ncbi.nlm.nih.gov/pubmed/17251133) , 
+**Abstract:** 
+Upon acute viral infection, a typical cytotoxic T lymphocyte (CTL) response
+ischaracterized by a phase of expansion and contraction after which it settles ata
+relatively stable memory level. Recently, experimental data from mice infectedwith
+murine cytomegalovirus (MCMV) showed different and unusual dynamics. Afteracute infection
+had resolved, some antigen specific CTL started to expand overtime despite the fact
+that no replicative virus was detectable. This phenomenonhas been termed as "CTL
+memory inflation". In order to examine the dynamics ofthis system further, we
+developed a mathematical model analysing the impact ofinnate and adaptive immune
+responses. According to this model, a potentiallyimportant contributor to CTL inflation
+is competition between the specific CTLresponse and an innate natural killer (NK)
+cell response. Inflation occurs mostreadily if the NK cell response is more efficient
+than the CTL at reducing virusload during acute infection, but thereafter maintains
+a chronic virus load whichis sufficient to induce CTL proliferation. The model further
+suggests thatweaker NK cell mediated protection can correlate with more pronounced
+CTLinflation dynamics over time. We present experimental data from mice infectedwith
+MCMV which are consistent with the theoretical predictions. This modelprovides valuable
+information and may help to explain the inflation of CMVspecific CD8+T cells seen
+in humans as they age. 
+
+This model was taken from the [CellML repository](http://www.cellml.org/models) and automatically converted to SBML. 
+The original model was: [ **Wodarz D, Sierro S, Klenerman P.
+(2007) - version=1.0** ](http://models.cellml.org/exposure/61368ae57b0bdf4cfbcc0701fd3a35c2) 
+The original CellML model was created by: 
+**Catherine Lloyd** 
+c.lloyd@auckland.ac.nz 
+The University of Auckland 
+
+
+This model originates from BioModels Database: A Database of Annotated Published
+Models (http://www.ebi.ac.uk/biomodels/). It is copyright (c) 2005-2011 The BioModels.net
+Team. 
+To the extent possible under law, all copyright and related or neighbouring
+rights to this encoded model have been dedicated to the public domain worldwide.
+Please refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Creative Commons CC0") for more information. 
+
+In summary, you are entitled to use this encoded model in absolutely any manner you
+deem suitable, verbatim, or with modification, alone or embedded it in a larger context,
+redistribute it, commercially or not, in a restricted way or not.. 
+
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+end
+
+Wodarz2007_CTL_inflation_Model_C is "Wodarz2007 - Cytomegalovirus infection model with cytotoxic T lymphocyte and natural killer cell response"

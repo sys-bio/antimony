@@ -1,0 +1,129 @@
+// Created by libAntimony v3.2.0
+model *Cloutier2012()
+
+  // Compartments and Species:
+  compartment Neuron;
+  species ROS in Neuron, alpha_syn in Neuron;
+
+  // Assignment Rules:
+  S1 := piecewise(2.6, (time > 10) && (time < 150), 0);
+
+  // Reactions:
+  ROS_1:  => ROS; Neuron*(k1*(1 + S1 + dalphasyn*((alpha_syn/kalphasyn)^4/(1 + (alpha_syn/kalphasyn)^4))));
+  ROS_2: ROS => ; Neuron*(k2*ROS*S2_4);
+  aSyn_1:  => alpha_syn; Neuron*(k3*ROS*S2_4);
+  aSyn_2: alpha_syn => ; Neuron*(k4*alpha_syn*S2_4);
+
+  // Species initializations:
+  ROS = 1;
+  alpha_syn = 1;
+
+  // Compartment initializations:
+  Neuron = 1;
+
+  // Variable initializations:
+  k1 = 17280;
+  k2 = 17280;
+  k3 = 0.168;
+  k4 = 0.168;
+  dalphasyn = 15;
+  kalphasyn = 8.5;
+  S2_4 = 1;
+
+  // Other declarations:
+  var S1;
+  const Neuron, k1, k2, k3, k4, dalphasyn, kalphasyn, S2_4;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-6 mole;
+
+  // Display Names:
+  time_unit is "time";
+  alpha_syn is "alpha-syn";
+  S2_4 is "S2-4";
+  ROS_1 is "ROS 1";
+  ROS_2 is "ROS 2";
+  aSyn_1 is "aSyn 1";
+  aSyn_2 is "aSyn 2";
+
+  // CV terms:
+  Neuron identity "http://identifiers.org/bto/BTO:0000938"
+  ROS identity "http://identifiers.org/chebi/CHEBI:26523"
+  alpha_syn isVersionOf "http://identifiers.org/uniprot/P37840"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1410300000"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000558"
+  model publication "http://identifiers.org/pubmed/22757587"
+  model origin "http://identifiers.org/pubmed/22757585"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model isVersionOf "http://identifiers.org/go/GO:0000302",
+                    "http://identifiers.org/go/GO:0070841"
+  model hasVersion "http://identifiers.org/doid/DOID:14330"
+  model created "2014-11-26T11:29:00Z"
+  model modified "2015-04-17T10:08:05Z"
+  model creator1.givenName "Audald"
+  model creator1.familyName "Lloret i Villas"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "lloret@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Cloutier2012 - Feedback motif for Parkinson&apos;sdisease 
+
+
+This model is described in the article:
+
+
+[Feedback motif for the pathogenesis of Parkinson&apos;s disease.](http://identifiers.org/pubmed/22757587 "Access to this publication") 
+
+
+Cloutier M, Middleton R, Wellstead P. 
+
+IET Syst Biol 2012 Jun; 6(3): 86-93 
+Abstract:
+
+
+Previous article on the integrative modelling of Parkinson&apos;s disease (PD)
+described a mathematical model with properties suggesting that PD pathogenesis
+is associated with a feedback-induced biochemical bistability. In this article,
+the authors show that the dynamics of the mathematical model can be extracted
+and distilled into an equivalent two-state feedback motif whose stability properties
+are controlled by multi-factorial combinations of risk factors and genetic 
+mutations associated with PD. Based on this finding, the authors propose a principle
+for PD pathogenesis in the form of the switch-like transition of a bistable feedback
+process from &apos;healthy&apos; homeostatic levels of reactive oxygen species
+and the protein ?-synuclein, to an alternative &apos;disease&apos; state in which
+concentrations of both molecules are stable at the damagingly high-levels associated
+with PD. The bistability is analysed using the rate curves and steady-state response
+characteristics of the feedback motif. In particular, the authors show how a 
+bifurcation in the feedback motif marks the pathogenic moment at which the &apos;healthy&apos;
+state is lost and the &apos;disease&apos; state is initiated. Further analysis
+shows how known risks (such as: age, toxins and genetic predisposition) modify
+the stability characteristics of the feedback motif in a way that is compatible
+with known features of PD, and which explain properties such as: multi-factorial
+causality, variability in susceptibility and severity, multi-timescale progression
+and the special cases of familial Parkinson&apos;s and Parkinsonian symptoms
+induced purely by toxic stress.
+
+
+Stress of 2.6 obtained by optimization(parameter S1) was imposed between days 10
+and 150 in order toreproduce the Figure. 
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000558](http://identifiers.org/biomodels.db/BIOMD0000000558).
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication").
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+  Neuron notes "Type cell: Neuron"
+  ROS notes "Reactive oxygen species"
+  alpha_syn notes "Misfolded alpha-synuclein"
+end
+
+Cloutier2012 is "Cloutier2012 - Feedback motif for Parkinson's disease"

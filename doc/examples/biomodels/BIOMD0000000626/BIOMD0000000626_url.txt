@@ -1,0 +1,189 @@
+// Created by libAntimony v3.2.0
+model *Ray2013___Meiotic_initiation_in_S__cerevisiae()
+
+  // Compartments and Species:
+  compartment V;
+  species Rim11 in V, pUme6 in V, pSok2 in V, Ime1 in V, pIme1 in V, Ime2 in V;
+
+  // Reactions:
+  rim11_1:  -> Rim11; V*(rim11_1_urim_11*(1 - Rim11) - rim11_1_prim_11*Rim11);
+  pume6_1:  -> pUme6; V*((1 - pUme6)*pume6_1_pume_6*Rim11 - pume6_1_uume_6*pUme6);
+  sok2_1:  -> pSok2; V*((sok2_1_csok_2/(sok2_1_csok_2 + Ime1))*(1 - pSok2)*sok2_1_psok_2 - sok2_1_usok_2*pSok2);
+  ime1_1:  => Ime1; V*((ime1_1_cime_1/(ime1_1_cime_1 + pSok2))*ime1_1_sime_1 - (ime1_1_pime_1*Ime1*Rim11 + ime1_1_dime_1*Ime1 + ime1_1_dprimeime_1*Ime2*(Ime1/(ime1_1_c_1 + Ime1))));
+  pime1_1:  => pIme1; V*(pime1_1_pime_1*Ime1*Rim11 - pime1_1_dpime_1*pIme1);
+  ime2_1:  -> Ime2; V*(ime2_1_sime_2*pUme6*pIme1 + ime2_1_sprimeime_2*Ime2^5/(ime2_1_c_2^5 + Ime2^5) - ime2_1_dime_2*Ime2/(ime2_1_c_3 + Ime2));
+
+  // Species initializations:
+  Rim11 = 0;
+  pUme6 = 0;
+  pSok2 = 0.999999999999971;
+  Ime1 = 0;
+  pIme1 = 0;
+  Ime2 = 0;
+
+  // Compartment initializations:
+  V = 1;
+
+  // Variable initializations:
+  rim11_1_prim_11 = 0.01;
+  rim11_1_urim_11 = 0.1;
+  pume6_1_pume_6 = 0.3;
+  pume6_1_uume_6 = 0.01;
+  sok2_1_csok_2 = 0.05;
+  sok2_1_psok_2 = 0.7;
+  sok2_1_usok_2 = 1;
+  ime1_1_c_1 = 0.01;
+  ime1_1_cime_1 = 0.01;
+  ime1_1_dime_1 = 1;
+  ime1_1_dprimeime_1 = 1;
+  ime1_1_pime_1 = 2;
+  ime1_1_sime_1 = 10;
+  pime1_1_dpime_1 = 1;
+  pime1_1_pime_1 = 2;
+  ime2_1_c_2 = 1.4;
+  ime2_1_c_3 = 2;
+  ime2_1_dime_2 = 8;
+  ime2_1_sime_2 = 10;
+  ime2_1_sprimeime_2 = 3;
+
+  // Other declarations:
+  const V;
+
+  // Unit definitions:
+  unit time_unit = 3600 second;
+
+  // Display Names:
+  time_unit is "time";
+  V is "Cell";
+  rim11_1 is "Rim11 Dephosphorylation";
+  pume6_1 is "Ume6 Phosphorylation";
+  sok2_1 is "Production of Phosphorylated Sok2";
+  ime1_1 is "Ime1 Protein Production";
+  pime1_1 is "Phosphorylation of Ime1";
+  ime2_1 is "Ime2 Protein Production";
+
+  // SBO terms:
+  V.sboTerm = 290
+  rim11_1.sboTerm = 330
+  pume6_1.sboTerm = 216
+  sok2_1.sboTerm = 216
+  ime1_1.sboTerm = 393
+  pime1_1.sboTerm = 216
+  ime2_1.sboTerm = 393
+
+  // CV terms:
+  V identity "http://identifiers.org/fma/FMA:68646"
+  V isVersionOf "http://identifiers.org/go/GO:0005623"
+  Rim11 isVersionOf "http://identifiers.org/uniprot/P38615"
+  pUme6 isVersionOf "http://identifiers.org/uniprot/P39001"
+  pSok2 isVersionOf "http://identifiers.org/uniprot/P53438"
+  Ime1 isVersionOf "http://identifiers.org/uniprot/P21190"
+  pIme1 isVersionOf "http://identifiers.org/uniprot/P21190"
+  Ime2 isVersionOf "http://identifiers.org/uniprot/P32581"
+  rim11_1 identity "http://identifiers.org/go/GO:0006470"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1303060000"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000626"
+  model publication "http://identifiers.org/pubmed/23631506"
+  model isVersionOf "http://identifiers.org/go/GO:0040020",
+                    "http://identifiers.org/go/GO:0051321"
+  model hasTaxon "http://identifiers.org/taxonomy/4932"
+  model isDescribedBy "http://identifiers.org/eco/ECO:0000362"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2017-02-03T14:41:35Z"
+  model modified "2017-06-13T16:22:29Z"
+  model creator1.givenName "Varun"
+  model creator1.familyName "Kothamachu"
+  model creator1.organization "Babraham Institute"
+  model creator1.email "kothamav@babraham.ac.uk"
+  model creator2.givenName "Ray"
+  model creator2.familyName "Debjit"
+  model creator2.organization "Washington State University"
+  model creator2.email "debjit.ray@email.wsu.edu"
+  model creator3.givenName "Hamza Umut"
+  model creator3.familyName "Karakurt"
+  model creator3.organization "Gebze Technical University"
+  model creator3.email "hkarakurt@gtu.edu.tr"
+
+  // Notes:
+  model notes ```
+Ray2013 - Meiotic initiation in S. cerevisiae 
+
+
+A mathematical representation of early meiotic events, particularly feedback mechanisms
+at the system level and phosphorylation of signalling molecules for regulating protein
+activities, is described here
+
+
+This model is described in the article:
+
+
+[Dynamic modeling of yeast meiotic initiation.](http://identifiers.org/pubmed/23631506 "Access to this publication") 
+
+
+Ray D, Su Y, Ye P. 
+
+BMC Syst Biol. 2013 May 1;7:37 
+Abstract:
+
+
+**BACKGROUND:** Meiosis is the sexual reproduction process
+common to eukaryotes. The diploid yeast Saccharomyces cerevisiae undergoes meiosis
+in sporulation medium to form four haploid spores. Initiation of the process is tightly
+controlled by intricate networks of positive and negative feedback loops. Intriguingly,
+expression of early meiotic proteins occurs within a narrow time window. Further,
+sporulation efficiency is strikingly different for yeast strains with distinct mutations
+or genetic backgrounds. To investigate signal transduction pathways that regulate
+transient protein expression and sporulation efficiency, we develop a mathematical
+model using ordinary differential equations. The model describes early meiotic events,
+particularly feedback mechanisms at the system level and phosphorylation of signaling
+molecules for regulating protein activities. 
+
+**RESULTS:** The mathematical model is capable of simulating
+the orderly and transient dynamics of meiotic proteins including Ime1, the master
+regulator of meiotic initiation, and Ime2, a kinase encoded by an early gene. The
+model is validated by quantitative sporulation phenotypes of single-gene knockouts.
+Thus, we can use the model to make novel predictions on the cooperation between proteins
+in the signaling pathway. Virtual perturbations on feedback loops suggest that both
+positive and negative feedback loops are required to terminate expression of early
+meiotic proteins. Bifurcation analyses on feedback loops indicate that multiple feedback
+loops are coordinated to modulate sporulation efficiency. In particular, positive
+auto-regulation of Ime2 produces a bistable system with a normal meiotic state and
+a more efficient meiotic state. 
+
+**CONCLUSIONS:** By systematically scanning through feedback
+loops in the mathematical model, we demonstrate that, in yeast, the decisions to
+terminate protein expression and to sporulate at different efficiencies stem from
+feedback signals toward the master regulator Ime1 and the early meiotic protein Ime2.
+We argue that the architecture of meiotic initiation pathway generates a robust mechanism
+that assures a rapid and complete transition into meiosis. This type of systems-level
+regulation is a commonly used mechanism controlling developmental programs in yeast
+and other organisms. Our mathematical model uncovers key regulations that can be
+manipulated to enhance sporulation efficiency, an important first step in the development
+of new strategies for producing gametes with high quality and quantity. 
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identifiedby: [BIOMD0000000626](http://identifiers.org/biomodels.db/BIOMD0000000626) . 
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resourcefor published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication") . 
+
+
+To the extent possible under law, all copyright and related orneighbouring rights
+to this encoded model have been dedicated to the publicdomain worldwide. Please refer
+to [CC0 Public DomainDedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+  Rim11 notes "Serine/threonine-protein kinase RIM11"
+  pUme6 notes "Phosphorylated Transcriptional regulatory protein UME6"
+  pSok2 notes "phosphorylated Protein SOK2"
+  Ime1 notes "Meiosis-inducing protein 1"
+  pIme1 notes "phosphorylated Meiosis-inducing protein 1"
+  Ime2 notes "Meiosis induction protein kinase IME2/SME1"
+  rim11_1 notes "Rim11 Dephosphorylation"
+  pume6_1 notes "Ume6 Phosphorylation"
+  sok2_1 notes "Production of phosphorylated Sok2"
+  ime1_1 notes "Ime1 Protein Production"
+  pime1_1 notes "Phosphorylation of Ime1"
+  ime2_1 notes "Ime2 Protein Production"
+end
+
+Ray2013___Meiotic_initiation_in_S__cerevisiae is "Ray2013 - Meiotic initiation in S. cerevisiae"

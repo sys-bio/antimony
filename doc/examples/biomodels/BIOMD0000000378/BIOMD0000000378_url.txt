@@ -1,0 +1,193 @@
+// Created by libAntimony v3.2.0
+model *Chay1997_CalciumConcentration()
+
+  // Compartments and Species:
+  compartment Compartment;
+  species V_membrane in Compartment, h in Compartment, d in Compartment, n in Compartment;
+  species Ca_i_cytosolic_calcium in Compartment, Ca_lum in Compartment;
+
+  // Assignment Rules:
+  i_K_dr := g_K_dr*n^4*(V_membrane - V_K);
+  i_K_Ca := (g_K_Ca*Ca_i_cytosolic_calcium^3/(K_Ca^3 + Ca_i_cytosolic_calcium^3))*(V_membrane - V_K);
+  i_K_ATP := g_K_ATP*(V_membrane - V_K);
+  i_fast := g_fast*m_infinity^3*h*(V_membrane - V_fast);
+  i_Ca := (P_Ca*d*f_infinity*2*F*V_membrane/(R*T))*(Ca_o - Ca_i_cytosolic_calcium*exp(2*F*V_membrane/(R*T)))/(1 - exp(2*F*V_membrane/(R*T)));
+  i_NS := (g_NS*K_NS^2/(K_NS^2 + Ca_lum^2))*((V_membrane - VNS)/(1 - exp(0.1*(VNS - V_membrane))) - 10);
+  i_NaL := g_NaL*(V_membrane - V_Na);
+  h_infinity := 1/(1 + exp((Vh - V_membrane)/Sh));
+  tau_h := 1/(lamda_h*(exp((Vh - V_membrane)/(2*Sh)) + exp((V_membrane - Vh)/(2*Sh))));
+  d_infinity := 1/(1 + exp((Vd - V_membrane)/Sd));
+  tau_d := 1/(lamda_d*(exp((Vd - V_membrane)/(2*Sd)) + exp((V_membrane - Vd)/(2*Sd))));
+  n_infinity := 1/(1 + exp((Vn - V_membrane)/Sn));
+  tau_n := 1/(lamda_n*(exp((Vn - V_membrane)/(2*Sn)) + exp((V_membrane - Vn)/(2*Sn))));
+  m_infinity := 1/(1 + exp((Vm - V_membrane)/Sm));
+  f_infinity := K_Ca/(K_Ca + Ca_i_calcium_current_f_gate);
+
+  // Rate Rules:
+  V_membrane' = -(i_K_dr + i_K_Ca + i_K_ATP + i_fast + i_Ca + i_NS + i_NaL)/Cm;
+  h' = (h_infinity - h)/tau_h;
+  d' = (d_infinity - d)/tau_d;
+  n' = (n_infinity - n)/tau_n;
+  Ca_i_cytosolic_calcium' = k_rel*(Ca_lum - Ca_i_cytosolic_calcium) - (omega*i_Ca + k_Ca*Ca_i_cytosolic_calcium + k_pump*Ca_i_cytosolic_calcium);
+  Ca_lum' = -k_rel*(Ca_lum - Ca_i_cytosolic_calcium) + k_pump*Ca_i_cytosolic_calcium;
+
+  // Species initializations:
+  V_membrane = -38.34146/Compartment;
+  h = 0.214723/Compartment;
+  d = 0.0031711238/Compartment;
+  n = 0.1836403/Compartment;
+  Ca_i_cytosolic_calcium = 0.6959466/Compartment;
+  Ca_lum = 102.686/Compartment;
+
+  // Compartment initializations:
+  Compartment = 1;
+
+  // Variable initializations:
+  Cm = 1;
+  k_rel = 0.2;
+  omega = 0.2;
+  k_Ca = 7;
+  k_pump = 30;
+  R = 8314;
+  T = 310;
+  F = 96485;
+  g_fast = 600;
+  V_fast = 80;
+  Vm = -25;
+  Sm = 9;
+  lamda_h = 12.5;
+  Vh = -48;
+  Sh = -7;
+  P_Ca = 2;
+  Ca_o = 2500;
+  K_Ca = 1;
+  lamda_d = 2.5;
+  Vd = -10;
+  Sd = 5;
+  Ca_i_calcium_current_f_gate = 1;
+  g_NS = 5;
+  K_NS = 50;
+  VNS = -20;
+  g_K_dr = 600;
+  V_K = -75;
+  lamda_n = 12.5;
+  Vn = -18;
+  Sn = 14;
+  g_K_Ca = 5;
+  g_K_ATP = 2;
+  g_NaL = 0.3;
+  V_Na = 80;
+
+  // Other declarations:
+  var i_K_dr, i_K_Ca, i_K_ATP, i_fast, i_Ca, i_NS, i_NaL, h_infinity, tau_h;
+  var d_infinity, tau_d, n_infinity, tau_n, m_infinity, f_infinity;
+  const Compartment, Cm, k_rel, omega, k_Ca, k_pump, R, T, F, g_fast, V_fast;
+  const Vm, Sm, lamda_h, Vh, Sh, P_Ca, Ca_o, K_Ca, lamda_d, Vd, Sd, Ca_i_calcium_current_f_gate;
+  const g_NS, K_NS, VNS, g_K_dr, V_K, lamda_n, Vn, Sn, g_K_Ca, g_K_ATP, g_NaL;
+  const V_Na;
+
+  // Display Names:
+  Ca_i_calcium_current_f_gate is "Ca_i";
+
+  // SBO terms:
+  V_membrane.sboTerm = 259
+  i_Ca.sboTerm = 9
+  i_NS.sboTerm = 9
+  Cm.sboTerm = 247
+  h_infinity.sboTerm = 9
+  tau_h.sboTerm = 9
+  k_rel.sboTerm = 9
+  omega.sboTerm = 9
+  k_Ca.sboTerm = 9
+  k_pump.sboTerm = 9
+  R.sboTerm = 567
+  T.sboTerm = 2
+  F.sboTerm = 568
+  g_fast.sboTerm = 9
+  m_infinity.sboTerm = 9
+  V_fast.sboTerm = 9
+  Vm.sboTerm = 9
+  Sm.sboTerm = 9
+  Vh.sboTerm = 9
+  Sh.sboTerm = 9
+  P_Ca.sboTerm = 9
+  Ca_o.sboTerm = 9
+  K_Ca.sboTerm = 9
+  lamda_d.sboTerm = 9
+  Vd.sboTerm = 9
+  Sd.sboTerm = 9
+  g_NS.sboTerm = 9
+  K_NS.sboTerm = 9
+  VNS.sboTerm = 9
+  g_K_dr.sboTerm = 9
+  V_K.sboTerm = 9
+  lamda_n.sboTerm = 9
+  Vn.sboTerm = 9
+  Sn.sboTerm = 9
+  g_NaL.sboTerm = 9
+  V_Na.sboTerm = 9
+
+  // CV terms:
+  V_membrane identity "http://identifiers.org/pato/PATO:0001462"
+  Cm model_source "http://identifiers.org/chebi/CHEBI:29108"
+  h hasProperty "http://identifiers.org/go/GO:0022836"
+  d hasProperty "http://identifiers.org/go/GO:0022836"
+  n isVersionOf "http://identifiers.org/go/GO:0005251"
+  Ca_i_cytosolic_calcium isVersionOf "http://identifiers.org/chebi/CHEBI:29108"
+  Ca_lum isVersionOf "http://identifiers.org/chebi/CHEBI:29108"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL0491199816"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000378"
+  model publication "http://identifiers.org/pubmed/9284334"
+  model isVersionOf "http://identifiers.org/go/GO:0061469",
+                    "http://identifiers.org/go/GO:0044342",
+                    "http://identifiers.org/go/GO:0019722"
+  model occursIn "http://identifiers.org/bto/BTO:0000783"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model created "2011-09-29T22:17:54Z"
+  model modified "2016-04-08T17:08:46Z"
+  model creator1.givenName "Ishan"
+  model creator1.familyName "Ajmera"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "ajmera@ebi.ac.uk"
+  model creator2.givenName "Catherine"
+  model creator2.familyName "Lloyd"
+  model creator2.organization "The University of Auckland,The Bioengineering Institute"
+  model creator2.email "c.lloyd@aukland.ac.nz"
+
+  // Notes:
+  model notes ```
+This a model from the article: 
+** Effects of extracellular calcium on electrical bursting and intracellular
+and luminal calcium oscillations in insulin secreting pancreatic beta-cells.** 
+
+Chay TR *Biophys J.*1997 Sep;73(3):1673-88. [9284334](http://www.ncbi.nlm.nih.gov/pubmed/9284334), 
+**Abstract:** 
+The extracellular calcium concentration has interesting effects on bursting of pancreatic
+beta-cells. The mechanism underlying the extracellular Ca2+ effect is not well understood.
+By incorporating a low-threshold transient inward current to the store-operated bursting
+model of Chay, this paper elucidates the role of the extracellular Ca2+ concentration
+in influencing electrical activity, intracellular Ca2+ concentration, and the luminal
+Ca2+ concentration in the intracellular Ca2+ store. The possibility that this inward
+current is a carbachol-sensitive and TTX-insensitive Na+ current discovered by others
+is discussed. In addition, this paper explains how these three variables respond
+when various pharmacological agents are applied to the store-operated model. 
+
+This model was taken from the [CellML repository](http://www.cellml.org/models) and automatically converted to SBML. 
+The original model was: [ **Chay TR (1997) - version05** ](http://www.cellml.org/models/chay_1997_version05) 
+The original CellML model was created by: 
+**Lloyd, Catherine, May** 
+c.lloyd@aukland.ac.nz 
+The University of Auckland 
+The Bioengineering Institute 
+
+
+This model originates from BioModels Database: A Database of Annotated Published
+Models (http://www.ebi.ac.uk/biomodels/). It is copyright (c) 2005-2011 The BioModels.net
+Team. 
+For more information see the [terms of use](http://www.ebi.ac.uk/biomodels/legal.html). 
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+end
+
+Chay1997_CalciumConcentration is "Chay1997_CalciumConcentration"

@@ -1,0 +1,101 @@
+// Created by libAntimony v3.2.0
+model *Siddhartha2002___Kinetic_modelling_of_cancer_therapies()
+
+  // Compartments and Species:
+  compartment Tumor;
+  species Ttum in Tumor, Tplas in Tumor, Tnew in Tumor;
+
+  // Reactions:
+  migration_to_bloodstream: Ttum => Tplas; Tumor*(b*kf1*Ttum - kr1*Tplas);
+  clearance: Tplas => ; Tumor*(d*c*Tplas);
+  cell_attachment_to_new_tumor:  => Tnew; Tumor*(kf2*Tplas - b*kr2*Tnew);
+  new_tumor_auto_amplification:  => Tnew; Tumor*(a*r*Tnew*(1 - Tnew/T0));
+  old_tumor_auto_amplification:  => Ttum; Tumor*(a*r*Ttum*(1 - Ttum/T0));
+  cell_detachment: Tplas => ; Tumor*(n*(kf2*Tplas - b*kr2*Tnew));
+
+  // Species initializations:
+  Ttum = 1000000;
+  Tplas = 4000000;
+  Tnew = 0;
+
+  // Compartment initializations:
+  Tumor = 1;
+
+  // Variable initializations:
+  a = 0.2;
+  b = 0.2;
+  c = 0.67;
+  d = 1;
+  kf1 = 0.067;
+  kf2 = 0.00067;
+  kr1 = 0.00067;
+  kr2 = 0.067;
+  T0 = 3000000;
+  n = 10;
+  r = 0.069;
+
+  // Other declarations:
+  const Tumor, a, b, c, d, kf1, kf2, kr1, kr2, T0, n, r;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = litre;
+  unit time_unit = 86400 second;
+  unit substance = mole;
+
+  // Display Names:
+  time_unit is "time";
+  migration_to_bloodstream is "migration to bloodstream";
+  cell_attachment_to_new_tumor is "cell attachment to new tumor";
+  new_tumor_auto_amplification is "new tumor auto-amplification";
+  old_tumor_auto_amplification is "old tumor auto-amplification";
+  cell_detachment is "cell detachment";
+
+  // SBO terms:
+  kf1.sboTerm = 9
+  kf2.sboTerm = 9
+  kr1.sboTerm = 9
+  kr2.sboTerm = 9
+
+  // CV terms:
+  Tumor identity "http://identifiers.org/ncit/C98275"
+  Ttum identity "http://identifiers.org/ncit/C3262"
+  Tplas hasProperty "http://identifiers.org/ncit/C62970"
+  Tnew identity "http://identifiers.org/ncit/C8509"
+  a isVersionOf "http://identifiers.org/sbo/SBO:0000405"
+  b isVersionOf "http://identifiers.org/sbo/SBO:0000405"
+  c isVersionOf "http://identifiers.org/sbo/SBO:0000006"
+  d isVersionOf "http://identifiers.org/sbo/SBO:0000405"
+  kf1 identity "http://identifiers.org/sbo/SBO:0000009"
+  kf2 identity "http://identifiers.org/sbo/SBO:0000009"
+  kr1 identity "http://identifiers.org/sbo/SBO:0000009"
+  kr2 identity "http://identifiers.org/sbo/SBO:0000009"
+  T0 isVersionOf "http://identifiers.org/sbo/SBO:0000006"
+  n isVersionOf "http://identifiers.org/sbo/SBO:0000006"
+  r isVersionOf "http://identifiers.org/sbo/SBO:0000006"
+  migration_to_bloodstream isVersionOf "http://identifiers.org/go/GO:0090130"
+  clearance isVersionOf "http://identifiers.org/ncit/C94618"
+  cell_attachment_to_new_tumor isVersionOf "http://identifiers.org/ncit/C61470"
+  new_tumor_auto_amplification isVersionOf "http://identifiers.org/go/GO:0040007"
+  old_tumor_auto_amplification isVersionOf "http://identifiers.org/go/GO:0040007"
+  cell_detachment isVersionOf "http://identifiers.org/ncit/C42882"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL2204120001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000001048"
+  model occursIn "http://identifiers.org/ncit/C98275"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model isDescribedBy "http://identifiers.org/pubmed/12379154"
+  model hasProperty "http://identifiers.org/ncit/C3224",
+                    "http://identifiers.org/ncit/C16212",
+                    "http://identifiers.org/ncit/C3058",
+                    "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2022-03-09T10:39:32Z"
+  model modified "2022-03-09T10:39:32Z"
+  model creator1.givenName "Mikal"
+  model creator1.familyName "Daou"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "mikaldaou@hotmail.com"
+end
+
+Siddhartha2002___Kinetic_modelling_of_cancer_therapies is "Siddhartha2002 - Kinetic modelling of cancer therapies"

@@ -1,0 +1,294 @@
+// Created by libAntimony v3.2.0
+model *Xie2007_CircClock()
+
+  // Compartments and Species:
+  compartment wholeCell;
+  species CC in wholeCell, CCPT in wholeCell, clkp in wholeCell, perp in wholeCell;
+  species clkm in wholeCell, perm in wholeCell, PT in wholeCell, vrip in wholeCell;
+  species vrim in wholeCell, VRI in wholeCell, pdpp in wholeCell, pdpm in wholeCell;
+  species PDP in wholeCell, CLK in wholeCell, PER in wholeCell, timp in wholeCell;
+  species timm in wholeCell, TIM in wholeCell, $CYC in wholeCell, prcper in wholeCell;
+  species prcv in wholeCell, prcpdp in wholeCell, prvc in wholeCell, prpc in wholeCell;
+  species prct in wholeCell;
+
+  // Reactions:
+  re1: CC + PT => CCPT; wholeCell*CC*PT*bccpt;
+  re2: CC => ; wholeCell*CC*dcc;
+  re3: CCPT => ; wholeCell*CCPT*dccpt;
+  re4: PT => ; wholeCell*PT*dpt;
+  re9: clkm => ; wholeCell*clkm*dclkm;
+  re10:  => CLK; wholeCell*clkm*tlclk;
+  re15: perm => ; wholeCell*perm*dperm;
+  re17:  => PER; wholeCell*perm*tlper;
+  re20:  => perm; wholeCell*((1 - (1 - prcper)^npt)*tcccperp + (1 - prcper)^npt*tcdvpmt)*perp;
+  re28:  => vrim; wholeCell*((1 - (1 - prcv)^nvri)*tcccvrip + (1 - prcv)^nvri*tcdvpmt)*vrip;
+  re30: vrim => ; wholeCell*vrim*dvrim;
+  re31:  => VRI; wholeCell*vrim*tlvri;
+  re32: VRI => ; wholeCell*VRI*dvri;
+  re35:  => pdpm; wholeCell*((1 - (1 - prcpdp)^npdp)*tcccpdpp + (1 - prcpdp)^npdp*tcdvpmt)*pdpp;
+  re37: pdpm => ; wholeCell*pdpm*dpdpm;
+  re38:  => PDP; wholeCell*pdpm*tlpdp;
+  re39: PDP => ; wholeCell*PDP*dpdp;
+  re42:  => clkm; wholeCell*(prvc*tcvriclkp + prpc*tcpdpclkp + (1 - prvc - prpc)*tcclkp)*clkp;
+  re43: CLK + $CYC => CC; wholeCell*CLK*bcc*CYC;
+  re44: CLK => ; wholeCell*CLK*dclk;
+  re45: CC => CLK + $CYC; wholeCell*CC*ubcc;
+  re46: PER + TIM => PT; wholeCell*PER*TIM*bpt;
+  re47: PT => PER + TIM; wholeCell*PT*ubpt;
+  re48: PER => ; wholeCell*PER*dper;
+  re51:  => timm; wholeCell*((1 - (1 - prct)^npt)*tccctimp + (1 - prct)^npt*tcdvpmt)*timp;
+  re53: timm => ; wholeCell*timm*dtimm;
+  re54:  => TIM; wholeCell*timm*tltim;
+  re55: TIM => ; wholeCell*TIM*dtim;
+  re56: CCPT => CC + PT; wholeCell*CCPT*ubccpt;
+  re57:  => prcper; wholeCell*(1 - prcper)*bccperp*CC;
+  re58: prcper => ; wholeCell*prcper*ubccperp;
+  re59: prcv => ; wholeCell*ubccvrip*prcv;
+  re60:  => prcv; wholeCell*(1 - prcv)*bccvrip*CC;
+  re61: prcpdp => ; wholeCell*ubccpdpp*prcpdp;
+  re62:  => prcpdp; wholeCell*(1 - prcpdp)*bccpdpp*CC;
+  re63:  => prvc; wholeCell*(1 - prvc - prpc)*bvriclkp*VRI;
+  re64: prvc => ; wholeCell*prvc*ubvriclkp;
+  re65:  => prpc; wholeCell*(1 - prvc - prpc)*bpdpclkp*PDP;
+  re66: prpc => ; wholeCell*prpc*ubpdpclkp;
+  re68:  => prct; wholeCell*(1 - prct)*bcctimp*CC;
+  re69: prct => ; wholeCell*prct*ubcctimp;
+
+  // Species initializations:
+  CC = 0.5566;
+  CCPT = 0.4982;
+  clkp = 0.003185;
+  perp = 0.003185;
+  clkm = 0.2583;
+  perm = 0.2395;
+  PT = 0.4014;
+  vrip = 0.003185;
+  vrim = 0.2571;
+  VRI = 3.175;
+  pdpp = 0.003185;
+  pdpm = 0.3175;
+  PDP = 4.1953;
+  CLK = 3.6628;
+  PER = 2.7527;
+  timp = 0.003185;
+  timm = 0.2395;
+  TIM = 2.7527;
+  CYC = 1;
+  prcper = 0.0431/wholeCell;
+  prcv = 0.0585/wholeCell;
+  prcpdp = 0.08/wholeCell;
+  prvc = 0.489/wholeCell;
+  prpc = 0.426/wholeCell;
+  prct = 0.043/wholeCell;
+
+  // Compartment initializations:
+  wholeCell = 1;
+
+  // Variable initializations:
+  dccpt = 15.06;
+  bccperp = 0.069;
+  ubccperp = 0.262;
+  bccpt = 51;
+  dperm = 0.053;
+  tlper = 36;
+  tcccperp = 11;
+  tcdvpmt = 0.028;
+  dvri = 1.226;
+  tcclkp = 1.42;
+  bcc = 2.349;
+  dclk = 0.2;
+  ubcc = 0.89;
+  bpt = 1.1;
+  ubpt = 2.93;
+  dper = 0.62;
+  tcccvrip = 16.86;
+  tcccpdpp = 9.831;
+  dvrim = 0.07;
+  dpdpm = 0.06;
+  ubccpt = 7.89;
+  tlvri = 14.68;
+  tlpdp = 1.87;
+  bccvrip = 0.1;
+  bccpdpp = 0.062;
+  ubccvrip = 0.276;
+  ubccpdpp = 0.145;
+  tcpdpclkp = 125.54;
+  dclkm = 0.643;
+  bvriclkp = 1.858;
+  bpdpclkp = 1.155;
+  ubvriclkp = 1.043;
+  ubpdpclkp = 0.952;
+  tcvriclkp = 0.053;
+  dpdp = 0.156;
+  tlclk = 35;
+  dcc = 0.184;
+  dpt = 0.279;
+  dtim = 0.62;
+  dtimm = 0.053;
+  tltim = 36;
+  bcctimp = 0.069;
+  ubcctimp = 0.262;
+  tccctimp = 11;
+  npt = 5;
+  nvri = 4;
+  npdp = 6;
+
+  // Other declarations:
+  const wholeCell, dccpt, bccperp, ubccperp, bccpt, dperm, tlper, tcccperp;
+  const tcdvpmt, dvri, tcclkp, bcc, dclk, ubcc, bpt, ubpt, dper, tcccvrip;
+  const tcccpdpp, dvrim, dpdpm, ubccpt, tlvri, tlpdp, bccvrip, bccpdpp, ubccvrip;
+  const ubccpdpp, tcpdpclkp, dclkm, bvriclkp, bpdpclkp, ubvriclkp, ubpdpclkp;
+  const tcvriclkp, dpdp, tlclk, dcc, dpt, dtim, dtimm, tltim, bcctimp, ubcctimp;
+  const tccctimp, npt, nvri, npdp;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
+  unit time_unit = 3600 second;
+
+  // Display Names:
+  substance is "nano mole";
+  time_unit is "hour";
+  prcper is "CCbindingPer";
+  prcv is "CCbindingvri";
+  prcpdp is "CCbindingpdp";
+  prvc is "VRIbindingclkp";
+  prpc is "PDPbindingclkp";
+  prct is "CCbindingtim";
+  re1 is "CC PT association";
+  re2 is "Degradation of CLK CYK dimer";
+  re3 is "Degradation of CC PT dimer";
+  re4 is "Degradation of PER TIM dimer";
+  re9 is "Degradation of clk mRNA";
+  re10 is "clkm translation";
+  re15 is "Degradation of per mRNA";
+  re17 is "perm translation";
+  re20 is "per transcription";
+  re28 is "vri transcription";
+  re30 is "Degradation of vri mRNA";
+  re31 is "vrim translation";
+  re32 is "VRI protein degradation";
+  re35 is "pdp transcription";
+  re37 is "Degradation of pdp mRNA";
+  re38 is "pdpm translation";
+  re39 is "PDP protein degradation";
+  re42 is "clk transcription";
+  re43 is "CLK CYC association";
+  re44 is "CLK protein degradation";
+  re45 is "CLK CYC dissociation";
+  re46 is "PER TIM association";
+  re47 is "PER TIM dissociation";
+  re48 is "PER protein degradation";
+  re51 is "tim transcription";
+  re53 is "Degradation of tim mRNA";
+  re54 is "timm translation";
+  re55 is "TIM protein degradation";
+  re56 is "CC PT dimer dissociation";
+  re57 is "CC binding probability in per promoter";
+  re58 is "CC Unbinding probability in per promoter";
+  re59 is "CC Unbinding probability in vri promoter";
+  re60 is "CC binding probability in vri promoter";
+  re61 is "CC Unbinding probability in pdp1 promoter";
+  re62 is "CC binding probability in pdp1 promoter";
+  re63 is "VRI binding clk promoter";
+  re64 is "VRI unbinding clk promoter";
+  re65 is "PDP binding clk promoter";
+  re66 is "PDP unbinding clk promoter";
+  re68 is "CC binding probability in tim promoter";
+  re69 is "CC Unbinding probability in tim promoter";
+
+  // CV terms:
+  wholeCell identity "http://identifiers.org/go/GO:0005623"
+  CC hasPart "http://identifiers.org/uniprot/O61734",
+             "http://identifiers.org/uniprot/O61735"
+  CCPT hasPart "http://identifiers.org/uniprot/Q59E16",
+               "http://identifiers.org/uniprot/P07663",
+               "http://identifiers.org/uniprot/O61734",
+               "http://identifiers.org/uniprot/O61735"
+  PT hasPart "http://identifiers.org/uniprot/Q59E16",
+             "http://identifiers.org/uniprot/P07663"
+  VRI identity "http://identifiers.org/uniprot/Q9VMS4"
+  PDP isVersionOf "http://identifiers.org/uniprot/Q9TW49"
+  CLK isVersionOf "http://identifiers.org/uniprot/O61735"
+  PER isVersionOf "http://identifiers.org/uniprot/P07663"
+  TIM isVersionOf "http://identifiers.org/uniprot/Q59E16"
+  CYC isVersionOf "http://identifiers.org/uniprot/O61734"
+  re1 isVersionOf "http://identifiers.org/go/GO:0046982"
+  re2 isVersionOf "http://identifiers.org/go/GO:0044257"
+  re3 isVersionOf "http://identifiers.org/go/GO:0044257"
+  re4 isVersionOf "http://identifiers.org/go/GO:0044257"
+  re9 isVersionOf "http://identifiers.org/go/GO:0006402"
+  re10 isVersionOf "http://identifiers.org/go/GO:0006412"
+  re15 isVersionOf "http://identifiers.org/go/GO:0006402"
+  re17 isVersionOf "http://identifiers.org/go/GO:0006412"
+  re20 isVersionOf "http://identifiers.org/go/GO:0006351"
+  re28 isVersionOf "http://identifiers.org/go/GO:0006351"
+  re30 isVersionOf "http://identifiers.org/go/GO:0006402"
+  re31 isVersionOf "http://identifiers.org/go/GO:0006412"
+  re32 isVersionOf "http://identifiers.org/go/GO:0044257"
+  re35 isVersionOf "http://identifiers.org/go/GO:0006351"
+  re37 isVersionOf "http://identifiers.org/go/GO:0006402"
+  re38 isVersionOf "http://identifiers.org/go/GO:0006412"
+  re39 isVersionOf "http://identifiers.org/go/GO:0044257"
+  re42 isVersionOf "http://identifiers.org/go/GO:0006351"
+  re43 isVersionOf "http://identifiers.org/go/GO:0046982"
+  re44 isVersionOf "http://identifiers.org/go/GO:0044257"
+  re45 isVersionOf "http://identifiers.org/go/GO:0043624"
+  re46 isVersionOf "http://identifiers.org/go/GO:0046982"
+  re47 isVersionOf "http://identifiers.org/go/GO:0043624"
+  re48 isVersionOf "http://identifiers.org/go/GO:0044257"
+  re51 isVersionOf "http://identifiers.org/go/GO:0006351"
+  re53 isVersionOf "http://identifiers.org/go/GO:0006402"
+  re54 isVersionOf "http://identifiers.org/go/GO:0006412"
+  re55 isVersionOf "http://identifiers.org/go/GO:0044257"
+  re56 isVersionOf "http://identifiers.org/go/GO:0046982"
+  re57 isVersionOf "http://identifiers.org/go/GO:0006357"
+  re58 isVersionOf "http://identifiers.org/go/GO:0006357"
+  re59 isVersionOf "http://identifiers.org/go/GO:0006357"
+  re60 isVersionOf "http://identifiers.org/go/GO:0006357"
+  re61 isVersionOf "http://identifiers.org/go/GO:0006357"
+  re62 isVersionOf "http://identifiers.org/go/GO:0006357"
+  re63 isVersionOf "http://identifiers.org/go/GO:0030528"
+  re64 isVersionOf "http://identifiers.org/go/GO:0030528"
+  re65 isVersionOf "http://identifiers.org/go/GO:0003700"
+  re66 isVersionOf "http://identifiers.org/go/GO:0043433"
+  re68 isVersionOf "http://identifiers.org/go/GO:0006357"
+  re69 isVersionOf "http://identifiers.org/go/GO:0006357"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1029395046"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000160"
+  model publication "http://identifiers.org/pubmed/17157878"
+  model hasTaxon "http://identifiers.org/taxonomy/7227"
+  model isPartOf "http://identifiers.org/kegg.pathway/dme04711"
+  model identity "http://identifiers.org/go/GO:0007623",
+                 "http://identifiers.org/go/GO:0045187"
+  model created "2008-01-22T07:26:48Z"
+  model modified "2012-07-05T14:37:46Z"
+  model creator1.givenName "Harish"
+  model creator1.familyName "Dharuri"
+  model creator1.organization "California Institute of Technology"
+  model creator1.email "hdharuri@cds.caltech.edu"
+
+  // Notes:
+  model notes ```
+The model reproduces the oscillations for mRNA and protein species as depicted in
+Fig 3 of the plot. The model differs slightly from that given in the paper and this
+was made after a communication from the authors. The values of parameters tcvriclkp,
+tcdvpmt and dccpt are slightly different. Also, although it is not given in the paper,
+rate laws for reactions re20, re28, re35, re42, re43 and re45 are multiplied by a
+specie. Model was successfully tested on MathSBML
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Creative Commons CC0") for more information. 
+
+In summary, you are entitled to use this encoded model in absolutely any manner you
+deem suitable, verbatim, or with modification, alone or embedded it in a larger context,
+redistribute it, commercially or not, in a restricted way or not.
+
+
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+end
+
+Xie2007_CircClock is "Xie2007_CircClock"

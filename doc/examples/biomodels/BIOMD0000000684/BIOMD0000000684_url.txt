@@ -1,0 +1,166 @@
+// Created by libAntimony v3.2.0
+model *Wodarz2003_ImmunologicalMemory()
+
+  // Compartments and Species:
+  compartment COMpartment;
+
+  // Assignment Rules:
+  H := S + I_1 + R_1 + I_2 + R_2 + I_12 + I_21 + R_12;
+  P := P_1 + P_2;
+  log_P1 := log10(P_1)/log10(10);
+  log_P2 := log10(P_2)/log10(10);
+  G := 1/g;
+
+  // Rate Rules:
+  S' = (r*H/(epsilon*H + 1) - d*S - beta_1*S*P_1 - beta_2*S*P_2) + g*(R_1 + R_2 + R_12);
+  P_1' = k_1*(I_1 + I_21) - u*P_1;
+  P_2' = k_2*(I_2 + I_12) - u*P_2;
+  R_1' = alpha_1*I_1 - d*R_1 - g*R_1 - beta_2*R_1*P_2;
+  R_2' = alpha_2*I_2 - d*R_2 - g*R_2 - beta_1*R_2*P_1;
+  R_12' = alpha_2*I_12 + alpha_1*I_21 - d*R_12 - g*R_12;
+  I_1' = beta_1*S*P_1 - a_1*I_1 - alpha_1*I_1;
+  I_2' = beta_2*S*P_2 - a_2*I_2 - alpha_2*I_2;
+  I_12' = beta_2*R_1*P_2 - a_2*I_12 - alpha_2*I_12;
+  I_21' = beta_1*R_2*P_1 - a_1*I_21 - alpha_1*I_21;
+
+  // Compartment initializations:
+  COMpartment = 1;
+  COMpartment has litre;
+
+  // Variable initializations:
+  S = 100;
+  r = 0.5;
+  epsilon = 0.1;
+  d = 0.01;
+  beta_1 = 1;
+  P_1 = 0.1;
+  beta_2 = 1;
+  P_2 = 0.1;
+  g = 0.01;
+  R_1 = 0;
+  R_2 = 0;
+  R_12 = 0;
+  I_1 = 0;
+  I_2 = 0;
+  I_12 = 0;
+  I_21 = 0;
+  a_1 = 0.03;
+  alpha_1 = 0.1;
+  a_2 = 1;
+  alpha_2 = 0.1;
+  k_1 = 0.1;
+  u = 0.5;
+  k_2 = 0.1;
+
+  // Other declarations:
+  var S, H, P_1, P_2, R_1, R_2, R_12, I_1, I_2, I_12, I_21, P, log_P1, log_P2;
+  var G;
+  const COMpartment, r, epsilon, d, beta_1, beta_2, g, a_1, alpha_1, a_2;
+  const alpha_2, k_1, u, k_2;
+
+  // Unit definitions:
+  unit day = 86400 second;
+  unit first_order_rate_constant = 1 / 86400 second;
+  unit time_unit = 86400 second;
+
+  // Display Names:
+  time_unit is "time";
+  COMpartment is "population";
+
+  // CV terms:
+  COMpartment isVersionOf "http://identifiers.org/obi/OBI:0000181"
+  S hasProperty "http://identifiers.org/ncit/C16505"
+  r encodes "http://identifiers.org/go/GO:0000003"
+  H isVersionOf "http://identifiers.org/obi/OBI:0000181"
+  epsilon encodes "http://identifiers.org/go/GO:0000003"
+  d encodes "http://identifiers.org/go/GO:0016265"
+  beta_1 encodes "http://identifiers.org/efo/0000544"
+  P_1 isVersionOf "http://identifiers.org/efo/EFO:0000643"
+  beta_2 encodes "http://identifiers.org/efo/0000544"
+  P_2 isVersionOf "http://identifiers.org/efo/EFO:0000643"
+  g encodes "http://identifiers.org/go/GO:0090716"
+  R_1 hasProperty "http://identifiers.org/ncit/C17997"
+  R_2 hasProperty "http://identifiers.org/ncit/C17997"
+  R_12 hasProperty "http://identifiers.org/ncit/C17997"
+  I_1 hasProperty "http://identifiers.org/efo/0000544"
+  I_2 hasProperty "http://identifiers.org/efo/0000544"
+  I_12 hasProperty "http://identifiers.org/efo/0000544"
+  I_12 hasProperty "http://identifiers.org/ncit/C17997"
+  I_21 hasProperty "http://identifiers.org/ncit/C17997"
+  I_21 hasProperty "http://identifiers.org/efo/0000544"
+  a_1 encodes "http://identifiers.org/go/GO:0016265"
+  alpha_1 encodes "http://identifiers.org/ncit/C25746"
+  a_2 encodes "http://identifiers.org/go/GO:0016265"
+  alpha_2 encodes "http://identifiers.org/ncit/C25746"
+  k_1 encodes "http://identifiers.org/ncit/C61404"
+  u encodes "http://identifiers.org/sbo/SBO:0000179"
+  k_2 encodes "http://identifiers.org/ncit/C61404"
+  G encodes "http://identifiers.org/go/GO:0090716"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1006230061"
+  model publication "http://identifiers.org/pubmed/13678598"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000684"
+  model isVersionOf "http://identifiers.org/go/GO:0002250"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model isDescribedBy "http://identifiers.org/pubmed/13678598"
+  model created "2010-06-25T13:23:00Z"
+  model modified "2018-03-08T16:30:35Z",
+                 "2018-03-08T16:30:35Z"
+  model creator1.givenName "Matthew Grant"
+  model creator1.familyName "Roberts"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "mroberts@embl.ac.uk"
+  model creator2.givenName "Catherine"
+  model creator2.familyName "Lloyd"
+  model creator2.organization "University of Auckland"
+  model creator2.email "c.lloyd@auckland.ac.nz"
+
+  // Notes:
+  model notes ```
+This a model from the article: 
+**Evolution of immunological memory and the regulation of competition betweenpathogens.**
+
+Wodarz D. *Curr Biol* 2003 Sep 16;13(18):1648-52 [13678598](http://www.ncbi.nlm.nih.gov/pubmed/13678598) , 
+**Abstract:** 
+Memory is a central characteristic of immune responses. It is defined as
+anelevated number of specific immune cells that remain after resolution ofinfection
+and can protect the host against reinfection. The evolution ofimmunological memory
+is subject to debate. The advantages of memory discussed sofar include protection
+from reinfection, control of chronic infection, and thetransfer of immune function
+to the next generation. Mathematical models are usedto identify a new force that
+can drive the evolution of immunological memory:the duration of memory can regulate
+the degree of competition between differentpathogens. While a long duration of memory
+provides lasting protection againstreinfection, it may also allow an inferior pathogen
+species to persist. This canbe detrimental for the host if the inferior pathogen
+is more virulent. On theother hand, a shorter duration of memory ensures that an
+inferior pathogenspecies is excluded. This can be beneficial for the host if the
+inferiorpathogen is more virulent. Thus, while in the absence of pathogen diversitymemory
+is always expected to evolve to a long duration, under specificcircumstances, memory
+can evolve toward shorter durations in the presence ofpathogen diversity. 
+
+This model was taken from the [CellML repository](http://www.cellml.org/models) and automatically converted to SBML. 
+The original model was: [ **Wodarz D. (2003) - version=1.0**
+](http://models.cellml.org/exposure/0fbec879c60f5a3005da0ea829e1ff3e) 
+The original CellML model was created by: 
+**Catherine Lloyd** 
+c.lloyd@auckland.ac.nz 
+The University of Auckland 
+
+
+This model originates from BioModels Database: A Database of Annotated Published
+Models (http://www.ebi.ac.uk/biomodels/). It is copyright (c) 2005-2011 The BioModels.net
+Team. 
+To the extent possible under law, all copyright and related or neighbouring
+rights to this encoded model have been dedicated to the public domain worldwide.
+Please refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Creative Commons CC0") for more information. 
+
+In summary, you are entitled to use this encoded model in absolutely any manner you
+deem suitable, verbatim, or with modification, alone or embedded it in a larger context,
+redistribute it, commercially or not, in a restricted way or not.. 
+
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+  epsilon notes "Value = 0.1 from CellML"
+end
+
+Wodarz2003_ImmunologicalMemory is "Wodarz2003 Immunological Memory"

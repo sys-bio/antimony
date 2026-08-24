@@ -1,0 +1,135 @@
+// Created by libAntimony v3.2.0
+model *Tomida2003___NFAT_functions_Calcium_Oscillation()
+
+  // Compartments and Species:
+  compartment Jurkat_cell;
+  species NFAT_phosphorylated in Jurkat_cell, NFAT_dephosphorylated in Jurkat_cell;
+  species $NFAT_transported in Jurkat_cell, $stimulus in Jurkat_cell;
+
+  // Assignment Rules:
+  NFAT_transported := 1 - NFAT_phosphorylated - NFAT_dephosphorylated;
+  stimulus := piecewise(1, (time - floor(time/ModelValue_13)*ModelValue_13) < ModelValue_17, 0);
+  dNFAT := 100*NFAT_dephosphorylated;
+  pNFAT := 100*NFAT_phosphorylated;
+  tNFAT := 100*NFAT_transported;
+
+  // Reactions:
+  Dephosphorylation: NFAT_phosphorylated => NFAT_dephosphorylated; Jurkat_cell*(k1*stimulus*NFAT_phosphorylated);
+  Phosphorylation: NFAT_dephosphorylated => NFAT_phosphorylated; Jurkat_cell*k2*NFAT_dephosphorylated;
+  Translocation: NFAT_dephosphorylated => $NFAT_transported; Jurkat_cell*k3*NFAT_dephosphorylated;
+  Nuclear_export: $NFAT_transported => NFAT_phosphorylated; Jurkat_cell*k4*NFAT_transported;
+
+  // Species initializations:
+  NFAT_phosphorylated = 1;
+  NFAT_dephosphorylated = 0;
+
+  // Compartment initializations:
+  Jurkat_cell = 1;
+
+  // Variable initializations:
+  ModelValue_13 = stim_frequency;
+  ModelValue_17 = stim_duration;
+  k1 = 0.359;
+  k2 = 0.147;
+  k3 = 0.06;
+  k4 = 0.035;
+  stim_frequency = 3;
+  stim_duration = 1;
+
+  // Other declarations:
+  var dNFAT, pNFAT, tNFAT;
+  const Jurkat_cell, ModelValue_13, ModelValue_17, k1, k2, k3, k4, stim_frequency;
+  const stim_duration;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  Jurkat_cell is "Jurkat cell";
+  ModelValue_13 is "Initial for stim_frequency";
+  ModelValue_17 is "Initial for stim_duration";
+  dNFAT is "dNFAT%";
+  pNFAT is "pNFAT%";
+  tNFAT is "tNFAT%";
+
+  // CV terms:
+  Jurkat_cell isVersionOf "http://identifiers.org/bto/BTO:0000661"
+  NFAT_phosphorylated isVersionOf "http://identifiers.org/pr/PR:000003112"
+  NFAT_phosphorylated isVersionOf "http://identifiers.org/uniprot/Q12968"
+  NFAT_dephosphorylated isVersionOf "http://identifiers.org/pr/PR:000003112"
+  NFAT_dephosphorylated isVersionOf "http://identifiers.org/uniprot/Q12968"
+  NFAT_transported isVersionOf "http://identifiers.org/uniprot/Q12968"
+  NFAT_transported occursIn "http://identifiers.org/go/GO:0005634"
+  NFAT_transported isVersionOf "http://identifiers.org/pr/PR:000003112"
+  stimulus isVersionOf "http://identifiers.org/ncit/C41210"
+  Dephosphorylation isEncodedBy "http://identifiers.org/ncit/C17275"
+  Dephosphorylation isVersionOf "urn:miriam:sbo:SBO%3A0000330"
+  Dephosphorylation isEncodedBy "http://identifiers.org/chebi/CHEBI:53439"
+  Dephosphorylation isVersionOf "http://identifiers.org/go/GO:0016311"
+  Phosphorylation isVersionOf "http://identifiers.org/go/GO:0016310"
+  Translocation isVersionOf "http://identifiers.org/go/GO:0051531"
+  Nuclear_export isVersionOf "http://identifiers.org/go/GO:0051168"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL0912160005"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000678"
+  model publication "http://identifiers.org/pubmed/12881417"
+  model model_source "http://identifiers.org/biomodels.db/MODEL0912160005"
+  model isVersionOf "http://identifiers.org/go/GO:0033173"
+  model occursIn "http://identifiers.org/bto/BTO:0000661"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model isDescribedBy "http://identifiers.org/pubmed/12881417"
+  model created "2018-02-22T15:25:22Z"
+  model modified "2018-03-14T09:35:37Z"
+  model creator1.givenName "Matthew Grant"
+  model creator1.familyName "Roberts"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "mroberts@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Tomida2003 - NFAT functions CalciumOscillation 
+
+
+This model is described in the article:
+
+
+[NFAT functions as a working memory of Ca2+ signals in decoding Ca2+ oscillation.](http://identifiers.org/pubmed/12881417 "Access to this publication") 
+
+
+Tomida T, Hirose K, Takizawa A, Shibasaki F, Iino M. 
+
+EMBO J. 2003 Aug; 22(15): 3825-3832 
+Abstract:
+
+
+Transcription by the nuclear factor of activated T cells (NFAT) is regulated by
+the frequency of Ca(2+) oscillation. However, why and how Ca(2+) oscillation regulates
+NFAT activity remain elusive. NFAT is dephosphorylated by Ca(2+)-dependent 
+phosphatase calcineurin and translocates from the cytoplasm to the nucleus to
+initiate transcription. We analyzed the kinetics of dephosphorylation and translocation
+of NFAT. We show that Ca(2+)-dependent dephosphorylation proceeds rapidly, while
+the rephosphorylation and nuclear transport of NFAT proceed slowly. Therefore,
+after brief Ca(2+) stimulation, dephosphorylated NFAT has a lifetime of several
+minutes in the cytoplasm. Thus, Ca(2+) oscillation induces a build-up of dephosphorylated
+NFAT in the cytoplasm, allowing effective nuclear translocation, provided that
+the oscillation interval is shorter than the lifetime of dephosphorylated NFAT.
+We also show that Ca(2+) oscillation is more cost-effective in inducing the 
+translocation of NFAT than continuous Ca(2+) signaling. Thus, the lifetime of
+dephosphorylated NFAT functions as a working memory of Ca(2+) signals and enables
+the control of NFAT nuclear translocation by the frequency of Ca(2+) oscillation
+at a reduced cost of Ca(2+) signaling.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000678](http://identifiers.org/biomodels.db/BIOMD0000000678).
+
+To cite BioModels Database, please use: [Chelliah V et al. BioModels: ten-year anniversary. Nucl. Acids Res. 2015, 43(Database issue):D542-8](http://identifiers.org/pubmed/25414348).
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+end
+
+Tomida2003___NFAT_functions_Calcium_Oscillation is "Tomida2003 - Calcium Oscillatory-induced translocation of nuclear factor of activated T cells"

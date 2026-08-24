@@ -1,0 +1,88 @@
+// Created by libAntimony v3.2.0
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species $P in compartment_, $D in compartment_, $N in compartment_, $E_U in compartment_;
+  species $E_A in compartment_, $C in compartment_;
+
+  // Assignment Rules:
+  f_P_M_A := n^x*M_Astar/(P^x + n^x*M_Astar);
+
+  // Rate Rules:
+  P' = r*P*(1 - P/K_P) - (gamma_M_A*f_P_M_A/(1 + k_d*D*M_Astar))*M_Astar*P - gamma_N*N*P;
+  D' = rho1*d_NP*N*P + rho2*d_N*N + rho3*d_E*E_A - d_D*D*M_Astar;
+  N' = eta*C*(1 - N/N_max) - d_NP*N*P - d_N*N;
+  E_U' = - omega*P*E_U;
+  E_A' = omega*P*E_U - d_E*E_A;
+  C' = alpha*(E_A/(1 + k_n*N)) + v*(theta_M*P*M_Astar/((d + kappa + theta_M*P)*(1 + k_n*N))) - d_C*C;
+
+  // Events:
+  event_: at E_U < 0: E_U = 0;
+  event_1: at P < 0: P = 0;
+
+  // Species initializations:
+  P = 100000;
+  D = 0;
+  N = 0;
+  E_U = 100000000;
+  E_A = 0;
+  C = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  r = 1.13;
+  K_P = 230000000;
+  gamma_M_A = 5.6e-06;
+  k_d = 5e-09;
+  M_Astar = 1000000;
+  gamma_N = 1e-05;
+  omega = 2.1e-08;
+  d_E = 0.167;
+  alpha = 0.021;
+  k_n = 1.4e-05;
+  v = 0.029;
+  theta_M = 4.2e-08;
+  d = 0.001;
+  kappa = 0.042;
+  d_C = 0.83;
+  eta = 1.33;
+  N_max = 180000;
+  d_NP = 1.76e-07;
+  d_N = 0.063;
+  rho1 = 0.15;
+  rho2 = 0.001;
+  rho3 = 1e-05;
+  d_D = 1.4e-07;
+  n = 5;
+  x = 2;
+  s = 1000;
+
+  // Other declarations:
+  var f_P_M_A;
+  const compartment_, r, K_P, gamma_M_A, k_d, M_Astar, gamma_N, omega, d_E;
+  const alpha, k_n, v, theta_M, d, kappa, d_C, eta, N_max, d_NP, d_N, rho1;
+  const rho2, rho3, d_D, n, x, s;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 3600 second;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  event_ is "event";
+
+  model identity "http://identifiers.org/biomodels.db/MODEL1808280007"
+  model isDescribedBy "http://identifiers.org/pubmed/21300073"
+  model created "2018-07-06T14:33:19Z"
+  model modified "2018-07-06T14:33:19Z"
+  model creator1.givenName "Sarubini"
+  model creator1.familyName "Kananathan"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "sarubini.kananathan@hotmail.co.uk"
+end
+
+New_Model is "Smith2011 - Three Stage Innate Immune Response to a Pneumococcal Lung Infection"

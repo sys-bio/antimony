@@ -1,0 +1,238 @@
+// Created by libAntimony v3.2.0
+model *Eftimie2017_1___interaction_of_Th_and_macrophage()
+
+  // Compartments and Species:
+  compartment tme;
+  species H1 in tme, H2 in tme, M1 in tme, M2 in tme;
+
+  // Reactions:
+  H1_M1:  => H1; tme*(ah1*M1);
+  H1_growth:  => H1; tme*(ph1*H1*M1*(1 - (H1 + H2)/m1));
+  H1_death: H1 => ; tme*eh1*H1;
+  H2_M2:  => H2; tme*(ah2*M2);
+  H2_growth:  => H2; tme*(ph2*H2*M2*(1 - (H2 + H1)/m1));
+  H2_death: H2 => ; tme*eh2*H2;
+  M1_H1:  => M1; tme*(am1*H1);
+  M1_growth:  => M1; tme*(pm1*M1*(1 - (M1 + M2)/m2));
+  M1_death: M1 => ; tme*em1*M1;
+  M1_M2_transition: M1 => M2; tme*rm2*M1;
+  M2_M1_transition: M2 => M1; tme*rm1*M2;
+  M2_H2:  => M2; tme*(am2*H2);
+  M2_growth:  => M2; tme*(pm2*M2*H2*(1 - (M2 + M1)/m2));
+  M2_death: M2 => ; tme*em2*M2;
+
+  // Species initializations:
+  H1 = 0;
+  H1 has substance_per_volume;
+  H2 = 0;
+  H2 has substance_per_volume;
+  M1 = 100;
+  M1 has substance_per_volume;
+  M2 = 0;
+  M2 has substance_per_volume;
+
+  // Compartment initializations:
+  tme = 1;
+  tme has volume;
+
+  // Variable initializations:
+  ah1 = 0.008;
+  ah1 has unit_0;
+  ah2 = 0.001;
+  ah2 has unit_0;
+  am1 = 0.001;
+  am1 has unit_0;
+  am2 = 0.001;
+  am2 has unit_0;
+  m1 = 100000000;
+  m1 has unit_1;
+  m2 = 1000000000;
+  m2 has unit_1;
+  ph1 = 0.09;
+  ph1 has unit_0;
+  ph2 = 0.09;
+  ph2 has unit_0;
+  pm1 = 0.02;
+  pm1 has unit_0;
+  pm2 = 0.02;
+  pm2 has unit_0;
+  rm1 = 0.09;
+  rm1 has unit_0;
+  rm2 = 0.05;
+  rm2 has unit_0;
+  eh1 = 0.03;
+  eh1 has unit_0;
+  eh2 = 0.03;
+  eh2 has unit_0;
+  em1 = 0.02;
+  em1 has unit_0;
+  em2 = 0.02;
+  em2 has unit_0;
+
+  // Other declarations:
+  const tme, ah1, ah2, am1, am2, m1, m2, ph1, ph2, pm1, pm2, rm1, rm2, eh1;
+  const eh2, em1, em2;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / 86400e-1 second;
+  unit unit_1 = 1 / dimensionless^-0;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/d";
+  unit_1 is "1";
+  H1_M1 is "H1+M1";
+  H1_growth is "H1 growth";
+  H1_death is "H1 death";
+  H2_M2 is "H2+M2";
+  H2_growth is "H2 growth";
+  H2_death is "H2 death";
+  M1_H1 is "M1+H1";
+  M1_growth is "M1 growth";
+  M1_death is "M1 death";
+  M1_M2_transition is "M1-M2 transition";
+  M2_M1_transition is "M2-M1 transition";
+  M2_H2 is "M2+H2";
+  M2_growth is "M2 growth";
+  M2_death is "M2 death";
+
+  // CV terms:
+  tme isVersionOf "http://identifiers.org/ncit/C94498"
+  H1 isVersionOf "http://identifiers.org/cl/CL:0000545"
+  H2 isVersionOf "http://identifiers.org/cl/CL:0000546"
+  M1 isVersionOf "http://identifiers.org/ncit/C156004"
+  M2 isVersionOf "http://identifiers.org/ncit/C123783"
+  ah1 isVersionOf "http://identifiers.org/sbo/SBO:0000610"
+  ah2 isVersionOf "http://identifiers.org/sbo/SBO:0000610"
+  am1 isVersionOf "http://identifiers.org/sbo/SBO:0000610"
+  am2 isVersionOf "http://identifiers.org/sbo/SBO:0000610"
+  m1 isVersionOf "http://identifiers.org/sbo/SBO:0000661"
+  m2 isVersionOf "http://identifiers.org/sbo/SBO:0000661"
+  ph1 isVersionOf "http://identifiers.org/sbo/SBO:0000610"
+  ph2 isVersionOf "http://identifiers.org/sbo/SBO:0000610"
+  pm1 isVersionOf "http://identifiers.org/sbo/SBO:0000610"
+  pm2 isVersionOf "http://identifiers.org/sbo/SBO:0000610"
+  rm1 isVersionOf "http://identifiers.org/ncit/C25636"
+  rm2 isVersionOf "http://identifiers.org/ncit/C25636"
+  eh1 isVersionOf "http://identifiers.org/ncit/C25636"
+  eh2 isVersionOf "http://identifiers.org/ncit/C25636"
+  em1 isVersionOf "http://identifiers.org/ncit/C25636"
+  em2 isVersionOf "http://identifiers.org/ncit/C25636"
+  H1_M1 isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  H1_M1 isVersionOf "http://identifiers.org/go/GO:0042098"
+  H1_growth isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  H1_growth isVersionOf "http://identifiers.org/go/GO:0042098"
+  H1_death isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  H1_death isVersionOf "http://identifiers.org/go/GO:0008219"
+  H2_M2 isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  H2_M2 isVersionOf "http://identifiers.org/go/GO:0042098"
+  H2_growth isVersionOf "http://identifiers.org/go/GO:0042098"
+  H2_growth isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  H2_death isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  H2_death isVersionOf "http://identifiers.org/go/GO:0008219"
+  M1_H1 isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  M1_H1 isVersionOf "http://identifiers.org/go/GO:0061517"
+  M1_growth isVersionOf "http://identifiers.org/go/GO:0061517"
+  M1_growth isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  M1_death isVersionOf "http://identifiers.org/go/GO:0008219"
+  M1_death isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  M2_H2 isVersionOf "http://identifiers.org/go/GO:0061517"
+  M2_H2 isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  M2_growth isVersionOf "http://identifiers.org/go/GO:0061517"
+  M2_growth isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  M2_death isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  M2_death isVersionOf "http://identifiers.org/go/GO:0008219"
+
+  model origin "http://identifiers.org/mamo/MAMO_0000046",
+               "http://identifiers.org/efo/0000756",
+               "http://identifiers.org/go/GO:0002418",
+               "http://identifiers.org/taxonomy/9606",
+               "http://identifiers.org/biomodels.db/BIOMD0000000769"
+  model origin "http://identifiers.org/biomodels.db/MODEL1907310003"
+  model publication "http://identifiers.org/biomodels.db/BIOMD0000000769",
+                    "http://identifiers.org/biomodels.db/MODEL1907310003",
+                    "http://identifiers.org/pubmed/28219660"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1907310004",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000770"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000046"
+  model hasProperty "http://identifiers.org/efo/0000756"
+  model hasProperty "http://identifiers.org/go/GO:0002418"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model created "2019-07-31T10:52:32Z"
+  model modified "2019-07-31T10:52:32Z"
+  model creator1.givenName "Jinghao"
+  model creator1.familyName "Men"
+  model creator1.organization "University of Cambridge"
+  model creator1.email "jm2187@cam.ac.uk"
+
+  // Notes:
+  model notes ```
+The paper describes a model of interaction of Th cells and macrophage in melanoma.
+Created by COPASI 4.25 (Build 207) This model is described in the article: Modelling
+and investigation of the CD4 T cells – Macrophages paradox in melanoma immunotherapiesRaluca
+Eftimie, Haneen HamamJournal of Theoretical Biology 420 (2017) 82–104 Abstract:
+It is generally accepted that tumour cells can be eliminated by M1 anti-tumour macrophages
+and CD8+ T cells. However, experimental results over the past 10–15 years have
+shown that B16 mouse melanoma cells can be eliminated by the CD4+ T cells alone (either
+Th1 or Th2 sub-types), in the absence of CD8+ T cells. In some studies, elimination
+of B16 melanoma was associated with a Th1 immune response (i.e., elimination occurred
+in the presence of cytokines produced by Th1 cells), while in other studies melanoma
+elimination was associated with a Th2 immune response (i.e., elimination occurred
+in the presence of cytokines produced by Th2 cells). Moreover, macrophages have been
+shown to be present inside the tumours, during both Th1 and Th2 immune responses.
+To investigate the possible biological mechanisms behind these apparently contradictory
+results, we develop a class of mathematical models for the dynamics of Th1 and Th2
+cells, and M1 and M2 macrophages in the presence/absence of tumour cells. Using this
+mathematical model, we show that depending on the re- polarisation rates between
+M1 and M2 macrophages, we obtain tumour elimination in the presence of a type-I immune
+response (i.e., more Th1 and M1 cells, compared to the Th2 and M2 cells), or in the
+presence of a type- II immune response (i.e., more Th2 and M2 cells). Moreover, tumour
+elimination is also possible in the presence of a mixed type-I/type-II immune response.
+Tumour growth always occurs in the presence of a type-II immune response, as observed
+experimentally. Finally, tumour dormancy is the result of a delicate balance between
+the pro-tumour effects of M2 cells and the anti-tumour effects of M1 and Th1 cells.To
+cite BioModels Database, please use: BioModels Database: An enhanced, curated and
+annotated resource for published quantitative kinetic models . To the extent possible
+under law, all copyright and related or neighbouring rights to this encoded model
+have been dedicated to the public domain worldwide. Please refer to CC0 Public Domain
+Dedication for more information.
+```
+  H1 notes "Th1"
+  H2 notes "Th2"
+  M1 notes "M1 macrophage"
+  M2 notes "M2 macrophage"
+  ah1 notes "activation rate of Th1 cells 0.001-0.008"
+  ah2 notes "activation rate of Th2 cells 0.001-0.008"
+  am1 notes "activation rate of M1 cells 0.0001-0.01"
+  am2 notes "activation rate of M2 cells 0.0001-0.01"
+  m1 notes "carrying capacity of Th cells"
+  m2 notes "carrying capacity of macrophages"
+  ph1 notes ```
+interaction rate between Th1 cells and type−1 cytokines produced by the M1 cells, 
+which leads to the proliferation of Th1 cells
+```
+  ph2 notes ```
+interaction rate between Th2 cells and type−2 cytokines produced by the M2 cells, 
+which leads to the proliferation of Th2 cells
+```
+  pm1 notes "proliferation rate of M1 cells"
+  pm2 notes ```
+interaction rate between M2 cells and the IL−4 cytokines produced by Th2 cells, 
+which leads to M2 proliferation
+```
+  rm1 notes "M1 → M2 transition rate0.05-0.09"
+  rm2 notes "M2 → M1 transition rate0.05-0.08"
+  eh1 notes "death rate of the Th1 cells"
+  eh2 notes "death rate of the Th2 cells"
+  em1 notes "death rate of the M1 cells"
+  em2 notes "death rate of the M2 cells"
+end
+
+Eftimie2017_1___interaction_of_Th_and_macrophage is "Eftimie2017/1 - interaction of Th and macrophage"

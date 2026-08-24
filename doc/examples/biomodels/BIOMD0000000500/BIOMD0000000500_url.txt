@@ -1,0 +1,170 @@
+// Created by libAntimony v3.2.0
+model *MODEL1311130001()
+
+  // Compartments and Species:
+  compartment default, nucleus;
+  species S1 in nucleus, DNA_000 in nucleus, DNA_100 in nucleus, DNA_010 in nucleus;
+  species DNA_001 in nucleus, DNA_110 in nucleus, DNA_101 in nucleus, DNA_011 in nucleus;
+  species DNA_111 in nucleus, DNA_1B10 in nucleus, DNA_01B1 in nucleus, DNA_1B11 in nucleus;
+  species DNA_11B1 in nucleus, DNA_1B1B1 in nucleus;
+
+  // Assignment Rules:
+  parameter_1 := DNA_010 + DNA_011 + DNA_110 + DNA_111 + DNA_01B1 + DNA_1B10 + DNA_1B11 + DNA_11B1 + DNA_1B1B1;
+
+  // Reactions:
+  DNA1: DNA_000 + S1 -> DNA_100; nucleus*((Kon_NG1*DNA_000*S1 - Koff_NG1*DNA_100)/nucleus);
+  DNA2: DNA_000 + S1 -> DNA_010; nucleus*((Kon_G1*DNA_000*S1 - Koff_G1*DNA_010)/nucleus);
+  DNA3: DNA_000 + S1 -> DNA_001; nucleus*((Kon_NG1*DNA_000*S1 - Koff_NG1*DNA_001)/nucleus);
+  DNA4: DNA_100 + S1 -> DNA_110; nucleus*((Kon_G1*DNA_100*S1 - Koff_G1*DNA_110)/nucleus);
+  DNA5: DNA_100 + S1 -> DNA_101; nucleus*((Kon_NG1*DNA_100*S1 - Koff_NG1*DNA_101)/nucleus);
+  DNA6: DNA_010 + S1 -> DNA_110; nucleus*((Kon_NG1*DNA_010*S1 - Koff_NG1*DNA_110)/nucleus);
+  DNA7: DNA_010 + S1 -> DNA_011; nucleus*((Kon_NG1*DNA_010*S1 - Koff_NG1*DNA_011)/nucleus);
+  DNA8: DNA_001 + S1 -> DNA_101; nucleus*((Kon_NG1*DNA_001*S1 - Koff_NG1*DNA_101)/nucleus);
+  DNA9: DNA_001 + S1 -> DNA_011; nucleus*((Kon_G1*DNA_001*S1 - Koff_G1*DNA_011)/nucleus);
+  DNA10: DNA_110 + S1 -> DNA_111; nucleus*((Kon_NG1*DNA_110*S1 - Koff_NG1*DNA_111)/nucleus);
+  DNA11: DNA_101 + S1 -> DNA_111; nucleus*((Kon_G1*DNA_101*S1 - Koff_G1*DNA_111)/nucleus);
+  DNA12: DNA_011 + S1 -> DNA_111; nucleus*((Kon_NG1*DNA_011*S1 - Koff_NG1*DNA_111)/nucleus);
+  DNA49: DNA_110 -> DNA_1B10; nucleus*((Kon_P1*DNA_110 - Koff_P1*DNA_1B10)/nucleus);
+  DNA50: DNA_011 -> DNA_01B1; nucleus*((Kon_P1*DNA_011 - Koff_P1*DNA_01B1)/nucleus);
+  DNA51: DNA_111 -> DNA_11B1; nucleus*((Kon_P1*DNA_111 - Koff_P1*DNA_11B1)/nucleus);
+  DNA52: DNA_111 -> DNA_1B11; nucleus*((Kon_P1*DNA_111 - Koff_P1*DNA_1B11)/nucleus);
+  DNA53: DNA_11B1 -> DNA_1B1B1; nucleus*((Kon_P1*DNA_11B1 - Koff_P1*DNA_1B1B1)/nucleus);
+  DNA54: DNA_1B11 -> DNA_1B1B1; nucleus*((Kon_P1*DNA_1B11 - Koff_P1*DNA_1B1B1)/nucleus);
+
+  // Species initializations:
+  S1 = 1e-10;
+  DNA_000 = 1e-10;
+  DNA_100 = 0;
+  DNA_010 = 0;
+  DNA_001 = 0;
+  DNA_110 = 0;
+  DNA_101 = 0;
+  DNA_011 = 0;
+  DNA_111 = 0;
+  DNA_1B10 = 0;
+  DNA_01B1 = 0;
+  DNA_1B11 = 0;
+  DNA_11B1 = 0;
+  DNA_1B1B1 = 0;
+
+  // Compartment initializations:
+  default = 1;
+  nucleus = 1;
+
+  // Variable initializations:
+  Kon_P1 = 60000;
+  Koff_P1 = 100;
+  Kon_G1 = 20000000000;
+  Koff_G1 = 100;
+  Kon_NG1 = 20000000000;
+  Koff_NG1 = 20000;
+
+  // Other declarations:
+  var parameter_1;
+  const default, nucleus, Kon_P1, Koff_P1, Kon_G1, Koff_G1, Kon_NG1, Koff_NG1;
+
+  // Display Names:
+  parameter_1 is "GAS_siteOccupancy";
+
+  // SBO terms:
+  S1.sboTerm = 608
+  DNA_000.sboTerm = 354
+  DNA_100.sboTerm = 354
+  DNA_010.sboTerm = 354
+  DNA_001.sboTerm = 354
+  DNA_110.sboTerm = 354
+  DNA_101.sboTerm = 354
+  DNA_011.sboTerm = 354
+  DNA_111.sboTerm = 354
+  DNA_1B10.sboTerm = 354
+  DNA_01B1.sboTerm = 354
+  DNA_1B11.sboTerm = 354
+  DNA_11B1.sboTerm = 354
+  DNA_1B1B1.sboTerm = 354
+  Kon_P1.sboTerm = 341
+  Koff_P1.sboTerm = 338
+  Kon_G1.sboTerm = 341
+  Koff_G1.sboTerm = 338
+  Kon_NG1.sboTerm = 341
+  Koff_NG1.sboTerm = 338
+  parameter_1.sboTerm = 540
+
+  // CV terms:
+  default isVersionOf "http://identifiers.org/go/GO:0005623"
+  nucleus isVersionOf "http://identifiers.org/go/GO:0005634"
+  S1 isVersionOf "http://identifiers.org/uniprot/P42225"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1311130001"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000500"
+  model publication "http://identifiers.org/pubmed/24413774"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000046"
+  model hasTaxon "http://identifiers.org/taxonomy/10090"
+  model isVersionOf "http://identifiers.org/go/GO:0060333"
+  model created "2014-01-07T16:30:58Z"
+  model modified "2014-10-09T16:07:31Z"
+  model creator1.givenName "Nick"
+  model creator1.familyName "Juty"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "juty@ebi.ac.uk"
+  model creator2.givenName "Michelle"
+  model creator2.familyName "Baker"
+  model creator2.organization "University of Nottingham"
+  model creator2.email "pmxmb2@nottingham.ac.uk"
+  model creator3.givenName "Vijayalakshmi"
+  model creator3.familyName "Chelliah"
+  model creator3.organization "EMBL-EBI"
+  model creator3.email "viji@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Begitt2014 - STAT1 cooperative DNA binding - single GAS polymer model 
+
+
+The importance of STAT1-cooperative DNA binding in type 1 and type 2 interferon signalling
+has been studies using experimental and modelling approaches. The authors have developed
+two ODE models to describe STAT1 binding to short promoter regions of DNA, namely
+"single GAS polymer model" and "double GAS polymer model" considering
+binding to single or double GAS sites, respectively. The length of DNA in the single
+GAS model was three sites and four sites in double GAS model. This model correspond
+to the "single GAS polymer model".
+
+
+This model is described in the article:
+
+
+[STAT1-cooperative DNA binding distinguishes type 1 from type 2 interferon signaling.](http://identifiers.org/pubmed/24413774 "Access to this publication") 
+
+
+Begitt A, Droescher M, Meyer T, Schmid CD, Baker M, Antunes F, Owen MR, Naumann R,
+Decker T, Vinkemeier U 
+
+Nat Immunol. 2014 Feb;15(2):168-76. 
+Abstract:
+
+
+STAT1 is an indispensable component of a heterotrimer (ISGF3) and a STAT1 homodimer
+(GAF) that function as transcription regulators in type 1 and type 2 interferon signaling,
+respectively. To investigate the importance of STAT1-cooperative DNA binding, we
+generated gene-targeted mice expressing cooperativity-deficient STAT1 with alanine
+substituted for Phe77. Neither ISGF3 nor GAF bound DNA cooperatively in the STAT1F77A
+mouse strain, but type 1 and type 2 interferon responses were affected differently.
+Type 2 interferon-mediated transcription and antibacterial immunity essentially disappeared
+owing to defective promoter recruitment of GAF. In contrast, STAT1 recruitment to
+ISGF3 binding sites and type 1 interferon-dependent responses, including antiviral
+protection, remained intact. We conclude that STAT1 cooperativity is essential for
+its biological activity and underlies the cellular responses to type 2, but not type
+1 interferon.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identifiedby: [BIOMD0000000500](http://identifiers.org/biomodels.db/BIOMD0000000500) . 
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resourcefor published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication") . 
+
+
+To the extent possible under law, all copyright and related orneighbouring rights
+to this encoded model have been dedicated to the publicdomain worldwide. Please refer
+to [CC0 Public DomainDedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+end
+
+MODEL1311130001 is "Begitt2014 - STAT1 cooperative DNA binding - single GAS polymer model"

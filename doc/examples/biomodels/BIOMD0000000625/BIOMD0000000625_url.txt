@@ -1,0 +1,393 @@
+// Created by libAntimony v3.2.0
+model *Leber2016___Expanded_model_of_Tfh_Tfr_differentiation___Helicobacter_pylori_infection_1_1()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species NaiveCD4 in compartment_, nTreg in compartment_, Tfh in compartment_;
+  species Tfr in compartment_, Bcl6 in compartment_, Blimp1 in compartment_;
+  species FoxP3 in compartment_, STAT3 in compartment_, $STAT5 in compartment_;
+  species $IL2 in compartment_, IL4 in compartment_, IL6 in compartment_;
+  species IL10 in compartment_, IL21 in compartment_, CXCR5 in compartment_;
+  species ICOS in compartment_, TGFb in compartment_, Tgif1 in compartment_;
+  species RXR in compartment_;
+
+  // Reactions:
+  NaiveCD4_Source:  => NaiveCD4; compartment_*NaiveCD4_Source_v;
+  NaiveCD4_Death: NaiveCD4 => ; compartment_*NaiveCD4_Death_k1*NaiveCD4;
+  nTreg_Source:  => nTreg; compartment_*nTreg_Source_v;
+  nTreg_Death: nTreg => ; compartment_*nTreg_Death_k1*nTreg;
+  Tfh_Differentiation: NaiveCD4 => Tfh; compartment_*(Tfh_Differentiation_gamma_*NaiveCD4*Bcl6/(Tfh_Differentiation_alpha + IL10));
+  Tfr_Differentiation: nTreg => Tfr; compartment_*(Tfr_Differentiation_gamma1*nTreg*Bcl6 + Tfr_Differentiation_gamma2*nTreg*CXCR5);
+  Tfh_Death: Tfh => ; compartment_*Tfh_Death_k1*Tfh;
+  Tfr_Death: Tfr => ; compartment_*Tfr_Death_k1*Tfr;
+  Bcl6_Activation:  => Bcl6; compartment_*((Bcl6_Activation_sigma1*ICOS + Bcl6_Activation_sigma2*STAT3)/((Bcl6_Activation_alpha1 + Blimp1)*(Bcl6_Activation_alpha2 + STAT5)*(Bcl6_Activation_alpha3 + RXR)));
+  Blimp1_Activation:  => Blimp1; compartment_*(Blimp1_Activation_sigma*Tfr/(Blimp1_Activation_alpha + Bcl6));
+  FoxP3_Activation:  => FoxP3; compartment_*(FoxP3_Activation_sigma*nTreg);
+  STAT3_Activation:  => STAT3; compartment_*(STAT3_Activation_sigma1*IL6 + STAT3_Activation_sigma2*IL21);
+  STAT5_Activation:  => $STAT5; compartment_*(STAT5_Activation_sigma*IL2);
+  CXCR5_Production:  => CXCR5; compartment_*((CXCR5_Production_sigma1*Tfh + CXCR5_Production_sigma2*Tfr)/(CXCR5_Production_alpha + Blimp1));
+  ICOS_Production:  => ICOS; compartment_*(ICOS_Production_sigma*Tfh);
+  IL2_Production:  => $IL2; compartment_*IL2_Production_v;
+  IL4_Production:  => IL4; compartment_*(IL4_Production_sigma*Tfh);
+  IL6_Production:  => IL6; compartment_*(IL6_Production_sigma1/(IL6_Production_alpha1 + IL4));
+  IL10_Production:  => IL10; compartment_*(IL10_Production_sigma*Tfr);
+  Bcl6_Degradation: Bcl6 => ; compartment_*Bcl6_Degradation_k1*Bcl6;
+  Blimp1_Degradation: Blimp1 => ; compartment_*Blimp1_Degradation_k1*Blimp1;
+  FoxP3_Degradation: FoxP3 => ; compartment_*FoxP3_Degradation_k1*FoxP3;
+  STAT3_Degradation: STAT3 => ; compartment_*STAT3_Degradation_k1*STAT3;
+  STAT5_Degradation: $STAT5 => ; compartment_*STAT5_Degradation_k1*STAT5;
+  CXCR5_Degradation: CXCR5 => ; compartment_*CXCR5_Degradation_k1*CXCR5;
+  ICOS_Degradation: ICOS => ; compartment_*ICOS_Degradation_k1*ICOS;
+  IL2_Degradation: $IL2 => ; compartment_*IL2_Degradation_k1*IL2;
+  IL4_Degradation: IL4 => ; compartment_*IL4_Degradation_k1*IL4;
+  IL6_Degradation: IL6 => ; compartment_*IL6_Degradation_k1*IL6;
+  IL10_Degradation: IL10 => ; compartment_*IL10_Degradation_k1*IL10;
+  IL21_Degradation: IL21 => ; compartment_*IL21_Degradation_k1*IL21;
+  IL21_Production:  => IL21; compartment_*(IL21_Production_sigma*Tfh);
+  TGFb_Production:  => TGFb; compartment_*(TGFb_Production_sigma*IL10);
+  TGFb_Degradation: TGFb => ; compartment_*TGFb_Degradation_k1*TGFb;
+  RXR_Activation:  => RXR; compartment_*(RXR_Activation_sigma*TGFb/(RXR_Activation_alpha + Tgif1));
+  Tgif1_Production:  => Tgif1; compartment_*(Tgif1_Production_sigma*Tfh);
+  RXR_Degradation: RXR => ; compartment_*RXR_Degradation_k1*RXR;
+  Tgif1_Degradation: Tgif1 => ; compartment_*Tgif1_Degradation_k1*Tgif1;
+
+  // Species initializations:
+  NaiveCD4 = 200;
+  nTreg = 100;
+  Tfh = 1;
+  Tfr = 1;
+  Bcl6 = 1;
+  Blimp1 = 1;
+  FoxP3 = 1;
+  STAT3 = 1;
+  STAT5 = 0;
+  IL2 = 0.0001;
+  IL4 = 1;
+  IL6 = 1;
+  IL10 = 1;
+  IL21 = 1;
+  CXCR5 = 1;
+  ICOS = 1;
+  TGFb = 1;
+  Tgif1 = 1;
+  RXR = 1;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  NaiveCD4_Source_v = 100;
+  NaiveCD4_Death_k1 = 0.035655;
+  nTreg_Source_v = 10;
+  nTreg_Death_k1 = 0.03;
+  Tfh_Differentiation_alpha = 0.1;
+  Tfh_Differentiation_gamma_ = 0.364318;
+  Tfr_Differentiation_gamma1 = 0.0555708;
+  Tfr_Differentiation_gamma2 = 0.111444;
+  Tfh_Death_k1 = 0.03;
+  Tfr_Death_k1 = 0.03;
+  Bcl6_Activation_alpha1 = 0.20001;
+  Bcl6_Activation_alpha2 = 1.36752;
+  Bcl6_Activation_alpha3 = 0.1253;
+  Bcl6_Activation_sigma1 = 3.24417;
+  Bcl6_Activation_sigma2 = 3.2195;
+  Blimp1_Activation_alpha = 2.386;
+  Blimp1_Activation_sigma = 3.59995;
+  FoxP3_Activation_sigma = 0.1;
+  STAT3_Activation_sigma1 = 0.1253;
+  STAT3_Activation_sigma2 = 0.1;
+  STAT5_Activation_sigma = 10;
+  CXCR5_Production_alpha = 0.0539319;
+  CXCR5_Production_sigma1 = 3.0403;
+  CXCR5_Production_sigma2 = 2.92243;
+  ICOS_Production_sigma = 0.01787;
+  IL2_Production_v = 0.1;
+  IL4_Production_sigma = 0.014555;
+  IL6_Production_alpha1 = 0.43475;
+  IL6_Production_sigma1 = 0.9901;
+  IL10_Production_sigma = 0.0677;
+  Bcl6_Degradation_k1 = 0.16373;
+  Blimp1_Degradation_k1 = 0.1106;
+  FoxP3_Degradation_k1 = 0.1;
+  STAT3_Degradation_k1 = 0.1;
+  STAT5_Degradation_k1 = 0.1;
+  CXCR5_Degradation_k1 = 0.1;
+  ICOS_Degradation_k1 = 0.1;
+  IL2_Degradation_k1 = 0.1;
+  IL4_Degradation_k1 = 0.1;
+  IL6_Degradation_k1 = 0.69675;
+  IL10_Degradation_k1 = 0.1;
+  IL21_Degradation_k1 = 0.1;
+  IL21_Production_sigma = 0.06005;
+  TGFb_Production_sigma = 0.1;
+  TGFb_Degradation_k1 = 0.1;
+  RXR_Activation_alpha = 3.04985;
+  RXR_Activation_sigma = 0.05;
+  Tgif1_Production_sigma = 0.1;
+  RXR_Degradation_k1 = 0.08465;
+  Tgif1_Degradation_k1 = 0.1;
+
+  // Other declarations:
+  const compartment_;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  NaiveCD4_Source is "NaiveCD4 Source";
+  NaiveCD4_Death is "NaiveCD4 Death";
+  nTreg_Source is "nTreg Source";
+  nTreg_Death is "nTreg Death";
+  Tfh_Differentiation is "Tfh Differentiation";
+  Tfr_Differentiation is "Tfr Differentiation";
+  Tfh_Death is "Tfh Death";
+  Tfr_Death is "Tfr Death";
+  Bcl6_Activation is "Bcl6 Activation";
+  Blimp1_Activation is "Blimp1 Activation";
+  FoxP3_Activation is "FoxP3 Activation";
+  STAT3_Activation is "STAT3 Activation";
+  STAT5_Activation is "STAT5 Activation";
+  CXCR5_Production is "CXCR5 Production";
+  ICOS_Production is "ICOS Production";
+  IL2_Production is "IL2 Production";
+  IL4_Production is "IL4 Production";
+  IL6_Production is "IL6 Production";
+  IL10_Production is "IL10 Production";
+  Bcl6_Degradation is "Bcl6 Degradation";
+  Blimp1_Degradation is "Blimp1 Degradation";
+  FoxP3_Degradation is "FoxP3 Degradation";
+  STAT3_Degradation is "STAT3 Degradation";
+  STAT5_Degradation is "STAT5 Degradation";
+  CXCR5_Degradation is "CXCR5 Degradation";
+  ICOS_Degradation is "ICOS Degradation";
+  IL2_Degradation is "IL2 Degradation";
+  IL4_Degradation is "IL4 Degradation";
+  IL6_Degradation is "IL6 Degradation";
+  IL10_Degradation is "IL10 Degradation";
+  IL21_Degradation is "IL21 Degradation";
+  IL21_Production is "IL21 Production";
+  TGFb_Production is "TGFb Production";
+  TGFb_Degradation is "TGFb Degradation";
+  RXR_Activation is "RXR Activation";
+  Tgif1_Production is "Tgif1 Production";
+  RXR_Degradation is "RXR Degradation";
+  Tgif1_Degradation is "Tgif1 Degradation";
+
+  // SBO terms:
+  NaiveCD4_Source.sboTerm = 393
+  NaiveCD4_Source_v.sboTerm = 485
+  NaiveCD4_Death.sboTerm = 291
+  NaiveCD4_Death_k1.sboTerm = 485
+  nTreg_Source.sboTerm = 393
+  nTreg_Source_v.sboTerm = 485
+  nTreg_Death.sboTerm = 291
+  nTreg_Death_k1.sboTerm = 485
+  Tfh_Death.sboTerm = 291
+  Tfh_Death_k1.sboTerm = 485
+  Tfr_Death.sboTerm = 291
+  Tfr_Death_k1.sboTerm = 485
+  Bcl6_Activation.sboTerm = 393
+  Blimp1_Activation.sboTerm = 393
+  FoxP3_Activation.sboTerm = 393
+  STAT3_Activation.sboTerm = 393
+  STAT5_Activation.sboTerm = 393
+  CXCR5_Production.sboTerm = 393
+  ICOS_Production.sboTerm = 393
+  IL2_Production.sboTerm = 393
+  IL2_Production_v.sboTerm = 485
+  IL4_Production.sboTerm = 393
+  IL6_Production.sboTerm = 393
+  IL10_Production.sboTerm = 393
+  IL10_Production_sigma.sboTerm = 485
+  Bcl6_Degradation.sboTerm = 179
+  Bcl6_Degradation_k1.sboTerm = 485
+  Blimp1_Degradation.sboTerm = 179
+  Blimp1_Degradation_k1.sboTerm = 485
+  FoxP3_Degradation.sboTerm = 179
+  FoxP3_Degradation_k1.sboTerm = 485
+  STAT3_Degradation.sboTerm = 179
+  STAT3_Degradation_k1.sboTerm = 485
+  STAT5_Degradation.sboTerm = 179
+  STAT5_Degradation_k1.sboTerm = 485
+  CXCR5_Degradation.sboTerm = 179
+  CXCR5_Degradation_k1.sboTerm = 485
+  ICOS_Degradation.sboTerm = 179
+  ICOS_Degradation_k1.sboTerm = 485
+  IL2_Degradation.sboTerm = 179
+  IL2_Degradation_k1.sboTerm = 485
+  IL4_Degradation.sboTerm = 179
+  IL4_Degradation_k1.sboTerm = 485
+  IL6_Degradation.sboTerm = 179
+  IL6_Degradation_k1.sboTerm = 485
+  IL10_Degradation.sboTerm = 179
+  IL10_Degradation_k1.sboTerm = 485
+  IL21_Degradation.sboTerm = 179
+  IL21_Degradation_k1.sboTerm = 485
+  TGFb_Production.sboTerm = 393
+  TGFb_Degradation.sboTerm = 179
+  TGFb_Degradation_k1.sboTerm = 485
+  RXR_Activation.sboTerm = 393
+  Tgif1_Production.sboTerm = 393
+  RXR_Degradation.sboTerm = 179
+  RXR_Degradation_k1.sboTerm = 485
+  Tgif1_Degradation.sboTerm = 179
+  Tgif1_Degradation_k1.sboTerm = 485
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/bto/BTO:0005568"
+  NaiveCD4 isVersionOf "http://identifiers.org/uniprot/P06332"
+  nTreg isVersionOf "http://identifiers.org/cl/CL:0002677"
+  Tfh isVersionOf "http://identifiers.org/cl/CL:0002038"
+  Tfr isPartOf "http://identifiers.org/cl/CL:0002677"
+  Bcl6 isVersionOf "http://identifiers.org/uniprot/P41183"
+  Blimp1 isVersionOf "http://identifiers.org/uniprot/Q60636"
+  FoxP3 isVersionOf "http://identifiers.org/uniprot/Q99JB6"
+  STAT3 isVersionOf "http://identifiers.org/uniprot/P42227"
+  STAT5 isVersionOf "http://identifiers.org/uniprot/P42232"
+  IL2 isVersionOf "http://identifiers.org/uniprot/P04351"
+  IL4 isVersionOf "http://identifiers.org/uniprot/P07750"
+  IL6 isVersionOf "http://identifiers.org/uniprot/P08505"
+  IL10 isVersionOf "http://identifiers.org/uniprot/P18893"
+  IL21 isVersionOf "http://identifiers.org/uniprot/Q9ES17"
+  CXCR5 isVersionOf "http://identifiers.org/uniprot/Q04683"
+  ICOS isVersionOf "http://identifiers.org/uniprot/Q9WVS0"
+  TGFb isVersionOf "http://identifiers.org/uniprot/Q64729"
+  Tgif1 isVersionOf "http://identifiers.org/uniprot/P70284"
+  RXR isVersionOf "http://identifiers.org/uniprot/P28700"
+  Tfh_Differentiation isVersionOf "http://identifiers.org/go/GO:0061470"
+  Tfr_Differentiation isVersionOf "http://identifiers.org/go/GO:0045066"
+  Tfh_Death isVersionOf "http://identifiers.org/go/GO:0070231"
+  Tfr_Death isVersionOf "http://identifiers.org/go/GO:0070238"
+  Bcl6_Degradation identity "http://identifiers.org/go/GO:0030163"
+  Blimp1_Degradation identity "http://identifiers.org/go/GO:0030163"
+  FoxP3_Degradation identity "http://identifiers.org/go/GO:0030163"
+  STAT3_Degradation identity "http://identifiers.org/go/GO:0030163"
+  STAT5_Degradation identity "http://identifiers.org/go/GO:0030163"
+  CXCR5_Degradation identity "http://identifiers.org/go/GO:0030163"
+  ICOS_Degradation identity "http://identifiers.org/go/GO:0030163"
+  IL2_Degradation identity "http://identifiers.org/go/GO:0030163"
+  IL4_Degradation identity "http://identifiers.org/go/GO:0030163"
+  IL6_Degradation identity "http://identifiers.org/go/GO:0030163"
+  IL10_Degradation identity "http://identifiers.org/go/GO:0030163"
+  IL21_Degradation identity "http://identifiers.org/go/GO:0030163"
+  IL21_Production isVersionOf "http://identifiers.org/go/GO:0072619"
+  TGFb_Degradation identity "http://identifiers.org/go/GO:0030163"
+  RXR_Degradation identity "http://identifiers.org/go/GO:0030163"
+  Tgif1_Degradation identity "http://identifiers.org/go/GO:0030163"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1603010000"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000625"
+  model publication "http://identifiers.org/pubmed/26947272"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000046"
+  model isVersionOf "http://identifiers.org/go/GO:0044419"
+  model occursIn "http://identifiers.org/bto/BTO:0005568"
+  model hasTaxon "http://identifiers.org/taxonomy/10090",
+                 "http://identifiers.org/taxonomy/210"
+  model hasProperty "http://identifiers.org/doid/DOID:1724",
+                    "http://identifiers.org/doid/DOID:750"
+  model created "2015-05-25T11:11:04Z"
+  model modified "2017-06-16T19:20:21Z"
+  model creator1.givenName "Andrew"
+  model creator1.familyName "Leber"
+  model creator1.organization "Biocomplexity Institute at Virginia Tech"
+  model creator1.email "ajleber@vt.edu"
+  model creator2.givenName "Varun"
+  model creator2.familyName "Kothamachu"
+  model creator2.organization "Babraham Institute"
+  model creator2.email "kothamav@babraham.ac.uk"
+
+  // Notes:
+  model notes ```
+Leber2016 - Expanded model of Tfh-Tfrdifferentiation - Helicobacter pylori infection
+
+
+The parameters used in the model wereobtained from experiments conducted by the authors,
+previouspublications [ [1](http://identifiers.org/pubmed/19628815), [2](http://identifiers.org/pubmed/24590764), [3](http://identifiers.org/pubmed/19631565)] andparameter optimisation carried out in the paper using particleswarm and genetic algorithms. 
+
+
+This model is described in the article:
+
+
+[Bistability analyses of CD4+ T follicular helper and regulatory cells during Helicobacter pylori infection.](http://identifiers.org/pubmed/26947272 "Access to this publication") 
+
+
+Leber A, Abedi V, Hontecillas R, Viladomiu M, Hoops S, Ciupe S, Caughman J, Andrew
+T, Bassaganya-Riera J. 
+
+J. Theor. Biol. 2016 Jun; 398: 74-84 
+Abstract:
+
+
+T follicular helper (Tfh) cells are a highly plastic subset of CD4+ T cells specialized
+in providing B cell help and promoting inflammatory and effector responses during
+infectious and immune-mediate diseases. Helicobacter pylori is the dominant
+member of the gastric microbiota and exerts both beneficial and harmful effects
+on the host. Chronic inflammation in the context of H. pylori has been linked
+to an upregulation in T helper (Th)1 and Th17 CD4+ T cell phenotypes, controlled
+in part by the cytokine, interleukin-21. This study investigates the differentiation
+and regulation of Tfh cells, major producers of IL-21, in the immune response
+to H. pylori challenge. To better understand the conditions influencing the 
+promotion and inhibition of a chronically elevated Tfh population, we used top-down
+and bottom-up approaches to develop computational models of Tfh and T follicular
+regulatory (Tfr) cell differentiation. Stability analysis was used to characterize
+the presence of two bi-stable steady states in the calibrated Tfh/Tfr models.
+Stochastic simulation was used to illustrate the ability of the parameter set
+to dictate two distinct behavioral patterns. Furthermore, sensitivity analysis
+helped identify the importance of various parameters on the establishment of
+Tfh and Tfr cell populations. The core network model was expanded into a more
+comprehensive and predictive model by including cytokine production and signaling
+pathways. From the expanded network, the interaction between TGFB-Induced Factor
+Homeobox 1 (Tgif1) and the retinoid X receptor (RXR) was displayed to exert control
+over the determination of the Tfh response. Model simulations predict that Tgif1
+and RXR respectively induce and curtail Tfh responses. This computational hypothesis
+was validated experimentally by assaying Tgif1, RXR and Tfh in stomachs of mice
+infected with H. pylori.
+
+
+The impulse of RXR as shown in the paper(figure 7C) can be implemented by creating
+an event in the curatedSBML file. 
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000625](http://identifiers.org/biomodels.db/BIOMD0000000625).
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication").
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+  NaiveCD4_Source notes "This reaction represents constitutive **naive CD4 cell production**."
+  NaiveCD4_Death notes "This reaction represents the constitutive **naiveCD4 cell death**."
+  nTreg_Source notes "This reaction represents constitutive **nTreg cell production**."
+  nTreg_Death notes "This reaction represents the constitutive **nTreg cell death**."
+  Tfr_Differentiation notes "This reaction represents differentiation of **Treg to Tfr** by Bcl-6 and CXCR-5."
+  Bcl6_Activation notes ```
+This reaction represents **Bcl6 activation** by STAT3 and ICOS, and inhibition
+of Bcl6 activation by STAT5, RXR and Blimp1.
+```
+  Blimp1_Activation notes ```
+This reaction represents **Blimp1 activation** by Tfr, and inhibition of Blimp1
+activation by Bcl-6
+```
+  FoxP3_Activation notes "This reaction represents **FoxP3 activation** by nTreg"
+  STAT3_Activation notes "This reaction represents **STAT3 activation** by IL6 and IL21."
+  STAT5_Activation notes "This reaction represents **STAT5 activation** by IL21."
+  CXCR5_Production notes ```
+This reaction represents **CXCR5 production** by Tfh and Tfr, and the inhibition
+of CXCR5 activation by Blimp1.
+```
+  ICOS_Production notes "This reaction represents **ICOS production** by Tfh."
+  IL4_Production notes "This reaction represents **IL4 production**, positively regulated by Tfh."
+  IL6_Production notes "This reaction represents **IL6 production** inhibited by IL4."
+  IL10_Production notes "This reaction represents **IL10 production** by Tfr"
+  IL21_Production notes "This reaction represents **IL21 production**, positively regulated by Tfh."
+  TGFb_Production notes "This reaction represents **TGFb activation ** by IL10."
+  Tgif1_Production notes "This reaction represents **Tgif1 activation** positively regulated by Tfh."
+end
+
+Leber2016___Expanded_model_of_Tfh_Tfr_differentiation___Helicobacter_pylori_infection_1_1 is "Leber2016 - Expanded model of Tfh-Tfr differentiation - Helicobacter pylori infection"

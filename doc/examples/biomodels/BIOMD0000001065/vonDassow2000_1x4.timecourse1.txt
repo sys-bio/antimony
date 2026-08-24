@@ -1,0 +1,2096 @@
+// Created by libAntimony v3.2.0
+model *Segment_Polarity_Network_model_on_1x4_grid()
+
+  // Compartments and Species:
+  compartment cell_0_0, cell_0_1, cell_0_2, cell_0_3;
+  species en_0_0 in cell_0_0, EN_0_0 in cell_0_0, ci_0_0 in cell_0_0, CI_0_0 in cell_0_0;
+  species CN_0_0 in cell_0_0, hh_0_0 in cell_0_0, HH1_0_0 in cell_0_0, HH2_0_0 in cell_0_0;
+  species HH3_0_0 in cell_0_0, HH4_0_0 in cell_0_0, HH5_0_0 in cell_0_0, HH6_0_0 in cell_0_0;
+  species ptc_0_0 in cell_0_0, PTC1_0_0 in cell_0_0, PTC2_0_0 in cell_0_0;
+  species PTC3_0_0 in cell_0_0, PTC4_0_0 in cell_0_0, PTC5_0_0 in cell_0_0;
+  species PTC6_0_0 in cell_0_0, wg_0_0 in cell_0_0, IWG_0_0 in cell_0_0, EWG1_0_0 in cell_0_0;
+  species EWG2_0_0 in cell_0_0, EWG3_0_0 in cell_0_0, EWG4_0_0 in cell_0_0;
+  species EWG5_0_0 in cell_0_0, EWG6_0_0 in cell_0_0, PH1_0_0 in cell_0_0;
+  species PH2_0_0 in cell_0_0, PH3_0_0 in cell_0_0, PH4_0_0 in cell_0_0, PH5_0_0 in cell_0_0;
+  species PH6_0_0 in cell_0_0, $B_0_0 in cell_0_0, $PTC_T_0_0 in cell_0_0;
+  species $EWG_T_0_0 in cell_0_0, EWG5_0_3 in cell_0_3, EWG6_0_3 in cell_0_3;
+  species EWG2_0_1 in cell_0_1, EWG3_0_1 in cell_0_1, $PH_T_0_0 in cell_0_0;
+  species en_0_1 in cell_0_1, EN_0_1 in cell_0_1, ci_0_1 in cell_0_1, CI_0_1 in cell_0_1;
+  species CN_0_1 in cell_0_1, hh_0_1 in cell_0_1, HH1_0_1 in cell_0_1, HH2_0_1 in cell_0_1;
+  species HH3_0_1 in cell_0_1, HH4_0_1 in cell_0_1, HH5_0_1 in cell_0_1, HH6_0_1 in cell_0_1;
+  species ptc_0_1 in cell_0_1, PTC1_0_1 in cell_0_1, PTC2_0_1 in cell_0_1;
+  species PTC3_0_1 in cell_0_1, PTC4_0_1 in cell_0_1, PTC5_0_1 in cell_0_1;
+  species PTC6_0_1 in cell_0_1, wg_0_1 in cell_0_1, IWG_0_1 in cell_0_1, EWG1_0_1 in cell_0_1;
+  species EWG4_0_1 in cell_0_1, EWG5_0_1 in cell_0_1, EWG6_0_1 in cell_0_1;
+  species PH1_0_1 in cell_0_1, PH2_0_1 in cell_0_1, PH3_0_1 in cell_0_1, PH4_0_1 in cell_0_1;
+  species PH5_0_1 in cell_0_1, PH6_0_1 in cell_0_1, $B_0_1 in cell_0_1, $PTC_T_0_1 in cell_0_1;
+  species $EWG_T_0_1 in cell_0_0, EWG2_0_2 in cell_0_2, EWG3_0_2 in cell_0_2;
+  species $PH_T_0_1 in cell_0_1, en_0_2 in cell_0_2, EN_0_2 in cell_0_2, ci_0_2 in cell_0_2;
+  species CI_0_2 in cell_0_2, CN_0_2 in cell_0_2, hh_0_2 in cell_0_2, HH1_0_2 in cell_0_2;
+  species HH2_0_2 in cell_0_2, HH3_0_2 in cell_0_2, HH4_0_2 in cell_0_2, HH5_0_2 in cell_0_2;
+  species HH6_0_2 in cell_0_2, ptc_0_2 in cell_0_2, PTC1_0_2 in cell_0_2;
+  species PTC2_0_2 in cell_0_2, PTC3_0_2 in cell_0_2, PTC4_0_2 in cell_0_2;
+  species PTC5_0_2 in cell_0_2, PTC6_0_2 in cell_0_2, wg_0_2 in cell_0_2;
+  species IWG_0_2 in cell_0_2, EWG1_0_2 in cell_0_2, EWG4_0_2 in cell_0_2;
+  species EWG5_0_2 in cell_0_2, EWG6_0_2 in cell_0_2, PH1_0_2 in cell_0_2;
+  species PH2_0_2 in cell_0_2, PH3_0_2 in cell_0_2, PH4_0_2 in cell_0_2, PH5_0_2 in cell_0_2;
+  species PH6_0_2 in cell_0_2, $B_0_2 in cell_0_2, $PTC_T_0_2 in cell_0_2;
+  species $EWG_T_0_2 in cell_0_0, EWG2_0_3 in cell_0_3, EWG3_0_3 in cell_0_3;
+  species $PH_T_0_2 in cell_0_2, en_0_3 in cell_0_3, EN_0_3 in cell_0_3, ci_0_3 in cell_0_3;
+  species CI_0_3 in cell_0_3, CN_0_3 in cell_0_3, hh_0_3 in cell_0_3, HH1_0_3 in cell_0_3;
+  species HH2_0_3 in cell_0_3, HH3_0_3 in cell_0_3, HH4_0_3 in cell_0_3, HH5_0_3 in cell_0_3;
+  species HH6_0_3 in cell_0_3, ptc_0_3 in cell_0_3, PTC1_0_3 in cell_0_3;
+  species PTC2_0_3 in cell_0_3, PTC3_0_3 in cell_0_3, PTC4_0_3 in cell_0_3;
+  species PTC5_0_3 in cell_0_3, PTC6_0_3 in cell_0_3, wg_0_3 in cell_0_3;
+  species IWG_0_3 in cell_0_3, EWG1_0_3 in cell_0_3, EWG4_0_3 in cell_0_3;
+  species PH1_0_3 in cell_0_3, PH2_0_3 in cell_0_3, PH3_0_3 in cell_0_3, PH4_0_3 in cell_0_3;
+  species PH5_0_3 in cell_0_3, PH6_0_3 in cell_0_3, $B_0_3 in cell_0_3, $PTC_T_0_3 in cell_0_3;
+  species $EWG_T_0_3 in cell_0_0, $PH_T_0_3 in cell_0_3;
+
+  // Assignment Rules:
+  PTC_T_0_0 := PTC1_0_0 + PTC2_0_0 + PTC3_0_0 + PTC4_0_0 + PTC5_0_0 + PTC6_0_0;
+  EWG_T_0_0 := EWG4_0_0 + EWG5_0_3 + EWG6_0_3 + EWG1_0_0 + EWG2_0_1 + EWG3_0_1;
+  PH_T_0_0 := PH1_0_0 + PH2_0_0 + PH3_0_0 + PH4_0_0 + PH5_0_0 + PH6_0_0;
+  PTC_T_0_1 := PTC1_0_1 + PTC2_0_1 + PTC3_0_1 + PTC4_0_1 + PTC5_0_1 + PTC6_0_1;
+  EWG_T_0_1 := EWG4_0_1 + EWG5_0_0 + EWG6_0_0 + EWG1_0_1 + EWG2_0_2 + EWG3_0_2;
+  PH_T_0_1 := PH1_0_1 + PH2_0_1 + PH3_0_1 + PH4_0_1 + PH5_0_1 + PH6_0_1;
+  PTC_T_0_2 := PTC1_0_2 + PTC2_0_2 + PTC3_0_2 + PTC4_0_2 + PTC5_0_2 + PTC6_0_2;
+  EWG_T_0_2 := EWG4_0_2 + EWG5_0_1 + EWG6_0_1 + EWG1_0_2 + EWG2_0_3 + EWG3_0_3;
+  PH_T_0_2 := PH1_0_2 + PH2_0_2 + PH3_0_2 + PH4_0_2 + PH5_0_2 + PH6_0_2;
+  PTC_T_0_3 := PTC1_0_3 + PTC2_0_3 + PTC3_0_3 + PTC4_0_3 + PTC5_0_3 + PTC6_0_3;
+  EWG_T_0_3 := EWG4_0_3 + EWG5_0_2 + EWG6_0_2 + EWG1_0_3 + EWG2_0_0 + EWG3_0_0;
+  PH_T_0_3 := PH1_0_3 + PH2_0_3 + PH3_0_3 + PH4_0_3 + PH5_0_3 + PH6_0_3;
+  T0_H_EN := T0/H_EN;
+  T0_H_ci := T0/H_ci;
+  T0_H_IWG := T0/H_IWG;
+  T0_H_EWG := T0/H_EWG;
+  T0_H_hh := T0/H_hh;
+  T0_H_PTC := T0/H_PTC;
+  T0_H_wg := T0/H_wg;
+  T0_H_ptc := T0/H_ptc;
+  T0_H_CI := T0/H_CI;
+  T0_H_PH := T0/H_PH;
+  T0_H_en := T0/H_en;
+  T0_H_HH := T0/H_HH;
+  T0_6H_HH := T0/(6*H_HH);
+  T0_6H_PTC := T0/(6*H_PTC);
+  T0_r_ExoWG_6 := T0*r_ExoWG/6;
+  T0_r_EndoWG := T0*r_EndoWG;
+  T0_C_CI := T0*C_CI;
+  T0_r_MxferWG := T0*r_MxferWG;
+  T0_r_LMxferWG := T0*r_LMxferWG;
+  T0_r_LMxferHH := T0*r_LMxferHH;
+  T0_kappa_PTCHH_HH_0 := T0*kappa_PTCHH*HH_0;
+  T0_kappa_PTCHH_PTC_0 := T0*kappa_PTCHH*PTC_0;
+
+  // Reactions:
+  R01_0_0:  => en_0_0; cell_0_0*(T0_H_en*(EWG_T_0_0*(1 - CN_0_0^nu_CNen/(kappa_CNen^nu_CNen + CN_0_0^nu_CNen))^nu_WGen/(kappa_WGen^nu_WGen + EWG_T_0_0*(1 - CN_0_0^nu_CNen/(kappa_CNen^nu_CNen + CN_0_0^nu_CNen))^nu_WGen)));
+  R02_0_0: en_0_0 => ; cell_0_0*T0_H_en*en_0_0;
+  R03_0_0:  => EN_0_0; cell_0_0*(T0_H_EN*en_0_0);
+  R04_0_0: EN_0_0 => ; cell_0_0*T0_H_EN*EN_0_0;
+  R05_0_0:  => ci_0_0; cell_0_0*(T0_H_ci*(B_0_0*(1 - EN_0_0^nu_ENci/(kappa_ENci^nu_ENci + EN_0_0^nu_ENci))^nu_Bci/(kappa_Bci^nu_Bci + B_0_0*(1 - EN_0_0^nu_ENci/(kappa_ENci^nu_ENci + EN_0_0^nu_ENci))^nu_Bci)));
+  R06_0_0: ci_0_0 => ; cell_0_0*T0_H_ci*ci_0_0;
+  R07_0_0:  => CI_0_0; cell_0_0*(T0_H_CI*ci_0_0);
+  R08_0_0: CI_0_0 => ; cell_0_0*T0_H_CI*CI_0_0;
+  R09_0_0: CI_0_0 => CN_0_0; cell_0_0*(T0_C_CI*CI_0_0*PTC_T_0_0^nu_PTCCI/(kappa_PTCCI^nu_PTCCI + PTC_T_0_0^nu_PTCCI));
+  R10_0_0: CN_0_0 => ; cell_0_0*T0_H_CI*CN_0_0;
+  R11_0_0:  => hh_0_0; cell_0_0*(T0_H_hh*(EN_0_0*(1 - CN_0_0^nu_CNhh/(kappa_CNhh^nu_CNhh + CN_0_0^nu_CNhh))^nu_ENhh/(kappa_ENhh^nu_ENhh + EN_0_0*(1 - CN_0_0^nu_CNhh/(kappa_CNhh^nu_CNhh + CN_0_0^nu_CNhh))^nu_ENhh)));
+  R12_0_0: hh_0_0 => ; cell_0_0*T0_H_hh*hh_0_0;
+  R13_1_0_0:  => HH1_0_0; cell_0_0*(T0_6H_HH*hh_0_0);
+  R13_2_0_0:  => HH2_0_0; cell_0_0*(T0_6H_HH*hh_0_0);
+  R13_3_0_0:  => HH3_0_0; cell_0_0*(T0_6H_HH*hh_0_0);
+  R13_4_0_0:  => HH4_0_0; cell_0_0*(T0_6H_HH*hh_0_0);
+  R13_5_0_0:  => HH5_0_0; cell_0_0*(T0_6H_HH*hh_0_0);
+  R13_6_0_0:  => HH6_0_0; cell_0_0*(T0_6H_HH*hh_0_0);
+  R14_1_0_0: HH1_0_0 => ; cell_0_0*T0_H_HH*HH1_0_0;
+  R14_2_0_0: HH2_0_0 => ; cell_0_0*T0_H_HH*HH2_0_0;
+  R14_3_0_0: HH3_0_0 => ; cell_0_0*T0_H_HH*HH3_0_0;
+  R14_4_0_0: HH4_0_0 => ; cell_0_0*T0_H_HH*HH4_0_0;
+  R14_5_0_0: HH5_0_0 => ; cell_0_0*T0_H_HH*HH5_0_0;
+  R14_6_0_0: HH6_0_0 => ; cell_0_0*T0_H_HH*HH6_0_0;
+  R15_0_0:  => ptc_0_0; cell_0_0*(T0_H_ptc*(CI_0_0*(1 - CN_0_0^nu_CNptc/(kappa_CNptc^nu_CNptc + CN_0_0^nu_CNptc))^nu_CIptc/(kappa_CIptc^nu_CIptc + CI_0_0*(1 - CN_0_0^nu_CNptc/(kappa_CNptc^nu_CNptc + CN_0_0^nu_CNptc))^nu_CIptc)));
+  R16_0_0: ptc_0_0 => ; cell_0_0*T0_H_ptc*ptc_0_0;
+  R17_1_0_0:  => PTC1_0_0; cell_0_0*(T0_6H_PTC*ptc_0_0);
+  R17_2_0_0:  => PTC2_0_0; cell_0_0*(T0_6H_PTC*ptc_0_0);
+  R17_3_0_0:  => PTC3_0_0; cell_0_0*(T0_6H_PTC*ptc_0_0);
+  R17_4_0_0:  => PTC4_0_0; cell_0_0*(T0_6H_PTC*ptc_0_0);
+  R17_5_0_0:  => PTC5_0_0; cell_0_0*(T0_6H_PTC*ptc_0_0);
+  R17_6_0_0:  => PTC6_0_0; cell_0_0*(T0_6H_PTC*ptc_0_0);
+  R18_1_0_0: PTC1_0_0 => ; cell_0_0*T0_H_PTC*PTC1_0_0;
+  R18_2_0_0: PTC2_0_0 => ; cell_0_0*T0_H_PTC*PTC2_0_0;
+  R18_3_0_0: PTC3_0_0 => ; cell_0_0*T0_H_PTC*PTC3_0_0;
+  R18_4_0_0: PTC4_0_0 => ; cell_0_0*T0_H_PTC*PTC4_0_0;
+  R18_5_0_0: PTC5_0_0 => ; cell_0_0*T0_H_PTC*PTC5_0_0;
+  R18_6_0_0: PTC6_0_0 => ; cell_0_0*T0_H_PTC*PTC6_0_0;
+  R19_0_0:  => wg_0_0; cell_0_0*(T0_H_wg*((alpha_CIwg*(CI_0_0*(1 - CN_0_0^nu_CNwg/(kappa_CNwg^nu_CNwg + CN_0_0^nu_CNwg))^nu_CIwg/(kappa_CIwg^nu_CIwg + CI_0_0*(1 - CN_0_0^nu_CNwg/(kappa_CNwg^nu_CNwg + CN_0_0^nu_CNwg))^nu_CIwg)) + alpha_WGwg*IWG_0_0^nu_WGwg/(kappa_WGwg^nu_WGwg + IWG_0_0^nu_WGwg))/(1 + alpha_CIwg*(CI_0_0*(1 - CN_0_0^nu_CNwg/(kappa_CNwg^nu_CNwg + CN_0_0^nu_CNwg))^nu_CIwg/(kappa_CIwg^nu_CIwg + CI_0_0*(1 - CN_0_0^nu_CNwg/(kappa_CNwg^nu_CNwg + CN_0_0^nu_CNwg))^nu_CIwg)) + alpha_WGwg*IWG_0_0^nu_WGwg/(kappa_WGwg^nu_WGwg + IWG_0_0^nu_WGwg))));
+  R20_0_0: wg_0_0 => ; cell_0_0*T0_H_wg*wg_0_0;
+  R21_0_0:  => IWG_0_0; cell_0_0*(T0_H_IWG*wg_0_0);
+  R22_0_0: IWG_0_0 => ; cell_0_0*T0_H_IWG*IWG_0_0;
+  R23_1_0_0: IWG_0_0 => EWG1_0_0; cell_0_0*T0_r_ExoWG_6*IWG_0_0;
+  R23_2_0_0: IWG_0_0 => EWG2_0_0; cell_0_0*T0_r_ExoWG_6*IWG_0_0;
+  R23_3_0_0: IWG_0_0 => EWG3_0_0; cell_0_0*T0_r_ExoWG_6*IWG_0_0;
+  R23_4_0_0: IWG_0_0 => EWG4_0_0; cell_0_0*T0_r_ExoWG_6*IWG_0_0;
+  R23_5_0_0: IWG_0_0 => EWG5_0_0; cell_0_0*T0_r_ExoWG_6*IWG_0_0;
+  R23_6_0_0: IWG_0_0 => EWG6_0_0; cell_0_0*T0_r_ExoWG_6*IWG_0_0;
+  R24_1_0_0: EWG1_0_0 => IWG_0_0; cell_0_0*T0_r_EndoWG*EWG1_0_0;
+  R24_2_0_0: EWG2_0_0 => IWG_0_0; cell_0_0*T0_r_EndoWG*EWG2_0_0;
+  R24_3_0_0: EWG3_0_0 => IWG_0_0; cell_0_0*T0_r_EndoWG*EWG3_0_0;
+  R24_4_0_0: EWG4_0_0 => IWG_0_0; cell_0_0*T0_r_EndoWG*EWG4_0_0;
+  R24_5_0_0: EWG5_0_0 => IWG_0_0; cell_0_0*T0_r_EndoWG*EWG5_0_0;
+  R24_6_0_0: EWG6_0_0 => IWG_0_0; cell_0_0*T0_r_EndoWG*EWG6_0_0;
+  R25_1_0_0: EWG1_0_0 => ; cell_0_0*T0_H_EWG*EWG1_0_0;
+  R25_2_0_0: EWG2_0_0 => ; cell_0_0*T0_H_EWG*EWG2_0_0;
+  R25_3_0_0: EWG3_0_0 => ; cell_0_0*T0_H_EWG*EWG3_0_0;
+  R25_4_0_0: EWG4_0_0 => ; cell_0_0*T0_H_EWG*EWG4_0_0;
+  R25_5_0_0: EWG5_0_0 => ; cell_0_0*T0_H_EWG*EWG5_0_0;
+  R25_6_0_0: EWG6_0_0 => ; cell_0_0*T0_H_EWG*EWG6_0_0;
+  R26_16_0_0: EWG1_0_0 => EWG6_0_0; cell_0_0*T0_r_LMxferWG*EWG1_0_0;
+  R26_61_0_0: EWG6_0_0 => EWG1_0_0; cell_0_0*T0_r_LMxferWG*EWG6_0_0;
+  R26_12_0_0: EWG1_0_0 => EWG2_0_0; cell_0_0*T0_r_LMxferWG*EWG1_0_0;
+  R26_21_0_0: EWG2_0_0 => EWG1_0_0; cell_0_0*T0_r_LMxferWG*EWG2_0_0;
+  R26_23_0_0: EWG2_0_0 => EWG3_0_0; cell_0_0*T0_r_LMxferWG*EWG2_0_0;
+  R26_32_0_0: EWG3_0_0 => EWG2_0_0; cell_0_0*T0_r_LMxferWG*EWG3_0_0;
+  R26_34_0_0: EWG3_0_0 => EWG4_0_0; cell_0_0*T0_r_LMxferWG*EWG3_0_0;
+  R26_43_0_0: EWG4_0_0 => EWG3_0_0; cell_0_0*T0_r_LMxferWG*EWG4_0_0;
+  R26_45_0_0: EWG4_0_0 => EWG5_0_0; cell_0_0*T0_r_LMxferWG*EWG4_0_0;
+  R26_54_0_0: EWG5_0_0 => EWG4_0_0; cell_0_0*T0_r_LMxferWG*EWG5_0_0;
+  R26_56_0_0: EWG5_0_0 => EWG6_0_0; cell_0_0*T0_r_LMxferWG*EWG5_0_0;
+  R26_65_0_0: EWG6_0_0 => EWG5_0_0; cell_0_0*T0_r_LMxferWG*EWG6_0_0;
+  R27_16_0_0: PTC1_0_0 => PTC6_0_0; cell_0_0*T0_r_LMxferWG*PTC1_0_0;
+  R27_61_0_0: PTC6_0_0 => PTC1_0_0; cell_0_0*T0_r_LMxferWG*PTC6_0_0;
+  R27_12_0_0: PTC1_0_0 => PTC2_0_0; cell_0_0*T0_r_LMxferWG*PTC1_0_0;
+  R27_21_0_0: PTC2_0_0 => PTC1_0_0; cell_0_0*T0_r_LMxferWG*PTC2_0_0;
+  R27_23_0_0: PTC2_0_0 => PTC3_0_0; cell_0_0*T0_r_LMxferWG*PTC2_0_0;
+  R27_32_0_0: PTC3_0_0 => PTC2_0_0; cell_0_0*T0_r_LMxferWG*PTC3_0_0;
+  R27_34_0_0: PTC3_0_0 => PTC4_0_0; cell_0_0*T0_r_LMxferWG*PTC3_0_0;
+  R27_43_0_0: PTC4_0_0 => PTC3_0_0; cell_0_0*T0_r_LMxferWG*PTC4_0_0;
+  R27_45_0_0: PTC4_0_0 => PTC5_0_0; cell_0_0*T0_r_LMxferWG*PTC4_0_0;
+  R27_54_0_0: PTC5_0_0 => PTC4_0_0; cell_0_0*T0_r_LMxferWG*PTC5_0_0;
+  R27_56_0_0: PTC5_0_0 => PTC6_0_0; cell_0_0*T0_r_LMxferWG*PTC5_0_0;
+  R27_65_0_0: PTC6_0_0 => PTC5_0_0; cell_0_0*T0_r_LMxferWG*PTC6_0_0;
+  R28_16_0_0: HH1_0_0 => HH6_0_0; cell_0_0*T0_r_LMxferHH*HH1_0_0;
+  R28_61_0_0: HH6_0_0 => HH1_0_0; cell_0_0*T0_r_LMxferHH*HH6_0_0;
+  R28_12_0_0: HH1_0_0 => HH2_0_0; cell_0_0*T0_r_LMxferHH*HH1_0_0;
+  R28_21_0_0: HH2_0_0 => HH1_0_0; cell_0_0*T0_r_LMxferHH*HH2_0_0;
+  R28_23_0_0: HH2_0_0 => HH3_0_0; cell_0_0*T0_r_LMxferHH*HH2_0_0;
+  R28_32_0_0: HH3_0_0 => HH2_0_0; cell_0_0*T0_r_LMxferHH*HH3_0_0;
+  R28_34_0_0: HH3_0_0 => HH4_0_0; cell_0_0*T0_r_LMxferHH*HH3_0_0;
+  R28_43_0_0: HH4_0_0 => HH3_0_0; cell_0_0*T0_r_LMxferHH*HH4_0_0;
+  R28_45_0_0: HH4_0_0 => HH5_0_0; cell_0_0*T0_r_LMxferHH*HH4_0_0;
+  R28_54_0_0: HH5_0_0 => HH4_0_0; cell_0_0*T0_r_LMxferHH*HH5_0_0;
+  R28_56_0_0: HH5_0_0 => HH6_0_0; cell_0_0*T0_r_LMxferHH*HH5_0_0;
+  R28_65_0_0: HH6_0_0 => HH5_0_0; cell_0_0*T0_r_LMxferHH*HH6_0_0;
+  R29_1_0_0: PH1_0_0 => ; cell_0_0*T0_H_PH*PH1_0_0;
+  R29_2_0_0: PH2_0_0 => ; cell_0_0*T0_H_PH*PH2_0_0;
+  R29_3_0_0: PH3_0_0 => ; cell_0_0*T0_H_PH*PH3_0_0;
+  R29_4_0_0: PH4_0_0 => ; cell_0_0*T0_H_PH*PH4_0_0;
+  R29_5_0_0: PH5_0_0 => ; cell_0_0*T0_H_PH*PH5_0_0;
+  R29_6_0_0: PH6_0_0 => ; cell_0_0*T0_H_PH*PH6_0_0;
+  R01_0_1:  => en_0_1; T0_H_en*(EWG_T_0_1*(1 - CN_0_1^nu_CNen/(kappa_CNen^nu_CNen + CN_0_1^nu_CNen))^nu_WGen/(kappa_WGen^nu_WGen + EWG_T_0_1*(1 - CN_0_1^nu_CNen/(kappa_CNen^nu_CNen + CN_0_1^nu_CNen))^nu_WGen));
+  R02_0_1: en_0_1 => ; cell_0_1*T0_H_en*en_0_1;
+  R03_0_1:  => EN_0_1; cell_0_1*(T0_H_EN*en_0_1);
+  R04_0_1: EN_0_1 => ; cell_0_1*T0_H_EN*EN_0_1;
+  R05_0_1:  => ci_0_1; cell_0_1*(T0_H_ci*(B_0_1*(1 - EN_0_1^nu_ENci/(kappa_ENci^nu_ENci + EN_0_1^nu_ENci))^nu_Bci/(kappa_Bci^nu_Bci + B_0_1*(1 - EN_0_1^nu_ENci/(kappa_ENci^nu_ENci + EN_0_1^nu_ENci))^nu_Bci)));
+  R06_0_1: ci_0_1 => ; cell_0_1*T0_H_ci*ci_0_1;
+  R07_0_1:  => CI_0_1; cell_0_1*(T0_H_CI*ci_0_1);
+  R08_0_1: CI_0_1 => ; cell_0_1*T0_H_CI*CI_0_1;
+  R09_0_1: CI_0_1 => CN_0_1; cell_0_1*(T0_C_CI*CI_0_1*PTC_T_0_1^nu_PTCCI/(kappa_PTCCI^nu_PTCCI + PTC_T_0_1^nu_PTCCI));
+  R10_0_1: CN_0_1 => ; cell_0_1*T0_H_CI*CN_0_1;
+  R11_0_1:  => hh_0_1; cell_0_1*(T0_H_hh*(EN_0_1*(1 - CN_0_1^nu_CNhh/(kappa_CNhh^nu_CNhh + CN_0_1^nu_CNhh))^nu_ENhh/(kappa_ENhh^nu_ENhh + EN_0_1*(1 - CN_0_1^nu_CNhh/(kappa_CNhh^nu_CNhh + CN_0_1^nu_CNhh))^nu_ENhh)));
+  R12_0_1: hh_0_1 => ; cell_0_1*T0_H_hh*hh_0_1;
+  R13_1_0_1:  => HH1_0_1; cell_0_1*(T0_6H_HH*hh_0_1);
+  R13_2_0_1:  => HH2_0_1; cell_0_1*(T0_6H_HH*hh_0_1);
+  R13_3_0_1:  => HH3_0_1; cell_0_1*(T0_6H_HH*hh_0_1);
+  R13_4_0_1:  => HH4_0_1; cell_0_1*(T0_6H_HH*hh_0_1);
+  R13_5_0_1:  => HH5_0_1; cell_0_1*(T0_6H_HH*hh_0_1);
+  R13_6_0_1:  => HH6_0_1; cell_0_1*(T0_6H_HH*hh_0_1);
+  R14_1_0_1: HH1_0_1 => ; cell_0_1*T0_H_HH*HH1_0_1;
+  R14_2_0_1: HH2_0_1 => ; cell_0_1*T0_H_HH*HH2_0_1;
+  R14_3_0_1: HH3_0_1 => ; cell_0_1*T0_H_HH*HH3_0_1;
+  R14_4_0_1: HH4_0_1 => ; cell_0_1*T0_H_HH*HH4_0_1;
+  R14_5_0_1: HH5_0_1 => ; cell_0_1*T0_H_HH*HH5_0_1;
+  R14_6_0_1: HH6_0_1 => ; cell_0_1*T0_H_HH*HH6_0_1;
+  R15_0_1:  => ptc_0_1; cell_0_1*(T0_H_ptc*(CI_0_1*(1 - CN_0_1^nu_CNptc/(kappa_CNptc^nu_CNptc + CN_0_1^nu_CNptc))^nu_CIptc/(kappa_CIptc^nu_CIptc + CI_0_1*(1 - CN_0_1^nu_CNptc/(kappa_CNptc^nu_CNptc + CN_0_1^nu_CNptc))^nu_CIptc)));
+  R16_0_1: ptc_0_1 => ; cell_0_1*T0_H_ptc*ptc_0_1;
+  R17_1_0_1:  => PTC1_0_1; cell_0_1*(T0_6H_PTC*ptc_0_1);
+  R17_2_0_1:  => PTC2_0_1; cell_0_1*(T0_6H_PTC*ptc_0_1);
+  R17_3_0_1:  => PTC3_0_1; cell_0_1*(T0_6H_PTC*ptc_0_1);
+  R17_4_0_1:  => PTC4_0_1; cell_0_1*(T0_6H_PTC*ptc_0_1);
+  R17_5_0_1:  => PTC5_0_1; cell_0_1*(T0_6H_PTC*ptc_0_1);
+  R17_6_0_1:  => PTC6_0_1; cell_0_1*(T0_6H_PTC*ptc_0_1);
+  R18_1_0_1: PTC1_0_1 => ; cell_0_1*T0_H_PTC*PTC1_0_1;
+  R18_2_0_1: PTC2_0_1 => ; cell_0_1*T0_H_PTC*PTC2_0_1;
+  R18_3_0_1: PTC3_0_1 => ; cell_0_1*T0_H_PTC*PTC3_0_1;
+  R18_4_0_1: PTC4_0_1 => ; cell_0_1*T0_H_PTC*PTC4_0_1;
+  R18_5_0_1: PTC5_0_1 => ; cell_0_1*T0_H_PTC*PTC5_0_1;
+  R18_6_0_1: PTC6_0_1 => ; cell_0_1*T0_H_PTC*PTC6_0_1;
+  R19_0_1:  => wg_0_1; cell_0_1*(T0_H_wg*((alpha_CIwg*(CI_0_1*(1 - CN_0_1^nu_CNwg/(kappa_CNwg^nu_CNwg + CN_0_1^nu_CNwg))^nu_CIwg/(kappa_CIwg^nu_CIwg + CI_0_1*(1 - CN_0_1^nu_CNwg/(kappa_CNwg^nu_CNwg + CN_0_1^nu_CNwg))^nu_CIwg)) + alpha_WGwg*IWG_0_1^nu_WGwg/(kappa_WGwg^nu_WGwg + IWG_0_1^nu_WGwg))/(1 + alpha_CIwg*(CI_0_1*(1 - CN_0_1^nu_CNwg/(kappa_CNwg^nu_CNwg + CN_0_1^nu_CNwg))^nu_CIwg/(kappa_CIwg^nu_CIwg + CI_0_1*(1 - CN_0_1^nu_CNwg/(kappa_CNwg^nu_CNwg + CN_0_1^nu_CNwg))^nu_CIwg)) + alpha_WGwg*IWG_0_1^nu_WGwg/(kappa_WGwg^nu_WGwg + IWG_0_1^nu_WGwg))));
+  R20_0_1: wg_0_1 => ; cell_0_1*T0_H_wg*wg_0_1;
+  R21_0_1:  => IWG_0_1; cell_0_1*(T0_H_IWG*wg_0_1);
+  R22_0_1: IWG_0_1 => ; cell_0_1*T0_H_IWG*IWG_0_1;
+  R23_1_0_1: IWG_0_1 => EWG1_0_1; cell_0_1*T0_r_ExoWG_6*IWG_0_1;
+  R23_2_0_1: IWG_0_1 => EWG2_0_1; cell_0_1*T0_r_ExoWG_6*IWG_0_1;
+  R23_3_0_1: IWG_0_1 => EWG3_0_1; cell_0_1*T0_r_ExoWG_6*IWG_0_1;
+  R23_4_0_1: IWG_0_1 => EWG4_0_1; cell_0_1*T0_r_ExoWG_6*IWG_0_1;
+  R23_5_0_1: IWG_0_1 => EWG5_0_1; cell_0_1*T0_r_ExoWG_6*IWG_0_1;
+  R23_6_0_1: IWG_0_1 => EWG6_0_1; cell_0_1*T0_r_ExoWG_6*IWG_0_1;
+  R24_1_0_1: EWG1_0_1 => IWG_0_1; cell_0_1*T0_r_EndoWG*EWG1_0_1;
+  R24_2_0_1: EWG2_0_1 => IWG_0_1; cell_0_1*T0_r_EndoWG*EWG2_0_1;
+  R24_3_0_1: EWG3_0_1 => IWG_0_1; cell_0_1*T0_r_EndoWG*EWG3_0_1;
+  R24_4_0_1: EWG4_0_1 => IWG_0_1; cell_0_1*T0_r_EndoWG*EWG4_0_1;
+  R24_5_0_1: EWG5_0_1 => IWG_0_1; cell_0_1*T0_r_EndoWG*EWG5_0_1;
+  R24_6_0_1: EWG6_0_1 => IWG_0_1; cell_0_1*T0_r_EndoWG*EWG6_0_1;
+  R25_1_0_1: EWG1_0_1 => ; cell_0_1*T0_H_EWG*EWG1_0_1;
+  R25_2_0_1: EWG2_0_1 => ; cell_0_1*T0_H_EWG*EWG2_0_1;
+  R25_3_0_1: EWG3_0_1 => ; cell_0_1*T0_H_EWG*EWG3_0_1;
+  R25_4_0_1: EWG4_0_1 => ; cell_0_1*T0_H_EWG*EWG4_0_1;
+  R25_5_0_1: EWG5_0_1 => ; cell_0_1*T0_H_EWG*EWG5_0_1;
+  R25_6_0_1: EWG6_0_1 => ; cell_0_1*T0_H_EWG*EWG6_0_1;
+  R26_16_0_1: EWG1_0_1 => EWG6_0_1; cell_0_1*T0_r_LMxferWG*EWG1_0_1;
+  R26_61_0_1: EWG6_0_1 => EWG1_0_1; cell_0_1*T0_r_LMxferWG*EWG6_0_1;
+  R26_12_0_1: EWG1_0_1 => EWG2_0_1; cell_0_1*T0_r_LMxferWG*EWG1_0_1;
+  R26_21_0_1: EWG2_0_1 => EWG1_0_1; cell_0_1*T0_r_LMxferWG*EWG2_0_1;
+  R26_23_0_1: EWG2_0_1 => EWG3_0_1; cell_0_1*T0_r_LMxferWG*EWG2_0_1;
+  R26_32_0_1: EWG3_0_1 => EWG2_0_1; cell_0_1*T0_r_LMxferWG*EWG3_0_1;
+  R26_34_0_1: EWG3_0_1 => EWG4_0_1; cell_0_1*T0_r_LMxferWG*EWG3_0_1;
+  R26_43_0_1: EWG4_0_1 => EWG3_0_1; cell_0_1*T0_r_LMxferWG*EWG4_0_1;
+  R26_45_0_1: EWG4_0_1 => EWG5_0_1; cell_0_1*T0_r_LMxferWG*EWG4_0_1;
+  R26_54_0_1: EWG5_0_1 => EWG4_0_1; cell_0_1*T0_r_LMxferWG*EWG5_0_1;
+  R26_56_0_1: EWG5_0_1 => EWG6_0_1; cell_0_1*T0_r_LMxferWG*EWG5_0_1;
+  R26_65_0_1: EWG6_0_1 => EWG5_0_1; cell_0_1*T0_r_LMxferWG*EWG6_0_1;
+  R27_16_0_1: PTC1_0_1 => PTC6_0_1; cell_0_1*T0_r_LMxferWG*PTC1_0_1;
+  R27_61_0_1: PTC6_0_1 => PTC1_0_1; cell_0_1*T0_r_LMxferWG*PTC6_0_1;
+  R27_12_0_1: PTC1_0_1 => PTC2_0_1; cell_0_1*T0_r_LMxferWG*PTC1_0_1;
+  R27_21_0_1: PTC2_0_1 => PTC1_0_1; cell_0_1*T0_r_LMxferWG*PTC2_0_1;
+  R27_23_0_1: PTC2_0_1 => PTC3_0_1; cell_0_1*T0_r_LMxferWG*PTC2_0_1;
+  R27_32_0_1: PTC3_0_1 => PTC2_0_1; cell_0_1*T0_r_LMxferWG*PTC3_0_1;
+  R27_34_0_1: PTC3_0_1 => PTC4_0_1; cell_0_1*T0_r_LMxferWG*PTC3_0_1;
+  R27_43_0_1: PTC4_0_1 => PTC3_0_1; cell_0_1*T0_r_LMxferWG*PTC4_0_1;
+  R27_45_0_1: PTC4_0_1 => PTC5_0_1; cell_0_1*T0_r_LMxferWG*PTC4_0_1;
+  R27_54_0_1: PTC5_0_1 => PTC4_0_1; cell_0_1*T0_r_LMxferWG*PTC5_0_1;
+  R27_56_0_1: PTC5_0_1 => PTC6_0_1; cell_0_1*T0_r_LMxferWG*PTC5_0_1;
+  R27_65_0_1: PTC6_0_1 => PTC5_0_1; cell_0_1*T0_r_LMxferWG*PTC6_0_1;
+  R28_16_0_1: HH1_0_1 => HH6_0_1; cell_0_1*T0_r_LMxferHH*HH1_0_1;
+  R28_61_0_1: HH6_0_1 => HH1_0_1; cell_0_1*T0_r_LMxferHH*HH6_0_1;
+  R28_12_0_1: HH1_0_1 => HH2_0_1; cell_0_1*T0_r_LMxferHH*HH1_0_1;
+  R28_21_0_1: HH2_0_1 => HH1_0_1; cell_0_1*T0_r_LMxferHH*HH2_0_1;
+  R28_23_0_1: HH2_0_1 => HH3_0_1; cell_0_1*T0_r_LMxferHH*HH2_0_1;
+  R28_32_0_1: HH3_0_1 => HH2_0_1; cell_0_1*T0_r_LMxferHH*HH3_0_1;
+  R28_34_0_1: HH3_0_1 => HH4_0_1; cell_0_1*T0_r_LMxferHH*HH3_0_1;
+  R28_43_0_1: HH4_0_1 => HH3_0_1; cell_0_1*T0_r_LMxferHH*HH4_0_1;
+  R28_45_0_1: HH4_0_1 => HH5_0_1; cell_0_1*T0_r_LMxferHH*HH4_0_1;
+  R28_54_0_1: HH5_0_1 => HH4_0_1; cell_0_1*T0_r_LMxferHH*HH5_0_1;
+  R28_56_0_1: HH5_0_1 => HH6_0_1; cell_0_1*T0_r_LMxferHH*HH5_0_1;
+  R28_65_0_1: HH6_0_1 => HH5_0_1; cell_0_1*T0_r_LMxferHH*HH6_0_1;
+  R29_1_0_1: PH1_0_1 => ; cell_0_1*T0_H_PH*PH1_0_1;
+  R29_2_0_1: PH2_0_1 => ; cell_0_1*T0_H_PH*PH2_0_1;
+  R29_3_0_1: PH3_0_1 => ; cell_0_1*T0_H_PH*PH3_0_1;
+  R29_4_0_1: PH4_0_1 => ; cell_0_1*T0_H_PH*PH4_0_1;
+  R29_5_0_1: PH5_0_1 => ; cell_0_1*T0_H_PH*PH5_0_1;
+  R29_6_0_1: PH6_0_1 => ; cell_0_1*T0_H_PH*PH6_0_1;
+  R01_0_2:  => en_0_2; T0_H_en*(EWG_T_0_2*(1 - CN_0_2^nu_CNen/(kappa_CNen^nu_CNen + CN_0_2^nu_CNen))^nu_WGen/(kappa_WGen^nu_WGen + EWG_T_0_2*(1 - CN_0_2^nu_CNen/(kappa_CNen^nu_CNen + CN_0_2^nu_CNen))^nu_WGen));
+  R02_0_2: en_0_2 => ; cell_0_2*T0_H_en*en_0_2;
+  R03_0_2:  => EN_0_2; cell_0_2*(T0_H_EN*en_0_2);
+  R04_0_2: EN_0_2 => ; cell_0_2*T0_H_EN*EN_0_2;
+  R05_0_2:  => ci_0_2; cell_0_2*(T0_H_ci*(B_0_2*(1 - EN_0_2^nu_ENci/(kappa_ENci^nu_ENci + EN_0_2^nu_ENci))^nu_Bci/(kappa_Bci^nu_Bci + B_0_2*(1 - EN_0_2^nu_ENci/(kappa_ENci^nu_ENci + EN_0_2^nu_ENci))^nu_Bci)));
+  R06_0_2: ci_0_2 => ; cell_0_2*T0_H_ci*ci_0_2;
+  R07_0_2:  => CI_0_2; cell_0_2*(T0_H_CI*ci_0_2);
+  R08_0_2: CI_0_2 => ; cell_0_2*T0_H_CI*CI_0_2;
+  R09_0_2: CI_0_2 => CN_0_2; cell_0_2*(T0_C_CI*CI_0_2*PTC_T_0_2^nu_PTCCI/(kappa_PTCCI^nu_PTCCI + PTC_T_0_2^nu_PTCCI));
+  R10_0_2: CN_0_2 => ; cell_0_2*T0_H_CI*CN_0_2;
+  R11_0_2:  => hh_0_2; cell_0_2*(T0_H_hh*(EN_0_2*(1 - CN_0_2^nu_CNhh/(kappa_CNhh^nu_CNhh + CN_0_2^nu_CNhh))^nu_ENhh/(kappa_ENhh^nu_ENhh + EN_0_2*(1 - CN_0_2^nu_CNhh/(kappa_CNhh^nu_CNhh + CN_0_2^nu_CNhh))^nu_ENhh)));
+  R12_0_2: hh_0_2 => ; cell_0_2*T0_H_hh*hh_0_2;
+  R13_1_0_2:  => HH1_0_2; cell_0_2*(T0_6H_HH*hh_0_2);
+  R13_2_0_2:  => HH2_0_2; cell_0_2*(T0_6H_HH*hh_0_2);
+  R13_3_0_2:  => HH3_0_2; cell_0_2*(T0_6H_HH*hh_0_2);
+  R13_4_0_2:  => HH4_0_2; cell_0_2*(T0_6H_HH*hh_0_2);
+  R13_5_0_2:  => HH5_0_2; cell_0_2*(T0_6H_HH*hh_0_2);
+  R13_6_0_2:  => HH6_0_2; cell_0_2*(T0_6H_HH*hh_0_2);
+  R14_1_0_2: HH1_0_2 => ; cell_0_2*T0_H_HH*HH1_0_2;
+  R14_2_0_2: HH2_0_2 => ; cell_0_2*T0_H_HH*HH2_0_2;
+  R14_3_0_2: HH3_0_2 => ; cell_0_2*T0_H_HH*HH3_0_2;
+  R14_4_0_2: HH4_0_2 => ; cell_0_2*T0_H_HH*HH4_0_2;
+  R14_5_0_2: HH5_0_2 => ; cell_0_2*T0_H_HH*HH5_0_2;
+  R14_6_0_2: HH6_0_2 => ; cell_0_2*T0_H_HH*HH6_0_2;
+  R15_0_2:  => ptc_0_2; cell_0_2*(T0_H_ptc*(CI_0_2*(1 - CN_0_2^nu_CNptc/(kappa_CNptc^nu_CNptc + CN_0_2^nu_CNptc))^nu_CIptc/(kappa_CIptc^nu_CIptc + CI_0_2*(1 - CN_0_2^nu_CNptc/(kappa_CNptc^nu_CNptc + CN_0_2^nu_CNptc))^nu_CIptc)));
+  R16_0_2: ptc_0_2 => ; cell_0_2*T0_H_ptc*ptc_0_2;
+  R17_1_0_2:  => PTC1_0_2; cell_0_2*(T0_6H_PTC*ptc_0_2);
+  R17_2_0_2:  => PTC2_0_2; cell_0_2*(T0_6H_PTC*ptc_0_2);
+  R17_3_0_2:  => PTC3_0_2; cell_0_2*(T0_6H_PTC*ptc_0_2);
+  R17_4_0_2:  => PTC4_0_2; cell_0_2*(T0_6H_PTC*ptc_0_2);
+  R17_5_0_2:  => PTC5_0_2; cell_0_2*(T0_6H_PTC*ptc_0_2);
+  R17_6_0_2:  => PTC6_0_2; cell_0_2*(T0_6H_PTC*ptc_0_2);
+  R18_1_0_2: PTC1_0_2 => ; cell_0_2*T0_H_PTC*PTC1_0_2;
+  R18_2_0_2: PTC2_0_2 => ; cell_0_2*T0_H_PTC*PTC2_0_2;
+  R18_3_0_2: PTC3_0_2 => ; cell_0_2*T0_H_PTC*PTC3_0_2;
+  R18_4_0_2: PTC4_0_2 => ; cell_0_2*T0_H_PTC*PTC4_0_2;
+  R18_5_0_2: PTC5_0_2 => ; cell_0_2*T0_H_PTC*PTC5_0_2;
+  R18_6_0_2: PTC6_0_2 => ; cell_0_2*T0_H_PTC*PTC6_0_2;
+  R19_0_2:  => wg_0_2; cell_0_2*(T0_H_wg*((alpha_CIwg*(CI_0_2*(1 - CN_0_2^nu_CNwg/(kappa_CNwg^nu_CNwg + CN_0_2^nu_CNwg))^nu_CIwg/(kappa_CIwg^nu_CIwg + CI_0_2*(1 - CN_0_2^nu_CNwg/(kappa_CNwg^nu_CNwg + CN_0_2^nu_CNwg))^nu_CIwg)) + alpha_WGwg*IWG_0_2^nu_WGwg/(kappa_WGwg^nu_WGwg + IWG_0_2^nu_WGwg))/(1 + alpha_CIwg*(CI_0_2*(1 - CN_0_2^nu_CNwg/(kappa_CNwg^nu_CNwg + CN_0_2^nu_CNwg))^nu_CIwg/(kappa_CIwg^nu_CIwg + CI_0_2*(1 - CN_0_2^nu_CNwg/(kappa_CNwg^nu_CNwg + CN_0_2^nu_CNwg))^nu_CIwg)) + alpha_WGwg*IWG_0_2^nu_WGwg/(kappa_WGwg^nu_WGwg + IWG_0_2^nu_WGwg))));
+  R20_0_2: wg_0_2 => ; cell_0_2*T0_H_wg*wg_0_2;
+  R21_0_2:  => IWG_0_2; cell_0_2*(T0_H_IWG*wg_0_2);
+  R22_0_2: IWG_0_2 => ; cell_0_2*T0_H_IWG*IWG_0_2;
+  R23_1_0_2: IWG_0_2 => EWG1_0_2; cell_0_2*T0_r_ExoWG_6*IWG_0_2;
+  R23_2_0_2: IWG_0_2 => EWG2_0_2; cell_0_2*T0_r_ExoWG_6*IWG_0_2;
+  R23_3_0_2: IWG_0_2 => EWG3_0_2; cell_0_2*T0_r_ExoWG_6*IWG_0_2;
+  R23_4_0_2: IWG_0_2 => EWG4_0_2; cell_0_2*T0_r_ExoWG_6*IWG_0_2;
+  R23_5_0_2: IWG_0_2 => EWG5_0_2; cell_0_2*T0_r_ExoWG_6*IWG_0_2;
+  R23_6_0_2: IWG_0_2 => EWG6_0_2; cell_0_2*T0_r_ExoWG_6*IWG_0_2;
+  R24_1_0_2: EWG1_0_2 => IWG_0_2; cell_0_2*T0_r_EndoWG*EWG1_0_2;
+  R24_2_0_2: EWG2_0_2 => IWG_0_2; cell_0_2*T0_r_EndoWG*EWG2_0_2;
+  R24_3_0_2: EWG3_0_2 => IWG_0_2; cell_0_2*T0_r_EndoWG*EWG3_0_2;
+  R24_4_0_2: EWG4_0_2 => IWG_0_2; cell_0_2*T0_r_EndoWG*EWG4_0_2;
+  R24_5_0_2: EWG5_0_2 => IWG_0_2; cell_0_2*T0_r_EndoWG*EWG5_0_2;
+  R24_6_0_2: EWG6_0_2 => IWG_0_2; cell_0_2*T0_r_EndoWG*EWG6_0_2;
+  R25_1_0_2: EWG1_0_2 => ; cell_0_2*T0_H_EWG*EWG1_0_2;
+  R25_2_0_2: EWG2_0_2 => ; cell_0_2*T0_H_EWG*EWG2_0_2;
+  R25_3_0_2: EWG3_0_2 => ; cell_0_2*T0_H_EWG*EWG3_0_2;
+  R25_4_0_2: EWG4_0_2 => ; cell_0_2*T0_H_EWG*EWG4_0_2;
+  R25_5_0_2: EWG5_0_2 => ; cell_0_2*T0_H_EWG*EWG5_0_2;
+  R25_6_0_2: EWG6_0_2 => ; cell_0_2*T0_H_EWG*EWG6_0_2;
+  R26_16_0_2: EWG1_0_2 => EWG6_0_2; cell_0_2*T0_r_LMxferWG*EWG1_0_2;
+  R26_61_0_2: EWG6_0_2 => EWG1_0_2; cell_0_2*T0_r_LMxferWG*EWG6_0_2;
+  R26_12_0_2: EWG1_0_2 => EWG2_0_2; cell_0_2*T0_r_LMxferWG*EWG1_0_2;
+  R26_21_0_2: EWG2_0_2 => EWG1_0_2; cell_0_2*T0_r_LMxferWG*EWG2_0_2;
+  R26_23_0_2: EWG2_0_2 => EWG3_0_2; cell_0_2*T0_r_LMxferWG*EWG2_0_2;
+  R26_32_0_2: EWG3_0_2 => EWG2_0_2; cell_0_2*T0_r_LMxferWG*EWG3_0_2;
+  R26_34_0_2: EWG3_0_2 => EWG4_0_2; cell_0_2*T0_r_LMxferWG*EWG3_0_2;
+  R26_43_0_2: EWG4_0_2 => EWG3_0_2; cell_0_2*T0_r_LMxferWG*EWG4_0_2;
+  R26_45_0_2: EWG4_0_2 => EWG5_0_2; cell_0_2*T0_r_LMxferWG*EWG4_0_2;
+  R26_54_0_2: EWG5_0_2 => EWG4_0_2; cell_0_2*T0_r_LMxferWG*EWG5_0_2;
+  R26_56_0_2: EWG5_0_2 => EWG6_0_2; cell_0_2*T0_r_LMxferWG*EWG5_0_2;
+  R26_65_0_2: EWG6_0_2 => EWG5_0_2; cell_0_2*T0_r_LMxferWG*EWG6_0_2;
+  R27_16_0_2: PTC1_0_2 => PTC6_0_2; cell_0_2*T0_r_LMxferWG*PTC1_0_2;
+  R27_61_0_2: PTC6_0_2 => PTC1_0_2; cell_0_2*T0_r_LMxferWG*PTC6_0_2;
+  R27_12_0_2: PTC1_0_2 => PTC2_0_2; cell_0_2*T0_r_LMxferWG*PTC1_0_2;
+  R27_21_0_2: PTC2_0_2 => PTC1_0_2; cell_0_2*T0_r_LMxferWG*PTC2_0_2;
+  R27_23_0_2: PTC2_0_2 => PTC3_0_2; cell_0_2*T0_r_LMxferWG*PTC2_0_2;
+  R27_32_0_2: PTC3_0_2 => PTC2_0_2; cell_0_2*T0_r_LMxferWG*PTC3_0_2;
+  R27_34_0_2: PTC3_0_2 => PTC4_0_2; cell_0_2*T0_r_LMxferWG*PTC3_0_2;
+  R27_43_0_2: PTC4_0_2 => PTC3_0_2; cell_0_2*T0_r_LMxferWG*PTC4_0_2;
+  R27_45_0_2: PTC4_0_2 => PTC5_0_2; cell_0_2*T0_r_LMxferWG*PTC4_0_2;
+  R27_54_0_2: PTC5_0_2 => PTC4_0_2; cell_0_2*T0_r_LMxferWG*PTC5_0_2;
+  R27_56_0_2: PTC5_0_2 => PTC6_0_2; cell_0_2*T0_r_LMxferWG*PTC5_0_2;
+  R27_65_0_2: PTC6_0_2 => PTC5_0_2; cell_0_2*T0_r_LMxferWG*PTC6_0_2;
+  R28_16_0_2: HH1_0_2 => HH6_0_2; cell_0_2*T0_r_LMxferHH*HH1_0_2;
+  R28_61_0_2: HH6_0_2 => HH1_0_2; cell_0_2*T0_r_LMxferHH*HH6_0_2;
+  R28_12_0_2: HH1_0_2 => HH2_0_2; cell_0_2*T0_r_LMxferHH*HH1_0_2;
+  R28_21_0_2: HH2_0_2 => HH1_0_2; cell_0_2*T0_r_LMxferHH*HH2_0_2;
+  R28_23_0_2: HH2_0_2 => HH3_0_2; cell_0_2*T0_r_LMxferHH*HH2_0_2;
+  R28_32_0_2: HH3_0_2 => HH2_0_2; cell_0_2*T0_r_LMxferHH*HH3_0_2;
+  R28_34_0_2: HH3_0_2 => HH4_0_2; cell_0_2*T0_r_LMxferHH*HH3_0_2;
+  R28_43_0_2: HH4_0_2 => HH3_0_2; cell_0_2*T0_r_LMxferHH*HH4_0_2;
+  R28_45_0_2: HH4_0_2 => HH5_0_2; cell_0_2*T0_r_LMxferHH*HH4_0_2;
+  R28_54_0_2: HH5_0_2 => HH4_0_2; cell_0_2*T0_r_LMxferHH*HH5_0_2;
+  R28_56_0_2: HH5_0_2 => HH6_0_2; cell_0_2*T0_r_LMxferHH*HH5_0_2;
+  R28_65_0_2: HH6_0_2 => HH5_0_2; cell_0_2*T0_r_LMxferHH*HH6_0_2;
+  R29_1_0_2: PH1_0_2 => ; cell_0_2*T0_H_PH*PH1_0_2;
+  R29_2_0_2: PH2_0_2 => ; cell_0_2*T0_H_PH*PH2_0_2;
+  R29_3_0_2: PH3_0_2 => ; cell_0_2*T0_H_PH*PH3_0_2;
+  R29_4_0_2: PH4_0_2 => ; cell_0_2*T0_H_PH*PH4_0_2;
+  R29_5_0_2: PH5_0_2 => ; cell_0_2*T0_H_PH*PH5_0_2;
+  R29_6_0_2: PH6_0_2 => ; cell_0_2*T0_H_PH*PH6_0_2;
+  R01_0_3:  => en_0_3; T0_H_en*(EWG_T_0_3*(1 - CN_0_3^nu_CNen/(kappa_CNen^nu_CNen + CN_0_3^nu_CNen))^nu_WGen/(kappa_WGen^nu_WGen + EWG_T_0_3*(1 - CN_0_3^nu_CNen/(kappa_CNen^nu_CNen + CN_0_3^nu_CNen))^nu_WGen));
+  R02_0_3: en_0_3 => ; cell_0_3*T0_H_en*en_0_3;
+  R03_0_3:  => EN_0_3; cell_0_3*(T0_H_EN*en_0_3);
+  R04_0_3: EN_0_3 => ; cell_0_3*T0_H_EN*EN_0_3;
+  R05_0_3:  => ci_0_3; cell_0_3*(T0_H_ci*(B_0_3*(1 - EN_0_3^nu_ENci/(kappa_ENci^nu_ENci + EN_0_3^nu_ENci))^nu_Bci/(kappa_Bci^nu_Bci + B_0_3*(1 - EN_0_3^nu_ENci/(kappa_ENci^nu_ENci + EN_0_3^nu_ENci))^nu_Bci)));
+  R06_0_3: ci_0_3 => ; cell_0_3*T0_H_ci*ci_0_3;
+  R07_0_3:  => CI_0_3; cell_0_3*(T0_H_CI*ci_0_3);
+  R08_0_3: CI_0_3 => ; cell_0_3*T0_H_CI*CI_0_3;
+  R09_0_3: CI_0_3 => CN_0_3; cell_0_3*(T0_C_CI*CI_0_3*PTC_T_0_3^nu_PTCCI/(kappa_PTCCI^nu_PTCCI + PTC_T_0_3^nu_PTCCI));
+  R10_0_3: CN_0_3 => ; cell_0_3*T0_H_CI*CN_0_3;
+  R11_0_3:  => hh_0_3; cell_0_3*(T0_H_hh*(EN_0_3*(1 - CN_0_3^nu_CNhh/(kappa_CNhh^nu_CNhh + CN_0_3^nu_CNhh))^nu_ENhh/(kappa_ENhh^nu_ENhh + EN_0_3*(1 - CN_0_3^nu_CNhh/(kappa_CNhh^nu_CNhh + CN_0_3^nu_CNhh))^nu_ENhh)));
+  R12_0_3: hh_0_3 => ; cell_0_3*T0_H_hh*hh_0_3;
+  R13_1_0_3:  => HH1_0_3; cell_0_3*(T0_6H_HH*hh_0_3);
+  R13_2_0_3:  => HH2_0_3; cell_0_3*(T0_6H_HH*hh_0_3);
+  R13_3_0_3:  => HH3_0_3; cell_0_3*(T0_6H_HH*hh_0_3);
+  R13_4_0_3:  => HH4_0_3; cell_0_3*(T0_6H_HH*hh_0_3);
+  R13_5_0_3:  => HH5_0_3; cell_0_3*(T0_6H_HH*hh_0_3);
+  R13_6_0_3:  => HH6_0_3; cell_0_3*(T0_6H_HH*hh_0_3);
+  R14_1_0_3: HH1_0_3 => ; cell_0_3*T0_H_HH*HH1_0_3;
+  R14_2_0_3: HH2_0_3 => ; cell_0_3*T0_H_HH*HH2_0_3;
+  R14_3_0_3: HH3_0_3 => ; cell_0_3*T0_H_HH*HH3_0_3;
+  R14_4_0_3: HH4_0_3 => ; cell_0_3*T0_H_HH*HH4_0_3;
+  R14_5_0_3: HH5_0_3 => ; cell_0_3*T0_H_HH*HH5_0_3;
+  R14_6_0_3: HH6_0_3 => ; cell_0_3*T0_H_HH*HH6_0_3;
+  R15_0_3:  => ptc_0_3; cell_0_3*(T0_H_ptc*(CI_0_3*(1 - CN_0_3^nu_CNptc/(kappa_CNptc^nu_CNptc + CN_0_3^nu_CNptc))^nu_CIptc/(kappa_CIptc^nu_CIptc + CI_0_3*(1 - CN_0_3^nu_CNptc/(kappa_CNptc^nu_CNptc + CN_0_3^nu_CNptc))^nu_CIptc)));
+  R16_0_3: ptc_0_3 => ; cell_0_3*T0_H_ptc*ptc_0_3;
+  R17_1_0_3:  => PTC1_0_3; cell_0_3*(T0_6H_PTC*ptc_0_3);
+  R17_2_0_3:  => PTC2_0_3; cell_0_3*(T0_6H_PTC*ptc_0_3);
+  R17_3_0_3:  => PTC3_0_3; cell_0_3*(T0_6H_PTC*ptc_0_3);
+  R17_4_0_3:  => PTC4_0_3; cell_0_3*(T0_6H_PTC*ptc_0_3);
+  R17_5_0_3:  => PTC5_0_3; cell_0_3*(T0_6H_PTC*ptc_0_3);
+  R17_6_0_3:  => PTC6_0_3; cell_0_3*(T0_6H_PTC*ptc_0_3);
+  R18_1_0_3: PTC1_0_3 => ; cell_0_3*T0_H_PTC*PTC1_0_3;
+  R18_2_0_3: PTC2_0_3 => ; cell_0_3*T0_H_PTC*PTC2_0_3;
+  R18_3_0_3: PTC3_0_3 => ; cell_0_3*T0_H_PTC*PTC3_0_3;
+  R18_4_0_3: PTC4_0_3 => ; cell_0_3*T0_H_PTC*PTC4_0_3;
+  R18_5_0_3: PTC5_0_3 => ; cell_0_3*T0_H_PTC*PTC5_0_3;
+  R18_6_0_3: PTC6_0_3 => ; cell_0_3*T0_H_PTC*PTC6_0_3;
+  R19_0_3:  => wg_0_3; cell_0_3*(T0_H_wg*((alpha_CIwg*(CI_0_3*(1 - CN_0_3^nu_CNwg/(kappa_CNwg^nu_CNwg + CN_0_3^nu_CNwg))^nu_CIwg/(kappa_CIwg^nu_CIwg + CI_0_3*(1 - CN_0_3^nu_CNwg/(kappa_CNwg^nu_CNwg + CN_0_3^nu_CNwg))^nu_CIwg)) + alpha_WGwg*IWG_0_3^nu_WGwg/(kappa_WGwg^nu_WGwg + IWG_0_3^nu_WGwg))/(1 + alpha_CIwg*(CI_0_3*(1 - CN_0_3^nu_CNwg/(kappa_CNwg^nu_CNwg + CN_0_3^nu_CNwg))^nu_CIwg/(kappa_CIwg^nu_CIwg + CI_0_3*(1 - CN_0_3^nu_CNwg/(kappa_CNwg^nu_CNwg + CN_0_3^nu_CNwg))^nu_CIwg)) + alpha_WGwg*IWG_0_3^nu_WGwg/(kappa_WGwg^nu_WGwg + IWG_0_3^nu_WGwg))));
+  R20_0_3: wg_0_3 => ; cell_0_3*T0_H_wg*wg_0_3;
+  R21_0_3:  => IWG_0_3; cell_0_3*(T0_H_IWG*wg_0_3);
+  R22_0_3: IWG_0_3 => ; cell_0_3*T0_H_IWG*IWG_0_3;
+  R23_1_0_3: IWG_0_3 => EWG1_0_3; cell_0_3*T0_r_ExoWG_6*IWG_0_3;
+  R23_2_0_3: IWG_0_3 => EWG2_0_3; cell_0_3*T0_r_ExoWG_6*IWG_0_3;
+  R23_3_0_3: IWG_0_3 => EWG3_0_3; cell_0_3*T0_r_ExoWG_6*IWG_0_3;
+  R23_4_0_3: IWG_0_3 => EWG4_0_3; cell_0_3*T0_r_ExoWG_6*IWG_0_3;
+  R23_5_0_3: IWG_0_3 => EWG5_0_3; cell_0_3*T0_r_ExoWG_6*IWG_0_3;
+  R23_6_0_3: IWG_0_3 => EWG6_0_3; cell_0_3*T0_r_ExoWG_6*IWG_0_3;
+  R24_1_0_3: EWG1_0_3 => IWG_0_3; cell_0_3*T0_r_EndoWG*EWG1_0_3;
+  R24_2_0_3: EWG2_0_3 => IWG_0_3; cell_0_3*T0_r_EndoWG*EWG2_0_3;
+  R24_3_0_3: EWG3_0_3 => IWG_0_3; cell_0_3*T0_r_EndoWG*EWG3_0_3;
+  R24_4_0_3: EWG4_0_3 => IWG_0_3; cell_0_3*T0_r_EndoWG*EWG4_0_3;
+  R24_5_0_3: EWG5_0_3 => IWG_0_3; cell_0_3*T0_r_EndoWG*EWG5_0_3;
+  R24_6_0_3: EWG6_0_3 => IWG_0_3; cell_0_3*T0_r_EndoWG*EWG6_0_3;
+  R25_1_0_3: EWG1_0_3 => ; cell_0_3*T0_H_EWG*EWG1_0_3;
+  R25_2_0_3: EWG2_0_3 => ; cell_0_3*T0_H_EWG*EWG2_0_3;
+  R25_3_0_3: EWG3_0_3 => ; cell_0_3*T0_H_EWG*EWG3_0_3;
+  R25_4_0_3: EWG4_0_3 => ; cell_0_3*T0_H_EWG*EWG4_0_3;
+  R25_5_0_3: EWG5_0_3 => ; cell_0_3*T0_H_EWG*EWG5_0_3;
+  R25_6_0_3: EWG6_0_3 => ; cell_0_3*T0_H_EWG*EWG6_0_3;
+  R26_16_0_3: EWG1_0_3 => EWG6_0_3; cell_0_3*T0_r_LMxferWG*EWG1_0_3;
+  R26_61_0_3: EWG6_0_3 => EWG1_0_3; cell_0_3*T0_r_LMxferWG*EWG6_0_3;
+  R26_12_0_3: EWG1_0_3 => EWG2_0_3; cell_0_3*T0_r_LMxferWG*EWG1_0_3;
+  R26_21_0_3: EWG2_0_3 => EWG1_0_3; cell_0_3*T0_r_LMxferWG*EWG2_0_3;
+  R26_23_0_3: EWG2_0_3 => EWG3_0_3; cell_0_3*T0_r_LMxferWG*EWG2_0_3;
+  R26_32_0_3: EWG3_0_3 => EWG2_0_3; cell_0_3*T0_r_LMxferWG*EWG3_0_3;
+  R26_34_0_3: EWG3_0_3 => EWG4_0_3; cell_0_3*T0_r_LMxferWG*EWG3_0_3;
+  R26_43_0_3: EWG4_0_3 => EWG3_0_3; cell_0_3*T0_r_LMxferWG*EWG4_0_3;
+  R26_45_0_3: EWG4_0_3 => EWG5_0_3; cell_0_3*T0_r_LMxferWG*EWG4_0_3;
+  R26_54_0_3: EWG5_0_3 => EWG4_0_3; cell_0_3*T0_r_LMxferWG*EWG5_0_3;
+  R26_56_0_3: EWG5_0_3 => EWG6_0_3; cell_0_3*T0_r_LMxferWG*EWG5_0_3;
+  R26_65_0_3: EWG6_0_3 => EWG5_0_3; cell_0_3*T0_r_LMxferWG*EWG6_0_3;
+  R27_16_0_3: PTC1_0_3 => PTC6_0_3; cell_0_3*T0_r_LMxferWG*PTC1_0_3;
+  R27_61_0_3: PTC6_0_3 => PTC1_0_3; cell_0_3*T0_r_LMxferWG*PTC6_0_3;
+  R27_12_0_3: PTC1_0_3 => PTC2_0_3; cell_0_3*T0_r_LMxferWG*PTC1_0_3;
+  R27_21_0_3: PTC2_0_3 => PTC1_0_3; cell_0_3*T0_r_LMxferWG*PTC2_0_3;
+  R27_23_0_3: PTC2_0_3 => PTC3_0_3; cell_0_3*T0_r_LMxferWG*PTC2_0_3;
+  R27_32_0_3: PTC3_0_3 => PTC2_0_3; cell_0_3*T0_r_LMxferWG*PTC3_0_3;
+  R27_34_0_3: PTC3_0_3 => PTC4_0_3; cell_0_3*T0_r_LMxferWG*PTC3_0_3;
+  R27_43_0_3: PTC4_0_3 => PTC3_0_3; cell_0_3*T0_r_LMxferWG*PTC4_0_3;
+  R27_45_0_3: PTC4_0_3 => PTC5_0_3; cell_0_3*T0_r_LMxferWG*PTC4_0_3;
+  R27_54_0_3: PTC5_0_3 => PTC4_0_3; cell_0_3*T0_r_LMxferWG*PTC5_0_3;
+  R27_56_0_3: PTC5_0_3 => PTC6_0_3; cell_0_3*T0_r_LMxferWG*PTC5_0_3;
+  R27_65_0_3: PTC6_0_3 => PTC5_0_3; cell_0_3*T0_r_LMxferWG*PTC6_0_3;
+  R28_16_0_3: HH1_0_3 => HH6_0_3; cell_0_3*T0_r_LMxferHH*HH1_0_3;
+  R28_61_0_3: HH6_0_3 => HH1_0_3; cell_0_3*T0_r_LMxferHH*HH6_0_3;
+  R28_12_0_3: HH1_0_3 => HH2_0_3; cell_0_3*T0_r_LMxferHH*HH1_0_3;
+  R28_21_0_3: HH2_0_3 => HH1_0_3; cell_0_3*T0_r_LMxferHH*HH2_0_3;
+  R28_23_0_3: HH2_0_3 => HH3_0_3; cell_0_3*T0_r_LMxferHH*HH2_0_3;
+  R28_32_0_3: HH3_0_3 => HH2_0_3; cell_0_3*T0_r_LMxferHH*HH3_0_3;
+  R28_34_0_3: HH3_0_3 => HH4_0_3; cell_0_3*T0_r_LMxferHH*HH3_0_3;
+  R28_43_0_3: HH4_0_3 => HH3_0_3; cell_0_3*T0_r_LMxferHH*HH4_0_3;
+  R28_45_0_3: HH4_0_3 => HH5_0_3; cell_0_3*T0_r_LMxferHH*HH4_0_3;
+  R28_54_0_3: HH5_0_3 => HH4_0_3; cell_0_3*T0_r_LMxferHH*HH5_0_3;
+  R28_56_0_3: HH5_0_3 => HH6_0_3; cell_0_3*T0_r_LMxferHH*HH5_0_3;
+  R28_65_0_3: HH6_0_3 => HH5_0_3; cell_0_3*T0_r_LMxferHH*HH6_0_3;
+  R29_1_0_3: PH1_0_3 => ; cell_0_3*T0_H_PH*PH1_0_3;
+  R29_2_0_3: PH2_0_3 => ; cell_0_3*T0_H_PH*PH2_0_3;
+  R29_3_0_3: PH3_0_3 => ; cell_0_3*T0_H_PH*PH3_0_3;
+  R29_4_0_3: PH4_0_3 => ; cell_0_3*T0_H_PH*PH4_0_3;
+  R29_5_0_3: PH5_0_3 => ; cell_0_3*T0_H_PH*PH5_0_3;
+  R29_6_0_3: PH6_0_3 => ; cell_0_3*T0_H_PH*PH6_0_3;
+  R30a_1_0_0: PTC1_0_0 => PH1_0_0; cell_0_0*(T0_kappa_PTCHH_HH_0*cell_0_0*PTC1_0_0*cell_0_0*HH4_0_0);
+  R30b_1_0_0: HH4_0_0 => ; cell_0_0*(T0_kappa_PTCHH_PTC_0*cell_0_0*HH4_0_0*cell_0_0*PTC1_0_0);
+  R31_1_0_0: EWG1_0_0 => EWG4_0_0; cell_0_0*(cell_0_0*T0_r_MxferWG*EWG1_0_0);
+  R30a_2_0_0: PTC2_0_0 => PH2_0_0; T0_kappa_PTCHH_HH_0*cell_0_0*PTC2_0_0*cell_0_3*HH5_0_3;
+  R30b_2_0_0: HH5_0_3 => ; T0_kappa_PTCHH_PTC_0*cell_0_3*HH5_0_3*cell_0_0*PTC2_0_0;
+  R31_2_0_0: EWG2_0_0 => EWG5_0_3; cell_0_0*T0_r_MxferWG*EWG2_0_0;
+  R30a_3_0_0: PTC3_0_0 => PH3_0_0; T0_kappa_PTCHH_HH_0*cell_0_0*PTC3_0_0*cell_0_3*HH6_0_3;
+  R30b_3_0_0: HH6_0_3 => ; T0_kappa_PTCHH_PTC_0*cell_0_3*HH6_0_3*cell_0_0*PTC3_0_0;
+  R31_3_0_0: EWG3_0_0 => EWG6_0_3; cell_0_0*T0_r_MxferWG*EWG3_0_0;
+  R30a_4_0_0: PTC4_0_0 => PH4_0_0; cell_0_0*(T0_kappa_PTCHH_HH_0*cell_0_0*PTC4_0_0*cell_0_0*HH1_0_0);
+  R30b_4_0_0: HH1_0_0 => ; cell_0_0*(T0_kappa_PTCHH_PTC_0*cell_0_0*HH1_0_0*cell_0_0*PTC4_0_0);
+  R31_4_0_0: EWG4_0_0 => EWG1_0_0; cell_0_0*(cell_0_0*T0_r_MxferWG*EWG4_0_0);
+  R30a_5_0_0: PTC5_0_0 => PH5_0_0; T0_kappa_PTCHH_HH_0*cell_0_0*PTC5_0_0*cell_0_1*HH2_0_1;
+  R30b_5_0_0: HH2_0_1 => ; T0_kappa_PTCHH_PTC_0*cell_0_1*HH2_0_1*cell_0_0*PTC5_0_0;
+  R31_5_0_0: EWG5_0_0 => EWG2_0_1; cell_0_0*T0_r_MxferWG*EWG5_0_0;
+  R30a_6_0_0: PTC6_0_0 => PH6_0_0; T0_kappa_PTCHH_HH_0*cell_0_0*PTC6_0_0*cell_0_1*HH3_0_1;
+  R30b_6_0_0: HH3_0_1 => ; T0_kappa_PTCHH_PTC_0*cell_0_1*HH3_0_1*cell_0_0*PTC6_0_0;
+  R31_6_0_0: EWG6_0_0 => EWG3_0_1; cell_0_0*T0_r_MxferWG*EWG6_0_0;
+  R30a_1_0_1: PTC1_0_1 => PH1_0_1; cell_0_1*(T0_kappa_PTCHH_HH_0*cell_0_1*PTC1_0_1*cell_0_1*HH4_0_1);
+  R30b_1_0_1: HH4_0_1 => ; cell_0_1*(T0_kappa_PTCHH_PTC_0*cell_0_1*HH4_0_1*cell_0_1*PTC1_0_1);
+  R31_1_0_1: EWG1_0_1 => EWG4_0_1; cell_0_1*(cell_0_1*T0_r_MxferWG*EWG1_0_1);
+  R30a_2_0_1: PTC2_0_1 => PH2_0_1; T0_kappa_PTCHH_HH_0*cell_0_1*PTC2_0_1*cell_0_0*HH5_0_0;
+  R30b_2_0_1: HH5_0_0 => ; T0_kappa_PTCHH_PTC_0*cell_0_0*HH5_0_0*cell_0_1*PTC2_0_1;
+  R31_2_0_1: EWG2_0_1 => EWG5_0_0; cell_0_1*T0_r_MxferWG*EWG2_0_1;
+  R30a_3_0_1: PTC3_0_1 => PH3_0_1; T0_kappa_PTCHH_HH_0*cell_0_1*PTC3_0_1*cell_0_0*HH6_0_0;
+  R30b_3_0_1: HH6_0_0 => ; T0_kappa_PTCHH_PTC_0*cell_0_0*HH6_0_0*cell_0_1*PTC3_0_1;
+  R31_3_0_1: EWG3_0_1 => EWG6_0_0; cell_0_1*T0_r_MxferWG*EWG3_0_1;
+  R30a_4_0_1: PTC4_0_1 => PH4_0_1; cell_0_1*(T0_kappa_PTCHH_HH_0*cell_0_1*PTC4_0_1*cell_0_1*HH1_0_1);
+  R30b_4_0_1: HH1_0_1 => ; cell_0_1*(T0_kappa_PTCHH_PTC_0*cell_0_1*HH1_0_1*cell_0_1*PTC4_0_1);
+  R31_4_0_1: EWG4_0_1 => EWG1_0_1; cell_0_1*(cell_0_1*T0_r_MxferWG*EWG4_0_1);
+  R30a_5_0_1: PTC5_0_1 => PH5_0_1; T0_kappa_PTCHH_HH_0*cell_0_1*PTC5_0_1*cell_0_2*HH2_0_2;
+  R30b_5_0_1: HH2_0_2 => ; T0_kappa_PTCHH_PTC_0*cell_0_2*HH2_0_2*cell_0_1*PTC5_0_1;
+  R31_5_0_1: EWG5_0_1 => EWG2_0_2; cell_0_1*T0_r_MxferWG*EWG5_0_1;
+  R30a_6_0_1: PTC6_0_1 => PH6_0_1; T0_kappa_PTCHH_HH_0*cell_0_1*PTC6_0_1*cell_0_2*HH3_0_2;
+  R30b_6_0_1: HH3_0_2 => ; T0_kappa_PTCHH_PTC_0*cell_0_2*HH3_0_2*cell_0_1*PTC6_0_1;
+  R31_6_0_1: EWG6_0_1 => EWG3_0_2; cell_0_1*T0_r_MxferWG*EWG6_0_1;
+  R30a_1_0_2: PTC1_0_2 => PH1_0_2; cell_0_2*(T0_kappa_PTCHH_HH_0*cell_0_2*PTC1_0_2*cell_0_2*HH4_0_2);
+  R30b_1_0_2: HH4_0_2 => ; cell_0_2*(T0_kappa_PTCHH_PTC_0*cell_0_2*HH4_0_2*cell_0_2*PTC1_0_2);
+  R31_1_0_2: EWG1_0_2 => EWG4_0_2; cell_0_2*(cell_0_2*T0_r_MxferWG*EWG1_0_2);
+  R30a_2_0_2: PTC2_0_2 => PH2_0_2; T0_kappa_PTCHH_HH_0*cell_0_2*PTC2_0_2*cell_0_1*HH5_0_1;
+  R30b_2_0_2: HH5_0_1 => ; T0_kappa_PTCHH_PTC_0*cell_0_1*HH5_0_1*cell_0_2*PTC2_0_2;
+  R31_2_0_2: EWG2_0_2 => EWG5_0_1; cell_0_2*T0_r_MxferWG*EWG2_0_2;
+  R30a_3_0_2: PTC3_0_2 => PH3_0_2; T0_kappa_PTCHH_HH_0*cell_0_2*PTC3_0_2*cell_0_1*HH6_0_1;
+  R30b_3_0_2: HH6_0_1 => ; T0_kappa_PTCHH_PTC_0*cell_0_1*HH6_0_1*cell_0_2*PTC3_0_2;
+  R31_3_0_2: EWG3_0_2 => EWG6_0_1; cell_0_2*T0_r_MxferWG*EWG3_0_2;
+  R30a_4_0_2: PTC4_0_2 => PH4_0_2; cell_0_2*(T0_kappa_PTCHH_HH_0*cell_0_2*PTC4_0_2*cell_0_2*HH1_0_2);
+  R30b_4_0_2: HH1_0_2 => ; cell_0_2*(T0_kappa_PTCHH_PTC_0*cell_0_2*HH1_0_2*cell_0_2*PTC4_0_2);
+  R31_4_0_2: EWG4_0_2 => EWG1_0_2; cell_0_2*(cell_0_2*T0_r_MxferWG*EWG4_0_2);
+  R30a_5_0_2: PTC5_0_2 => PH5_0_2; T0_kappa_PTCHH_HH_0*cell_0_2*PTC5_0_2*cell_0_3*HH2_0_3;
+  R30b_5_0_2: HH2_0_3 => ; T0_kappa_PTCHH_PTC_0*cell_0_3*HH2_0_3*cell_0_2*PTC5_0_2;
+  R31_5_0_2: EWG5_0_2 => EWG2_0_3; cell_0_2*T0_r_MxferWG*EWG5_0_2;
+  R30a_6_0_2: PTC6_0_2 => PH6_0_2; T0_kappa_PTCHH_HH_0*cell_0_2*PTC6_0_2*cell_0_3*HH3_0_3;
+  R30b_6_0_2: HH3_0_3 => ; T0_kappa_PTCHH_PTC_0*cell_0_3*HH3_0_3*cell_0_2*PTC6_0_2;
+  R31_6_0_2: EWG6_0_2 => EWG3_0_3; cell_0_2*T0_r_MxferWG*EWG6_0_2;
+  R30a_1_0_3: PTC1_0_3 => PH1_0_3; cell_0_3*(T0_kappa_PTCHH_HH_0*cell_0_3*PTC1_0_3*cell_0_3*HH4_0_3);
+  R30b_1_0_3: HH4_0_3 => ; cell_0_3*(T0_kappa_PTCHH_PTC_0*cell_0_3*HH4_0_3*cell_0_3*PTC1_0_3);
+  R31_1_0_3: EWG1_0_3 => EWG4_0_3; cell_0_3*(cell_0_3*T0_r_MxferWG*EWG1_0_3);
+  R30a_2_0_3: PTC2_0_3 => PH2_0_3; T0_kappa_PTCHH_HH_0*cell_0_3*PTC2_0_3*cell_0_2*HH5_0_2;
+  R30b_2_0_3: HH5_0_2 => ; T0_kappa_PTCHH_PTC_0*cell_0_2*HH5_0_2*cell_0_3*PTC2_0_3;
+  R31_2_0_3: EWG2_0_3 => EWG5_0_2; cell_0_3*T0_r_MxferWG*EWG2_0_3;
+  R30a_3_0_3: PTC3_0_3 => PH3_0_3; T0_kappa_PTCHH_HH_0*cell_0_3*PTC3_0_3*cell_0_2*HH6_0_2;
+  R30b_3_0_3: HH6_0_2 => ; T0_kappa_PTCHH_PTC_0*cell_0_2*HH6_0_2*cell_0_3*PTC3_0_3;
+  R31_3_0_3: EWG3_0_3 => EWG6_0_2; cell_0_3*T0_r_MxferWG*EWG3_0_3;
+  R30a_4_0_3: PTC4_0_3 => PH4_0_3; cell_0_3*(T0_kappa_PTCHH_HH_0*cell_0_3*PTC4_0_3*cell_0_3*HH1_0_3);
+  R30b_4_0_3: HH1_0_3 => ; cell_0_3*(T0_kappa_PTCHH_PTC_0*cell_0_3*HH1_0_3*cell_0_3*PTC4_0_3);
+  R31_4_0_3: EWG4_0_3 => EWG1_0_3; cell_0_3*(cell_0_3*T0_r_MxferWG*EWG4_0_3);
+  R30a_5_0_3: PTC5_0_3 => PH5_0_3; T0_kappa_PTCHH_HH_0*cell_0_3*PTC5_0_3*cell_0_0*HH2_0_0;
+  R30b_5_0_3: HH2_0_0 => ; T0_kappa_PTCHH_PTC_0*cell_0_0*HH2_0_0*cell_0_3*PTC5_0_3;
+  R31_5_0_3: EWG5_0_3 => EWG2_0_0; cell_0_3*T0_r_MxferWG*EWG5_0_3;
+  R30a_6_0_3: PTC6_0_3 => PH6_0_3; T0_kappa_PTCHH_HH_0*cell_0_3*PTC6_0_3*cell_0_0*HH3_0_0;
+  R30b_6_0_3: HH3_0_0 => ; T0_kappa_PTCHH_PTC_0*cell_0_0*HH3_0_0*cell_0_3*PTC6_0_3;
+  R31_6_0_3: EWG6_0_3 => EWG3_0_0; cell_0_3*T0_r_MxferWG*EWG6_0_3;
+
+  // Species initializations:
+  en_0_0 = 0.25;
+  en_0_0 has length;
+  EN_0_0 = 0.25;
+  EN_0_0 has length;
+  ci_0_0 = 0.05;
+  ci_0_0 has length;
+  CI_0_0 = 1e-20;
+  CI_0_0 has length;
+  CN_0_0 = 1e-20;
+  CN_0_0 has length;
+  hh_0_0 = 1e-20;
+  hh_0_0 has length;
+  HH1_0_0 = 1e-20;
+  HH1_0_0 has length;
+  HH2_0_0 = 1e-20;
+  HH2_0_0 has length;
+  HH3_0_0 = 1e-20;
+  HH3_0_0 has length;
+  HH4_0_0 = 1e-20;
+  HH4_0_0 has length;
+  HH5_0_0 = 1e-20;
+  HH5_0_0 has length;
+  HH6_0_0 = 1e-20;
+  HH6_0_0 has length;
+  ptc_0_0 = 1e-20;
+  ptc_0_0 has length;
+  PTC1_0_0 = 1e-20;
+  PTC1_0_0 has length;
+  PTC2_0_0 = 1e-20;
+  PTC2_0_0 has length;
+  PTC3_0_0 = 1e-20;
+  PTC3_0_0 has length;
+  PTC4_0_0 = 1e-20;
+  PTC4_0_0 has length;
+  PTC5_0_0 = 1e-20;
+  PTC5_0_0 has length;
+  PTC6_0_0 = 1e-20;
+  PTC6_0_0 has length;
+  wg_0_0 = 0.2;
+  wg_0_0 has length;
+  IWG_0_0 = 0.2;
+  IWG_0_0 has length;
+  EWG1_0_0 = 0.2;
+  EWG1_0_0 has length;
+  EWG2_0_0 = 0.2;
+  EWG2_0_0 has length;
+  EWG3_0_0 = 0.2;
+  EWG3_0_0 has length;
+  EWG4_0_0 = 0.2;
+  EWG4_0_0 has length;
+  EWG5_0_0 = 0.2;
+  EWG5_0_0 has length;
+  EWG6_0_0 = 0.2;
+  EWG6_0_0 has length;
+  PH1_0_0 = 1e-20;
+  PH1_0_0 has length;
+  PH2_0_0 = 1e-20;
+  PH2_0_0 has length;
+  PH3_0_0 = 1e-20;
+  PH3_0_0 has length;
+  PH4_0_0 = 1e-20;
+  PH4_0_0 has length;
+  PH5_0_0 = 1e-20;
+  PH5_0_0 has length;
+  PH6_0_0 = 1e-20;
+  PH6_0_0 has length;
+  B_0_0 = 0.4;
+  B_0_0 has length;
+  PTC_T_0_0 has length;
+  EWG_T_0_0 has length;
+  EWG5_0_3 = 0.1;
+  EWG5_0_3 has length;
+  EWG6_0_3 = 0.1;
+  EWG6_0_3 has length;
+  EWG2_0_1 = 0.3;
+  EWG2_0_1 has length;
+  EWG3_0_1 = 0.3;
+  EWG3_0_1 has length;
+  PH_T_0_0 has length;
+  en_0_1 = 0.35;
+  en_0_1 has length;
+  EN_0_1 = 0.35;
+  EN_0_1 has length;
+  ci_0_1 = 0.05;
+  ci_0_1 has length;
+  CI_0_1 = 1e-20;
+  CI_0_1 has length;
+  CN_0_1 = 1e-20;
+  CN_0_1 has length;
+  hh_0_1 = 1e-20;
+  hh_0_1 has length;
+  HH1_0_1 = 1e-20;
+  HH1_0_1 has length;
+  HH2_0_1 = 1e-20;
+  HH2_0_1 has length;
+  HH3_0_1 = 1e-20;
+  HH3_0_1 has length;
+  HH4_0_1 = 1e-20;
+  HH4_0_1 has length;
+  HH5_0_1 = 1e-20;
+  HH5_0_1 has length;
+  HH6_0_1 = 1e-20;
+  HH6_0_1 has length;
+  ptc_0_1 = 1e-20;
+  ptc_0_1 has length;
+  PTC1_0_1 = 1e-20;
+  PTC1_0_1 has length;
+  PTC2_0_1 = 1e-20;
+  PTC2_0_1 has length;
+  PTC3_0_1 = 1e-20;
+  PTC3_0_1 has length;
+  PTC4_0_1 = 1e-20;
+  PTC4_0_1 has length;
+  PTC5_0_1 = 1e-20;
+  PTC5_0_1 has length;
+  PTC6_0_1 = 1e-20;
+  PTC6_0_1 has length;
+  wg_0_1 = 0.3;
+  wg_0_1 has length;
+  IWG_0_1 = 0.3;
+  IWG_0_1 has length;
+  EWG1_0_1 = 0.3;
+  EWG1_0_1 has length;
+  EWG4_0_1 = 0.3;
+  EWG4_0_1 has length;
+  EWG5_0_1 = 0.3;
+  EWG5_0_1 has length;
+  EWG6_0_1 = 0.3;
+  EWG6_0_1 has length;
+  PH1_0_1 = 1e-20;
+  PH1_0_1 has length;
+  PH2_0_1 = 1e-20;
+  PH2_0_1 has length;
+  PH3_0_1 = 1e-20;
+  PH3_0_1 has length;
+  PH4_0_1 = 1e-20;
+  PH4_0_1 has length;
+  PH5_0_1 = 1e-20;
+  PH5_0_1 has length;
+  PH6_0_1 = 1e-20;
+  PH6_0_1 has length;
+  B_0_1 = 0.4;
+  B_0_1 has length;
+  PTC_T_0_1 has length;
+  EWG_T_0_1 has length;
+  EWG2_0_2 = 0.2;
+  EWG2_0_2 has length;
+  EWG3_0_2 = 0.2;
+  EWG3_0_2 has length;
+  PH_T_0_1 has length;
+  en_0_2 = 0.55;
+  en_0_2 has length;
+  EN_0_2 = 0.55;
+  EN_0_2 has length;
+  ci_0_2 = 0.05;
+  ci_0_2 has length;
+  CI_0_2 = 1e-20;
+  CI_0_2 has length;
+  CN_0_2 = 1e-20;
+  CN_0_2 has length;
+  hh_0_2 = 1e-20;
+  hh_0_2 has length;
+  HH1_0_2 = 1e-20;
+  HH1_0_2 has length;
+  HH2_0_2 = 1e-20;
+  HH2_0_2 has length;
+  HH3_0_2 = 1e-20;
+  HH3_0_2 has length;
+  HH4_0_2 = 1e-20;
+  HH4_0_2 has length;
+  HH5_0_2 = 1e-20;
+  HH5_0_2 has length;
+  HH6_0_2 = 1e-20;
+  HH6_0_2 has length;
+  ptc_0_2 = 1e-20;
+  ptc_0_2 has length;
+  PTC1_0_2 = 1e-20;
+  PTC1_0_2 has length;
+  PTC2_0_2 = 1e-20;
+  PTC2_0_2 has length;
+  PTC3_0_2 = 1e-20;
+  PTC3_0_2 has length;
+  PTC4_0_2 = 1e-20;
+  PTC4_0_2 has length;
+  PTC5_0_2 = 1e-20;
+  PTC5_0_2 has length;
+  PTC6_0_2 = 1e-20;
+  PTC6_0_2 has length;
+  wg_0_2 = 0.2;
+  wg_0_2 has length;
+  IWG_0_2 = 0.2;
+  IWG_0_2 has length;
+  EWG1_0_2 = 0.2;
+  EWG1_0_2 has length;
+  EWG4_0_2 = 0.2;
+  EWG4_0_2 has length;
+  EWG5_0_2 = 0.2;
+  EWG5_0_2 has length;
+  EWG6_0_2 = 0.2;
+  EWG6_0_2 has length;
+  PH1_0_2 = 1e-20;
+  PH1_0_2 has length;
+  PH2_0_2 = 1e-20;
+  PH2_0_2 has length;
+  PH3_0_2 = 1e-20;
+  PH3_0_2 has length;
+  PH4_0_2 = 1e-20;
+  PH4_0_2 has length;
+  PH5_0_2 = 1e-20;
+  PH5_0_2 has length;
+  PH6_0_2 = 1e-20;
+  PH6_0_2 has length;
+  B_0_2 = 0.4;
+  B_0_2 has length;
+  PTC_T_0_2 has length;
+  EWG_T_0_2 has length;
+  EWG2_0_3 = 0.1;
+  EWG2_0_3 has length;
+  EWG3_0_3 = 0.1;
+  EWG3_0_3 has length;
+  PH_T_0_2 has length;
+  en_0_3 = 0.35;
+  en_0_3 has length;
+  EN_0_3 = 0.35;
+  EN_0_3 has length;
+  ci_0_3 = 0.05;
+  ci_0_3 has length;
+  CI_0_3 = 1e-20;
+  CI_0_3 has length;
+  CN_0_3 = 1e-20;
+  CN_0_3 has length;
+  hh_0_3 = 1e-20;
+  hh_0_3 has length;
+  HH1_0_3 = 1e-20;
+  HH1_0_3 has length;
+  HH2_0_3 = 1e-20;
+  HH2_0_3 has length;
+  HH3_0_3 = 1e-20;
+  HH3_0_3 has length;
+  HH4_0_3 = 1e-20;
+  HH4_0_3 has length;
+  HH5_0_3 = 1e-20;
+  HH5_0_3 has length;
+  HH6_0_3 = 1e-20;
+  HH6_0_3 has length;
+  ptc_0_3 = 1e-20;
+  ptc_0_3 has length;
+  PTC1_0_3 = 1e-20;
+  PTC1_0_3 has length;
+  PTC2_0_3 = 1e-20;
+  PTC2_0_3 has length;
+  PTC3_0_3 = 1e-20;
+  PTC3_0_3 has length;
+  PTC4_0_3 = 1e-20;
+  PTC4_0_3 has length;
+  PTC5_0_3 = 1e-20;
+  PTC5_0_3 has length;
+  PTC6_0_3 = 1e-20;
+  PTC6_0_3 has length;
+  wg_0_3 = 0.1;
+  wg_0_3 has length;
+  IWG_0_3 = 0.1;
+  IWG_0_3 has length;
+  EWG1_0_3 = 0.1;
+  EWG1_0_3 has length;
+  EWG4_0_3 = 0.1;
+  EWG4_0_3 has length;
+  PH1_0_3 = 1e-20;
+  PH1_0_3 has length;
+  PH2_0_3 = 1e-20;
+  PH2_0_3 has length;
+  PH3_0_3 = 1e-20;
+  PH3_0_3 has length;
+  PH4_0_3 = 1e-20;
+  PH4_0_3 has length;
+  PH5_0_3 = 1e-20;
+  PH5_0_3 has length;
+  PH6_0_3 = 1e-20;
+  PH6_0_3 has length;
+  B_0_3 = 0.4;
+  B_0_3 has length;
+  PTC_T_0_3 has length;
+  EWG_T_0_3 has length;
+  PH_T_0_3 has length;
+
+  // Compartment initializations:
+  cell_0_0 = 1;
+  cell_0_0 has volume;
+  cell_0_1 = 1;
+  cell_0_1 has volume;
+  cell_0_2 = 1;
+  cell_0_2 has volume;
+  cell_0_3 = 1;
+  cell_0_3 has volume;
+
+  // Variable initializations:
+  T0 = 1;
+  T0 has unit_0;
+  H_en = 9.63785;
+  H_en has unit_0;
+  H_EN = 6.63279;
+  H_EN has unit_0;
+  H_wg = 49.1988;
+  H_wg has unit_0;
+  H_IWG = 14.0371;
+  H_IWG has unit_0;
+  H_EWG = 47.2665;
+  H_EWG has unit_0;
+  H_ptc = 92.0732;
+  H_ptc has unit_0;
+  H_PTC = 48.8711;
+  H_PTC has unit_0;
+  H_ci = 7.57263;
+  H_ci has unit_0;
+  H_CI = 28.4219;
+  H_CI has unit_0;
+  H_hh = 57.9751;
+  H_hh has unit_0;
+  H_HH = 21.9749;
+  H_HH has unit_0;
+  H_PH = 64.9729;
+  H_PH has unit_0;
+  C_CI = 0.246796;
+  C_CI has unit_0;
+  kappa_WGen = 0.00240536;
+  kappa_WGen has unit_0;
+  nu_WGen = 2.4465;
+  nu_WGen has unit_0;
+  kappa_CNen = 0.00121403;
+  kappa_CNen has unit_0;
+  nu_CNen = 5.08594;
+  nu_CNen has unit_0;
+  kappa_CNwg = 0.0286831;
+  kappa_CNwg has unit_0;
+  nu_CNwg = 5.40768;
+  nu_CNwg has unit_0;
+  kappa_CIwg = 0.904105;
+  kappa_CIwg has unit_0;
+  nu_CIwg = 4.58513;
+  nu_CIwg has unit_0;
+  kappa_WGwg = 0.104436;
+  kappa_WGwg has unit_0;
+  nu_WGwg = 4.81218;
+  nu_WGwg has unit_0;
+  alpha_CIwg = 8.15048;
+  alpha_CIwg has unit_0;
+  alpha_WGwg = 5.8383;
+  alpha_WGwg has unit_0;
+  kappa_CNptc = 0.255428;
+  kappa_CNptc has unit_0;
+  nu_CNptc = 4.34855;
+  nu_CNptc has unit_0;
+  kappa_CIptc = 0.109108;
+  kappa_CIptc has unit_0;
+  nu_CIptc = 1.01506;
+  nu_CIptc has unit_0;
+  kappa_Bci = 0.00490722;
+  kappa_Bci has unit_0;
+  nu_Bci = 9.63095;
+  nu_Bci has unit_0;
+  kappa_ENci = 0.0454899;
+  kappa_ENci has unit_0;
+  nu_ENci = 2.61964;
+  nu_ENci has unit_0;
+  kappa_ENhh = 0.162895;
+  kappa_ENhh has unit_0;
+  nu_ENhh = 7.70321;
+  nu_ENhh has unit_0;
+  kappa_CNhh = 0.0105685;
+  kappa_CNhh has unit_0;
+  nu_CNhh = 6.0273;
+  nu_CNhh has unit_0;
+  kappa_PTCCI = 0.00487319;
+  kappa_PTCCI has unit_0;
+  nu_PTCCI = 3.52315;
+  nu_PTCCI has unit_0;
+  r_ExoWG = 0.358857;
+  r_ExoWG has unit_0;
+  r_EndoWG = 0.00252198;
+  r_EndoWG has unit_0;
+  r_MxferWG = 0.0264395;
+  r_MxferWG has unit_0;
+  r_LMxferWG = 0.403146;
+  r_LMxferWG has unit_0;
+  r_LMxferPTC = 0.00351773;
+  r_LMxferPTC has unit_0;
+  r_LMxferHH = 0.0169928;
+  r_LMxferHH has unit_0;
+  kappa_PTCHH = 0.00132915;
+  kappa_PTCHH has unit_0;
+  PTC_0 = 131.94;
+  PTC_0 has unit_0;
+  HH_0 = 4.65494;
+  HH_0 has unit_0;
+  T0_H_EN has unit_0;
+  T0_H_ci has unit_0;
+  T0_H_IWG has unit_0;
+  T0_H_EWG has unit_0;
+  T0_H_hh has unit_0;
+  T0_H_PTC has unit_0;
+  T0_H_wg has unit_0;
+  T0_H_ptc has unit_0;
+  T0_H_CI has unit_0;
+  T0_H_PH has unit_0;
+  T0_H_en has unit_0;
+  T0_H_HH has unit_0;
+  T0_6H_HH has unit_0;
+  T0_6H_PTC has unit_0;
+  T0_r_ExoWG_6 has unit_0;
+  T0_r_EndoWG has unit_0;
+  T0_C_CI has unit_0;
+  T0_r_MxferWG has unit_0;
+  T0_r_LMxferWG has unit_0;
+  T0_r_LMxferHH has unit_0;
+  T0_kappa_PTCHH_HH_0 has unit_0;
+  T0_kappa_PTCHH_PTC_0 has unit_0;
+
+  // Other declarations:
+  var T0_H_EN, T0_H_ci, T0_H_IWG, T0_H_EWG, T0_H_hh, T0_H_PTC, T0_H_wg, T0_H_ptc;
+  var T0_H_CI, T0_H_PH, T0_H_en, T0_H_HH, T0_6H_HH, T0_6H_PTC, T0_r_ExoWG_6;
+  var T0_r_EndoWG, T0_C_CI, T0_r_MxferWG, T0_r_LMxferWG, T0_r_LMxferHH, T0_kappa_PTCHH_HH_0;
+  var T0_kappa_PTCHH_PTC_0;
+  const cell_0_0, cell_0_1, cell_0_2, cell_0_3, T0, H_en, H_EN, H_wg, H_IWG;
+  const H_EWG, H_ptc, H_PTC, H_ci, H_CI, H_hh, H_HH, H_PH, C_CI, kappa_WGen;
+  const nu_WGen, kappa_CNen, nu_CNen, kappa_CNwg, nu_CNwg, kappa_CIwg, nu_CIwg;
+  const kappa_WGwg, nu_WGwg, alpha_CIwg, alpha_WGwg, kappa_CNptc, nu_CNptc;
+  const kappa_CIptc, nu_CIptc, kappa_Bci, nu_Bci, kappa_ENci, nu_ENci, kappa_ENhh;
+  const nu_ENhh, kappa_CNhh, nu_CNhh, kappa_PTCCI, nu_PTCCI, r_ExoWG, r_EndoWG;
+  const r_MxferWG, r_LMxferWG, r_LMxferPTC, r_LMxferHH, kappa_PTCHH, PTC_0;
+  const HH_0;
+
+  // Unit definitions:
+  unit length = 1 / dimensionless^-0;
+  unit area = 1 / dimensionless^-0;
+  unit volume = 1 / dimensionless^-0;
+  unit time_unit = 1 / dimensionless^-0;
+  unit substance = 1 / dimensionless^-0;
+  unit unit_0 = 1 / dimensionless^-0;
+  unit extent = substance;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1";
+  cell_0_0 is "cell[0,0]";
+  cell_0_1 is "cell[0,1]";
+  cell_0_2 is "cell[0,2]";
+  cell_0_3 is "cell[0,3]";
+  en_0_0 is "en_0,0";
+  EN_0_0 is "EN_0,0";
+  ci_0_0 is "ci_0,0";
+  CI_0_0 is "CI_0,0";
+  CN_0_0 is "CN_0,0";
+  hh_0_0 is "hh_0,0";
+  HH1_0_0 is "HH1_0,0";
+  HH2_0_0 is "HH2_0,0";
+  HH3_0_0 is "HH3_0,0";
+  HH4_0_0 is "HH4_0,0";
+  HH5_0_0 is "HH5_0,0";
+  HH6_0_0 is "HH6_0,0";
+  ptc_0_0 is "ptc_0,0";
+  PTC1_0_0 is "PTC1_0,0";
+  PTC2_0_0 is "PTC2_0,0";
+  PTC3_0_0 is "PTC3_0,0";
+  PTC4_0_0 is "PTC4_0,0";
+  PTC5_0_0 is "PTC5_0,0";
+  PTC6_0_0 is "PTC6_0,0";
+  wg_0_0 is "wg_0,0";
+  IWG_0_0 is "IWG_0,0";
+  EWG1_0_0 is "EWG1_0,0";
+  EWG2_0_0 is "EWG2_0,0";
+  EWG3_0_0 is "EWG3_0,0";
+  EWG4_0_0 is "EWG4_0,0";
+  EWG5_0_0 is "EWG5_0,0";
+  EWG6_0_0 is "EWG6_0,0";
+  PH1_0_0 is "PH1_0,0";
+  PH2_0_0 is "PH2_0,0";
+  PH3_0_0 is "PH3_0,0";
+  PH4_0_0 is "PH4_0,0";
+  PH5_0_0 is "PH5_0,0";
+  PH6_0_0 is "PH6_0,0";
+  B_0_0 is "B_0,0";
+  PTC_T_0_0 is "PTC_T_0,0";
+  EWG_T_0_0 is "EWG_T_0,0";
+  EWG5_0_3 is "EWG5_0,3";
+  EWG6_0_3 is "EWG6_0,3";
+  EWG2_0_1 is "EWG2_0,1";
+  EWG3_0_1 is "EWG3_0,1";
+  PH_T_0_0 is "PH_T_0,0";
+  en_0_1 is "en_0,1";
+  EN_0_1 is "EN_0,1";
+  ci_0_1 is "ci_0,1";
+  CI_0_1 is "CI_0,1";
+  CN_0_1 is "CN_0,1";
+  hh_0_1 is "hh_0,1";
+  HH1_0_1 is "HH1_0,1";
+  HH2_0_1 is "HH2_0,1";
+  HH3_0_1 is "HH3_0,1";
+  HH4_0_1 is "HH4_0,1";
+  HH5_0_1 is "HH5_0,1";
+  HH6_0_1 is "HH6_0,1";
+  ptc_0_1 is "ptc_0,1";
+  PTC1_0_1 is "PTC1_0,1";
+  PTC2_0_1 is "PTC2_0,1";
+  PTC3_0_1 is "PTC3_0,1";
+  PTC4_0_1 is "PTC4_0,1";
+  PTC5_0_1 is "PTC5_0,1";
+  PTC6_0_1 is "PTC6_0,1";
+  wg_0_1 is "wg_0,1";
+  IWG_0_1 is "IWG_0,1";
+  EWG1_0_1 is "EWG1_0,1";
+  EWG4_0_1 is "EWG4_0,1";
+  EWG5_0_1 is "EWG5_0,1";
+  EWG6_0_1 is "EWG6_0,1";
+  PH1_0_1 is "PH1_0,1";
+  PH2_0_1 is "PH2_0,1";
+  PH3_0_1 is "PH3_0,1";
+  PH4_0_1 is "PH4_0,1";
+  PH5_0_1 is "PH5_0,1";
+  PH6_0_1 is "PH6_0,1";
+  B_0_1 is "B_0,1";
+  PTC_T_0_1 is "PTC_T_0,1";
+  EWG_T_0_1 is "EWG_T_0,1";
+  EWG2_0_2 is "EWG2_0,2";
+  EWG3_0_2 is "EWG3_0,2";
+  PH_T_0_1 is "PH_T_0,1";
+  en_0_2 is "en_0,2";
+  EN_0_2 is "EN_0,2";
+  ci_0_2 is "ci_0,2";
+  CI_0_2 is "CI_0,2";
+  CN_0_2 is "CN_0,2";
+  hh_0_2 is "hh_0,2";
+  HH1_0_2 is "HH1_0,2";
+  HH2_0_2 is "HH2_0,2";
+  HH3_0_2 is "HH3_0,2";
+  HH4_0_2 is "HH4_0,2";
+  HH5_0_2 is "HH5_0,2";
+  HH6_0_2 is "HH6_0,2";
+  ptc_0_2 is "ptc_0,2";
+  PTC1_0_2 is "PTC1_0,2";
+  PTC2_0_2 is "PTC2_0,2";
+  PTC3_0_2 is "PTC3_0,2";
+  PTC4_0_2 is "PTC4_0,2";
+  PTC5_0_2 is "PTC5_0,2";
+  PTC6_0_2 is "PTC6_0,2";
+  wg_0_2 is "wg_0,2";
+  IWG_0_2 is "IWG_0,2";
+  EWG1_0_2 is "EWG1_0,2";
+  EWG4_0_2 is "EWG4_0,2";
+  EWG5_0_2 is "EWG5_0,2";
+  EWG6_0_2 is "EWG6_0,2";
+  PH1_0_2 is "PH1_0,2";
+  PH2_0_2 is "PH2_0,2";
+  PH3_0_2 is "PH3_0,2";
+  PH4_0_2 is "PH4_0,2";
+  PH5_0_2 is "PH5_0,2";
+  PH6_0_2 is "PH6_0,2";
+  B_0_2 is "B_0,2";
+  PTC_T_0_2 is "PTC_T_0,2";
+  EWG_T_0_2 is "EWG_T_0,2";
+  EWG2_0_3 is "EWG2_0,3";
+  EWG3_0_3 is "EWG3_0,3";
+  PH_T_0_2 is "PH_T_0,2";
+  en_0_3 is "en_0,3";
+  EN_0_3 is "EN_0,3";
+  ci_0_3 is "ci_0,3";
+  CI_0_3 is "CI_0,3";
+  CN_0_3 is "CN_0,3";
+  hh_0_3 is "hh_0,3";
+  HH1_0_3 is "HH1_0,3";
+  HH2_0_3 is "HH2_0,3";
+  HH3_0_3 is "HH3_0,3";
+  HH4_0_3 is "HH4_0,3";
+  HH5_0_3 is "HH5_0,3";
+  HH6_0_3 is "HH6_0,3";
+  ptc_0_3 is "ptc_0,3";
+  PTC1_0_3 is "PTC1_0,3";
+  PTC2_0_3 is "PTC2_0,3";
+  PTC3_0_3 is "PTC3_0,3";
+  PTC4_0_3 is "PTC4_0,3";
+  PTC5_0_3 is "PTC5_0,3";
+  PTC6_0_3 is "PTC6_0,3";
+  wg_0_3 is "wg_0,3";
+  IWG_0_3 is "IWG_0,3";
+  EWG1_0_3 is "EWG1_0,3";
+  EWG4_0_3 is "EWG4_0,3";
+  PH1_0_3 is "PH1_0,3";
+  PH2_0_3 is "PH2_0,3";
+  PH3_0_3 is "PH3_0,3";
+  PH4_0_3 is "PH4_0,3";
+  PH5_0_3 is "PH5_0,3";
+  PH6_0_3 is "PH6_0,3";
+  B_0_3 is "B_0,3";
+  PTC_T_0_3 is "PTC_T_0,3";
+  EWG_T_0_3 is "EWG_T_0,3";
+  PH_T_0_3 is "PH_T_0,3";
+  T0_H_EN is "T0/H_EN";
+  T0_H_ci is "T0/H_ci";
+  T0_H_IWG is "T0/H_IWG";
+  T0_H_EWG is "T0/H_EWG";
+  T0_H_hh is "T0/H_hh";
+  T0_H_PTC is "T0/H_PTC";
+  T0_H_wg is "T0/H_wg";
+  T0_H_ptc is "T0/H_ptc";
+  T0_H_CI is "T0/H_CI";
+  T0_H_PH is "T0/H_PH";
+  T0_H_en is "T0/H_en";
+  T0_H_HH is "T0/H_HH";
+  T0_6H_HH is "T0/6H_HH";
+  T0_6H_PTC is "T0/6H_PTC";
+  T0_r_ExoWG_6 is "T0.r_ExoWG/6";
+  T0_r_EndoWG is "T0.r_EndoWG";
+  T0_C_CI is "T0.C_CI";
+  T0_r_MxferWG is "T0.r_MxferWG";
+  T0_r_LMxferWG is "T0.r_LMxferWG";
+  T0_r_LMxferHH is "T0.r_LMxferHH";
+  T0_kappa_PTCHH_HH_0 is "T0.kappa_PTCHH.HH_0";
+  T0_kappa_PTCHH_PTC_0 is "T0.kappa_PTCHH.PTC_0";
+  R01_0_0 is "R01_0,0";
+  R02_0_0 is "R02_0,0";
+  R03_0_0 is "R03_0,0";
+  R04_0_0 is "R04_0,0";
+  R05_0_0 is "R05_0,0";
+  R06_0_0 is "R06_0,0";
+  R07_0_0 is "R07_0,0";
+  R08_0_0 is "R08_0,0";
+  R09_0_0 is "R09_0,0";
+  R10_0_0 is "R10_0,0";
+  R11_0_0 is "R11_0,0";
+  R12_0_0 is "R12_0,0";
+  R13_1_0_0 is "R13_1_0,0";
+  R13_2_0_0 is "R13_2_0,0";
+  R13_3_0_0 is "R13_3_0,0";
+  R13_4_0_0 is "R13_4_0,0";
+  R13_5_0_0 is "R13_5_0,0";
+  R13_6_0_0 is "R13_6_0,0";
+  R14_1_0_0 is "R14_1_0,0";
+  R14_2_0_0 is "R14_2_0,0";
+  R14_3_0_0 is "R14_3_0,0";
+  R14_4_0_0 is "R14_4_0,0";
+  R14_5_0_0 is "R14_5_0,0";
+  R14_6_0_0 is "R14_6_0,0";
+  R15_0_0 is "R15_0,0";
+  R16_0_0 is "R16_0,0";
+  R17_1_0_0 is "R17_1_0,0";
+  R17_2_0_0 is "R17_2_0,0";
+  R17_3_0_0 is "R17_3_0,0";
+  R17_4_0_0 is "R17_4_0,0";
+  R17_5_0_0 is "R17_5_0,0";
+  R17_6_0_0 is "R17_6_0,0";
+  R18_1_0_0 is "R18_1_0,0";
+  R18_2_0_0 is "R18_2_0,0";
+  R18_3_0_0 is "R18_3_0,0";
+  R18_4_0_0 is "R18_4_0,0";
+  R18_5_0_0 is "R18_5_0,0";
+  R18_6_0_0 is "R18_6_0,0";
+  R19_0_0 is "R19_0,0";
+  R20_0_0 is "R20_0,0";
+  R21_0_0 is "R21_0,0";
+  R22_0_0 is "R22_0,0";
+  R23_1_0_0 is "R23_1_0,0";
+  R23_2_0_0 is "R23_2_0,0";
+  R23_3_0_0 is "R23_3_0,0";
+  R23_4_0_0 is "R23_4_0,0";
+  R23_5_0_0 is "R23_5_0,0";
+  R23_6_0_0 is "R23_6_0,0";
+  R24_1_0_0 is "R24_1_0,0";
+  R24_2_0_0 is "R24_2_0,0";
+  R24_3_0_0 is "R24_3_0,0";
+  R24_4_0_0 is "R24_4_0,0";
+  R24_5_0_0 is "R24_5_0,0";
+  R24_6_0_0 is "R24_6_0,0";
+  R25_1_0_0 is "R25_1_0,0";
+  R25_2_0_0 is "R25_2_0,0";
+  R25_3_0_0 is "R25_3_0,0";
+  R25_4_0_0 is "R25_4_0,0";
+  R25_5_0_0 is "R25_5_0,0";
+  R25_6_0_0 is "R25_6_0,0";
+  R26_16_0_0 is "R26_16_0,0";
+  R26_61_0_0 is "R26_61_0,0";
+  R26_12_0_0 is "R26_12_0,0";
+  R26_21_0_0 is "R26_21_0,0";
+  R26_23_0_0 is "R26_23_0,0";
+  R26_32_0_0 is "R26_32_0,0";
+  R26_34_0_0 is "R26_34_0,0";
+  R26_43_0_0 is "R26_43_0,0";
+  R26_45_0_0 is "R26_45_0,0";
+  R26_54_0_0 is "R26_54_0,0";
+  R26_56_0_0 is "R26_56_0,0";
+  R26_65_0_0 is "R26_65_0,0";
+  R27_16_0_0 is "R27_16_0,0";
+  R27_61_0_0 is "R27_61_0,0";
+  R27_12_0_0 is "R27_12_0,0";
+  R27_21_0_0 is "R27_21_0,0";
+  R27_23_0_0 is "R27_23_0,0";
+  R27_32_0_0 is "R27_32_0,0";
+  R27_34_0_0 is "R27_34_0,0";
+  R27_43_0_0 is "R27_43_0,0";
+  R27_45_0_0 is "R27_45_0,0";
+  R27_54_0_0 is "R27_54_0,0";
+  R27_56_0_0 is "R27_56_0,0";
+  R27_65_0_0 is "R27_65_0,0";
+  R28_16_0_0 is "R28_16_0,0";
+  R28_61_0_0 is "R28_61_0,0";
+  R28_12_0_0 is "R28_12_0,0";
+  R28_21_0_0 is "R28_21_0,0";
+  R28_23_0_0 is "R28_23_0,0";
+  R28_32_0_0 is "R28_32_0,0";
+  R28_34_0_0 is "R28_34_0,0";
+  R28_43_0_0 is "R28_43_0,0";
+  R28_45_0_0 is "R28_45_0,0";
+  R28_54_0_0 is "R28_54_0,0";
+  R28_56_0_0 is "R28_56_0,0";
+  R28_65_0_0 is "R28_65_0,0";
+  R29_1_0_0 is "R29_1_0,0";
+  R29_2_0_0 is "R29_2_0,0";
+  R29_3_0_0 is "R29_3_0,0";
+  R29_4_0_0 is "R29_4_0,0";
+  R29_5_0_0 is "R29_5_0,0";
+  R29_6_0_0 is "R29_6_0,0";
+  R01_0_1 is "R01_0,1";
+  R02_0_1 is "R02_0,1";
+  R03_0_1 is "R03_0,1";
+  R04_0_1 is "R04_0,1";
+  R05_0_1 is "R05_0,1";
+  R06_0_1 is "R06_0,1";
+  R07_0_1 is "R07_0,1";
+  R08_0_1 is "R08_0,1";
+  R09_0_1 is "R09_0,1";
+  R10_0_1 is "R10_0,1";
+  R11_0_1 is "R11_0,1";
+  R12_0_1 is "R12_0,1";
+  R13_1_0_1 is "R13_1_0,1";
+  R13_2_0_1 is "R13_2_0,1";
+  R13_3_0_1 is "R13_3_0,1";
+  R13_4_0_1 is "R13_4_0,1";
+  R13_5_0_1 is "R13_5_0,1";
+  R13_6_0_1 is "R13_6_0,1";
+  R14_1_0_1 is "R14_1_0,1";
+  R14_2_0_1 is "R14_2_0,1";
+  R14_3_0_1 is "R14_3_0,1";
+  R14_4_0_1 is "R14_4_0,1";
+  R14_5_0_1 is "R14_5_0,1";
+  R14_6_0_1 is "R14_6_0,1";
+  R15_0_1 is "R15_0,1";
+  R16_0_1 is "R16_0,1";
+  R17_1_0_1 is "R17_1_0,1";
+  R17_2_0_1 is "R17_2_0,1";
+  R17_3_0_1 is "R17_3_0,1";
+  R17_4_0_1 is "R17_4_0,1";
+  R17_5_0_1 is "R17_5_0,1";
+  R17_6_0_1 is "R17_6_0,1";
+  R18_1_0_1 is "R18_1_0,1";
+  R18_2_0_1 is "R18_2_0,1";
+  R18_3_0_1 is "R18_3_0,1";
+  R18_4_0_1 is "R18_4_0,1";
+  R18_5_0_1 is "R18_5_0,1";
+  R18_6_0_1 is "R18_6_0,1";
+  R19_0_1 is "R19_0,1";
+  R20_0_1 is "R20_0,1";
+  R21_0_1 is "R21_0,1";
+  R22_0_1 is "R22_0,1";
+  R23_1_0_1 is "R23_1_0,1";
+  R23_2_0_1 is "R23_2_0,1";
+  R23_3_0_1 is "R23_3_0,1";
+  R23_4_0_1 is "R23_4_0,1";
+  R23_5_0_1 is "R23_5_0,1";
+  R23_6_0_1 is "R23_6_0,1";
+  R24_1_0_1 is "R24_1_0,1";
+  R24_2_0_1 is "R24_2_0,1";
+  R24_3_0_1 is "R24_3_0,1";
+  R24_4_0_1 is "R24_4_0,1";
+  R24_5_0_1 is "R24_5_0,1";
+  R24_6_0_1 is "R24_6_0,1";
+  R25_1_0_1 is "R25_1_0,1";
+  R25_2_0_1 is "R25_2_0,1";
+  R25_3_0_1 is "R25_3_0,1";
+  R25_4_0_1 is "R25_4_0,1";
+  R25_5_0_1 is "R25_5_0,1";
+  R25_6_0_1 is "R25_6_0,1";
+  R26_16_0_1 is "R26_16_0,1";
+  R26_61_0_1 is "R26_61_0,1";
+  R26_12_0_1 is "R26_12_0,1";
+  R26_21_0_1 is "R26_21_0,1";
+  R26_23_0_1 is "R26_23_0,1";
+  R26_32_0_1 is "R26_32_0,1";
+  R26_34_0_1 is "R26_34_0,1";
+  R26_43_0_1 is "R26_43_0,1";
+  R26_45_0_1 is "R26_45_0,1";
+  R26_54_0_1 is "R26_54_0,1";
+  R26_56_0_1 is "R26_56_0,1";
+  R26_65_0_1 is "R26_65_0,1";
+  R27_16_0_1 is "R27_16_0,1";
+  R27_61_0_1 is "R27_61_0,1";
+  R27_12_0_1 is "R27_12_0,1";
+  R27_21_0_1 is "R27_21_0,1";
+  R27_23_0_1 is "R27_23_0,1";
+  R27_32_0_1 is "R27_32_0,1";
+  R27_34_0_1 is "R27_34_0,1";
+  R27_43_0_1 is "R27_43_0,1";
+  R27_45_0_1 is "R27_45_0,1";
+  R27_54_0_1 is "R27_54_0,1";
+  R27_56_0_1 is "R27_56_0,1";
+  R27_65_0_1 is "R27_65_0,1";
+  R28_16_0_1 is "R28_16_0,1";
+  R28_61_0_1 is "R28_61_0,1";
+  R28_12_0_1 is "R28_12_0,1";
+  R28_21_0_1 is "R28_21_0,1";
+  R28_23_0_1 is "R28_23_0,1";
+  R28_32_0_1 is "R28_32_0,1";
+  R28_34_0_1 is "R28_34_0,1";
+  R28_43_0_1 is "R28_43_0,1";
+  R28_45_0_1 is "R28_45_0,1";
+  R28_54_0_1 is "R28_54_0,1";
+  R28_56_0_1 is "R28_56_0,1";
+  R28_65_0_1 is "R28_65_0,1";
+  R29_1_0_1 is "R29_1_0,1";
+  R29_2_0_1 is "R29_2_0,1";
+  R29_3_0_1 is "R29_3_0,1";
+  R29_4_0_1 is "R29_4_0,1";
+  R29_5_0_1 is "R29_5_0,1";
+  R29_6_0_1 is "R29_6_0,1";
+  R01_0_2 is "R01_0,2";
+  R02_0_2 is "R02_0,2";
+  R03_0_2 is "R03_0,2";
+  R04_0_2 is "R04_0,2";
+  R05_0_2 is "R05_0,2";
+  R06_0_2 is "R06_0,2";
+  R07_0_2 is "R07_0,2";
+  R08_0_2 is "R08_0,2";
+  R09_0_2 is "R09_0,2";
+  R10_0_2 is "R10_0,2";
+  R11_0_2 is "R11_0,2";
+  R12_0_2 is "R12_0,2";
+  R13_1_0_2 is "R13_1_0,2";
+  R13_2_0_2 is "R13_2_0,2";
+  R13_3_0_2 is "R13_3_0,2";
+  R13_4_0_2 is "R13_4_0,2";
+  R13_5_0_2 is "R13_5_0,2";
+  R13_6_0_2 is "R13_6_0,2";
+  R14_1_0_2 is "R14_1_0,2";
+  R14_2_0_2 is "R14_2_0,2";
+  R14_3_0_2 is "R14_3_0,2";
+  R14_4_0_2 is "R14_4_0,2";
+  R14_5_0_2 is "R14_5_0,2";
+  R14_6_0_2 is "R14_6_0,2";
+  R15_0_2 is "R15_0,2";
+  R16_0_2 is "R16_0,2";
+  R17_1_0_2 is "R17_1_0,2";
+  R17_2_0_2 is "R17_2_0,2";
+  R17_3_0_2 is "R17_3_0,2";
+  R17_4_0_2 is "R17_4_0,2";
+  R17_5_0_2 is "R17_5_0,2";
+  R17_6_0_2 is "R17_6_0,2";
+  R18_1_0_2 is "R18_1_0,2";
+  R18_2_0_2 is "R18_2_0,2";
+  R18_3_0_2 is "R18_3_0,2";
+  R18_4_0_2 is "R18_4_0,2";
+  R18_5_0_2 is "R18_5_0,2";
+  R18_6_0_2 is "R18_6_0,2";
+  R19_0_2 is "R19_0,2";
+  R20_0_2 is "R20_0,2";
+  R21_0_2 is "R21_0,2";
+  R22_0_2 is "R22_0,2";
+  R23_1_0_2 is "R23_1_0,2";
+  R23_2_0_2 is "R23_2_0,2";
+  R23_3_0_2 is "R23_3_0,2";
+  R23_4_0_2 is "R23_4_0,2";
+  R23_5_0_2 is "R23_5_0,2";
+  R23_6_0_2 is "R23_6_0,2";
+  R24_1_0_2 is "R24_1_0,2";
+  R24_2_0_2 is "R24_2_0,2";
+  R24_3_0_2 is "R24_3_0,2";
+  R24_4_0_2 is "R24_4_0,2";
+  R24_5_0_2 is "R24_5_0,2";
+  R24_6_0_2 is "R24_6_0,2";
+  R25_1_0_2 is "R25_1_0,2";
+  R25_2_0_2 is "R25_2_0,2";
+  R25_3_0_2 is "R25_3_0,2";
+  R25_4_0_2 is "R25_4_0,2";
+  R25_5_0_2 is "R25_5_0,2";
+  R25_6_0_2 is "R25_6_0,2";
+  R26_16_0_2 is "R26_16_0,2";
+  R26_61_0_2 is "R26_61_0,2";
+  R26_12_0_2 is "R26_12_0,2";
+  R26_21_0_2 is "R26_21_0,2";
+  R26_23_0_2 is "R26_23_0,2";
+  R26_32_0_2 is "R26_32_0,2";
+  R26_34_0_2 is "R26_34_0,2";
+  R26_43_0_2 is "R26_43_0,2";
+  R26_45_0_2 is "R26_45_0,2";
+  R26_54_0_2 is "R26_54_0,2";
+  R26_56_0_2 is "R26_56_0,2";
+  R26_65_0_2 is "R26_65_0,2";
+  R27_16_0_2 is "R27_16_0,2";
+  R27_61_0_2 is "R27_61_0,2";
+  R27_12_0_2 is "R27_12_0,2";
+  R27_21_0_2 is "R27_21_0,2";
+  R27_23_0_2 is "R27_23_0,2";
+  R27_32_0_2 is "R27_32_0,2";
+  R27_34_0_2 is "R27_34_0,2";
+  R27_43_0_2 is "R27_43_0,2";
+  R27_45_0_2 is "R27_45_0,2";
+  R27_54_0_2 is "R27_54_0,2";
+  R27_56_0_2 is "R27_56_0,2";
+  R27_65_0_2 is "R27_65_0,2";
+  R28_16_0_2 is "R28_16_0,2";
+  R28_61_0_2 is "R28_61_0,2";
+  R28_12_0_2 is "R28_12_0,2";
+  R28_21_0_2 is "R28_21_0,2";
+  R28_23_0_2 is "R28_23_0,2";
+  R28_32_0_2 is "R28_32_0,2";
+  R28_34_0_2 is "R28_34_0,2";
+  R28_43_0_2 is "R28_43_0,2";
+  R28_45_0_2 is "R28_45_0,2";
+  R28_54_0_2 is "R28_54_0,2";
+  R28_56_0_2 is "R28_56_0,2";
+  R28_65_0_2 is "R28_65_0,2";
+  R29_1_0_2 is "R29_1_0,2";
+  R29_2_0_2 is "R29_2_0,2";
+  R29_3_0_2 is "R29_3_0,2";
+  R29_4_0_2 is "R29_4_0,2";
+  R29_5_0_2 is "R29_5_0,2";
+  R29_6_0_2 is "R29_6_0,2";
+  R01_0_3 is "R01_0,3";
+  R02_0_3 is "R02_0,3";
+  R03_0_3 is "R03_0,3";
+  R04_0_3 is "R04_0,3";
+  R05_0_3 is "R05_0,3";
+  R06_0_3 is "R06_0,3";
+  R07_0_3 is "R07_0,3";
+  R08_0_3 is "R08_0,3";
+  R09_0_3 is "R09_0,3";
+  R10_0_3 is "R10_0,3";
+  R11_0_3 is "R11_0,3";
+  R12_0_3 is "R12_0,3";
+  R13_1_0_3 is "R13_1_0,3";
+  R13_2_0_3 is "R13_2_0,3";
+  R13_3_0_3 is "R13_3_0,3";
+  R13_4_0_3 is "R13_4_0,3";
+  R13_5_0_3 is "R13_5_0,3";
+  R13_6_0_3 is "R13_6_0,3";
+  R14_1_0_3 is "R14_1_0,3";
+  R14_2_0_3 is "R14_2_0,3";
+  R14_3_0_3 is "R14_3_0,3";
+  R14_4_0_3 is "R14_4_0,3";
+  R14_5_0_3 is "R14_5_0,3";
+  R14_6_0_3 is "R14_6_0,3";
+  R15_0_3 is "R15_0,3";
+  R16_0_3 is "R16_0,3";
+  R17_1_0_3 is "R17_1_0,3";
+  R17_2_0_3 is "R17_2_0,3";
+  R17_3_0_3 is "R17_3_0,3";
+  R17_4_0_3 is "R17_4_0,3";
+  R17_5_0_3 is "R17_5_0,3";
+  R17_6_0_3 is "R17_6_0,3";
+  R18_1_0_3 is "R18_1_0,3";
+  R18_2_0_3 is "R18_2_0,3";
+  R18_3_0_3 is "R18_3_0,3";
+  R18_4_0_3 is "R18_4_0,3";
+  R18_5_0_3 is "R18_5_0,3";
+  R18_6_0_3 is "R18_6_0,3";
+  R19_0_3 is "R19_0,3";
+  R20_0_3 is "R20_0,3";
+  R21_0_3 is "R21_0,3";
+  R22_0_3 is "R22_0,3";
+  R23_1_0_3 is "R23_1_0,3";
+  R23_2_0_3 is "R23_2_0,3";
+  R23_3_0_3 is "R23_3_0,3";
+  R23_4_0_3 is "R23_4_0,3";
+  R23_5_0_3 is "R23_5_0,3";
+  R23_6_0_3 is "R23_6_0,3";
+  R24_1_0_3 is "R24_1_0,3";
+  R24_2_0_3 is "R24_2_0,3";
+  R24_3_0_3 is "R24_3_0,3";
+  R24_4_0_3 is "R24_4_0,3";
+  R24_5_0_3 is "R24_5_0,3";
+  R24_6_0_3 is "R24_6_0,3";
+  R25_1_0_3 is "R25_1_0,3";
+  R25_2_0_3 is "R25_2_0,3";
+  R25_3_0_3 is "R25_3_0,3";
+  R25_4_0_3 is "R25_4_0,3";
+  R25_5_0_3 is "R25_5_0,3";
+  R25_6_0_3 is "R25_6_0,3";
+  R26_16_0_3 is "R26_16_0,3";
+  R26_61_0_3 is "R26_61_0,3";
+  R26_12_0_3 is "R26_12_0,3";
+  R26_21_0_3 is "R26_21_0,3";
+  R26_23_0_3 is "R26_23_0,3";
+  R26_32_0_3 is "R26_32_0,3";
+  R26_34_0_3 is "R26_34_0,3";
+  R26_43_0_3 is "R26_43_0,3";
+  R26_45_0_3 is "R26_45_0,3";
+  R26_54_0_3 is "R26_54_0,3";
+  R26_56_0_3 is "R26_56_0,3";
+  R26_65_0_3 is "R26_65_0,3";
+  R27_16_0_3 is "R27_16_0,3";
+  R27_61_0_3 is "R27_61_0,3";
+  R27_12_0_3 is "R27_12_0,3";
+  R27_21_0_3 is "R27_21_0,3";
+  R27_23_0_3 is "R27_23_0,3";
+  R27_32_0_3 is "R27_32_0,3";
+  R27_34_0_3 is "R27_34_0,3";
+  R27_43_0_3 is "R27_43_0,3";
+  R27_45_0_3 is "R27_45_0,3";
+  R27_54_0_3 is "R27_54_0,3";
+  R27_56_0_3 is "R27_56_0,3";
+  R27_65_0_3 is "R27_65_0,3";
+  R28_16_0_3 is "R28_16_0,3";
+  R28_61_0_3 is "R28_61_0,3";
+  R28_12_0_3 is "R28_12_0,3";
+  R28_21_0_3 is "R28_21_0,3";
+  R28_23_0_3 is "R28_23_0,3";
+  R28_32_0_3 is "R28_32_0,3";
+  R28_34_0_3 is "R28_34_0,3";
+  R28_43_0_3 is "R28_43_0,3";
+  R28_45_0_3 is "R28_45_0,3";
+  R28_54_0_3 is "R28_54_0,3";
+  R28_56_0_3 is "R28_56_0,3";
+  R28_65_0_3 is "R28_65_0,3";
+  R29_1_0_3 is "R29_1_0,3";
+  R29_2_0_3 is "R29_2_0,3";
+  R29_3_0_3 is "R29_3_0,3";
+  R29_4_0_3 is "R29_4_0,3";
+  R29_5_0_3 is "R29_5_0,3";
+  R29_6_0_3 is "R29_6_0,3";
+  R30a_1_0_0 is "R30a_1_0,0";
+  R30b_1_0_0 is "R30b_1_0,0";
+  R31_1_0_0 is "R31_1_0,0";
+  R30a_2_0_0 is "R30a_2_0,0";
+  R30b_2_0_0 is "R30b_2_0,0";
+  R31_2_0_0 is "R31_2_0,0";
+  R30a_3_0_0 is "R30a_3_0,0";
+  R30b_3_0_0 is "R30b_3_0,0";
+  R31_3_0_0 is "R31_3_0,0";
+  R30a_4_0_0 is "R30a_4_0,0";
+  R30b_4_0_0 is "R30b_4_0,0";
+  R31_4_0_0 is "R31_4_0,0";
+  R30a_5_0_0 is "R30a_5_0,0";
+  R30b_5_0_0 is "R30b_5_0,0";
+  R31_5_0_0 is "R31_5_0,0";
+  R30a_6_0_0 is "R30a_6_0,0";
+  R30b_6_0_0 is "R30b_6_0,0";
+  R31_6_0_0 is "R31_6_0,0";
+  R30a_1_0_1 is "R30a_1_0,1";
+  R30b_1_0_1 is "R30b_1_0,1";
+  R31_1_0_1 is "R31_1_0,1";
+  R30a_2_0_1 is "R30a_2_0,1";
+  R30b_2_0_1 is "R30b_2_0,1";
+  R31_2_0_1 is "R31_2_0,1";
+  R30a_3_0_1 is "R30a_3_0,1";
+  R30b_3_0_1 is "R30b_3_0,1";
+  R31_3_0_1 is "R31_3_0,1";
+  R30a_4_0_1 is "R30a_4_0,1";
+  R30b_4_0_1 is "R30b_4_0,1";
+  R31_4_0_1 is "R31_4_0,1";
+  R30a_5_0_1 is "R30a_5_0,1";
+  R30b_5_0_1 is "R30b_5_0,1";
+  R31_5_0_1 is "R31_5_0,1";
+  R30a_6_0_1 is "R30a_6_0,1";
+  R30b_6_0_1 is "R30b_6_0,1";
+  R31_6_0_1 is "R31_6_0,1";
+  R30a_1_0_2 is "R30a_1_0,2";
+  R30b_1_0_2 is "R30b_1_0,2";
+  R31_1_0_2 is "R31_1_0,2";
+  R30a_2_0_2 is "R30a_2_0,2";
+  R30b_2_0_2 is "R30b_2_0,2";
+  R31_2_0_2 is "R31_2_0,2";
+  R30a_3_0_2 is "R30a_3_0,2";
+  R30b_3_0_2 is "R30b_3_0,2";
+  R31_3_0_2 is "R31_3_0,2";
+  R30a_4_0_2 is "R30a_4_0,2";
+  R30b_4_0_2 is "R30b_4_0,2";
+  R31_4_0_2 is "R31_4_0,2";
+  R30a_5_0_2 is "R30a_5_0,2";
+  R30b_5_0_2 is "R30b_5_0,2";
+  R31_5_0_2 is "R31_5_0,2";
+  R30a_6_0_2 is "R30a_6_0,2";
+  R30b_6_0_2 is "R30b_6_0,2";
+  R31_6_0_2 is "R31_6_0,2";
+  R30a_1_0_3 is "R30a_1_0,3";
+  R30b_1_0_3 is "R30b_1_0,3";
+  R31_1_0_3 is "R31_1_0,3";
+  R30a_2_0_3 is "R30a_2_0,3";
+  R30b_2_0_3 is "R30b_2_0,3";
+  R31_2_0_3 is "R31_2_0,3";
+  R30a_3_0_3 is "R30a_3_0,3";
+  R30b_3_0_3 is "R30b_3_0,3";
+  R31_3_0_3 is "R31_3_0,3";
+  R30a_4_0_3 is "R30a_4_0,3";
+  R30b_4_0_3 is "R30b_4_0,3";
+  R31_4_0_3 is "R31_4_0,3";
+  R30a_5_0_3 is "R30a_5_0,3";
+  R30b_5_0_3 is "R30b_5_0,3";
+  R31_5_0_3 is "R31_5_0,3";
+  R30a_6_0_3 is "R30a_6_0,3";
+  R30b_6_0_3 is "R30b_6_0,3";
+  R31_6_0_3 is "R31_6_0,3";
+
+  // General layout options
+  model.layout = on
+  model.layout.size = {1000, 1000}
+  model.layout.background = "#FFFFFFFF"
+
+  // Species layout defaults
+  species.color = "#a0e0a030"
+
+  // Reaction layout defaults
+  reaction.lineColor = "#000000A0"
+  reaction.lineWidth = 3
+  reaction.fontColor = "#000000A0"
+
+  // Compartment layout defaults
+  compartment.lineColor = "#E69600B0"
+  compartment.lineWidth = 7
+  compartment.fontColor = "#E69600B0"
+  compartment.fontStyle = normal
+
+  // Individual element layout information
+  en_0_0.position = {70, 30}
+  en_0_0.size = {30, 30}
+  en_0_0.font = verdana
+  en_0_0.fontColor = black
+  en_0_0.fontSize = 12
+  ci_0_0.position = {70, 210}
+  ci_0_0.size = {30, 30}
+  ci_0_0.font = verdana
+  ci_0_0.fontColor = black
+  ci_0_0.fontSize = 12
+  CI_0_0.position = {70, 270}
+  CI_0_0.size = {30, 30}
+  CI_0_0.font = verdana
+  CI_0_0.fontColor = black
+  CI_0_0.fontSize = 12
+  CN_0_0.position = {70, 330}
+  CN_0_0.size = {30, 30}
+  CN_0_0.font = verdana
+  CN_0_0.fontColor = black
+  CN_0_0.fontSize = 12
+  hh_0_0.position = {70, 390}
+  hh_0_0.size = {30, 30}
+  hh_0_0.font = verdana
+  hh_0_0.fontColor = black
+  hh_0_0.fontSize = 12
+  ptc_0_0.position = {70, 150}
+  ptc_0_0.size = {30, 30}
+  ptc_0_0.font = verdana
+  ptc_0_0.fontColor = black
+  ptc_0_0.fontSize = 12
+  wg_0_0.position = {70, 90}
+  wg_0_0.size = {30, 30}
+  wg_0_0.font = verdana
+  wg_0_0.fontColor = black
+  wg_0_0.fontSize = 12
+  PH_T_0_0.position = {70, 450}
+  PH_T_0_0.size = {30, 30}
+  PH_T_0_0.font = verdana
+  PH_T_0_0.fontColor = black
+  PH_T_0_0.fontSize = 12
+  en_0_1.position = {130, 30}
+  en_0_1.size = {30, 30}
+  ci_0_1.position = {130, 210}
+  ci_0_1.size = {30, 30}
+  CI_0_1.position = {130, 270}
+  CI_0_1.size = {30, 30}
+  CN_0_1.position = {130, 330}
+  CN_0_1.size = {30, 30}
+  hh_0_1.position = {130, 390}
+  hh_0_1.size = {30, 30}
+  ptc_0_1.position = {130, 150}
+  ptc_0_1.size = {30, 30}
+  wg_0_1.position = {130, 90}
+  wg_0_1.size = {30, 30}
+  PH_T_0_1.position = {130, 450}
+  PH_T_0_1.size = {30, 30}
+  en_0_2.position = {190, 30}
+  en_0_2.size = {30, 30}
+  ci_0_2.position = {190, 210}
+  ci_0_2.size = {30, 30}
+  CI_0_2.position = {190, 270}
+  CI_0_2.size = {30, 30}
+  CN_0_2.position = {190, 330}
+  CN_0_2.size = {30, 30}
+  hh_0_2.position = {190, 390}
+  hh_0_2.size = {30, 30}
+  ptc_0_2.position = {190, 150}
+  ptc_0_2.size = {30, 30}
+  wg_0_2.position = {190, 90}
+  wg_0_2.size = {30, 30}
+  PH_T_0_2.position = {190, 450}
+  PH_T_0_2.size = {30, 30}
+  en_0_3.position = {250, 30}
+  en_0_3.size = {30, 30}
+  ci_0_3.position = {250, 210}
+  ci_0_3.size = {30, 30}
+  CI_0_3.position = {250, 270}
+  CI_0_3.size = {30, 30}
+  CN_0_3.position = {250, 330}
+  CN_0_3.size = {30, 30}
+  hh_0_3.position = {250, 390}
+  hh_0_3.size = {30, 30}
+  ptc_0_3.position = {250, 150}
+  ptc_0_3.size = {30, 30}
+  wg_0_3.position = {250, 90}
+  wg_0_3.size = {30, 30}
+  PH_T_0_3.position = {250, 450}
+  PH_T_0_3.size = {30, 30}
+
+  // CV terms:
+  en_0_0 isEncodedBy "http://identifiers.org/fb/FBgn0000577"
+  EN_0_0 isVersionOf "http://identifiers.org/uniprot/P02836"
+  EN_0_0 occursIn "http://identifiers.org/go/GO:0005634"
+  ci_0_0 isEncodedBy "http://identifiers.org/fb/FBgn0004859"
+  CI_0_0 isVersionOf "http://identifiers.org/uniprot/P19538"
+  CI_0_0 occursIn "http://identifiers.org/go/GO:0005634"
+  CN_0_0 isVersionOf "http://identifiers.org/uniprot/P19538"
+  CN_0_0 occursIn "http://identifiers.org/go/GO:0005634"
+  hh_0_0 isEncodedBy "http://identifiers.org/fb/FBgn0004644"
+  HH1_0_0 isVersionOf "http://identifiers.org/uniprot/Q02936"
+  HH1_0_0 occursIn "http://identifiers.org/go/GO:0005886"
+  HH2_0_0 isVersionOf "http://identifiers.org/uniprot/Q02936"
+  HH2_0_0 occursIn "http://identifiers.org/go/GO:0005886"
+  HH3_0_0 isVersionOf "http://identifiers.org/uniprot/Q02936"
+  HH3_0_0 occursIn "http://identifiers.org/go/GO:0005886"
+  HH4_0_0 isVersionOf "http://identifiers.org/uniprot/Q02936"
+  HH4_0_0 occursIn "http://identifiers.org/go/GO:0005886"
+  HH5_0_0 isVersionOf "http://identifiers.org/uniprot/Q02936"
+  HH5_0_0 occursIn "http://identifiers.org/go/GO:0005886"
+  HH6_0_0 isVersionOf "http://identifiers.org/uniprot/Q02936"
+  HH6_0_0 occursIn "http://identifiers.org/go/GO:0005886"
+  ptc_0_0 isEncodedBy "http://identifiers.org/fb/FBgn0003892"
+  PTC1_0_0 isVersionOf "http://identifiers.org/uniprot/P18502"
+  PTC1_0_0 occursIn "http://identifiers.org/go/GO:0005886"
+  PTC2_0_0 isVersionOf "http://identifiers.org/uniprot/P18502"
+  PTC2_0_0 occursIn "http://identifiers.org/go/GO:0005886"
+  PTC3_0_0 isVersionOf "http://identifiers.org/uniprot/P18502"
+  PTC3_0_0 occursIn "http://identifiers.org/go/GO:0005886"
+  PTC4_0_0 isVersionOf "http://identifiers.org/uniprot/P18502"
+  PTC4_0_0 occursIn "http://identifiers.org/go/GO:0005886"
+  PTC5_0_0 isVersionOf "http://identifiers.org/uniprot/P18502"
+  PTC5_0_0 occursIn "http://identifiers.org/go/GO:0005886"
+  PTC6_0_0 isVersionOf "http://identifiers.org/uniprot/P18502"
+  PTC6_0_0 occursIn "http://identifiers.org/go/GO:0005886"
+  wg_0_0 isEncodedBy "http://identifiers.org/fb/FBgn0284084"
+  IWG_0_0 isVersionOf "http://identifiers.org/uniprot/P09615"
+  IWG_0_0 occursIn "http://identifiers.org/go/GO:0005737"
+  EWG1_0_0 isVersionOf "http://identifiers.org/uniprot/P09615"
+  EWG1_0_0 occursIn "http://identifiers.org/go/GO:0005886"
+  EWG2_0_0 isVersionOf "http://identifiers.org/uniprot/P09615"
+  EWG2_0_0 occursIn "http://identifiers.org/go/GO:0005886"
+  EWG3_0_0 isVersionOf "http://identifiers.org/uniprot/P09615"
+  EWG3_0_0 occursIn "http://identifiers.org/go/GO:0005886"
+  EWG4_0_0 isVersionOf "http://identifiers.org/uniprot/P09615"
+  EWG4_0_0 occursIn "http://identifiers.org/go/GO:0005886"
+  EWG5_0_0 isVersionOf "http://identifiers.org/uniprot/P09615"
+  EWG5_0_0 occursIn "http://identifiers.org/go/GO:0005886"
+  EWG6_0_0 isVersionOf "http://identifiers.org/uniprot/P09615"
+  EWG6_0_0 occursIn "http://identifiers.org/go/GO:0005886"
+  PH1_0_0 hasPart "http://identifiers.org/uniprot/P18502"
+  PH1_0_0 hasPart "http://identifiers.org/uniprot/Q02936"
+  PH1_0_0 occursIn "http://identifiers.org/go/GO:0005886"
+  PH2_0_0 hasPart "http://identifiers.org/uniprot/Q02936"
+  PH2_0_0 hasPart "http://identifiers.org/uniprot/P18502"
+  PH2_0_0 occursIn "http://identifiers.org/go/GO:0005886"
+  PH3_0_0 hasPart "http://identifiers.org/uniprot/P18502"
+  PH3_0_0 hasPart "http://identifiers.org/uniprot/Q02936"
+  PH3_0_0 occursIn "http://identifiers.org/go/GO:0005886"
+  PH4_0_0 hasPart "http://identifiers.org/uniprot/Q02936"
+  PH4_0_0 hasPart "http://identifiers.org/uniprot/P18502"
+  PH4_0_0 occursIn "http://identifiers.org/go/GO:0005886"
+  PH5_0_0 hasPart "http://identifiers.org/uniprot/Q02936"
+  PH5_0_0 hasPart "http://identifiers.org/uniprot/P18502"
+  PH5_0_0 occursIn "http://identifiers.org/go/GO:0005886"
+  PH6_0_0 hasPart "http://identifiers.org/uniprot/P18502"
+  PH6_0_0 hasPart "http://identifiers.org/uniprot/Q02936"
+  PH6_0_0 occursIn "http://identifiers.org/go/GO:0005886"
+  PTC_T_0_0 isVersionOf "http://identifiers.org/uniprot/P18502"
+  PTC_T_0_0 occursIn "http://identifiers.org/go/GO:0005886"
+  EWG_T_0_0 isVersionOf "http://identifiers.org/uniprot/P09615"
+  EWG_T_0_0 occursIn "http://identifiers.org/go/GO:0005886"
+  EWG5_0_3 isVersionOf "http://identifiers.org/uniprot/P09615"
+  EWG5_0_3 occursIn "http://identifiers.org/go/GO:0005886"
+  EWG6_0_3 isVersionOf "http://identifiers.org/uniprot/P09615"
+  EWG6_0_3 occursIn "http://identifiers.org/go/GO:0005886"
+  EWG2_0_1 isVersionOf "http://identifiers.org/uniprot/P09615"
+  EWG2_0_1 occursIn "http://identifiers.org/go/GO:0005886"
+  EWG3_0_1 isVersionOf "http://identifiers.org/uniprot/P09615"
+  EWG3_0_1 occursIn "http://identifiers.org/go/GO:0005886"
+  PH_T_0_0 hasPart "http://identifiers.org/uniprot/P18502"
+  PH_T_0_0 hasPart "http://identifiers.org/uniprot/Q02936"
+  PH_T_0_0 occursIn "http://identifiers.org/go/GO:0005886"
+  en_0_1 isEncodedBy "http://identifiers.org/fb/FBgn0000577"
+  EN_0_1 isVersionOf "http://identifiers.org/uniprot/P02836"
+  EN_0_1 occursIn "http://identifiers.org/go/GO:0005634"
+  ci_0_1 isEncodedBy "http://identifiers.org/fb/FBgn0004859"
+  CI_0_1 isVersionOf "http://identifiers.org/uniprot/P19538"
+  CI_0_1 occursIn "http://identifiers.org/go/GO:0005634"
+  CN_0_1 isVersionOf "http://identifiers.org/uniprot/P19538"
+  CN_0_1 occursIn "http://identifiers.org/go/GO:0005634"
+  hh_0_1 isEncodedBy "http://identifiers.org/fb/FBgn0004644"
+  HH1_0_1 isVersionOf "http://identifiers.org/uniprot/Q02936"
+  HH1_0_1 occursIn "http://identifiers.org/go/GO:0005886"
+  HH2_0_1 isVersionOf "http://identifiers.org/uniprot/Q02936"
+  HH2_0_1 occursIn "http://identifiers.org/go/GO:0005886"
+  HH3_0_1 isVersionOf "http://identifiers.org/uniprot/Q02936"
+  HH3_0_1 occursIn "http://identifiers.org/go/GO:0005886"
+  HH4_0_1 isVersionOf "http://identifiers.org/uniprot/Q02936"
+  HH4_0_1 occursIn "http://identifiers.org/go/GO:0005886"
+  HH5_0_1 isVersionOf "http://identifiers.org/uniprot/Q02936"
+  HH5_0_1 occursIn "http://identifiers.org/go/GO:0005886"
+  HH6_0_1 isVersionOf "http://identifiers.org/uniprot/Q02936"
+  HH6_0_1 occursIn "http://identifiers.org/go/GO:0005886"
+  ptc_0_1 isEncodedBy "http://identifiers.org/fb/FBgn0003892"
+  PTC1_0_1 isVersionOf "http://identifiers.org/uniprot/P18502"
+  PTC1_0_1 occursIn "http://identifiers.org/go/GO:0005886"
+  PTC2_0_1 isVersionOf "http://identifiers.org/uniprot/P18502"
+  PTC2_0_1 occursIn "http://identifiers.org/go/GO:0005886"
+  PTC3_0_1 isVersionOf "http://identifiers.org/uniprot/P18502"
+  PTC3_0_1 occursIn "http://identifiers.org/go/GO:0005886"
+  PTC4_0_1 isVersionOf "http://identifiers.org/uniprot/P18502"
+  PTC4_0_1 occursIn "http://identifiers.org/go/GO:0005886"
+  PTC5_0_1 isVersionOf "http://identifiers.org/uniprot/P18502"
+  PTC5_0_1 occursIn "http://identifiers.org/go/GO:0005886"
+  PTC6_0_1 isVersionOf "http://identifiers.org/uniprot/P18502"
+  PTC6_0_1 occursIn "http://identifiers.org/go/GO:0005886"
+  wg_0_1 isEncodedBy "http://identifiers.org/fb/FBgn0284084"
+  IWG_0_1 isVersionOf "http://identifiers.org/uniprot/P09615"
+  IWG_0_1 occursIn "http://identifiers.org/go/GO:0005737"
+  EWG1_0_1 isVersionOf "http://identifiers.org/uniprot/P09615"
+  EWG1_0_1 occursIn "http://identifiers.org/go/GO:0005886"
+  EWG4_0_1 isVersionOf "http://identifiers.org/uniprot/P09615"
+  EWG4_0_1 occursIn "http://identifiers.org/go/GO:0005886"
+  EWG5_0_1 isVersionOf "http://identifiers.org/uniprot/P09615"
+  EWG5_0_1 occursIn "http://identifiers.org/go/GO:0005886"
+  EWG6_0_1 isVersionOf "http://identifiers.org/uniprot/P09615"
+  EWG6_0_1 occursIn "http://identifiers.org/go/GO:0005886"
+  PH1_0_1 hasPart "http://identifiers.org/uniprot/P18502"
+  PH1_0_1 hasPart "http://identifiers.org/uniprot/Q02936"
+  PH1_0_1 occursIn "http://identifiers.org/go/GO:0005886"
+  PH2_0_1 hasPart "http://identifiers.org/uniprot/Q02936"
+  PH2_0_1 hasPart "http://identifiers.org/uniprot/P18502"
+  PH2_0_1 occursIn "http://identifiers.org/go/GO:0005886"
+  PH3_0_1 hasPart "http://identifiers.org/uniprot/P18502"
+  PH3_0_1 hasPart "http://identifiers.org/uniprot/Q02936"
+  PH3_0_1 occursIn "http://identifiers.org/go/GO:0005886"
+  PH4_0_1 hasPart "http://identifiers.org/uniprot/Q02936"
+  PH4_0_1 hasPart "http://identifiers.org/uniprot/P18502"
+  PH4_0_1 occursIn "http://identifiers.org/go/GO:0005886"
+  PH5_0_1 hasPart "http://identifiers.org/uniprot/Q02936"
+  PH5_0_1 hasPart "http://identifiers.org/uniprot/P18502"
+  PH5_0_1 occursIn "http://identifiers.org/go/GO:0005886"
+  PH6_0_1 hasPart "http://identifiers.org/uniprot/P18502"
+  PH6_0_1 hasPart "http://identifiers.org/uniprot/Q02936"
+  PH6_0_1 occursIn "http://identifiers.org/go/GO:0005886"
+  PTC_T_0_1 isVersionOf "http://identifiers.org/uniprot/P18502"
+  PTC_T_0_1 occursIn "http://identifiers.org/go/GO:0005886"
+  EWG_T_0_1 isVersionOf "http://identifiers.org/uniprot/P09615"
+  EWG_T_0_1 occursIn "http://identifiers.org/go/GO:0005886"
+  EWG2_0_2 isVersionOf "http://identifiers.org/uniprot/P09615"
+  EWG2_0_2 occursIn "http://identifiers.org/go/GO:0005886"
+  EWG3_0_2 isVersionOf "http://identifiers.org/uniprot/P09615"
+  EWG3_0_2 occursIn "http://identifiers.org/go/GO:0005886"
+  PH_T_0_1 hasPart "http://identifiers.org/uniprot/P18502"
+  PH_T_0_1 hasPart "http://identifiers.org/uniprot/Q02936"
+  PH_T_0_1 occursIn "http://identifiers.org/go/GO:0005886"
+  en_0_2 isEncodedBy "http://identifiers.org/fb/FBgn0000577"
+  EN_0_2 isVersionOf "http://identifiers.org/uniprot/P02836"
+  EN_0_2 occursIn "http://identifiers.org/go/GO:0005634"
+  ci_0_2 isEncodedBy "http://identifiers.org/fb/FBgn0004859"
+  CI_0_2 isVersionOf "http://identifiers.org/uniprot/P19538"
+  CI_0_2 occursIn "http://identifiers.org/go/GO:0005634"
+  CN_0_2 isVersionOf "http://identifiers.org/uniprot/P19538"
+  CN_0_2 occursIn "http://identifiers.org/go/GO:0005634"
+  hh_0_2 isEncodedBy "http://identifiers.org/fb/FBgn0004644"
+  HH1_0_2 isVersionOf "http://identifiers.org/uniprot/Q02936"
+  HH1_0_2 occursIn "http://identifiers.org/go/GO:0005886"
+  HH2_0_2 isVersionOf "http://identifiers.org/uniprot/Q02936"
+  HH2_0_2 occursIn "http://identifiers.org/go/GO:0005886"
+  HH3_0_2 isVersionOf "http://identifiers.org/uniprot/Q02936"
+  HH3_0_2 occursIn "http://identifiers.org/go/GO:0005886"
+  HH4_0_2 isVersionOf "http://identifiers.org/uniprot/Q02936"
+  HH4_0_2 occursIn "http://identifiers.org/go/GO:0005886"
+  HH5_0_2 isVersionOf "http://identifiers.org/uniprot/Q02936"
+  HH5_0_2 occursIn "http://identifiers.org/go/GO:0005886"
+  HH6_0_2 isVersionOf "http://identifiers.org/uniprot/Q02936"
+  HH6_0_2 occursIn "http://identifiers.org/go/GO:0005886"
+  ptc_0_2 isEncodedBy "http://identifiers.org/fb/FBgn0003892"
+  PTC1_0_2 isVersionOf "http://identifiers.org/uniprot/P18502"
+  PTC1_0_2 occursIn "http://identifiers.org/go/GO:0005886"
+  PTC2_0_2 isVersionOf "http://identifiers.org/uniprot/P18502"
+  PTC2_0_2 occursIn "http://identifiers.org/go/GO:0005886"
+  PTC3_0_2 isVersionOf "http://identifiers.org/uniprot/P18502"
+  PTC3_0_2 occursIn "http://identifiers.org/go/GO:0005886"
+  PTC4_0_2 isVersionOf "http://identifiers.org/uniprot/P18502"
+  PTC4_0_2 occursIn "http://identifiers.org/go/GO:0005886"
+  PTC5_0_2 isVersionOf "http://identifiers.org/uniprot/P18502"
+  PTC5_0_2 occursIn "http://identifiers.org/go/GO:0005886"
+  PTC6_0_2 isVersionOf "http://identifiers.org/uniprot/P18502"
+  PTC6_0_2 occursIn "http://identifiers.org/go/GO:0005886"
+  wg_0_2 isEncodedBy "http://identifiers.org/fb/FBgn0284084"
+  IWG_0_2 isVersionOf "http://identifiers.org/uniprot/P09615"
+  IWG_0_2 occursIn "http://identifiers.org/go/GO:0005737"
+  EWG1_0_2 isVersionOf "http://identifiers.org/uniprot/P09615"
+  EWG1_0_2 occursIn "http://identifiers.org/go/GO:0005886"
+  EWG4_0_2 isVersionOf "http://identifiers.org/uniprot/P09615"
+  EWG4_0_2 occursIn "http://identifiers.org/go/GO:0005886"
+  EWG5_0_2 isVersionOf "http://identifiers.org/uniprot/P09615"
+  EWG5_0_2 occursIn "http://identifiers.org/go/GO:0005886"
+  EWG6_0_2 isVersionOf "http://identifiers.org/uniprot/P09615"
+  EWG6_0_2 occursIn "http://identifiers.org/go/GO:0005886"
+  PH1_0_2 hasPart "http://identifiers.org/uniprot/P18502"
+  PH1_0_2 hasPart "http://identifiers.org/uniprot/Q02936"
+  PH1_0_2 occursIn "http://identifiers.org/go/GO:0005886"
+  PH2_0_2 hasPart "http://identifiers.org/uniprot/P18502"
+  PH2_0_2 hasPart "http://identifiers.org/uniprot/Q02936"
+  PH2_0_2 occursIn "http://identifiers.org/go/GO:0005886"
+  PH3_0_2 hasPart "http://identifiers.org/uniprot/Q02936"
+  PH3_0_2 hasPart "http://identifiers.org/uniprot/P18502"
+  PH3_0_2 occursIn "http://identifiers.org/go/GO:0005886"
+  PH4_0_2 hasPart "http://identifiers.org/uniprot/Q02936"
+  PH4_0_2 hasPart "http://identifiers.org/uniprot/P18502"
+  PH4_0_2 occursIn "http://identifiers.org/go/GO:0005886"
+  PH5_0_2 hasPart "http://identifiers.org/uniprot/Q02936"
+  PH5_0_2 hasPart "http://identifiers.org/uniprot/P18502"
+  PH5_0_2 occursIn "http://identifiers.org/go/GO:0005886"
+  PH6_0_2 hasPart "http://identifiers.org/uniprot/Q02936"
+  PH6_0_2 hasPart "http://identifiers.org/uniprot/P18502"
+  PH6_0_2 occursIn "http://identifiers.org/go/GO:0005886"
+  PTC_T_0_2 isVersionOf "http://identifiers.org/uniprot/P18502"
+  PTC_T_0_2 occursIn "http://identifiers.org/go/GO:0005886"
+  EWG_T_0_2 isVersionOf "http://identifiers.org/uniprot/P09615"
+  EWG_T_0_2 occursIn "http://identifiers.org/go/GO:0005886"
+  EWG2_0_3 isVersionOf "http://identifiers.org/uniprot/P09615"
+  EWG2_0_3 occursIn "http://identifiers.org/go/GO:0005886"
+  EWG3_0_3 isVersionOf "http://identifiers.org/uniprot/P09615"
+  EWG3_0_3 occursIn "http://identifiers.org/go/GO:0005886"
+  PH_T_0_2 hasPart "http://identifiers.org/uniprot/Q02936"
+  PH_T_0_2 hasPart "http://identifiers.org/uniprot/P18502"
+  PH_T_0_2 occursIn "http://identifiers.org/go/GO:0005886"
+  en_0_3 isEncodedBy "http://identifiers.org/fb/FBgn0000577"
+  EN_0_3 isVersionOf "http://identifiers.org/uniprot/P02836"
+  EN_0_3 occursIn "http://identifiers.org/go/GO:0005634"
+  ci_0_3 isEncodedBy "http://identifiers.org/fb/FBgn0004859"
+  CI_0_3 isVersionOf "http://identifiers.org/uniprot/P19538"
+  CI_0_3 occursIn "http://identifiers.org/go/GO:0005634"
+  CN_0_3 isVersionOf "http://identifiers.org/uniprot/P19538"
+  CN_0_3 occursIn "http://identifiers.org/go/GO:0005634"
+  hh_0_3 isEncodedBy "http://identifiers.org/fb/FBgn0004644"
+  HH1_0_3 isVersionOf "http://identifiers.org/uniprot/Q02936"
+  HH1_0_3 occursIn "http://identifiers.org/go/GO:0005886"
+  HH2_0_3 isVersionOf "http://identifiers.org/uniprot/Q02936"
+  HH2_0_3 occursIn "http://identifiers.org/go/GO:0005886"
+  HH3_0_3 isVersionOf "http://identifiers.org/uniprot/Q02936"
+  HH3_0_3 occursIn "http://identifiers.org/go/GO:0005886"
+  HH4_0_3 isVersionOf "http://identifiers.org/uniprot/Q02936"
+  HH4_0_3 occursIn "http://identifiers.org/go/GO:0005886"
+  HH5_0_3 isVersionOf "http://identifiers.org/uniprot/Q02936"
+  HH5_0_3 occursIn "http://identifiers.org/go/GO:0005886"
+  HH6_0_3 isVersionOf "http://identifiers.org/uniprot/Q02936"
+  HH6_0_3 occursIn "http://identifiers.org/go/GO:0005886"
+  ptc_0_3 isEncodedBy "http://identifiers.org/fb/FBgn0003892"
+  PTC1_0_3 isVersionOf "http://identifiers.org/uniprot/P18502"
+  PTC1_0_3 occursIn "http://identifiers.org/go/GO:0005886"
+  PTC2_0_3 isVersionOf "http://identifiers.org/uniprot/P18502"
+  PTC2_0_3 occursIn "http://identifiers.org/go/GO:0005886"
+  PTC3_0_3 isVersionOf "http://identifiers.org/uniprot/P18502"
+  PTC3_0_3 occursIn "http://identifiers.org/go/GO:0005886"
+  PTC4_0_3 isVersionOf "http://identifiers.org/uniprot/P18502"
+  PTC4_0_3 occursIn "http://identifiers.org/go/GO:0005886"
+  PTC5_0_3 isVersionOf "http://identifiers.org/uniprot/P18502"
+  PTC5_0_3 occursIn "http://identifiers.org/go/GO:0005886"
+  PTC6_0_3 isVersionOf "http://identifiers.org/uniprot/P18502"
+  PTC6_0_3 occursIn "http://identifiers.org/go/GO:0005886"
+  wg_0_3 isEncodedBy "http://identifiers.org/fb/FBgn0284084"
+  IWG_0_3 isVersionOf "http://identifiers.org/uniprot/P09615"
+  IWG_0_3 occursIn "http://identifiers.org/go/GO:0005737"
+  EWG1_0_3 isVersionOf "http://identifiers.org/uniprot/P09615"
+  EWG1_0_3 occursIn "http://identifiers.org/go/GO:0005886"
+  EWG4_0_3 isVersionOf "http://identifiers.org/uniprot/P09615"
+  EWG4_0_3 occursIn "http://identifiers.org/go/GO:0005886"
+  PH1_0_3 hasPart "http://identifiers.org/uniprot/Q02936"
+  PH1_0_3 hasPart "http://identifiers.org/uniprot/P18502"
+  PH1_0_3 occursIn "http://identifiers.org/go/GO:0005886"
+  PH2_0_3 hasPart "http://identifiers.org/uniprot/Q02936"
+  PH2_0_3 hasPart "http://identifiers.org/uniprot/P18502"
+  PH2_0_3 occursIn "http://identifiers.org/go/GO:0005886"
+  PH3_0_3 hasPart "http://identifiers.org/uniprot/Q02936"
+  PH3_0_3 hasPart "http://identifiers.org/uniprot/P18502"
+  PH3_0_3 occursIn "http://identifiers.org/go/GO:0005886"
+  PH4_0_3 hasPart "http://identifiers.org/uniprot/Q02936"
+  PH4_0_3 hasPart "http://identifiers.org/uniprot/P18502"
+  PH4_0_3 occursIn "http://identifiers.org/go/GO:0005886"
+  PH5_0_3 hasPart "http://identifiers.org/uniprot/Q02936"
+  PH5_0_3 hasPart "http://identifiers.org/uniprot/P18502"
+  PH5_0_3 occursIn "http://identifiers.org/go/GO:0005886"
+  PH6_0_3 hasPart "http://identifiers.org/uniprot/P18502"
+  PH6_0_3 hasPart "http://identifiers.org/uniprot/Q02936"
+  PH6_0_3 occursIn "http://identifiers.org/go/GO:0005886"
+  PTC_T_0_3 isVersionOf "http://identifiers.org/uniprot/P18502"
+  PTC_T_0_3 occursIn "http://identifiers.org/go/GO:0005886"
+  EWG_T_0_3 isVersionOf "http://identifiers.org/uniprot/P09615"
+  EWG_T_0_3 occursIn "http://identifiers.org/go/GO:0005886"
+  PH_T_0_3 hasPart "http://identifiers.org/uniprot/P18502"
+  PH_T_0_3 hasPart "http://identifiers.org/uniprot/Q02936"
+  PH_T_0_3 occursIn "http://identifiers.org/go/GO:0005886"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL2304060001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000001065"
+  model identity "http://identifiers.org/go/GO:0007367"
+  model hasTaxon "http://identifiers.org/taxonomy/1830"
+  model isDescribedBy "http://identifiers.org/doi/10.1038/35018085"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2023-03-20T17:34:42Z"
+  model modified "2023-03-20T17:34:42Z"
+  model creator1.givenName "Pedro"
+  model creator1.familyName "Mendes"
+  model creator1.organization "University of Connecticut School of Medicine"
+  model creator1.email "pmendes@uchc.edu"
+
+  // Notes:
+  model notes ```
+This is the segment polarity network model described by von Dassow et al. (2000).
+It represents a toroidal hexagonal array of cells (1x4), where each cell can express
+various genes (winglessengrailed, hedgehog, cubitus interruptus, and patched) and
+where their protein products interact within a cell, and across neighboring cells.
+```
+end
+
+Segment_Polarity_Network_model_on_1x4_grid is "vonDassow2000 - Segment Polarity Network model on 1x4 grid of cells"

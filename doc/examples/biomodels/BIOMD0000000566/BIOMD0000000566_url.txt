@@ -1,0 +1,129 @@
+// Created by libAntimony v3.2.0
+model *MODEL1501160000()
+
+  // Compartments and Species:
+  compartment Brain;
+  species $B in Brain, $A in Brain;
+
+  // Assignment Rules:
+  B := A0 - (k1/k2 + A0)/(1 + (k1/(k2*A0))*exp((k1 + k2*A0)*time));
+
+  // Reactions:
+  Nucleation: $A => $B; Brain*k1*A;
+  Growth: $A + $B => 2 $B; Brain*k2*A*B;
+
+  // Species initializations:
+  A = 1;
+
+  // Compartment initializations:
+  Brain = 1;
+
+  // Variable initializations:
+  A0 = 3.55;
+  k1 = 8e-06;
+  k2 = 0.034;
+
+  // Other declarations:
+  const Brain, A0, k1, k2;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 3600 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+
+  // CV terms:
+  Brain identity "http://identifiers.org/bto/BTO:0000142"
+  B identity "http://identifiers.org/uniprot/P37840"
+  A identity "http://identifiers.org/uniprot/P37840"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1501160001"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000566"
+  model publication "http://identifiers.org/pubmed/19101068"
+  model origin "http://identifiers.org/biomodels.db/BIOMD0000000567",
+               "http://identifiers.org/pubmed/11152691",
+               "http://identifiers.org/doi/10.1021/ja9705102"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model isVersionOf "http://identifiers.org/go/GO:1990000"
+  model hasProperty "http://identifiers.org/doid/DOID:14330"
+  model created "2015-01-16T16:18:55Z"
+  model modified "2016-04-08T17:52:39Z"
+  model creator1.givenName "Audald"
+  model creator1.familyName "Lloret i Villas"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "lloret@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Morris2009 - α-Synuclein aggregationvariable temperature and pH 
+
+
+This model is described in the article:
+
+
+[Alpha-synuclein aggregation variable temperature and variable pH kinetic data: a re-analysis using the Finke-Watzky 2-step model of nucleation and autocatalytic growth.](http://identifiers.org/pubmed/19101068 "Access to this publication") 
+
+
+Morris AM, Finke RG. 
+
+Biophys. Chem. 2009 Mar; 140(1-3): 9-15 
+Abstract:
+
+
+The aggregation of proteins is believed to be intimately connected to many neurodegenerative
+disorders. We recently reported an "Ockham&apos;s razor"/minimalistic
+approach to analyze the kinetic data of protein aggregation using the Finke-Watzky
+(F-W) 2-step model of nucleation (A-->B, rate constant k(1)) and autocatalytic
+growth (A+B-->2B, rate constant k(2)). With that kinetic model we have analyzed
+41 representative protein aggregation data sets in two recent publications, 
+including amyloid beta, alpha-synuclein, polyglutamine, and prion proteins (Morris,
+A. M., et al. (2008) Biochemistry 47, 2413-2427; Watzky, M. A., et al. (2008)
+Biochemistry 47, 10790-10800). Herein we use the F-W model to reanalyze protein
+aggregation kinetic data obtained under the experimental conditions of variable
+temperature or pH 2.0 to 8.5. We provide the average nucleation (k(1)) and growth
+(k(2)) rate constants and correlations with variable temperature or varying pH
+for the protein alpha-synuclein. From the variable temperature data, activation
+parameters DeltaG(double dagger), DeltaH(double dagger), and DeltaS(double dagger)
+are provided for nucleation and growth, and those values are compared to the 
+available parameters reported in the previous literature determined using an
+empirical method. Our activation parameters suggest that nucleation and growth
+are energetically similar for alpha-synuclein aggregation (DeltaG(double dagger)(nucleation)=23(3)
+kcal/mol; DeltaG(double dagger)(growth)=22(1) kcal/mol at 37 degrees C). From
+the variable pH data, the F-W analyses show a maximal k(1) value at pH approximately
+3, as well as minimal k(1) near the isoelectric point (pI) of alpha-synuclein.
+Since solubility and net charge are minimized at the pI, either or both of these
+factors may be important in determining the kinetics of the nucleation step.
+On the other hand, the k(2) values increase with decreasing pH (i.e., do not appear
+to have a minimum or maximum near the pI) which, when combined with the k(1) vs.
+pH (and pI) data, suggest that solubility and charge are less important factors
+for growth, and that charge is important in the k(1), nucleation step of alpha-synuclein.
+The chemically well-defined nucleation (k(1)) rate constants obtained from the
+F-W analysis are, as expected, different than the 1/lag-time empirical constants
+previously obtained. However, k(2)x[A](0) (where k(2) is the rate constant for
+autocatalytic growth and [A](0) is the initial protein concentration) is related
+to the empirical constant, k(app) obtained previously. Overall, the average
+nucleation and average growth rate constants for alpha-synuclein aggregation as
+a function of pH and variable temperature have been quantitated. Those values
+support the previously suggested formation of a partially folded intermediate
+that promotes aggregation under high temperature or acidic conditions.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000566](http://identifiers.org/biomodels.db/BIOMD0000000566).
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication").
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+  B notes "Polymeric form of the protein"
+  A0 notes "Initial monomeric concentration of protein"
+  k1 notes "Average rate constant for aggregation"
+  k2 notes "Average rate constant for growth"
+  A notes "Monomeric form of the protein"
+end
+
+MODEL1501160000 is "Morris2008 - Fitting protein aggregation data via F-W 2-step mechanism"

@@ -1,0 +1,150 @@
+// Created by libAntimony v3.2.0
+model *Komarova2003_BoneRemodeling()
+
+  // Compartments and Species:
+  compartment compartment_;
+  substanceOnly species x1 in compartment_, x2 in compartment_, x1_bar in compartment_;
+  substanceOnly species x2_bar in compartment_, z in compartment_, y1 in compartment_;
+  substanceOnly species y2 in compartment_;
+
+  // Assignment Rules:
+  x1_bar := (beta1/alpha1)^((1 - g22)/gamma_)*(beta2/alpha2)^(g21/gamma_);
+  gamma_ := g12*g21 - (1 - g11)*(1 - g22);
+  x2_bar := (beta1/alpha1)^(g12/gamma_)*(beta2/alpha2)^((1 - g11)/gamma_);
+
+  // Reactions:
+  R1:  -> x1; alpha1*x1^g11*x2^g21;
+  R2: x1 -> ; beta1*x1;
+  R3:  -> x2; alpha2*x1^g12*x2^g22;
+  R4: x2 -> ; beta2*x2;
+  R5: z -> ; flag_resorption*k1*(x1 - x1_bar);
+  R6:  -> z; flag_formation*k2*(x2 - x2_bar);
+
+  // Events:
+  event_0000001: at x1 > x1_bar: flag_resorption = 1;
+  event_0000003: at x1 <= x1_bar: flag_resorption = 0;
+  event_0000002: at x2 > x2_bar: flag_formation = 1;
+  event_0000004: at x2 <= x2_bar: flag_formation = 0;
+
+  // Species initializations:
+  x1 = 11;
+  x2 = 212;
+  z = 100;
+  y1 = 0;
+  y2 = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  beta1 = 0.2;
+  alpha1 = 3;
+  g22 = 0;
+  beta2 = 0.02;
+  alpha2 = 4;
+  g21 = -0.5;
+  g12 = 1;
+  g11 = 0.5;
+  flag_resorption = 0;
+  flag_formation = 0;
+  k1 = 0.24;
+  k2 = 0.0017;
+
+  // Other declarations:
+  var gamma_, flag_resorption, flag_formation;
+  const compartment_, beta1, alpha1, g22, beta2, alpha2, g21, g12, g11, k1;
+  const k2;
+
+  // Unit definitions:
+  unit substance = item;
+  unit time_unit = 86400 second;
+
+  // Display Names:
+  substance is "number";
+  time_unit is "day";
+  x1 is "Osteoclast";
+  x2 is "Osteoblast";
+  x1_bar is "Steady state osteoclast";
+  x2_bar is "Steady state osteoblast";
+  z is "Bone mass";
+  y1 is "Cells actively resorbing bone";
+  y2 is "Cells actively forming bone";
+  R1 is "Osteoclast production";
+  R2 is "Osteoclast removal";
+  R3 is "Osteoblast production";
+  R4 is "Osteoblast removal";
+  R5 is "Bone resorption";
+  R6 is "Bone formation";
+
+  // CV terms:
+  R1 isVersionOf "http://identifiers.org/go/GO:0045672"
+  R2 isVersionOf "http://identifiers.org/go/GO:0045671"
+  R3 isVersionOf "http://identifiers.org/go/GO:0045669"
+  R4 isVersionOf "http://identifiers.org/go/GO:0045668"
+  R5 identity "http://identifiers.org/go/GO:0045453"
+  R6 isVersionOf "http://identifiers.org/go/GO:0001503"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL6029826395"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000148"
+  model publication "http://identifiers.org/pubmed/14499354"
+  model hasTaxon "http://identifiers.org/taxonomy/7711"
+  model isVersionOf "http://identifiers.org/go/GO:0046850"
+  model hasProperty "http://identifiers.org/doid/DOID:11476",
+                    "http://identifiers.org/doid/DOID:8398",
+                    "http://identifiers.org/doid/DOID:5408"
+  model created "2007-07-30T20:56:00Z"
+  model modified "2014-10-09T16:24:13Z"
+  model creator1.givenName "Harish"
+  model creator1.familyName "Dharuri"
+  model creator1.organization "California Institute of Technology"
+  model creator1.email "hdharuri@cds.caltech.edu"
+
+  // Notes:
+  model notes ```
+This a model from the article: 
+** Mathematical model predicts a critical role for osteoclast autocrine regulation
+in the control of bone remodeling.** 
+Komarova SV, Smith RJ, Dixon SJ, Sims SM, Wahl LM *Bone*2003 Aug;33(2):206-15
+[14499354](http://www.ncbi.nlm.nih.gov/pubmed/14499354), 
+**Abstract:** 
+Bone remodeling occurs asynchronously at multiple sites in the adult skeleton and
+involves resorption by osteoclasts, followed by formation of new bone by osteoblasts.
+Disruptions in bone remodeling contribute to the pathogenesis of disorderssuch as
+osteoporosis, osteoarthritis, and Paget&apos;s disease. Interactions among cells
+of osteoblast and osteoclast lineages are critical in the regulation of bone remodeling.
+We constructed a mathematical model of autocrine and paracrine interactions among
+osteoblasts and osteoclasts that allowed us to calculate cell population dynamics
+and changes in bone mass at a discrete site of bone remodeling. Themodel predicted
+different modes of dynamic behavior: a single remodeling cycle in response to an
+external stimulus, a series of internally regulated cycles of bone remodeling, or
+unstable behavior similar to pathological bone remodeling in Paget&apos;s disease.
+Parametric analysis demonstrated that the mode of dynamic behaviorin the system depends
+strongly on the regulation of osteoclasts by autocrine factors, such as transforming
+growth factor beta. Moreover, simulations demonstratedthat nonlinear dynamics of
+the system may explain the differing effects of immunosuppressants on bone remodeling
+in vitro and in vivo. In conclusion, the mathematical model revealed that interactions
+among osteoblasts and osteoclasts result in complex, nonlinear system behavior, which
+cannot be deduced from studies of each cell type alone. The model will be useful
+in future studies assessing the impact of cytokines, growth factors, and potential
+therapies on the overall process ofremodeling in normal bone and in pathological
+conditions such as osteoporosis and Paget&apos;s disease. 
+
+The model reproduces Fig 2A and Fig 2B of the paper. Note that the Y-axis scale is
+not right, the osteoblast steadystate is approximatley 212 and not 0 as depicted
+in the figure. Also, there is atypo in the equation for x2_bar which has been corrected
+here. Model successfully tested on MathSBML.
+
+This model originates from BioModels Database: A Database of Annotated Published
+Models. It is copyright (c) 2005-2009 The BioModels Team. 
+For more information see the [terms of use](http://www.ebi.ac.uk/biomodels/legal.html). 
+To cite BioModels Database, please use [Le Novère N., Bornstein B., Broicher A., Courtot M., Donizelli M., Dharuri H., Li L., Sauro H., Schilstra M., Shapiro B., Snoep J.L., Hucka M. (2006) BioModels Database: A Free, Centralized Database of Curated, Published, Quantitative Kinetic Models of Biochemical and Cellular Systems Nucleic Acids Res., 34: D689-D691.](http://www.pubmedcentral.nih.gov/articlerender.fcgi?tool=pubmed&pubmedid=16381960)
+```
+  event_0000001 notes ```
+When the osteoclast number is greater than the steady state osteoclast number the
+flag is set to 1, this insures that in reaction R5, y1 is equal to the difference
+of x1 and x1_bar. When x1 is greater than x1_bar the difference is set to zero by
+setting the flag to zero. The same procedure is used for bone formation.
+```
+end
+
+Komarova2003_BoneRemodeling is "Komarova2003_BoneRemodeling"

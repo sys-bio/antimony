@@ -1,0 +1,87 @@
+// Created by libAntimony v3.2.0
+model *Anderson2015___Qualitative_behavior_of_systems_of_tumor_CD4__cytokine_interactions_with_treatments()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species x_Tumor_Cells in compartment_, y_CD4_T_Cells in compartment_, z_Cytokine in compartment_;
+
+  // Reactions:
+  Tumor_Growth:  => x_Tumor_Cells; compartment_*(r*x_Tumor_Cells*(1 - x_Tumor_Cells/K));
+  Tumor_Killing: x_Tumor_Cells => ; compartment_*(delta*x_Tumor_Cells*z_Cytokine/(m + x_Tumor_Cells));
+  CD4_Production:  => y_CD4_T_Cells; compartment_*(beta*x_Tumor_Cells*y_CD4_T_Cells/(k + x_Tumor_Cells));
+  CD4_Death: y_CD4_T_Cells => ; compartment_*a*y_CD4_T_Cells;
+  CD4_Treatment:  => y_CD4_T_Cells; compartment_*I_1;
+  Cytokine_Production:  => z_Cytokine; compartment_*(alpha*x_Tumor_Cells*y_CD4_T_Cells/(b + x_Tumor_Cells));
+  Cytokine_Loss: z_Cytokine => ; compartment_*mu*z_Cytokine;
+  Cytokine_Treatment:  => z_Cytokine; compartment_*I_2;
+
+  // Species initializations:
+  x_Tumor_Cells = 0.5;
+  y_CD4_T_Cells = 0.01;
+  z_Cytokine = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  r = 0.03;
+  K = 1000;
+  delta = 0.1;
+  m = 1;
+  beta = 0.02;
+  k = 10;
+  a = 0.02;
+  alpha = 0.1;
+  b = 0.1;
+  mu = 47;
+  I_1 = 10;
+  I_2 = 0;
+
+  // Other declarations:
+  const compartment_, r, K, delta, m, beta, k, a, alpha, b, mu, I_1, I_2;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+
+  // CV terms:
+  compartment_ isVersionOf "http://identifiers.org/ncit/C94498"
+  x_Tumor_Cells identity "http://identifiers.org/cl/CL:0001063"
+  y_CD4_T_Cells identity "http://identifiers.org/cl/CL:0000492"
+  z_Cytokine identity "http://identifiers.org/ncit/C20464"
+  Tumor_Growth isVersionOf "http://identifiers.org/ncit/C36294"
+  Tumor_Killing isVersionOf "http://identifiers.org/go/GO:0008219"
+  Tumor_Killing isVersionOf "http://identifiers.org/go/GO:0002418"
+  CD4_Production isVersionOf "http://identifiers.org/ncit/C18081"
+  CD4_Death identity "http://identifiers.org/go/GO:0008219"
+  CD4_Treatment isVersionOf "http://identifiers.org/ncit/C15351"
+  Cytokine_Production isVersionOf "http://identifiers.org/go/GO:0002374"
+  Cytokine_Loss isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  Cytokine_Treatment isVersionOf "http://identifiers.org/ncit/C15411"
+
+  model publication "http://identifiers.org/doi/10.1002/mma.3370"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1909170001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000813"
+  model hasProperty "http://identifiers.org/ncit/C15411"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000046"
+  model hasProperty "http://identifiers.org/taxonomy/9606"
+  model created "2019-09-17T09:31:21Z"
+  model modified "2019-09-17T09:31:21Z"
+  model creator1.givenName "Johannes"
+  model creator1.familyName "Meyer"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "johannes.p.meyer@gmail.com"
+
+  // Notes:
+  model notes ```
+This is a mathematical model describing tumor-CD4+-cytokine interactions, with 
+specific emphasis on the role that CD4+ T lymphocytes play in tumor regression.
+```
+end
+
+Anderson2015___Qualitative_behavior_of_systems_of_tumor_CD4__cytokine_interactions_with_treatments is "Anderson2015 - Qualitative behavior of systems of tumor-CD4+-cytokine interactions with treatments"

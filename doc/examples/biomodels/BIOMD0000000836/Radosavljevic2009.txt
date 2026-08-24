@@ -1,0 +1,84 @@
+// Created by libAntimony v3.2.0
+model *Radosavljevic2009_BioterroristAttack_PanicProtection_1()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species $S in compartment_, $P in compartment_;
+
+  // Rate Rules:
+  S' = (alpha*(1 - S/C) - beta*P)*S;
+  P' = (-gamma_ + delta*S)*P;
+
+  // Species initializations:
+  S = 0.1;
+  P = 0.1;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  alpha = 6;
+  C = 10;
+  beta = 2.8;
+  gamma_ = 0;
+  delta = 1;
+
+  // Other declarations:
+  const compartment_, alpha, C, beta, gamma_, delta;
+
+  // Unit definitions:
+  unit time_unit = 86400 second;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  S is "panic_intensity";
+  C is "whole_population";
+  P is "protection+prevention_intensity";
+  gamma_ is "gamma";
+
+  model publication "http://identifiers.org/pubmed/19423234"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1203070000",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000836"
+  model isVersionOf "http://identifiers.org/go/GO:0042596"
+  model isVersionOf "http://identifiers.org/efo/0004262"
+  model hasProperty "http://identifiers.org/biomodels.db/MODEL1203070000"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model created "2019-10-22T09:06:03Z"
+  model modified "2019-10-22T09:06:03Z"
+  model creator1.givenName "Mohammad Umer Sharif Shohan"
+  model creator1.familyName "Sharif Shohan"
+  model creator1.organization "EMBL-EBI"
+
+  // Notes:
+  model notes ```
+This model is from the article: 
+**Epidemics of panic during a bioterrorist attack--a mathematical model.** 
+
+Radosavljevic V, Radunovic D, Belojevic G. *Med Hypotheses* 
+2009 Sep;73(3):342-6 [19423234](http://www.ncbi.nlm.nih.gov/pubmed/19423234) , 
+**Abstract:** 
+A bioterrorist attacks usually cause epidemics of panic in a targeted population.
+We have presented epidemiologic aspect of this phenomenon as a three-component model--host,
+information on an attack and social network. We have proposed a mathematical model
+of panic and counter-measures as the function of time in a population exposed to
+a bioterrorist attack. The model comprises ordinary differential equations and graphically
+presented combinations of the equations parameters. Clinically, we have presented
+a model through a sequence of psychic conditions and disorders initiated by an act
+of bioterrorism. This model might be helpful for an attacked community to timely
+and properly apply counter-measures and to minimize human mental suffering during
+a bioterrorist attack. 
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Creative Commons CC0") for more information. 
+
+In summary, you are entitled to use this encoded model in absolutely any manner you
+deem suitable, verbatim, or with modification, alone or embedded it in a larger context,
+redistribute it, commercially or not, in a restricted way or not.
+
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+end
+
+Radosavljevic2009_BioterroristAttack_PanicProtection_1 is "Radosavljevic2009_BioterroristAttack_PanicProtection_1"

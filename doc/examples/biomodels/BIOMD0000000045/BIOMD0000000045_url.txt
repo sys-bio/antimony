@@ -1,0 +1,158 @@
+// Created by libAntimony v3.2.0
+model *Goldbeter_Calcium_Oscillation_based_onCICR_AND_two_pool_model()
+
+  // Compartments and Species:
+  compartment extracellular, cytosol, intravesicular1, intravesicular2;
+  species EC in extracellular, Z in cytosol, Y in intravesicular2, X in intravesicular1;
+
+  // Reactions:
+  vin: EC => Z; cytosol*(vin_v0 + vin_v1*beta);
+  v2i: Z => Y; intravesicular2*v2i_Vm2i*Z^2/(v2i_K2i^2 + Z^2);
+  v3i: Y => Z; cytosol*v3i_Vm3i*Y^2*Z^2/((v3i_K3y^2 + Y^2)*(v3i_K3z^2 + Z^2));
+  v4: Y => Z; cytosol*v4_Kf*Y;
+  v5: Z => EC; extracellular*v5_K*Z;
+  v6: X => Z; cytosol*v6_Kf*X;
+  v2s: Z => X; intravesicular1*v2s_Vm2s*Z^2/(v2s_K2s^2 + Z^2);
+  v3s: X => Z; cytosol*beta*v3s_Vm3s*X^2/(v3s_K3s^2 + X^2);
+
+  // Species initializations:
+  EC = 0;
+  Z = 0;
+  Y = 0;
+  X = 0.5;
+
+  // Compartment initializations:
+  extracellular = 1;
+  cytosol = 1;
+  intravesicular1 = 1;
+  intravesicular2 = 1;
+
+  // Variable initializations:
+  beta = 1;
+  vin_v0 = 0.015;
+  vin_v1 = 0.012;
+  v2i_Vm2i = 3.1;
+  v2i_K2i = 0.005;
+  v3i_Vm3i = 25;
+  v3i_K3y = 0.065;
+  v3i_K3z = 0.022;
+  v4_Kf = 0.5;
+  v5_K = 1;
+  v6_Kf = 0.5;
+  v2s_Vm2s = 1.5;
+  v2s_K2s = 0.0265;
+  v3s_Vm3s = 0.169;
+  v3s_K3s = 0.1;
+
+  // Other declarations:
+  const extracellular, cytosol, intravesicular1, intravesicular2, beta;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+  unit time_unit = 60 second;
+
+  // Display Names:
+  substance is "micromole (default)";
+  time_unit is "minute (default)";
+
+  // CV terms:
+  extracellular isVersionOf "http://identifiers.org/go/GO:0005615"
+  cytosol isVersionOf "http://identifiers.org/go/GO:0005829"
+  intravesicular1 isVersionOf "http://identifiers.org/go/GO:0005790"
+  EC identity "http://identifiers.org/chebi/CHEBI:29108",
+              "http://identifiers.org/kegg.compound/C00076"
+  Z identity "http://identifiers.org/chebi/CHEBI:29108",
+             "http://identifiers.org/kegg.compound/C00076"
+  Y identity "http://identifiers.org/chebi/CHEBI:29108",
+             "http://identifiers.org/kegg.compound/C00076"
+  X identity "http://identifiers.org/chebi/CHEBI:29108",
+             "http://identifiers.org/kegg.compound/C00076"
+  vin isVersionOf "http://identifiers.org/go/GO:0006816",
+                  "http://identifiers.org/go/GO:0007204"
+  v2i isVersionOf "http://identifiers.org/go/GO:0051481",
+                  "http://identifiers.org/go/GO:0006816"
+  v3i isVersionOf "http://identifiers.org/go/GO:0005219",
+                  "http://identifiers.org/go/GO:0006816",
+                  "http://identifiers.org/go/GO:0007204"
+  v4 isVersionOf "http://identifiers.org/go/GO:0006816",
+                 "http://identifiers.org/go/GO:0007204"
+  v5 isVersionOf "http://identifiers.org/go/GO:0051481",
+                 "http://identifiers.org/go/GO:0006816"
+  v6 isVersionOf "http://identifiers.org/go/GO:0006816",
+                 "http://identifiers.org/go/GO:0007204"
+  v2s isVersionOf "http://identifiers.org/go/GO:0006816",
+                  "http://identifiers.org/go/GO:0051481"
+  v3s isVersionOf "http://identifiers.org/go/GO:0006816",
+                  "http://identifiers.org/go/GO:0051482"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL6623009547"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000045"
+  model publication "http://identifiers.org/pubmed/17029867"
+  model isVersionOf "http://identifiers.org/go/GO:0048016",
+                    "http://identifiers.org/go/GO:0019722"
+  model hasTaxon "http://identifiers.org/taxonomy/10114"
+  model identity "http://identifiers.org/kegg.pathway/rno04020"
+  model created "2005-07-08T13:06:45Z"
+  model modified "2013-06-06T11:38:46Z"
+  model creator1.givenName "Nicolas"
+  model creator1.familyName "Le Novère"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "lenov@ebi.ac.uk"
+  model creator2.givenName "Harish"
+  model creator2.familyName "Dharuri"
+  model creator2.organization "Keck Graduate Institute"
+  model creator2.email "Harish_Dharuri@kgi.edu"
+
+  // Notes:
+  model notes ```
+Borghans1997 - Calcium Oscillation - Model 3 
+
+
+A theoretical expoloration of possible mechanisms of intracellular calcium oscillations
+has been studied, considering three hypothesis. This model corresponds to the third
+hypothesis.
+
+
+This model is described in the article:
+
+
+[Complex intracellular calcium oscillations. A theoretical exploration of possible mechanisms.](http://identifiers.org/pubmed/17029867 "Access to this publication") 
+
+
+Borghans JM, Dupont G, Goldbeter A. 
+
+Biophys. Chem. 1997 May; 66(1): 25-41 
+Abstract:
+
+
+Intracellular Ca(2+) oscillations are commonly observed in a large number of cell
+types in response to stimulation by an extracellular agonist. In most cell types
+the mechanism of regular spiking is well understood and models based on Ca(2+)-induced
+Ca(2+) release (CICR) can account for many experimental observations. However, cells
+do not always exhibit simple Ca(2+) oscillations. In response to given agonists,
+some cells show more complex behaviour in the form of bursting, i.e. trains of Ca(2+)
+spikes separated by silent phases. Here we develop several theoretical models, based
+on physiologically plausible assumptions, that could account for complex intracellular
+Ca(2+) oscillations. The models are all based on one- or two-pool models based on
+CICR. We extend these models by (i) considering the inhibition of the Ca(2+)-release
+channel on a unique intracellular store at high cytosolic Ca(2+) concentrations,
+(ii) taking into account the Ca(2+)-activated degradation of inositol 1,4,5-trisphosphate
+(IP(3)), or (iii) considering explicity the evolution of the Ca(2+) concentration
+in two different pools, one sensitive and the other one insensitive to IP(3). Besides
+simple periodic oscillations, these three models can all account for more complex
+oscillatory behaviour in the form of bursting. Moreover, the model that takes the
+kinetics of IP(3) into account shows chaotic behaviour.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identifiedby: [MODEL6623009547](http://identifiers.org/biomodels.db/MODEL6623009547) . 
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resourcefor published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication") . 
+
+
+To the extent possible under law, all copyright and related orneighbouring rights
+to this encoded model have been dedicated to the publicdomain worldwide. Please refer
+to [CC0 Public DomainDedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+end
+
+Goldbeter_Calcium_Oscillation_based_onCICR_AND_two_pool_model is "Borghans1997 - Calcium Oscillation - Model 3"

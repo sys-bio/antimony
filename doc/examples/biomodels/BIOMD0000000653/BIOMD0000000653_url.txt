@@ -1,0 +1,573 @@
+// Created by libAntimony v3.2.0
+model *Padala2017__ERK__PI3K_Akt_and_Wnt_signalling_network__normal()
+
+  // Compartments and Species:
+  compartment Cell;
+  species APC in Cell, APCAxin in Cell, APCAxinGSK3B in Cell, APCBCatenin in Cell;
+  species Akt in Cell, Axin in Cell, BCatenin in Cell, BRaf in Cell, C3G in Cell;
+  species Dsha in Cell, Dshi in Cell, EGF in Cell, ERK in Cell, GSK3B in Cell;
+  species MEK in Cell, P90Rsk in Cell, PI3K in Cell, PIP2 in Cell, PIP3 in Cell;
+  species PKCD in Cell, PP2A in Cell, PTEN in Cell, RKIP in Cell, Raf1 in Cell;
+  species RafPPtase in Cell, Rap1 in Cell, Rap1Gap in Cell, Ras in Cell, RasGap in Cell;
+  species SOS in Cell, TCF in Cell, TCFBCatenin in Cell, X in Cell, bEGFR in Cell;
+  species fEGFR in Cell, pAPCpAxinGSK3B in Cell, pAPCpAxinGSK3BBCatenin in Cell;
+  species pAPCpAxinGSK3BpBCatenin in Cell, pAkt in Cell, pBCatenin in Cell;
+  species pBRaf in Cell, pC3G in Cell, $pEGFR in Cell, pERK in Cell, pGSK3B in Cell;
+  species pMEK in Cell, pP90Rsk in Cell, pPI3K in Cell, pRKIP in Cell, pRaf1 in Cell;
+  species pRap1 in Cell, pRas in Cell, pSOS in Cell, null in Cell;
+
+  // Reactions:
+  v1: $pEGFR -> fEGFR; Cell*(V1/Cell);
+  v10a: RafPPtase + pRaf1 -> RafPPtase + Raf1; Cell*(Kcat10a*RafPPtase*pRaf1/(pRaf1 + Km10a)/Cell);
+  v10b: pAkt + pRaf1 -> pAkt + Raf1; Cell*(Kcat10b*pAkt*pRaf1/(pRaf1 + Km10b)/Cell);
+  v11a: pBRaf + MEK -> pBRaf + pMEK; Cell*(Kcat11a*pBRaf*MEK/(MEK + Km11a)/Cell);
+  v11b: pRKIP + pRaf1 + MEK -> pRKIP + pRaf1 + pMEK; Cell*(k11b1*pRaf1*MEK/(1 + ((RKIP - pRKIP)/k11b2)^2)/Cell);
+  v12: pMEK + PP2A -> MEK + PP2A; Cell*(Kcat12*PP2A*pMEK/(pMEK + Km12)/Cell);
+  v13: pMEK + ERK -> pMEK + pERK; Cell*(Kcat13*pMEK*ERK/(ERK + Km13)/Cell);
+  v14: pERK + PP2A -> ERK + PP2A; Cell*(Kcat14*PP2A*pERK/(pERK + Km14)/Cell);
+  v15a: pERK + RKIP -> pERK + pRKIP; Cell*(k15a*pERK*(RKIP - pRKIP)/Cell);
+  v15b: pRKIP -> RKIP; Cell*(V15b*pRKIP/Cell);
+  v15c: RKIP -> null; Cell*(k15c*RKIP/Cell);
+  v16a: pRas + BRaf -> pRas + pBRaf; Cell*(Kcat16a*pRas*BRaf/(BRaf + Km16a)/Cell);
+  v16b: pRap1 + BRaf -> pRap1 + pBRaf; Cell*(Kcat16b*pRap1*BRaf/(BRaf + Km16b)/Cell);
+  v18a: pP90Rsk -> P90Rsk; Cell*(k18a*pP90Rsk/Cell);
+  v18b: pERK + P90Rsk -> pERK + pP90Rsk; Cell*(Kcat18b*pERK*P90Rsk/(P90Rsk + Km18b)/Cell);
+  v19a: bEGFR + PI3K -> bEGFR + pPI3K; Cell*(Kcat19a*bEGFR*PI3K/(PI3K + Km19a)/Cell);
+  v19b: PI3K -> pPI3K; Cell*(Kcat19b*pRas*PI3K/(PI3K + Km19b)/Cell);
+  v19c: pPI3K -> PI3K; Cell*(k19c*pPI3K/Cell);
+  v2: fEGFR + EGF -> bEGFR; Cell*((k21*EGF*fEGFR - k22*bEGFR)/Cell);
+  v20: pPI3K + PIP2 -> pPI3K + PIP3; Cell*(Kcat20*pPI3K*PIP2/(PIP2 + Km20)/Cell);
+  v21: PTEN + PIP3 -> PTEN + PIP2; Cell*(Kcat21*PTEN*PIP3/(PIP3 + Km21)/Cell);
+  v22a: PIP3 + Akt -> PIP3 + pAkt; Cell*(Kcat22a*PIP3*Akt/(Akt + Km22a)/Cell);
+  v22b: pAkt -> Akt; Cell*(Kcat22b*pAkt/(Km22b + pAkt)/Cell);
+  v23a: bEGFR + C3G -> bEGFR + pC3G; Cell*(Kcat23a*bEGFR*C3G/(C3G + Km23a)/Cell);
+  v23b: pC3G -> C3G; Cell*(k23b*pC3G/Cell);
+  v24: pC3G + Rap1 -> pC3G + pRap1; Cell*(Kcat24*pC3G*Rap1/(Rap1 + Km24)/Cell);
+  v25: Rap1Gap + pRap1 -> Rap1Gap + Rap1; Cell*(Kcat25*Rap1Gap*pRap1/(pRap1 + Km25)/Cell);
+  v26a: GSK3B -> GSK3B + PKCD; Cell*(V26a/(1 + (GSK3B/k26a)^2.5)/Cell);
+  v26b: PKCD -> null; Cell*(k26b*PKCD/Cell);
+  v27a: pERK + GSK3B -> pERK + pGSK3B; Cell*(Kcat27a*GSK3B*pERK/Cell);
+  v27b: pAkt + GSK3B -> pAkt + pGSK3B; Cell*(Kcat27b*GSK3B*pAkt/Cell);
+  v27c: RKIP -> RKIP + GSK3B; Cell*(k27c*RKIP/Cell);
+  v27d: pGSK3B -> GSK3B; Cell*(Kcat27d*pGSK3B/Cell);
+  v28: Dshi -> Dsha; Cell*(k28*Dshi*W/Cell);
+  v29: Dsha -> Dshi; Cell*(k29*Dsha/Cell);
+  v3: fEGFR -> null; Cell*(k3*fEGFR/Cell);
+  v30: Dsha + APCAxinGSK3B -> GSK3B + APCAxin + Dsha; Cell*(k30*Dsha*APCAxinGSK3B/Cell);
+  v31: APCAxin + GSK3B -> APCAxinGSK3B; Cell*((k311*GSK3B*APCAxin - k312*APCAxinGSK3B)/Cell);
+  v32a: APCAxinGSK3B -> pAPCpAxinGSK3B; Cell*(k32a*APCAxinGSK3B/Cell);
+  v32b: pAPCpAxinGSK3B -> APCAxinGSK3B; Cell*(k32b*pAPCpAxinGSK3B/Cell);
+  v33a: APC + Axin -> APCAxin; Cell*((k33a1*Axin*APC - k33a2*APCAxin)/Cell);
+  v33b: Axin -> null; Cell*(k33b*Axin/Cell);
+  v33c: BCatenin + TCFBCatenin -> BCatenin + TCFBCatenin + Axin; Cell*((k33c1 + k33c2*(TCFBCatenin + BCatenin))/Cell);
+  v34: BCatenin + pAPCpAxinGSK3B -> pAPCpAxinGSK3BBCatenin; Cell*((k341*pAPCpAxinGSK3B*BCatenin - k342*pAPCpAxinGSK3BBCatenin)/Cell);
+  v35: pAPCpAxinGSK3BBCatenin -> pAPCpAxinGSK3BpBCatenin; Cell*(k35*pAPCpAxinGSK3BBCatenin/Cell);
+  v36: pAPCpAxinGSK3BpBCatenin -> pBCatenin + pAPCpAxinGSK3B; Cell*(k36*pAPCpAxinGSK3BpBCatenin/Cell);
+  v37a: BCatenin + APC -> APCBCatenin; Cell*((k37a1*APC*BCatenin - k37a2*APCBCatenin)/Cell);
+  v37b: null -> BCatenin; Cell*(V37b/Cell);
+  v37c: BCatenin -> null; Cell*(k37c*BCatenin/Cell);
+  v38: TCF + BCatenin -> TCFBCatenin; Cell*((k381*BCatenin*TCF - k382*TCFBCatenin)/Cell);
+  v39: TCFBCatenin -> X + TCFBCatenin; Cell*(k39*TCFBCatenin^2/(Km39^2 + TCFBCatenin^2)/Cell);
+  v4: bEGFR -> null; Cell*(k4*bEGFR/Cell);
+  v40: X -> null; Cell*(k40*X/Cell);
+  v41: pBCatenin -> null; Cell*(k41*pBCatenin/Cell);
+  v5: PKCD + pERK + bEGFR + SOS -> PKCD + pERK + bEGFR + pSOS; Cell*((k51*bEGFR + k52 + k53*PKCD)/(1 + pERK/k54)/Cell);
+  v6a: pSOS -> SOS; Cell*(k6a*pSOS/Cell);
+  v6b: pP90Rsk + pSOS -> pP90Rsk + SOS; Cell*(Kcat6b*pP90Rsk*pSOS/(pSOS + Km6b)/Cell);
+  v7: pSOS + Ras -> pSOS + pRas; Cell*(Kcat7*pSOS*Ras/(Ras + Km7)/Cell);
+  v8a: null -> Ras; Cell*(V8a/Cell);
+  v8b: RasGap + pRas -> RasGap + Ras; Cell*(Kcat8b*RasGap*pRas/(pRas + Km8b)/Cell);
+  v9a: pRas + Raf1 -> pRas + pRaf1; Cell*(Kcat9a*pRas*Raf1/(Raf1 + Km9a)/Cell);
+  v9b: X + Raf1 -> X + pRaf1; Cell*(k9b*W*X*Raf1/(Km9b + Raf1)/Cell);
+
+  // Species initializations:
+  APC = 96.602;
+  APCAxin = 0.0015;
+  APCAxinGSK3B = 0.0076;
+  APCBCatenin = 3.4392;
+  Akt = 200;
+  Axin = 0.0008;
+  BCatenin = 42.722;
+  BRaf = 200;
+  C3G = 500;
+  Dsha = 0;
+  Dshi = 100;
+  EGF = 600;
+  ERK = 260;
+  GSK3B = 49.137;
+  MEK = 680;
+  P90Rsk = 60;
+  PI3K = 100;
+  PIP2 = 700;
+  PIP3 = 0;
+  PKCD = 0;
+  PP2A = 240;
+  PTEN = 270;
+  RKIP = 20.909;
+  Raf1 = 100;
+  RafPPtase = 60;
+  Rap1 = 200;
+  Rap1Gap = 12;
+  Ras = 100;
+  RasGap = 100;
+  SOS = 100;
+  TCF = 6.1879;
+  TCFBCatenin = 8.8121;
+  X = 10.263;
+  bEGFR = 0;
+  fEGFR = 300;
+  pAPCpAxinGSK3B = 0.0153;
+  pAPCpAxinGSK3BBCatenin = 0.002;
+  pAPCpAxinGSK3BpBCatenin = 0.002;
+  pAkt = 0;
+  pBCatenin = 0.9881;
+  pBRaf = 0;
+  pC3G = 0;
+  pEGFR = 0.05;
+  pERK = 0;
+  pGSK3B = 0.85544;
+  pMEK = 0;
+  pP90Rsk = 0;
+  pPI3K = 0;
+  pRKIP = 0.8619;
+  pRaf1 = 0;
+  pRap1 = 0;
+  pRas = 0;
+  pSOS = 0;
+  null = 1;
+
+  // Compartment initializations:
+  Cell = 1;
+
+  // Variable initializations:
+  Kcat10a = 0.12633;
+  Kcat10b = 15.1212;
+  Kcat11a = 185.76;
+  Kcat12 = 2.8324;
+  Kcat13 = 9.8537;
+  Kcat14 = 8.8912;
+  Kcat16a = 0.8841;
+  Kcat16b = 0.8841;
+  Kcat18b = 0.02137;
+  Kcat19a = 10.6737;
+  Kcat19b = 0.07711;
+  Kcat20 = 4;
+  Kcat21 = 5.5;
+  Kcat22a = 0.33;
+  Kcat22b = 48.667;
+  Kcat23a = 694.73;
+  Kcat24 = 32.344;
+  Kcat25 = 1509.4;
+  Kcat27a = 0.002;
+  Kcat27b = 0.04596;
+  Kcat27d = 0.01541;
+  Kcat6b = 1611.97;
+  Kcat7 = 32.644;
+  Kcat8b = 1509.36;
+  Kcat9a = 0.884096;
+  Km10a = 1061.7;
+  Km10b = 119355;
+  Km11a = 4768400;
+  Km12 = 518750;
+  Km13 = 1007300;
+  Km14 = 3496500;
+  Km16a = 62645;
+  Km16b = 62464.6;
+  Km18b = 763523;
+  Km19a = 184912;
+  Km19b = 272056;
+  Km20 = 4;
+  Km21 = 0.08;
+  Km22a = 100;
+  Km22b = 100;
+  Km23a = 6086100;
+  Km24 = 35954.3;
+  Km25 = 1432400;
+  Km39 = 15;
+  Km6b = 896896;
+  Km7 = 35954.3;
+  Km8b = 1432410;
+  Km9a = 62464.6;
+  Km9b = 15;
+  V1 = 100;
+  V15b = 4;
+  V26a = 0.00154;
+  V37b = 0.00705;
+  V8a = 0.0717;
+  W = 0;
+  k11b1 = 1.1167e-05;
+  k11b2 = 120;
+  k15a = 1.3;
+  k15c = 0.00193;
+  k18a = 0.005;
+  k19c = 0.005;
+  k21 = 2.18503e-05;
+  k22 = 0.121008;
+  k23b = 2.5;
+  k26a = 20;
+  k26b = 0.000385;
+  k27c = 0.00015;
+  k28 = 0.003;
+  k29 = 0.003;
+  k3 = 0.00125;
+  k30 = 0.000833;
+  k311 = 0.001515;
+  k312 = 0.01515;
+  k32a = 0.00445;
+  k32b = 0.002217;
+  k33a1 = 0.01667;
+  k33a2 = 0.8333;
+  k33b = 0.002783;
+  k33c1 = 1.37e-06;
+  k33c2 = 1.667e-08;
+  k341 = 0.01667;
+  k342 = 2;
+  k35 = 3.433;
+  k36 = 3.433;
+  k37a1 = 0.01667;
+  k37a2 = 20;
+  k37c = 4.283e-06;
+  k381 = 0.01667;
+  k382 = 0.5;
+  k39 = 0.01;
+  k4 = 0.2;
+  k40 = 0.00025;
+  k41 = 0.00695;
+  k51 = 0.003465;
+  k52 = 3.85e-05;
+  k53 = 0.00028833;
+  k54 = 1.5;
+  k6a = 2.5;
+  k9b = 0.025;
+
+  // Other declarations:
+  const Cell, Kcat10a, Kcat10b, Kcat11a, Kcat12, Kcat13, Kcat14, Kcat16a;
+  const Kcat16b, Kcat18b, Kcat19a, Kcat19b, Kcat20, Kcat21, Kcat22a, Kcat22b;
+  const Kcat23a, Kcat24, Kcat25, Kcat27a, Kcat27b, Kcat27d, Kcat6b, Kcat7;
+  const Kcat8b, Kcat9a, Km10a, Km10b, Km11a, Km12, Km13, Km14, Km16a, Km16b;
+  const Km18b, Km19a, Km19b, Km20, Km21, Km22a, Km22b, Km23a, Km24, Km25;
+  const Km39, Km6b, Km7, Km8b, Km9a, Km9b, V1, V15b, V26a, V37b, V8a, W, k11b1;
+  const k11b2, k15a, k15c, k18a, k19c, k21, k22, k23b, k26a, k26b, k27c, k28;
+  const k29, k3, k30, k311, k312, k32a, k32b, k33a1, k33a2, k33b, k33c1, k33c2;
+  const k341, k342, k35, k36, k37a1, k37a2, k37c, k381, k382, k39, k4, k40;
+  const k41, k51, k52, k53, k54, k6a, k9b;
+
+  // Display Names:
+  APCAxin is "APC_Axin";
+  APCAxinGSK3B is "APC_Axin_GSK3b";
+  APCBCatenin is "APC_bCatenin";
+  BCatenin is "bCatenin";
+  BRaf is "bRaf";
+  GSK3B is "GSK3b";
+  Rap1Gap is "Rap1_Gap";
+  RasGap is "Ras_Gap";
+  TCFBCatenin is "bCatenin_TCF";
+  bEGFR is "boundEGFR";
+  fEGFR is "freeEGFR";
+  pAPCpAxinGSK3B is "pAPC_pAxin_GSK3b";
+  pAPCpAxinGSK3BBCatenin is "pAPC_pAxin_GSK3b_bCatenin";
+  pAPCpAxinGSK3BpBCatenin is "pAPC_pAxin_GSK3b_pbCatenin";
+  pBCatenin is "pbCatenin";
+  pBRaf is "pbRaf";
+  pGSK3B is "pGSK3b";
+  v1 is "EGFR dephosphorylation";
+  v10a is "Raf1 dephosphorylation (RafPPtase modifier)";
+  v10b is "Raf1 dephosphorylation (pAkt modifier)";
+  v11a is "MEK phosphorylation (pbRaf modifier)";
+  v11b is "MEK phosphorylation (pRaf1, pRKIP and RKIP modifiers)";
+  v12 is "MEK dephosphorylation (PP2A modifer)";
+  v13 is "ERK phosphorylation (pMEK modifier)";
+  v14 is "ERK dephosphorylation (PP2A modifer)";
+  v15a is "RKIP phosphorylation (pERK modifier)";
+  v15b is "RKIP dephosphorylation";
+  v15c is "RKIP degradation";
+  v16a is "bRaf phosphorylation (pRas modifier)";
+  v16b is "bRaf phosphorylation (pRap1 modifier)";
+  v18a is "P90Rsk dephosphorylation";
+  v18b is "P90Rsk phosphorylation (pERK modifier)";
+  v19a is "PI3K phosphorylation (boundEGFR modifier)";
+  v19b is "PI3K phosphorylation (pRas modifier)";
+  v19c is "PI3K dephosphorylation";
+  v2 is "EGFR binding";
+  v20 is "PIP2 phosphorylated to PIP3";
+  v21 is "PIP3 dephosphorylated to PIP2";
+  v22a is "Akt phosphorylation (PIP3 modifier)";
+  v22b is "Akt dephosphorylation ";
+  v23a is "C3G phosphorylation (boundEGFR modifier)";
+  v23b is "C3G dephosphorylation";
+  v24 is "Rap1 phosphorylation (pC3G modifier)";
+  v25 is "Rap1 dephosphorylation (Rap1_GAP modifer)";
+  v26a is "PKCD synthesis";
+  v26b is "PKCD degradation";
+  v27a is "GSK3b phosphorylation (pERK modifier)";
+  v27b is "GSK3b phosphorylation (pAkt modifier)";
+  v27c is "GSK3b synthesis";
+  v27d is "GSK3b dephosphorylation";
+  v28 is "Dsh activation";
+  v29 is "Dsh deactivation";
+  v3 is "freeEGFR degradation";
+  v30 is "APC_Axin_GSK3b complex disassembly (Dsha modifier)";
+  v31 is "APC_Axin_GSK3b complex formation";
+  v32a is "APC and Axin phosphorylation (in compound)";
+  v32b is "APC and Axin dephosphorylation (in compound)";
+  v33a is "APC_Axin complex formation";
+  v33b is "Axin degradation";
+  v33c is "Axin synthesis";
+  v34 is "pAPC_pAxin_GSK3b_bCatenin complex formation";
+  v35 is "bCatenin phosphorylation (in compond)";
+  v36 is "pAPC_pAxin_GSK3b_pbCatenin complex disassembly";
+  v37a is "APC_bCatenin complex formation";
+  v37b is "bCatenin synthesis";
+  v37c is "bCatenin degradation";
+  v38 is "bCatenin_TCF complex binding";
+  v39 is "X synthesis";
+  v4 is "boundEGFR degradation";
+  v40 is "X degradation";
+  v41 is "pbCatenin degradation";
+  v5 is "SOS phosphorylation (PKCD. pERK and boundEGFR modifiers) ";
+  v6a is "SOS dephosphorylation";
+  v6b is "SOS dephosphorylation (pP90Rsk modifier)";
+  v7 is "Ras phosphorylation (pSOS modifier)";
+  v8a is "Ras synthesis";
+  v8b is "Ras dephosphorylation (Ras_Gap modifier)";
+  v9a is "Raf1 phosphorylation (pRas modifier)";
+  v9b is "Raf1 phosphorylation (X modifier)";
+
+  // CV terms:
+  Cell isVersionOf "http://identifiers.org/go/GO:0005623"
+  APC isVersionOf "http://identifiers.org/uniprot/P25054"
+  APCAxin hasPart "http://identifiers.org/uniprot/P25054",
+                  "http://identifiers.org/uniprot/O15169"
+  APCAxinGSK3B hasPart "http://identifiers.org/uniprot/P49841",
+                       "http://identifiers.org/uniprot/P25054",
+                       "http://identifiers.org/uniprot/O15169"
+  APCBCatenin hasPart "http://identifiers.org/uniprot/P25054",
+                      "http://identifiers.org/uniprot/P35222"
+  Akt isVersionOf "http://identifiers.org/uniprot/P31749"
+  Axin isVersionOf "http://identifiers.org/uniprot/O15169"
+  BCatenin isVersionOf "http://identifiers.org/uniprot/P35222"
+  BRaf hasProperty "urn:miriam:omit:0010192"
+  BRaf isVersionOf "http://identifiers.org/uniprot/P15056"
+  C3G isVersionOf "http://identifiers.org/uniprot/Q13905"
+  Dsha hasProperty "urn:miriam:bao:0002007"
+  Dsha isVersionOf "http://identifiers.org/uniprot/O14640"
+  Dshi isVersionOf "http://identifiers.org/uniprot/O14640"
+  EGF isVersionOf "http://identifiers.org/uniprot/P01133"
+  ERK isVersionOf "http://identifiers.org/uniprot/P27361"
+  GSK3B isVersionOf "http://identifiers.org/uniprot/P49841"
+  MEK isVersionOf "http://identifiers.org/uniprot/Q02750"
+  P90Rsk isVersionOf "http://identifiers.org/uniprot/Q15418"
+  PI3K isVersionOf "urn:miriam:omit:0027264"
+  PIP2 isVersionOf "urn:miriam:chebi:0018348"
+  PIP3 isVersionOf "urn:miriam:chebi:0016618"
+  PKCD isVersionOf "http://identifiers.org/uniprot/Q05655"
+  PP2A isVersionOf "http://identifiers.org/uniprot/P67775"
+  PTEN isVersionOf "http://identifiers.org/uniprot/P60484"
+  RKIP isVersionOf "http://identifiers.org/uniprot/P30086"
+  Raf1 isVersionOf "http://identifiers.org/uniprot/P04049"
+  RafPPtase isVersionOf "http://identifiers.org/uniprot/P67775"
+  Rap1 isVersionOf "http://identifiers.org/uniprot/P62834"
+  Rap1Gap isVersionOf "http://identifiers.org/uniprot/P47736"
+  Ras isVersionOf "http://identifiers.org/uniprot/P01112"
+  RasGap isVersionOf "http://identifiers.org/uniprot/P20936"
+  SOS isVersionOf "http://identifiers.org/uniprot/Q07889"
+  TCF isVersionOf "http://identifiers.org/uniprot/Q9UJU2"
+  TCFBCatenin hasPart "http://identifiers.org/uniprot/P35222",
+                      "http://identifiers.org/uniprot/Q9UJU2"
+  bEGFR hasPart "http://identifiers.org/uniprot/P01133",
+                "http://identifiers.org/uniprot/P00533"
+  fEGFR isVersionOf "http://identifiers.org/uniprot/P00533"
+  pAPCpAxinGSK3B hasProperty "urn:miriam:bao:0002007"
+  pAPCpAxinGSK3B hasPart "http://identifiers.org/uniprot/P49841",
+                         "http://identifiers.org/uniprot/O15169",
+                         "http://identifiers.org/uniprot/P25054"
+  pAPCpAxinGSK3BBCatenin hasProperty "urn:miriam:bao:0002007"
+  pAPCpAxinGSK3BBCatenin hasPart "http://identifiers.org/uniprot/P25054",
+                                 "http://identifiers.org/uniprot/P35222",
+                                 "http://identifiers.org/uniprot/P49841",
+                                 "http://identifiers.org/uniprot/O15169"
+  pAPCpAxinGSK3BpBCatenin hasProperty "urn:miriam:bao:0002007"
+  pAPCpAxinGSK3BpBCatenin hasPart "http://identifiers.org/uniprot/P25054",
+                                  "http://identifiers.org/uniprot/O15169",
+                                  "http://identifiers.org/uniprot/P49841",
+                                  "http://identifiers.org/uniprot/P35222"
+  pAkt hasProperty "urn:miriam:bao:0002007"
+  pAkt isVersionOf "http://identifiers.org/uniprot/P31749"
+  pBCatenin hasProperty "urn:miriam:bao:0002007"
+  pBCatenin isVersionOf "http://identifiers.org/uniprot/P35222"
+  pBRaf hasProperty "urn:miriam:bao:0002007",
+                    "urn:miriam:omit:0010192"
+  pBRaf isVersionOf "http://identifiers.org/uniprot/P15056"
+  pC3G hasProperty "urn:miriam:bao:0002007"
+  pC3G isVersionOf "http://identifiers.org/uniprot/P01024"
+  pEGFR hasProperty "urn:miriam:bao:0002007"
+  pEGFR isVersionOf "http://identifiers.org/uniprot/P00533"
+  pERK hasProperty "urn:miriam:bao:0002007"
+  pERK isVersionOf "http://identifiers.org/uniprot/P28482"
+  pGSK3B hasProperty "urn:miriam:bao:0002007"
+  pGSK3B isVersionOf "http://identifiers.org/uniprot/P49841"
+  pMEK hasProperty "urn:miriam:bao:0002007"
+  pMEK isVersionOf "http://identifiers.org/uniprot/Q02750"
+  pP90Rsk hasProperty "urn:miriam:bao:0002007"
+  pP90Rsk isVersionOf "http://identifiers.org/uniprot/Q15418"
+  pPI3K hasProperty "urn:miriam:bao:0002007"
+  pPI3K isVersionOf "urn:miriam:omit:0027264"
+  pRKIP hasProperty "urn:miriam:bao:0002007"
+  pRKIP isVersionOf "http://identifiers.org/uniprot/P30086"
+  pRaf1 hasProperty "urn:miriam:bao:0002007"
+  pRaf1 isVersionOf "http://identifiers.org/uniprot/P04049"
+  pRap1 hasProperty "urn:miriam:bao:0002007"
+  pRap1 isVersionOf "http://identifiers.org/uniprot/P62834"
+  pRas hasProperty "urn:miriam:bao:0002007"
+  pRas isVersionOf "http://identifiers.org/uniprot/P62070"
+  pSOS hasProperty "urn:miriam:bao:0002007"
+  pSOS isVersionOf "http://identifiers.org/uniprot/Q07889"
+  v1 isVersionOf "http://identifiers.org/go/GO:0038004"
+  v10a isVersionOf "http://identifiers.org/go/GO:0000185"
+  v10b isVersionOf "http://identifiers.org/go/GO:0051390"
+  v11a isVersionOf "http://identifiers.org/go/GO:0000186"
+  v11a isVersionOf "urn:miriam:go:GI%3A0004709"
+  v11a identity "http://identifiers.org/ec-code/2.7.11.1"
+  v11b isVersionOf "http://identifiers.org/go/GO:0004709"
+  v11b isVersionOf "http://identifiers.org/go/GO:0000186"
+  v11b identity "http://identifiers.org/ec-code/2.7.11.1"
+  v12 isVersionOf "http://identifiers.org/go/GO:0051389"
+  v13 isVersionOf "http://identifiers.org/go/GO:0004708"
+  v13 isVersionOf "http://identifiers.org/go/GO:0000187"
+  v13 identity "http://identifiers.org/ec-code/2.7.12.2"
+  v14 isVersionOf "http://identifiers.org/go/GO:0000188"
+  v15a isVersionOf "http://identifiers.org/go/GO:0016310"
+  v15b isVersionOf "http://identifiers.org/go/GO:0016311"
+  v15c isVersionOf "http://identifiers.org/go/GO:0030163"
+  v16a isVersionOf "http://identifiers.org/go/GO:0016310"
+  v16b isVersionOf "http://identifiers.org/go/GO:0016310"
+  v18a isVersionOf "http://identifiers.org/go/GO:0016311"
+  v18b isVersionOf "http://identifiers.org/go/GO:0016311"
+  v19a isVersionOf "http://identifiers.org/go/GO:0016310"
+  v19b isVersionOf "http://identifiers.org/go/GO:0016310"
+  v19c isVersionOf "http://identifiers.org/go/GO:0016311"
+  v2 isVersionOf "http://identifiers.org/go/GO:0070851"
+  v20 isVersionOf "http://identifiers.org/go/GO:0016310"
+  v21 isVersionOf "http://identifiers.org/go/GO:0016311"
+  v22a isVersionOf "http://identifiers.org/go/GO:0016310"
+  v22b isVersionOf "http://identifiers.org/go/GO:0016311"
+  v23a isVersionOf "http://identifiers.org/go/GO:0016310"
+  v23b isVersionOf "http://identifiers.org/go/GO:0016311"
+  v24 isVersionOf "http://identifiers.org/go/GO:0016310"
+  v25 isVersionOf "http://identifiers.org/go/GO:0016311"
+  v26a isVersionOf "http://identifiers.org/go/GO:0009058"
+  v26b isVersionOf "http://identifiers.org/go/GO:0030163"
+  v27a isVersionOf "http://identifiers.org/go/GO:0016310"
+  v27b isVersionOf "http://identifiers.org/go/GO:0016310"
+  v27c isVersionOf "http://identifiers.org/go/GO:0009058"
+  v27d isVersionOf "http://identifiers.org/go/GO:0016311"
+  v28 isVersionOf "http://identifiers.org/go/GO:0072376"
+  v29 isVersionOf "http://identifiers.org/go/GO:2000257"
+  v3 isVersionOf "http://identifiers.org/go/GO:0030163"
+  v30 isVersionOf "http://identifiers.org/go/GO:0043624"
+  v31 isVersionOf "http://identifiers.org/go/GO:0005515"
+  v32a isVersionOf "http://identifiers.org/go/GO:0016310"
+  v32b isVersionOf "http://identifiers.org/go/GO:0016311"
+  v33a isVersionOf "http://identifiers.org/go/GO:0005515"
+  v33b isVersionOf "http://identifiers.org/go/GO:0030163"
+  v33c isVersionOf "http://identifiers.org/go/GO:0045727"
+  v34 isVersionOf "http://identifiers.org/go/GO:0005515"
+  v35 isVersionOf "http://identifiers.org/go/GO:0016310"
+  v36 isVersionOf "http://identifiers.org/go/GO:0043624"
+  v37a isVersionOf "http://identifiers.org/go/GO:0043624"
+  v37b isVersionOf "http://identifiers.org/go/GO:0045727"
+  v37c isVersionOf "http://identifiers.org/go/GO:0030163"
+  v38 isVersionOf "http://identifiers.org/go/GO:0005515"
+  v39 isVersionOf "http://identifiers.org/go/GO:0009058"
+  v4 isVersionOf "http://identifiers.org/go/GO:0030163"
+  v40 isVersionOf "http://identifiers.org/go/GO:0030163"
+  v41 isVersionOf "http://identifiers.org/go/GO:0030163"
+  v5 isVersionOf "http://identifiers.org/go/GO:0016310"
+  v6a isVersionOf "http://identifiers.org/go/GO:0016311"
+  v6b isVersionOf "http://identifiers.org/go/GO:0016311"
+  v7 isVersionOf "http://identifiers.org/go/GO:0016310"
+  v8a isVersionOf "http://identifiers.org/go/GO:0045727"
+  v8b isVersionOf "http://identifiers.org/go/GO:0016311"
+  v9a isVersionOf "http://identifiers.org/go/GO:0016310"
+  v9b isVersionOf "http://identifiers.org/go/GO:0016310"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1708290000"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000653"
+  model publication "http://identifiers.org/pubmed/28367561"
+  model origin "http://identifiers.org/biomodels.db/BIOMD0000000623",
+               "http://identifiers.org/biomodels.db/BIOMD0000000033",
+               "http://identifiers.org/biomodels.db/BIOMD0000000149"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000046"
+  model isDescribedBy "http://identifiers.org/pubmed/21391741"
+  model hasProperty "http://identifiers.org/go/GO:0043408",
+                    "http://identifiers.org/go/GO:0060828",
+                    "http://identifiers.org/go/GO:0051896",
+                    "http://identifiers.org/pw/PW:0000605"
+  model hasPart "http://identifiers.org/kegg.pathway/map04010",
+                "http://identifiers.org/kegg.pathway/map04151",
+                "http://identifiers.org/kegg.pathway/map04310",
+                "http://identifiers.org/go/GO:0000165"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model created "2017-08-14T10:34:00Z"
+  model modified "2017-09-20T10:50:19Z"
+  model creator1.givenName "Rahuman"
+  model creator1.familyName "Sheriff"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "sheriff@ebi.ac.uk"
+  model creator2.givenName "Emma"
+  model creator2.familyName "Fairbanks"
+  model creator2.organization "University of Nottingham"
+  model creator2.email "emmafairbanks93@gmail.com"
+
+  // Notes:
+  model notes ```
+Padala2017- ERK, PI3K/Akt and Wnt signallingnetwork (bRaf mutated) 
+
+Crosstalk model of the ERK, Wnt and Aktsignalling pathways with bRaf mutation 
+
+
+This model is described in the article:
+
+
+[Cancerous perturbations within the ERK, PI3K/Akt, and Wnt/?-catenin signaling network constitutively activate inter-pathway positive feedback loops.](http://identifiers.org/pubmed/28367561 "Access to this publication") 
+
+
+Padala RR, Karnawat R, Viswanathan SB, Thakkar AV, Das AB. 
+
+Mol Biosyst 2017 May; 13(5): 830-840 
+Abstract:
+
+
+Perturbations in molecular signaling pathways are a result of genetic or epigenetic
+alterations, which may lead to malignant transformation of cells. Despite cellular
+robustness, specific genetic or epigenetic changes of any gene can trigger 
+a cascade of failures, which result in the malfunctioning of cell signaling pathways
+and lead to cancer phenotypes. The extent of cellular robustness has a link with
+the architecture of the network such as feedback and feedforward loops. Perturbation
+in components within feedback loops causes a transition from a regulated to a
+persistently activated state and results in uncontrolled cell growth. This work
+represents the mathematical and quantitative modeling of ERK, PI3K/Akt, and
+Wnt/?-catenin signaling crosstalk to show the dynamics of signaling responses
+during genetic and epigenetic changes in cancer. ERK, PI3K/Akt, and Wnt/?-catenin
+signaling crosstalk networks include both intra and inter-pathway feedback loops
+which function in a controlled fashion in a healthy cell. Our results show
+that cancerous perturbations of components such as EGFR, Ras, B-Raf, PTEN, and
+components of the destruction complex cause extreme fragility in the network and
+constitutively activate inter-pathway positive feedback loops. We observed
+that the aberrant signaling response due to the failure of specific network components
+is transmitted throughout the network via crosstalk, generating an additive 
+effect on cancer growth and proliferation.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000653](http://identifiers.org/biomodels.db/BIOMD0000000653).
+
+To cite BioModels Database, please use: [Chelliah V et al. BioModels: ten-year anniversary. Nucl. Acids Res. 2015, 43(Database issue):D542-8](http://identifiers.org/pubmed/25414348).
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+end
+
+Padala2017__ERK__PI3K_Akt_and_Wnt_signalling_network__normal is "Padala2017- ERK, PI3K/Akt and Wnt signalling network (bRaf mutated)"

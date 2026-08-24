@@ -1,0 +1,413 @@
+// Created by libAntimony v3.2.0
+model *LeBeau1999___IP3_dependent_intracellular_calcium_oscillations_due_to_agonist_stimulation_from_Cholecytokinin()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species $S in compartment_, O in compartment_, I1 in compartment_, I2 in compartment_;
+  species c in compartment_;
+
+  // Assignment Rules:
+  S := 1 - (O + I1 + I2);
+  k1 := alpha1*c^3/(beta1^3 + c^3);
+  k4 := alpha4*p/(beta4 + p);
+  p := 0.6*(1 - exp(-T/time_constant));
+
+  // Rate Rules:
+  T' = 1;
+
+  // Reactions:
+  Shut_to_Open: $S -> O; compartment_*((k1*p*S - k_1*O)/compartment_);
+  Open_to_Inactivated1: O => I1; compartment_*(k2*O/compartment_);
+  Inactivated1_to_Shut: I1 => $S; compartment_*(k3*I1/compartment_);
+  Inactivated1_to_Inactivated2: I1 => I2; compartment_*(k4*I1/compartment_);
+  Inactivated2_to_Shut: I2 => $S; compartment_*(k5*I2/compartment_);
+  Jrel:  => c; compartment_*(kflux*O^4/compartment_);
+  Jpump: c => ; compartment_*(Vp*c^2/(Kp^2 + c^2)/compartment_);
+  Jinflux:  => c; compartment_*(Jinflux_0/compartment_);
+
+  // Species initializations:
+  O = 0;
+  I1 = 0;
+  I2 = 1;
+  c = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+  k1 has unit_0;
+
+  // Variable initializations:
+  alpha1 = 40;
+  alpha1 has unit_0;
+  beta1 = 0.8;
+  beta1 has unit_1;
+  k4 has unit_2;
+  alpha4 = 0.06;
+  alpha4 has unit_2;
+  p has unit_3;
+  beta4 = 0.01;
+  beta4 has unit_1;
+  T = 0;
+  T has unit_4;
+  time_constant = 100;
+  time_constant has unit_4;
+  kflux = 22;
+  kflux has unit_0;
+  Vp = 0.2;
+  Vp has unit_0;
+  k3 = 0.5;
+  k3 has unit_2;
+  k2 = 0.5;
+  k2 has unit_2;
+  k_1 = 0.88;
+  k_1 has unit_2;
+  Jinflux_0 = 0.025;
+  Jinflux_0 has unit_0;
+  Kp = 0.54;
+  Kp has unit_3;
+  k5 = 0.02;
+  k5 has unit_2;
+
+  // Other declarations:
+  var k1, k4, p, T;
+  const compartment_, alpha1, beta1, alpha4, beta4, time_constant, kflux;
+  const Vp, k3, k2, k_1, Jinflux_0, Kp, k5;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = litre;
+  unit time_unit = second;
+  unit substance = mole;
+  unit unit_0 = item / ((1e-6 dimensionless)^-0 * litre * second);
+  unit unit_1 = item / (1e-6 dimensionless)^-0;
+  unit unit_2 = 1 / second;
+  unit unit_3 = item / ((1e-6 dimensionless)^-0 * litre);
+  unit unit_4 = second;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "umol/(l*s)";
+  unit_1 is "umol";
+  unit_2 is "1/s";
+  unit_3 is "umol/l";
+  unit_4 is "s";
+  compartment_ is "compartment";
+  c is "Ca2+";
+  T is "time";
+  k_1 is "k-1";
+  Jinflux_0 is "Jinflux";
+
+  // General layout options
+  model.layout = on
+  model.layout.size = {10, 10}
+  model.layout.background = "#FFFFFFFF"
+
+  // Species layout defaults
+  species.color = "#a0e0a030"
+
+  // Reaction layout defaults
+  reaction.lineColor = "#000000a0"
+  reaction.lineWidth = 3
+  reaction.fontColor = "#000000a0"
+
+  // Compartment layout defaults
+  compartment.lineColor = "#e69600b0"
+  compartment.lineWidth = 7
+  compartment.fontColor = "#e69600b0"
+  compartment.fontStyle = normal
+
+  // Individual element layout information
+  S.position = {154.84, 33.93}
+  S.size = {28, 28}
+  S.font = Verdana
+  S.fontColor = black
+  S.fontSize = 12
+  O.position = {212.3, 176.07}
+  O.size = {28, 28}
+  O.font = Verdana
+  O.fontColor = black
+  O.fontSize = 12
+  I1.position = {55.58, 163.84}
+  I1.size = {36, 28}
+  I1.font = Verdana
+  I1.fontColor = black
+  I1.fontSize = 12
+  I2.position = {5.16, 26.84}
+  I2.size = {36, 28}
+  I2.font = Verdana
+  I2.fontColor = black
+  I2.fontSize = 12
+  c.position = {378.17, 197.36}
+  c.size = {28, 28}
+  c.font = Verdana
+  c.fontColor = black
+  c.fontSize = 12
+  Shut_to_Open.position = {232.04, 104.33}
+  Shut_to_Open.S.rxn_end = {229.16, 97.22}
+  Shut_to_Open.S.species_end = {187.84, 60.14}
+  Shut_to_Open.S.b1 = {223.42, 83.01}
+  Shut_to_Open.S.b2 = {204.19, 68.02}
+  Shut_to_Open.O.rxn_end = {234.91, 111.44}
+  Shut_to_Open.O.species_end = {230.53, 171.07}
+  Shut_to_Open.O.b1 = {240.66, 125.65}
+  Shut_to_Open.O.b2 = {237.03, 151.91}
+  Open_to_Inactivated1.position = {146.25, 221.46}
+  Open_to_Inactivated1.O.rxn_end = {153.89, 222.07}
+  Open_to_Inactivated1.O.species_end = {207.3, 201.11}
+  Open_to_Inactivated1.O.b1 = {169.16, 223.29}
+  Open_to_Inactivated1.O.b2 = {192.05, 212.51}
+  Open_to_Inactivated1.I1.rxn_end = {138.61, 220.85}
+  Open_to_Inactivated1.I1.species_end = {96.2, 196.84}
+  Open_to_Inactivated1.I1.b1 = {123.34, 219.62}
+  Open_to_Inactivated1.I1.b2 = {105.95, 207.92}
+  Inactivated1_to_Shut.position = {121.32, 112.97}
+  Inactivated1_to_Shut.I1.rxn_end = {116.56, 119.46}
+  Inactivated1_to_Shut.I1.species_end = {87.58, 158.84}
+  Inactivated1_to_Shut.I1.b1 = {107.03, 132.46}
+  Inactivated1_to_Shut.I1.b2 = {94.93, 148.89}
+  Inactivated1_to_Shut.S.rxn_end = {126.09, 106.47}
+  Inactivated1_to_Shut.S.species_end = {154.98, 66.93}
+  Inactivated1_to_Shut.S.b1 = {135.61, 93.48}
+  Inactivated1_to_Shut.S.b2 = {147.68, 76.96}
+  Inactivated1_to_Inactivated2.position = {7.56, 123.7}
+  Inactivated1_to_Inactivated2.I1.rxn_end = {10.08, 130.55}
+  Inactivated1_to_Inactivated2.I1.species_end = {50.58, 164.62}
+  Inactivated1_to_Inactivated2.I1.b1 = {15.12, 144.25}
+  Inactivated1_to_Inactivated2.I1.b2 = {34.11, 157.86}
+  Inactivated1_to_Inactivated2.I2.rxn_end = {5.04, 116.85}
+  Inactivated1_to_Inactivated2.I2.species_end = {16.1, 59.84}
+  Inactivated1_to_Inactivated2.I2.b1 = {0, 103.15}
+  Inactivated1_to_Inactivated2.I2.b2 = {6.79, 78.07}
+  Inactivated2_to_Shut.position = {97.51, 1.06}
+  Inactivated2_to_Shut.I2.rxn_end = {90.22, 0.71}
+  Inactivated2_to_Shut.I2.species_end = {46.16, 22.94}
+  Inactivated2_to_Shut.I2.b1 = {75.65, 0}
+  Inactivated2_to_Shut.I2.b2 = {57.27, 11.29}
+  Inactivated2_to_Shut.S.rxn_end = {104.79, 1.42}
+  Inactivated2_to_Shut.S.species_end = {149.84, 30.34}
+  Inactivated2_to_Shut.S.b1 = {119.36, 2.13}
+  Inactivated2_to_Shut.S.b2 = {138.24, 16.41}
+  Jrel.position = {321.47, 256.7}
+  Jrel.--.rxn_end = {319.87, 263.33}
+  Jrel.--.species_end = {356.58, 338.52}
+  Jrel.--.b1 = {316.67, 276.59}
+  Jrel.--.b2 = {335.82, 310.87}
+  Jrel.c.rxn_end = {323.07, 250.06}
+  Jrel.c.species_end = {373.17, 218.7}
+  Jrel.c.b1 = {326.28, 236.8}
+  Jrel.c.b2 = {350.52, 224.43}
+  Jrel.O.species_end = {245.3, 204.36}
+  Jrel.O.rxn_end = {311.75, 254.35}
+  Jrel.O.b1 = {278.53, 229.35}
+  Jrel.O.b2 = {302.03, 252}
+  Jrel.--.position = {359.63, 343.52}
+  Jrel.--.size = {1, 1}
+  Jpump.position = {430.59, 139.44}
+  Jpump.c.rxn_end = {428.09, 146.91}
+  Jpump.c.species_end = {404.03, 192.36}
+  Jpump.c.b1 = {423.08, 161.86}
+  Jpump.c.b2 = {412.31, 180.85}
+  Jpump.--.rxn_end = {433.1, 131.96}
+  Jpump.--.species_end = {441.81, 67.4}
+  Jpump.--.b1 = {438.1, 117.02}
+  Jpump.--.b2 = {441.21, 88.47}
+  Jpump.--.position = {441.73, 61.4}
+  Jpump.--.size = {1, 1}
+  Jinflux.position = {385.73, 291.29}
+  Jinflux.--.rxn_end = {381.3, 297.5}
+  Jinflux.--.species_end = {309.15, 333.53}
+  Jinflux.--.b1 = {372.45, 309.92}
+  Jinflux.--.b2 = {338.59, 324.83}
+  Jinflux.c.rxn_end = {390.16, 285.07}
+  Jinflux.c.species_end = {394.29, 230.36}
+  Jinflux.c.b1 = {399.01, 272.65}
+  Jinflux.c.b2 = {398.86, 248.4}
+  Jinflux.--.position = {303.15, 335.08}
+  Jinflux.--.size = {1, 1}
+
+  // SBO terms:
+  time_constant.sboTerm = 348
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/cl/CL:0002064"
+  S hasPart "http://identifiers.org/chebi/CHEBI:139109"
+  S hasPart "http://identifiers.org/ncit/C580"
+  S hasVersion "http://identifiers.org/pato/PATO:0000608"
+  S identity "http://identifiers.org/ncit/C47881"
+  O hasPart "http://identifiers.org/ncit/C580"
+  O hasPart "http://identifiers.org/chebi/CHEBI:139109"
+  O hasVersion "http://identifiers.org/pato/PATO:0000610"
+  O identity "http://identifiers.org/ncit/C47881"
+  I1 hasInstance "http://identifiers.org/ncit/C580",
+                 "http://identifiers.org/chebi/CHEBI:131186",
+                 "http://identifiers.org/ncit/C47881",
+                 "http://identifiers.org/ncit/C16983",
+                 "http://identifiers.org/ncit/C14054"
+  I1 hasPart "http://identifiers.org/ncit/C580"
+  I1 hasPart "http://identifiers.org/chebi/CHEBI:131186"
+  I1 identity "http://identifiers.org/ncit/C47881"
+  I1 hasProperty "http://identifiers.org/ncit/C16983"
+  I2 hasPart "http://identifiers.org/chebi/CHEBI:131186"
+  I2 hasPart "http://identifiers.org/ncit/C580"
+  I2 identity "http://identifiers.org/ncit/C47881"
+  I2 hasProperty "http://identifiers.org/ncit/C20612"
+  c identity "http://identifiers.org/obi/OBI:0000003"
+  c hasProperty "http://identifiers.org/go/GO:0070679"
+  k1 identity "http://identifiers.org/ncit/C94967"
+  alpha1 identity "http://identifiers.org/ncit/C47906"
+  alpha1 hasProperty "http://identifiers.org/ncit/C25564"
+  beta1 identity "http://identifiers.org/ncit/C47823"
+  k4 identity "http://identifiers.org/ncit/C94967"
+  alpha4 identity "http://identifiers.org/ncit/C47906"
+  alpha4 hasProperty "http://identifiers.org/ncit/C25564"
+  p identity "http://identifiers.org/ncit/C41185"
+  beta4 identity "http://identifiers.org/ncit/C47823"
+  T identity "http://identifiers.org/ncit/C25207"
+  time_constant identity "http://identifiers.org/sbo/SBO:0000348"
+  kflux identity "http://identifiers.org/ncit/C72076"
+  kflux hasProperty "http://identifiers.org/ncit/C25564"
+  Vp identity "http://identifiers.org/ncit/C47906"
+  Vp hasProperty "http://identifiers.org/ncit/C25564"
+  k3 identity "http://identifiers.org/ncit/C94967"
+  k2 identity "http://identifiers.org/ncit/C94967"
+  k_1 identity "http://identifiers.org/ncit/C94967"
+  Jinflux_0 identity "http://identifiers.org/ncit/C47905"
+  Kp identity "http://identifiers.org/ncit/C47823"
+  k5 identity "http://identifiers.org/ncit/C94967"
+  Shut_to_Open hasPart "http://identifiers.org/pato/PATO:0000608"
+  Shut_to_Open hasPart "http://identifiers.org/pato/PATO:0000610"
+  Inactivated1_to_Shut identity "http://identifiers.org/bao/BAO:0000087"
+  Inactivated1_to_Inactivated2 identity "http://identifiers.org/mi/MI:0217"
+  Inactivated2_to_Shut identity "http://identifiers.org/mi/MI:0203"
+  Jrel identity "http://identifiers.org/go/GO:0005220"
+  Jpump identity "http://identifiers.org/ncit/C47906"
+  Jinflux identity "http://identifiers.org/ncit/C47905"
+
+  model publication "http://identifiers.org/pubmed/10352035"
+  model model_source "http://identifiers.org/biomodels.db/MODEL9200487367",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000965"
+  model identity "http://identifiers.org/biomodels.db/MODEL9200487367"
+  model isVersionOf "http://identifiers.org/go/GO:0019722"
+  model occursIn "http://identifiers.org/bto/BTO:0000028"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2006-06-01T08:44:14Z"
+  model modified "2019-12-05T13:30:43Z"
+  model creator1.givenName "Prashant"
+  model creator1.familyName "Govindarajan"
+  model creator1.organization "Indian Institute of Technology Madras"
+  model creator1.email "bs17b011@smail.iitm.ac.in"
+  model creator2.givenName "Sankalpa"
+  model creator2.familyName "Venkatraghavan"
+  model creator2.organization "Indian Institute of Technology Madras"
+  model creator2.email "sankalpavenkatraghavan@gmail.com"
+  model creator3.givenName "Harish"
+  model creator3.familyName "Dharuri"
+  model creator3.organization "California Institute of Technology"
+  model creator3.email "hdharuri@cds.caltech.edu"
+  model creator4.givenName "Sowmya Manojna"
+  model creator4.familyName "Narasimha"
+  model creator4.organization "Indian Institute of Technology Madras"
+  model creator4.email "sowmyamanojna@smail.iitm.ac.in"
+  model creator5.givenName "Sathvik"
+  model creator5.familyName "Anantakrishnan"
+  model creator5.organization "Indian Institute of Technology Madras"
+  model creator5.email "sathvikanantakrishnan@smail.iitm.ac.in"
+  model creator6.givenName "Harish"
+  model creator6.familyName "Dharuri"
+  model creator6.organization "California Institute of Technology"
+  model creator6.email "hdharuri@cds.caltech.edu"
+  model creator7.givenName "Harish"
+  model creator7.familyName "Dharuri"
+  model creator7.organization "California Institute of Technology"
+  model creator7.email "hdharuri@cds.caltech.edu"
+  model creator8.givenName "Sahana"
+  model creator8.familyName "Gangadharan"
+  model creator8.organization "Indian Institute of Technology Madras"
+  model creator8.email "be17b038@smail.iitm.ac.in"
+
+  // Notes:
+  model notes ```
+The properties of inositol 1,4,5-trisphosphate (IP3)-dependent intracellular calcium
+oscillations in pancreatic acinar cells depend crucially on the agonist used to stimulate
+them. Acetylcholine or carbachol (CCh) cause high-frequency (10–12-s period) calcium
+oscillations that are superimposed on a raised baseline, while cholecystokinin (CCK)
+causes long-period (.100-s period) baseline spiking. We show that physiological concentrations
+of CCK induce rapid phosphorylation of the IP3 receptor, which is not true of physiological
+concentrations of CCh. Based on this and other experimental data, we construct a
+mathematical model of agonist-specific intracellular calcium oscillations in pancreatic
+acinar cells. Model simulations agree with previous experimental work on the rates
+of activation and inactivation of the IP3 receptor by calcium (DuFour, J.-F., I.M.
+Arias, and T.J. Turner. 1997. J. Biol. Chem. 272:2675–2681), and reproduce both
+short-period, raised baseline oscillations, and long-period baseline spiking. The
+steady state open probability curve of the model IP3 receptor is an increasing function
+of calcium concentration, as found for type-III IP3 receptors by Hagar et al. (Hagar,
+R.E., A.D. Burgstahler, M.H. Nathanson, and B.E. Ehrlich. 1998. Nature. 396:81–84).
+We use the model to predict the effect of the removal of external calcium, and this
+prediction is confirmed experimentally. We also predict that, for type-III IP3 receptors,
+the steady state open probability curve will shift to lower calcium concentrations
+as the background IP3 concentration increases. We conclude that the differences between
+CCh- and CCK-induced calcium oscillations in pancreatic acinar cells can be explained
+by two principal mechanisms: (a) CCK causes more phosphorylation of the IP3 receptor
+than does CCh, and the phosphorylated receptor cannot pass calcium current; and (b)
+the rate of calcium ATPase pumping and the rate of calcium influx from the outside
+the cell are greater in the presence of CCh than in the presence of CCK.
+```
+  S notes ```
+It is an active complex of IP3 receptor with an agonist that has activated it 
+from an inactive state. (dephosphorylated form of I2)It is a closed version of the 
+complex.
+```
+  O notes ```
+It is an active complex of IP3 receptor with an agonist that has activated it 
+from an inactive state.It is an open version of the complex.
+```
+  I1 notes ```
+It is an inactive complex of IP3 receptor with an antogonist that has in/de-activated 
+it.It also has a phosphorylation site.
+```
+  I2 notes ```
+It is an inactive complex of IP3 receptor with an antogonist that has in/de-activated 
+it. It is phosphorylated form of complex A.
+```
+  c notes "It corresponds to the Calcium concentration in the cell."
+  k1 notes "k1 is a function of [Ca2+]i.It corresponds to the Shut_to_Open reaction."
+  alpha1 notes "α1 is the maximum rate of the S to O transition."
+  beta1 notes ```
+β1 is the Ca2+ concentration at which the rate of the S to O transition is half 
+its maximum rate
+```
+  k4 notes ```
+The rate constant k4 models the action of a kinase (possibly PKA) on the IP3R, 
+and is assumed to be dependent on the type of agonist used to initiate Ca2+ oscillations.
+```
+  alpha4 notes "α4 denotes the maximum rate of the reaction attained at high IP3 concentration."
+  p notes "p denotes the IP3 concentration at any instance."
+  beta4 notes "β4 denotes the value of IP3 concentration (p) at which the rate is half maximal."
+  T notes "Denotes time"
+  time_constant notes "Denotes time constant for the decay of IP3 concentration."
+  kflux notes "kflux is the maximum rate of Ca2+ release from the ER."
+  Vp notes "Vp represents the maximum rate of pumping."
+  k3 notes "It corresponds to rate constant of the Inactivated1_to_Shut reaction."
+  k2 notes "It corresponds to rate constant of the Open_to_Inactivated1 reaction."
+  k_1 notes "It corresponds to rate constant of the Open_to_Shut reaction."
+  Jinflux_0 notes ```
+Jinflux is an adjustable parameter that represents a constant rate of Ca2+ influx 
+into the cytosol
+```
+  Kp notes "Kp is the [Ca2+]i for half-maximal pumping"
+  k5 notes "It corresponds to rate constant of the Inactivated2_to_Shut reaction."
+  Shut_to_Open notes ```
+Opening of complex (IP3+calcium). This conducts calcium currents and is responsible 
+for calcium oscillations.
+```
+  Open_to_Inactivated1 notes "Inactivation of the IP3-Calcium bound complex."
+  Inactivated1_to_Shut notes "Reaction where the receptor gets activated but is in shut state."
+  Inactivated1_to_Inactivated2 notes "Phosphoryltion reaction of I1 to I2 complex."
+  Inactivated2_to_Shut notes "Reaction where the receptor gets activated but is in shut state."
+  Jrel notes "Jrel represents the IP3-induced release of Ca2+ from the ER."
+  Jpump notes "Reaction corresponding to pumping calcium out of the system."
+  Jinflux notes "Reaction corresponding to the influx of calcium."
+end
+
+LeBeau1999___IP3_dependent_intracellular_calcium_oscillations_due_to_agonist_stimulation_from_Cholecytokinin is "LeBeau1999 - IP3-dependent intracellular calcium oscillations due to agonist stimulation from Cholecytokinin"

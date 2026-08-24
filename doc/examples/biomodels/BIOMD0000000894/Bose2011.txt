@@ -1,0 +1,100 @@
+// Created by libAntimony v3.2.0
+model *Bose2011___Noise_assisted_interactions_of_tumor_and_immune_cells()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species x in compartment_, y in compartment_, z in compartment_;
+
+  // Reactions:
+  Formation_of_tumor_system:  => x; compartment_*((1 + R*(1 - Dx*tau) + 0.5*Dx*Dz*tau)*x + Dx*(1 + R*tau)*z);
+  Removal_of_tumor_system: x => ; compartment_*(x*x + x*y);
+  Formation_of_effector_cell_against_tumor_cell:  => y; compartment_*(y*z);
+  Removal_of_effector_cell_functioning_against_tumor_cell: y => ; compartment_*((p - Dy)*y);
+  Formation_of_tumor_detecting_cell:  => z; compartment_*((R*(1 - Dx*tau) + Dx*Dz*tau)*x);
+  Removal_of_tumor_detecting_cell: z => ; compartment_*((mu - (R*(1 + Dx*tau) + Dx*(1 + 0.5*Dz*tau)))*z);
+
+  // Species initializations:
+  x = 1e-06;
+  y = 0.01;
+  z = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  t = 1;
+  tau = 0.3;
+  R = 1;
+  Dx = 2.1;
+  Dy = 0.01;
+  Dz = 1.2;
+  p = 0.06;
+  mu = 20;
+
+  // Other declarations:
+  const compartment_, t, tau, R, Dx, Dy, Dz, p, mu;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  Formation_of_tumor_system is "Formation of tumor system";
+  Removal_of_tumor_system is "Removal of tumor system";
+  Formation_of_effector_cell_against_tumor_cell is "Formation of effector cell against tumor cell";
+  Removal_of_effector_cell_functioning_against_tumor_cell is "Removal of effector cell functioning against tumor cell";
+  Formation_of_tumor_detecting_cell is "Formation of tumor detecting cell";
+  Removal_of_tumor_detecting_cell is "Removal of tumor detecting cell";
+
+  // CV terms:
+  x hasInstance "http://identifiers.org/ncit/C12922"
+  y hasInstance "http://identifiers.org/ncit/C28241"
+  z hasInstance "http://identifiers.org/ncit/C12535"
+  Formation_of_tumor_system hasInstance "http://identifiers.org/ncit/C25513"
+  Removal_of_tumor_system hasInstance "http://identifiers.org/ncit/C64914"
+  Formation_of_effector_cell_against_tumor_cell hasInstance "http://identifiers.org/ncit/C25513"
+  Removal_of_effector_cell_functioning_against_tumor_cell hasInstance "http://identifiers.org/ncit/C64914"
+  Formation_of_tumor_detecting_cell hasInstance "http://identifiers.org/ncit/C25513"
+  Removal_of_tumor_detecting_cell hasInstance "http://identifiers.org/ncit/C64914"
+
+  model hasInstance "http://identifiers.org/mamo/MAMO_0000046",
+                    "http://identifiers.org/taxonomy/9606",
+                    "http://identifiers.org/ncit/C48686"
+  model publication "http://identifiers.org/ncit/C48686",
+                    "http://identifiers.org/pubmed/21929038"
+  model origin "http://identifiers.org/doi/10.1103/PhysRevE.79.051903"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1912160003",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000894"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000046"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model created "2019-12-16T09:26:40Z"
+  model modified "2019-12-16T09:26:40Z"
+  model creator1.givenName "Mohammad Umer"
+  model creator1.familyName "Sharif Shohan"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "msharifshohan@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Noise-assisted interactions of tumor and immune cells.Bose T1, Trimper S.Author 
+information1 Institute of Physics, Martin-Luther-University, D-06099 Halle, Germany. 
+thomas.bose@physik.uni-halle.deAbstractWe consider a three-state model comprising 
+tumor cells, effector cells, and tumor-detecting cells under the influence of noises. 
+It is demonstrated that inevitable stochastic forces existing in all three cell species 
+are able to suppress tumor cell growth completely. Whereas the deterministic model 
+does not reveal a stable tumor-free state, the auto-correlated noise combined with 
+cross-correlation functions can either lead to tumor-dormant states, tumor progression, 
+as well as to an elimination of tumor cells. The auto-correlation function exhibits 
+a finite correlation time τ, while the cross-correlation functions shows a white-noise 
+behavior. The evolution of each of the three kinds of cells leads to a multiplicative 
+noise coupling. The model is investigated by means of a multivariate Fokker-Planck 
+equation for small τ. The different behavior of the system is, above all, determined 
+by the variation of the correlation time and the strength of the cross-correlation 
+between tumor and tumor-detecting cells. The theoretical model is based on a biological 
+background discussed in detail, and the results are tested using realistic parameters 
+from experimental observations.
+```
+end
+
+Bose2011___Noise_assisted_interactions_of_tumor_and_immune_cells is "Bose2011 - Noise-assisted interactions of tumor and immune cells"

@@ -1,0 +1,120 @@
+// Created by libAntimony v3.2.0
+model *Gerard2013___Model_3___Embryonic_type_eukaryotic_Cell_Cycle_regulation_based_on_negative_feedback_between_Cdk_cyclin_and_APC_and_competitive_inhibition_between_Cdk_cyclin_and_securin_for_polyubiquitylation_1()
+
+  // Compartments and Species:
+  compartment nuclear;
+  species Cdk in nuclear, Anaphase_promoting_complex_Phosphorylated in nuclear;
+  species Securin in nuclear, $Anaphase_promoting_complex in nuclear, $Anaphase_promoting_complex_total in nuclear;
+
+  // Assignment Rules:
+  Anaphase_promoting_complex := Anaphase_promoting_complex_total - Anaphase_promoting_complex_Phosphorylated;
+
+  // Reactions:
+  Synthesis_Cdk:  => Cdk; nuclear*V_scdk;
+  Degradation_Cdk: Cdk => ; nuclear*k_d1cdk*Cdk;
+  Degradation_Cdk_mediated_by_APC_P: Cdk => ; nuclear*(k_dcdk*Anaphase_promoting_complex_Phosphorylated*Cdk/(K_dcdk*(1 + Securin/K_dsec) + Cdk));
+  Phosphorylation_of_APC:  => Anaphase_promoting_complex_Phosphorylated; nuclear*(k_2APC*Cdk*Anaphase_promoting_complex/(K_2APC + Anaphase_promoting_complex));
+  Dephosphorylation_of_APC: Anaphase_promoting_complex_Phosphorylated => ; nuclear*(V_1APC*Anaphase_promoting_complex_Phosphorylated/(K_1APC + Anaphase_promoting_complex_Phosphorylated));
+  Synthesis_of_Securin:  => Securin; nuclear*V_ssec;
+  Degradation_of_Sec: Securin => ; nuclear*k_d1sec*Securin;
+  Degradation_of_Sec_mediated_by_APC_P: Securin => ; nuclear*(k_dsec*Anaphase_promoting_complex_Phosphorylated*Securin/(K_dsec*(1 + Cdk/K_dcdk) + Securin));
+
+  // Species initializations:
+  Cdk = 0.3;
+  Anaphase_promoting_complex_Phosphorylated = 0;
+  Securin = 0.35;
+  Anaphase_promoting_complex_total = 1;
+
+  // Compartment initializations:
+  nuclear = 1;
+
+  // Variable initializations:
+  V_scdk = 0.06;
+  k_d1cdk = 0.01;
+  k_dcdk = 0.35;
+  K_dcdk = 0.01;
+  K_dsec = 0.001;
+  k_2APC = 0.3;
+  K_2APC = 0.01;
+  V_1APC = 0.15;
+  K_1APC = 0.01;
+  V_ssec = 0.1;
+  k_d1sec = 0.01;
+  k_dsec = 0.4;
+
+  // Other declarations:
+  const nuclear, V_scdk, k_d1cdk, k_dcdk, K_dcdk, K_dsec, k_2APC, K_2APC;
+  const V_1APC, K_1APC, V_ssec, k_d1sec, k_dsec;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  Synthesis_Cdk is "Synthesis Cdk";
+  Degradation_Cdk is "Degradation Cdk";
+  Degradation_Cdk_mediated_by_APC_P is "Degradation Cdk mediated by APC_P";
+  Phosphorylation_of_APC is "Phosphorylation of APC";
+  Dephosphorylation_of_APC is "Dephosphorylation of APC";
+  Synthesis_of_Securin is "Synthesis of Securin";
+  Degradation_of_Sec is "Degradation of Sec";
+  Degradation_of_Sec_mediated_by_APC_P is "Degradation of Sec mediated by APC_P";
+
+  // CV terms:
+  nuclear identity "http://identifiers.org/ncit/C13361"
+  Cdk isHomologTo "http://identifiers.org/uniprot/P11440"
+  Anaphase_promoting_complex_Phosphorylated isVersionOf "http://identifiers.org/go/GO:0005680"
+  Anaphase_promoting_complex_Phosphorylated hasProperty "http://identifiers.org/pato/PATO:0002220"
+  Securin isHomologTo "http://identifiers.org/uniprot/Q9CQJ7"
+  Anaphase_promoting_complex isVersionOf "http://identifiers.org/go/GO:0005680"
+  Anaphase_promoting_complex_total isVersionOf "http://identifiers.org/go/GO:0005680"
+  Synthesis_Cdk isVersionOf "http://identifiers.org/ncit/C61408"
+  Degradation_Cdk isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  Degradation_Cdk_mediated_by_APC_P isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  Phosphorylation_of_APC isVersionOf "http://identifiers.org/go/GO:0016310"
+  Dephosphorylation_of_APC isVersionOf "http://identifiers.org/go/GO:0016311"
+  Synthesis_of_Securin isVersionOf "http://identifiers.org/ncit/C61408"
+  Degradation_of_Sec isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  Degradation_of_Sec_mediated_by_APC_P isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1809050001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000938"
+  model hasPart "http://identifiers.org/go/GO:0051726"
+  model hasTaxon "http://identifiers.org/taxonomy/10090"
+  model isDescribedBy "http://identifiers.org/doi/10.1016/j.bpj.2013.02.012"
+  model isDescribedBy "http://identifiers.org/pubmed/23528096"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2018-07-04T16:07:30Z"
+  model modified "2020-04-27T17:28:27Z"
+  model creator1.givenName "Ahmad"
+  model creator1.familyName "Zyoud"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "ahmad.azd@hotmail.com"
+  model creator2.givenName "Matthieu"
+  model creator2.familyName "MAIRE"
+  model creator2.organization "EMBL-EBI"
+  model creator2.email "matt.maire@free.fr"
+
+  // Notes:
+  model notes ```
+The eukaryotic cell cycle is characterized by alternating oscillations in the 
+activities of cyclin-dependent kinase (Cdk) and the anaphase-promoting complex (APC). 
+Successful completion of the cell cycle is dependent on the precise, temporally ordered 
+appearance of these activities. A modest level of Cdk activity is sufficient to initiate 
+DNA replication, but mitosis and APC activation require an elevated Cdk activity. 
+In present-day eukaryotes, this temporal order is provided by a complex network of 
+regulatory proteins that control both Cdk and APC activities via sharp thresholds, 
+bistability, and time delays. Using simple computational models, we show here that 
+these dynamical features of cell-cycle organization could emerge in a control system 
+driven by a single Cdk/cyclin complex and APC wired in a negative-feedback loop. 
+We show that ordered phosphorylation of cellular proteins could be explained by multisite 
+phosphorylation/dephosphorylation and competition of substrates for interconverting 
+kinase (Cdk) and phosphatase. In addition, the competition of APC substrates for 
+ubiquitylation can create and maintain sustained oscillations in cyclin levels. We 
+propose a sequence of models that gets closer and closer to a realistic model of 
+cell-cycle control in yeast. Since these models lack the elaborate control mechanisms 
+characteristic of modern eukaryotes, they suggest that bistability and time delay
+```
+end
+
+Gerard2013___Model_3___Embryonic_type_eukaryotic_Cell_Cycle_regulation_based_on_negative_feedback_between_Cdk_cyclin_and_APC_and_competitive_inhibition_between_Cdk_cyclin_and_securin_for_polyubiquitylation_1 is "Gerard2013 - Model 3 - Embryonic-type eukaryotic Cell Cycle regulation based on negative feedback between Cdk/cyclin and APC and competitive inhibition between Cdk/cyclin and securin for polyubiquitylation_1"

@@ -1,0 +1,229 @@
+// Created by libAntimony v3.2.0
+model *Swat2004_Mammalian_G1_S_Transition()
+
+  // Compartments and Species:
+  compartment cell;
+  species pRB in cell, pRBp in cell, E2F1 in cell, CycDi in cell, CycDa in cell;
+  species AP1 in cell, pRBpp in cell, CycEi in cell, CycEa in cell;
+
+  // Reactions:
+  pRB_synthesis:  => pRB; cell*k1*(E2F1/(Km1 + E2F1))*(J11/(J11 + pRB))*(J61/(J61 + pRBp));
+  pRB_phosphorylation: pRB => pRBp; cell*k16*pRB*CycDa;
+  pRBp_dephosphorylation: pRBp => pRB; cell*k61*pRBp;
+  pRB_degradation: pRB => ; cell*phi_pRB*pRB;
+  E2F1_synthesis:  => E2F1; cell*(kp + (k2*(a^2 + E2F1^2)/(Km2^2 + E2F1^2))*(J12/(J12 + pRB))*(J62/(J62 + pRBp)));
+  E2F1_degradation: E2F1 => ; cell*phi_E2F1*E2F1;
+  CycD_synthesis:  => CycDi; cell*(k3*AP1 + k23*E2F1*(J13/(J13 + pRB))*(J63/(J63 + pRBp)));
+  CycD_inibition: CycDa => CycDi; cell*k43*CycDa;
+  CycD_activation: CycDi => CycDa; cell*k34*CycDi*(CycDa/(Km4 + CycDa));
+  CycD_degradation: CycDi => ; cell*phi_CycDi*CycDi;
+  CycD_degradation2: CycDa => ; cell*phi_CycDa*CycDa;
+  AP1_synthesis:  => AP1; cell*(Fm + k25*E2F1*(J15/(J15 + pRB))*(J65/(J65 + pRBp)));
+  Ap1_degradation: AP1 => ; cell*phi_AP1*AP1;
+  pRBp_phosphorylation: pRBp => pRBpp; cell*k67*pRBp*CycEa;
+  pRBpp_dephosphorylation: pRBpp => pRBp; cell*k76*pRBpp;
+  pRBpp_degradation: pRBpp => ; cell*phi_pRBpp*pRBpp;
+  pRBp_degradation: pRBp => ; cell*phi_pRBp*pRBp;
+  CycE_synthesis:  => CycEi; cell*k28*E2F1*(J18/(J18 + pRB))*(J68/(J68 + pRBp));
+  CycE_activation: CycEi => CycEa; cell*k89*CycEi*CycEa/(Km9 + CycEa);
+  CycE_inibition: CycEa => CycEi; cell*k98*CycEa;
+  CycE_degradation: CycEi => ; cell*phi_CycEi*CycEi;
+  CycE_degradation2: CycEa => ; cell*phi_CycEa*CycEa;
+
+  // Species initializations:
+  pRB = 0.1;
+  pRBp = 0.1;
+  E2F1 = 0.1;
+  CycDi = 0.1;
+  CycDa = 0.1;
+  AP1 = 0.1;
+  pRBpp = 0.1;
+  CycEi = 0.1;
+  CycEa = 0.1;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  k1 = 1;
+  Km1 = 0.5;
+  J11 = 0.5;
+  J61 = 5;
+  k16 = 0.4;
+  k61 = 0.3;
+  phi_pRB = 0.005;
+  kp = 0.05;
+  k2 = 1.6;
+  a = 0.04;
+  Km2 = 4;
+  J12 = 5;
+  J62 = 8;
+  phi_E2F1 = 0.1;
+  k3 = 0.05;
+  k23 = 0.3;
+  J13 = 0.002;
+  J63 = 2;
+  k34 = 0.04;
+  Km4 = 0.3;
+  phi_CycDi = 0.023;
+  k43 = 0.01;
+  phi_CycDa = 0.03;
+  Fm = 0.005;
+  k25 = 0.9;
+  J15 = 0.001;
+  J65 = 6;
+  phi_AP1 = 0.01;
+  k67 = 0.7;
+  k76 = 0.1;
+  phi_pRBpp = 0.04;
+  phi_pRBp = 0.06;
+  k28 = 0.06;
+  J18 = 0.6;
+  J68 = 7;
+  k89 = 0.07;
+  Km9 = 0.005;
+  k98 = 0.01;
+  phi_CycEi = 0.06;
+  phi_CycEa = 0.05;
+
+  // Other declarations:
+  const cell, k1, Km1, J11, J61, k16, k61, phi_pRB, kp, k2, a, Km2, J12, J62;
+  const phi_E2F1, k3, k23, J13, J63, k34, Km4, phi_CycDi, k43, phi_CycDa;
+  const Fm, k25, J15, J65, phi_AP1, k67, k76, phi_pRBpp, phi_pRBp, k28, J18;
+  const J68, k89, Km9, k98, phi_CycEi, phi_CycEa;
+
+  // Unit definitions:
+  unit time_unit = dimensionless;
+  unit volume = dimensionless;
+  unit substance = dimensionless;
+
+  // Display Names:
+  time_unit is "norm. time";
+  volume is "norm. volume";
+  substance is "norm substance";
+  CycDi is "CycD/cdk4,6(i)";
+  CycDa is "CycD/cdk4,6(a)";
+  CycEi is "CycE/cdk2(i)";
+  CycEa is "CycEa/cdk2(a)";
+  pRB_synthesis is "pRB synthesis";
+  pRB_phosphorylation is "pRB phosphorylation";
+  pRBp_dephosphorylation is "pRBp dephosphorylation";
+  pRB_degradation is "pRB degradation";
+  E2F1_synthesis is "E2F1 synthesis";
+  E2F1_degradation is "E2F1 degradation";
+  CycD_synthesis is "CycD synthesis";
+  CycD_inibition is "CycD inibition";
+  CycD_activation is "CycD activation";
+  CycD_degradation is "CycD degradation";
+  CycD_degradation2 is "CycD degradation2";
+  AP1_synthesis is "AP1 synthesis";
+  Ap1_degradation is "Ap1 degradation";
+  pRBp_phosphorylation is "pRBp phosphorylation";
+  pRBpp_dephosphorylation is "pRBpp dephosphorylation";
+  pRBpp_degradation is "pRBpp degradation";
+  pRBp_degradation is "pRBp degradation";
+  CycE_synthesis is "CycE synthesis";
+  CycE_activation is "CycE activation";
+  CycE_inibition is "CycE inibition";
+  CycE_degradation is "CycE degradation";
+  CycE_degradation2 is "CycE degradation2";
+
+  // CV terms:
+  pRB isHomologTo "http://identifiers.org/uniprot/P06400"
+  pRBp isHomologTo "http://identifiers.org/uniprot/P06400"
+  E2F1 isHomologTo "http://identifiers.org/uniprot/Q01094"
+  CycDi hasPart "http://identifiers.org/uniprot/P30281",
+                "http://identifiers.org/uniprot/P11802",
+                "http://identifiers.org/uniprot/Q00534"
+  CycDa hasPart "http://identifiers.org/uniprot/Q00534",
+                "http://identifiers.org/uniprot/P11802",
+                "http://identifiers.org/uniprot/P30281"
+  AP1 isHomologTo "http://identifiers.org/uniprot/P01100"
+  pRBpp isHomologTo "http://identifiers.org/uniprot/P06400"
+  CycEi hasPart "http://identifiers.org/uniprot/P24864",
+                "http://identifiers.org/uniprot/O96020",
+                "http://identifiers.org/uniprot/P24941"
+  CycEa hasPart "http://identifiers.org/uniprot/P24864",
+                "http://identifiers.org/uniprot/O96020",
+                "http://identifiers.org/uniprot/P24941"
+  pRB_synthesis isVersionOf "http://identifiers.org/go/GO:0006412"
+  pRB_phosphorylation isVersionOf "http://identifiers.org/go/GO:0006468"
+  pRBp_dephosphorylation isVersionOf "http://identifiers.org/go/GO:0006470"
+  pRB_degradation isVersionOf "http://identifiers.org/go/GO:0030163"
+  E2F1_synthesis isVersionOf "http://identifiers.org/go/GO:0006412"
+  E2F1_degradation isVersionOf "http://identifiers.org/go/GO:0030163"
+  CycD_synthesis isVersionOf "http://identifiers.org/go/GO:0006412"
+  CycD_inibition isVersionOf "http://identifiers.org/go/GO:0031658"
+  CycD_activation isVersionOf "http://identifiers.org/go/GO:0031659"
+  CycD_degradation isVersionOf "http://identifiers.org/go/GO:0030163"
+  CycD_degradation2 isVersionOf "http://identifiers.org/go/GO:0030163"
+  AP1_synthesis isVersionOf "http://identifiers.org/go/GO:0006412"
+  Ap1_degradation isVersionOf "http://identifiers.org/go/GO:0030163"
+  pRBp_phosphorylation isVersionOf "http://identifiers.org/go/GO:0006468"
+  pRBpp_dephosphorylation isVersionOf "http://identifiers.org/go/GO:0006470"
+  pRBpp_degradation isVersionOf "http://identifiers.org/go/GO:0030163"
+  pRBp_degradation isVersionOf "http://identifiers.org/go/GO:0030163"
+  CycE_synthesis isVersionOf "http://identifiers.org/go/GO:0006412"
+  CycE_activation isVersionOf "http://identifiers.org/go/GO:0031659"
+  CycE_inibition isVersionOf "http://identifiers.org/go/GO:0031658"
+  CycE_degradation isVersionOf "http://identifiers.org/go/GO:0030163"
+  CycE_degradation2 isVersionOf "http://identifiers.org/go/GO:0030163"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL3897709120"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000228"
+  model publication "http://identifiers.org/pubmed/15231543"
+  model isPartOf "http://identifiers.org/reactome/REACT_1783"
+  model isVersionOf "http://identifiers.org/go/GO:0000083"
+  model hasTaxon "http://identifiers.org/taxonomy/40674"
+  model created "2009-08-17T14:15:15Z"
+  model modified "2012-08-09T16:28:08Z"
+  model creator1.givenName "Lukas"
+  model creator1.familyName "Endler"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "lukas@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+This is the extended model described the article: 
+**Bifurcation analysis of the regulatory modules of the mammalian G1/S transition.**
+
+Swat M, Kel A, Herzel H. *Bioinformatics* 2004 Jul 10;20(10):1506-11.
+PMID: [15231543](http://www.ncbi.nlm.nih.gov/pubmed/15231543) , doi: [10.1093/bioinformatics/bth110](http://dx.doi.org/10.1093/bioinformatics/bth110) 
+**Abstract:** 
+MOTIVATION: Mathematical models of the cell cycle can contribute to an
+understanding of its basic mechanisms. Modern simulation tools make the analysis
+of key components and their interactions very effective. This paper focuses on the
+role of small modules and feedbacks in the gene-protein network governing the G1/S
+transition in mammalian cells. Mutations in this network may lead to uncontrolled
+cell proliferation. Bifurcation analysis helps to identify the key components of
+this extremely complex interaction network. 
+RESULTS: We identify various positive and negative feedback loops in the
+network controlling the G1/S transition. It is shown that the positive feedback regulation
+of E2F1 and a double activator-inhibitor module can lead to bistability. Extensions
+of the core module preserve the essential features such as bistability. The complete
+model exhibits a transcritical bifurcation in addition to bistability. We relate
+these bifurcations to the cell cycle checkpoint and the G1/S phase transition point.
+Thus, core modules can explain major features of the complex G1/S network and have
+a robust decision taking function. 
+
+This model originates from BioModels Database: A Database of Annotated Published
+Models. It is copyright (c) 2005-2010 The BioModels Team. 
+To the extent possible under law, all copyright and related or neighbouring
+rights to this encoded model have been dedicated to the public domain worldwide.
+Please refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Creative Commons CC0") for more information. 
+
+In summary, you are entitled to use this encoded model in absolutely any manner you
+deem suitable, verbatim, or with modification, alone or embedded it in a larger context,
+redistribute it, commercially or not, in a restricted way or not.. 
+
+To cite BioModels Database, please use [Le Novère N., Bornstein B., Broicher A., Courtot M., Donizelli M., Dharuri H., Li L., Sauro H., Schilstra M., Shapiro B., Snoep J.L., Hucka M. (2006) BioModels Database: A Free, Centralized Database of Curated, Published, Quantitative Kinetic Models of Biochemical and Cellular Systems Nucleic Acids Res., 34: D689-D691.](http://www.pubmedcentral.nih.gov/articlerender.fcgi?tool=pubmed&pubmedid=16381960)
+```
+  pRB notes "retinoblastoma tumor suppressor protein"
+  pRBp notes "monophosphorlyated pRB"
+  E2F1 notes "dimers of E2F1-6 and DP1,2"
+  AP1 notes "c-Jun/Fos dimers"
+  pRBpp notes "diphosphorylated form of pRB"
+  Fm notes "mitogenic stimulation"
+end
+
+Swat2004_Mammalian_G1_S_Transition is "Swat2004_Mammalian_G1_S_Transition"

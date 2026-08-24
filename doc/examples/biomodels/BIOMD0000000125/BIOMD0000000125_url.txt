@@ -1,0 +1,120 @@
+// Created by libAntimony v3.2.0
+model *model_0000001()
+
+  // Compartments and Species:
+  compartment compartment_0000001;
+  species x1 in compartment_0000001, x2 in compartment_0000001, y2 in compartment_0000001;
+  species x0 in compartment_0000001, y0 in compartment_0000001;
+
+  // Reactions:
+  reaction_0000001:  => x1; compartment_0000001*a1*x0;
+  reaction_0000002:  => x1; compartment_0000001*b1*y0;
+  reaction_0000003:  => x2; compartment_0000001*x1*a2;
+  reaction_0000004:  => y2; compartment_0000001*x1*b2;
+  reaction_0000005: x1 => ; compartment_0000001*d1*x1;
+  reaction_0000006: x2 => ; compartment_0000001*d2x*x2;
+  reaction_0000007: y2 => ; compartment_0000001*d2y*y2;
+
+  // Events:
+  event_0000001: at time > 1: x0 = 0;
+
+  // Species initializations:
+  x1 = 0;
+  x2 = 0;
+  y2 = 0;
+  x0 = 1;
+  y0 = 0;
+
+  // Compartment initializations:
+  compartment_0000001 = 1;
+
+  // Variable initializations:
+  a1 = 2;
+  a2 = 2;
+  b1 = 1;
+  b2 = 1;
+  d1 = 1;
+  d2x = 1;
+  d2y = 1;
+
+  // Other declarations:
+  const compartment_0000001, a1, a2, b1, b2, d1, d2x, d2y;
+
+  // Display Names:
+  compartment_0000001 is "cell";
+  reaction_0000001 is "x0 activates x1";
+  reaction_0000002 is "y0 activates x1";
+  reaction_0000003 is "x1 activates x2";
+  reaction_0000004 is "x1 activates y2";
+  reaction_0000005 is "x1 deactivation";
+  reaction_0000006 is "x2 deactivation";
+  reaction_0000007 is "y2 deactivation";
+
+  // CV terms:
+  compartment_0000001 isVersionOf "http://identifiers.org/go/GO:0005623"
+  x1 hasVersion "http://identifiers.org/interpro/IPR003527"
+  x0 hasVersion "http://identifiers.org/interpro/IPR006210"
+  y0 hasVersion "http://identifiers.org/interpro/IPR002072"
+  reaction_0000001 isVersionOf "http://identifiers.org/go/GO:0032147",
+                               "http://identifiers.org/go/GO:0045860"
+  reaction_0000002 isVersionOf "http://identifiers.org/go/GO:0032147",
+                               "http://identifiers.org/go/GO:0045860"
+  reaction_0000003 isVersionOf "http://identifiers.org/go/GO:0032147",
+                               "http://identifiers.org/go/GO:0045860"
+  reaction_0000004 isVersionOf "http://identifiers.org/go/GO:0032147",
+                               "http://identifiers.org/go/GO:0045860"
+  reaction_0000005 isVersionOf "http://identifiers.org/go/GO:0006469"
+  reaction_0000006 isVersionOf "http://identifiers.org/go/GO:0006469"
+  reaction_0000007 isVersionOf "http://identifiers.org/go/GO:0006469"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL2451230486"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000125"
+  model publication "http://identifiers.org/pubmed/16729058"
+  model isVersionOf "http://identifiers.org/go/GO:0030159",
+                    "http://identifiers.org/go/GO:0051716",
+                    "http://identifiers.org/go/GO:0007166"
+  model hasVersion "http://identifiers.org/kegg.pathway/map04010",
+                   "http://identifiers.org/go/GO:0000165"
+  model hasTaxon "http://identifiers.org/taxonomy/33154"
+  model created "2007-06-04T15:33:08Z"
+  model modified "2012-07-05T16:31:20Z"
+  model creator1.givenName "Enuo"
+  model creator1.familyName "He"
+  model creator1.organization "BNMC"
+  model creator1.email "enuo@caltech.edu"
+
+  // Notes:
+  model notes ```
+This model according to the paper *A Theoretical Framework for Specificity in
+Cell Signalling* The model is "basic architecture" of Figure2A.
+Figure2B, Figure2C have been reproduced by MathSBML. The reproduced figures are slightly
+different from the original ones in the paper, the peak of [x2] is higher than 1
+and is not decreasing dramatically when [x0]=0. And I think maybe the author shift
+the or scale the curves. 
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Creative Commons CC0") for more information. 
+
+In summary, you are entitled to use this encoded model in absolutely any manner you
+deem suitable, verbatim, or with modification, alone or embedded it in a larger context,
+redistribute it, commercially or not, in a restricted way or not.
+
+
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+  x0 notes ```
+x0(t) and y0(t) are the signal functions. The authors assume the network
+only receives one of the two signals at a time. Thus, if x0(t) is postive for some
+duration of time, then y0(t) is identically zero, and visa versa.
+```
+  y0 notes ```
+x0(t) and y0(t) are the signal functions. The authors assume the network
+only receives one of the two signals at a time. Thus, if y0(t) is postive for some
+duration of time, then x0(t) is identically zero, and visa versa.
+```
+  event_0000001 notes "x0 signaling applied as square pulses of magnitude 1 and duration 1."
+end
+
+model_0000001 is "Komarova2005_TheoreticalFramework_BasicArchitecture"

@@ -1,0 +1,203 @@
+// Created by libAntimony v3.2.0
+model *Saad2017___immune_checkpoint_and_BCG_in_superficial_bladder_cancer()
+
+  // Compartments and Species:
+  compartment bladder_cancer_tme;
+  species C in bladder_cancer_tme, E in bladder_cancer_tme, B in bladder_cancer_tme;
+  species P in bladder_cancer_tme;
+
+  // Reactions:
+  cancer_growth:  => C; bladder_cancer_tme*(r*C);
+  cancer_killing: C => ; bladder_cancer_tme*(alpha1*E*C/(P + k));
+  effector_activation_by_cancer:  => E; bladder_cancer_tme*(a1*C*E/(P + k));
+  effector_activation_by_BCG:  => E; bladder_cancer_tme*(a2*B*E/(P + k));
+  effector_depletion_by_cancer: E => ; bladder_cancer_tme*(alpha2*E*C);
+  effector_death: E => ; bladder_cancer_tme*u1*E;
+  BCG_source__therapy:  => B; bladder_cancer_tme*b;
+  BCG_death: B => ; bladder_cancer_tme*u2*B;
+  BCG_killing_by_effector: B => ; bladder_cancer_tme*(alpha3*E*B);
+  checkpoint_source:  => P; bladder_cancer_tme*delta;
+  checkpoint_decay: P => ; bladder_cancer_tme*u3*P;
+
+  // Species initializations:
+  C = 100000;
+  C has substance_per_volume;
+  E = 0;
+  E has substance_per_volume;
+  B = 0;
+  B has substance_per_volume;
+  P = 0;
+  P has substance_per_volume;
+
+  // Compartment initializations:
+  bladder_cancer_tme = 1;
+  bladder_cancer_tme has volume;
+
+  // Variable initializations:
+  r = 0.0033;
+  r has unit_0;
+  alpha1 = 1.1e-07;
+  alpha1 has unit_0;
+  k = 2000;
+  k has unit_1;
+  a1 = 0.25;
+  a1 has unit_0;
+  a2 = 0.052;
+  a2 has unit_0;
+  delta = 151932;
+  delta has unit_0;
+  alpha2 = 3.45e-10;
+  alpha2 has unit_0;
+  u1 = 0.041;
+  u1 has unit_0;
+  u2 = 0.1;
+  u2 has unit_0;
+  b = 650000;
+  b has unit_0;
+  alpha3 = 1.25e-07;
+  alpha3 has unit_0;
+  u3 = 166.32;
+  u3 has unit_0;
+
+  // Other declarations:
+  const bladder_cancer_tme, r, alpha1, k, a1, a2, delta, alpha2, u1, u2, b;
+  const alpha3, u3;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / 86400e-1 second;
+  unit unit_1 = 1 / dimensionless^-0;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1/d";
+  unit_1 is "1";
+  bladder_cancer_tme is "bladder cancer tme";
+  cancer_growth is "cancer growth";
+  cancer_killing is "cancer killing";
+  effector_activation_by_cancer is "effector activation by cancer";
+  effector_activation_by_BCG is "effector activation by BCG";
+  effector_depletion_by_cancer is "effector depletion by cancer";
+  effector_death is "effector death";
+  BCG_source__therapy is "BCG source (therapy)";
+  BCG_death is "BCG death";
+  BCG_killing_by_effector is "BCG killing by effector";
+  checkpoint_source is "checkpoint source";
+  checkpoint_decay is "checkpoint decay";
+
+  // CV terms:
+  bladder_cancer_tme isVersionOf "http://identifiers.org/ncit/C2901"
+  bladder_cancer_tme isVersionOf "http://identifiers.org/ncit/C94498"
+  C isVersionOf "http://identifiers.org/bto/BTO:0000362"
+  C isVersionOf "http://identifiers.org/cl/CL:0001064"
+  E isVersionOf "http://identifiers.org/ncit/C28241"
+  B identity "http://identifiers.org/ncit/C85546"
+  P hasVersion "http://identifiers.org/uniprot/P01137"
+  P hasVersion "http://identifiers.org/uniprot/P16410"
+  P hasVersion "http://identifiers.org/uniprot/Q15116"
+  r isVersionOf "http://identifiers.org/sbo/SBO:0000610"
+  alpha1 isVersionOf "http://identifiers.org/ncit/C94967"
+  k isVersionOf "http://identifiers.org/sbo/SBO:0000261"
+  a1 isVersionOf "http://identifiers.org/sbo/SBO:0000610"
+  a2 isVersionOf "http://identifiers.org/sbo/SBO:0000610"
+  delta isVersionOf "http://identifiers.org/sbo/SBO:0000610"
+  alpha2 isVersionOf "http://identifiers.org/ncit/C94967"
+  u1 isVersionOf "http://identifiers.org/ncit/C94967"
+  u2 isVersionOf "http://identifiers.org/ncit/C94967"
+  b isVersionOf "http://identifiers.org/ncit/C41185"
+  alpha3 isVersionOf "http://identifiers.org/ncit/C94967"
+  u3 isVersionOf "http://identifiers.org/ncit/C94967"
+  cancer_growth isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  cancer_growth isVersionOf "http://identifiers.org/go/GO:0008283"
+  cancer_killing isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  cancer_killing isVersionOf "http://identifiers.org/go/GO:0001909"
+  cancer_killing isVersionOf "http://identifiers.org/go/GO:0008219"
+  effector_activation_by_cancer isVersionOf "http://identifiers.org/go/GO:0070661"
+  effector_activation_by_cancer isVersionOf "http://identifiers.org/go/GO:0008283"
+  effector_activation_by_cancer isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  effector_activation_by_BCG isVersionOf "http://identifiers.org/go/GO:0070661"
+  effector_activation_by_BCG isVersionOf "http://identifiers.org/go/GO:0008283"
+  effector_activation_by_BCG isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  effector_depletion_by_cancer isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  effector_depletion_by_cancer isVersionOf "http://identifiers.org/go/GO:0008219"
+  effector_death isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  effector_death isVersionOf "http://identifiers.org/go/GO:0008219"
+  BCG_source__therapy isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  BCG_source__therapy isVersionOf "http://identifiers.org/go/GO:0008283"
+  BCG_death isVersionOf "http://identifiers.org/go/GO:0008219"
+  BCG_death isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  BCG_killing_by_effector isVersionOf "http://identifiers.org/go/GO:0001909"
+  BCG_killing_by_effector isVersionOf "http://identifiers.org/go/GO:0008219"
+  BCG_killing_by_effector isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  checkpoint_source isVersionOf "http://identifiers.org/ncit/C18103"
+  checkpoint_source isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  checkpoint_decay isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  checkpoint_decay isVersionOf "http://identifiers.org/ncit/C18104"
+
+  model publication "http://identifiers.org/pubmed/29312460"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1907100001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000746"
+  model isVersionOf "http://identifiers.org/go/GO:0002418"
+  model occursIn "http://identifiers.org/bto/BTO:0001418"
+  model hasProperty "http://identifiers.org/efo/0000292"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000046"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model created "2019-07-10T09:16:36Z"
+  model modified "2019-07-10T09:16:36Z"
+  model creator1.givenName "Jinghao"
+  model creator1.familyName "Men"
+  model creator1.organization "University of Cambridge"
+  model creator1.email "jm2187@cam.ac.uk"
+
+  // Notes:
+  model notes ```
+The paper describes a model on the Dynamics of Immune Checkpoints, Immune System,
+and BCG in the Treatment of Superficial Bladder Cancer. Created by COPASI 4.25 (Build
+207) This model is described in the article: Dynamics of Immune Checkpoints, Immune
+System, and BCG in the Treatment of Superficial Bladder CancerFarouk Tijjani Saad,
+Evren Hincal, and Bilgen KaymakamzadeComputational and Mathematical Methods in Medicine,
+vol. 2017, no. 3573082Abstract: This paper aims to study the dynamics of immune suppressors/checkpoints,
+immune system, and BCG in the treatment of superficial bladder cancer. Programmed
+cell death protein-1 (PD-1), cytotoxic T-lymphocyte-associated antigen 4 (CTLA4),
+and transforming growth factor-beta (TGF-b) are some of the examples of immune suppressors/checkpoints.
+They are responsible for deactivating the immune system and enhancing immunological
+tolerance. Moreover, they categorically downregulate and suppress the immune system
+by preventing and blocking the activation of T-cells, which in turn decreases autoimmunity
+and enhances self- tolerance. In cancer immunotherapy, the immune checkpoints/suppressors
+prevent and block the immune cells from attacking, spreading, and killing the cancer
+cells, which leads to cancer growth and development. We formulate a mathematical
+model that studies three possible dynamics of the treatment and establish the effects
+of the immune checkpoints on the immune system and the treatment at large. Although
+the effect cannot be seen explicitly in the analysis of the model, we show it by
+numerical simulations.This model is hosted on BioModels Database and identified by:
+MODEL1907100001.To cite BioModels Database, please use: BioModels Database: An enhanced,
+curated and annotated resource for published quantitative kinetic models. To the
+extent possible under law, all copyright and related or neighbouring rights to this
+encoded model have been dedicated to the public domain worldwide. Please refer to
+CC0 Public Domain Dedication for more information.
+```
+  C notes "cancer cell"
+  E notes "effector cell"
+  B notes "BCG"
+  P notes "immune checkpoint/suppressor"
+  r notes "Tumor growth rate"
+  alpha1 notes "Rate of elimination of cancer cells by effector cells"
+  k notes "Inhibitory parameter"
+  a1 notes "Recruitment rate of effector cells"
+  a2 notes "Activation rate of effector cells by the BCG"
+  delta notes "Internal production of immune checkpoints"
+  alpha2 notes "Elimination rate of effector cells by cancer cells"
+  u1 notes "Degradation rate of effector cells"
+  u2 notes "Rate of BCG decay"
+  b notes "Bioeffective concentration of BCG"
+  alpha3 notes "Destruction of BCG by effector cells"
+  u3 notes "Degradation rate of immune checkpoints"
+end
+
+Saad2017___immune_checkpoint_and_BCG_in_superficial_bladder_cancer is "Saad2017 - immune checkpoint and BCG in superficial bladder cancer"

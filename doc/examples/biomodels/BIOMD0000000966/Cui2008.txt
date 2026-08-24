@@ -1,0 +1,343 @@
+// Created by libAntimony v3.2.0
+
+// Warnings from automatic translation:
+//    Layout error in model:  unable to draw an arc between the species 'Zn_2' and the reaction 'Formation_of_the_Zn4Zur_complex': 'Zn_2' is not a participant in that reaction.
+
+model *Cui2008___in_vitro_transcriptional_response_of_zinc_homeostasis_system_in_Escherichia_coli()
+
+  // Compartments and Species:
+  compartment Cell;
+  species Py in Cell, Py1 in Cell, Dw in Cell, Rw in Cell, Qw1 in Cell, Qw2 in Cell;
+  species Zn_2 in Cell;
+
+  // Reactions:
+  Formation_of_the_Zn4Zur_complex: Py => Py1; Cell*(r3*Py*Zn^2);
+  Dissociation_of_Zn4Zur_complex: Py1 => Zn_2 + Py; Cell*r4*Py1;
+  Formation_of_DNA_binding_complex: Dw + Py1 => Qw2; Cell*(k1a*Dw*Py1);
+  Disassociation_of_DNA_binding_complex: Qw2 => Dw + Py1; Cell*k_1*Qw2;
+  Formation_of_transcription_initiation_complex: Dw + Rw => Qw1; Cell*(k2*Dw*Rw);
+  Disassociation_of_transcription_initiation_complex: Qw1 => Dw + Rw; Cell*k_2*Qw1;
+
+  // Species initializations:
+  Py = 25;
+  Py has unit_3;
+  Py1 = 0;
+  Py1 has unit_3;
+  Dw = 4;
+  Dw has unit_3;
+  Rw = 50;
+  Rw has unit_3;
+  Qw1 = 0;
+  Qw1 has unit_3;
+  Qw2 = 0;
+  Qw2 has unit_3;
+  Zn_2 = 1;
+  Zn_2 has unit_3;
+
+  // Compartment initializations:
+  Cell = 1;
+  Cell has volume;
+
+  // Variable initializations:
+  r3 = 44100000000;
+  r3 has unit_0;
+  r4 = 0.009;
+  r4 has unit_1;
+  k_1 = 0.9;
+  k_1 has unit_1;
+  k2 = 0.02;
+  k2 has unit_2;
+  k_2 = 0.3;
+  k_2 has unit_1;
+  Zn = 1e-05;
+  Zn has unit_3;
+  k1a = 1;
+  k1a has unit_2;
+
+  // Other declarations:
+  const Cell, r3, r4, k_1, k2, k_2, Zn, k1a;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = litre;
+  unit time_unit = 60 second;
+  unit substance = 1e-9 mole;
+  unit unit_0 = litre^2 / ((1e-9 mole)^2 * second);
+  unit unit_1 = 1 / second;
+  unit unit_2 = litre / (1e-9 mole * second);
+  unit unit_3 = 1e-9 mole / litre;
+  unit extent = substance;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "(l)²/((nmol)²*s)";
+  unit_1 is "1/s";
+  unit_2 is "l/(nmol*s)";
+  unit_3 is "nmol/l";
+  Zn_2 is "Zn^2";
+  Formation_of_the_Zn4Zur_complex is "Formation of the Zn4Zur complex";
+  Dissociation_of_Zn4Zur_complex is "Dissociation of Zn4Zur complex";
+  Formation_of_DNA_binding_complex is "Formation of DNA binding complex";
+  Disassociation_of_DNA_binding_complex is "Disassociation of DNA binding complex";
+  Formation_of_transcription_initiation_complex is "Formation of transcription initiation complex";
+  Disassociation_of_transcription_initiation_complex is "Disassociation of transcription initiation complex";
+
+  // General layout options
+  model.layout = on
+  model.layout.size = {135.25, 88.11}
+  model.layout.background = "#FFFFFFFF"
+
+  // Species layout defaults
+  species.color = "#a0e0a030"
+
+  // Reaction layout defaults
+  reaction.lineColor = "#000000A0"
+  reaction.lineWidth = 3
+  reaction.fontColor = "#000000A0"
+
+  // Compartment layout defaults
+  compartment.lineColor = "#E69600B0"
+  compartment.lineWidth = 7
+  compartment.fontColor = "#E69600B0"
+  compartment.fontStyle = normal
+
+  // Individual element layout information
+  Py.position = {1018.84, 258.91}
+  Py.size = {36, 28}
+  Py.font = verdana
+  Py.fontColor = black
+  Py.fontSize = 12
+  Py1.position = {974.63, 409.7}
+  Py1.size = {52, 28}
+  Py1.font = verdana
+  Py1.fontColor = black
+  Py1.fontSize = 12
+  Dw.position = {924.81, 549.3}
+  Dw.size = {36, 28}
+  Dw.font = verdana
+  Dw.fontColor = black
+  Dw.fontSize = 12
+  Rw.position = {778.1, 559.29}
+  Rw.size = {36, 28}
+  Rw.font = verdana
+  Rw.fontColor = black
+  Rw.fontSize = 12
+  Qw1.position = {881.98, 663.54}
+  Qw1.size = {52, 28}
+  Qw1.font = verdana
+  Qw1.fontColor = black
+  Qw1.fontSize = 12
+  Qw2.position = {1036.26, 551.32}
+  Qw2.size = {52, 28}
+  Qw2.font = verdana
+  Qw2.fontColor = black
+  Qw2.fontSize = 12
+  Zn_2.position = {934.53, 263.21}
+  Zn_2.size = {68, 28}
+  Zn_2.font = verdana
+  Zn_2.fontColor = black
+  Zn_2.fontSize = 12
+  Formation_of_the_Zn4Zur_complex.position = {1032.74, 344.43}
+  Formation_of_the_Zn4Zur_complex.Py.rxn_end = {1032.85, 336.99}
+  Formation_of_the_Zn4Zur_complex.Py.species_end = {1035.38, 291.91}
+  Formation_of_the_Zn4Zur_complex.Py.b1 = {1033.05, 322.13}
+  Formation_of_the_Zn4Zur_complex.Py.b2 = {1034.26, 303.3}
+  Formation_of_the_Zn4Zur_complex.Zn_2.rxn_end = {1032.85, 336.99}
+  Formation_of_the_Zn4Zur_complex.Zn_2.species_end = {995.82, 296.21}
+  Formation_of_the_Zn4Zur_complex.Zn_2.b1 = {1033.05, 322.13}
+  Formation_of_the_Zn4Zur_complex.Zn_2.b2 = {1014.49, 305.46}
+  Formation_of_the_Zn4Zur_complex.Py1.rxn_end = {1032.64, 351.86}
+  Formation_of_the_Zn4Zur_complex.Py1.species_end = {1011.24, 404.7}
+  Formation_of_the_Zn4Zur_complex.Py1.b1 = {1032.44, 366.72}
+  Formation_of_the_Zn4Zur_complex.Py1.b2 = {1021.79, 389.43}
+  Dissociation_of_Zn4Zur_complex.position = {974.98, 344.85}
+  Dissociation_of_Zn4Zur_complex.Py1.rxn_end = {974.88, 352.28}
+  Dissociation_of_Zn4Zur_complex.Py1.species_end = {991.91, 404.7}
+  Dissociation_of_Zn4Zur_complex.Py1.b1 = {974.68, 367.15}
+  Dissociation_of_Zn4Zur_complex.Py1.b2 = {983.24, 389.64}
+  Dissociation_of_Zn4Zur_complex.Zn_2.rxn_end = {975.09, 337.42}
+  Dissociation_of_Zn4Zur_complex.Zn_2.species_end = {971.36, 296.21}
+  Dissociation_of_Zn4Zur_complex.Zn_2.b1 = {975.29, 322.55}
+  Dissociation_of_Zn4Zur_complex.Zn_2.b2 = {973.38, 305.67}
+  Dissociation_of_Zn4Zur_complex.Py.rxn_end = {975.09, 337.42}
+  Dissociation_of_Zn4Zur_complex.Py.species_end = {1013.84, 291.46}
+  Dissociation_of_Zn4Zur_complex.Py.b1 = {975.29, 322.55}
+  Dissociation_of_Zn4Zur_complex.Py.b2 = {994.62, 303.29}
+  Formation_of_DNA_binding_complex.position = {1026.49, 505.63}
+  Formation_of_DNA_binding_complex.Dw.rxn_end = {1021.96, 502.03}
+  Formation_of_DNA_binding_complex.Dw.species_end = {962.27, 544.3}
+  Formation_of_DNA_binding_complex.Dw.b1 = {1012.91, 494.85}
+  Formation_of_DNA_binding_complex.Dw.b2 = {985.32, 517.78}
+  Formation_of_DNA_binding_complex.Py1.rxn_end = {1021.96, 502.03}
+  Formation_of_DNA_binding_complex.Py1.species_end = {1003.91, 442.7}
+  Formation_of_DNA_binding_complex.Py1.b1 = {1012.91, 494.85}
+  Formation_of_DNA_binding_complex.Py1.b2 = {1006.14, 466.98}
+  Formation_of_DNA_binding_complex.Qw2.rxn_end = {1031.01, 509.22}
+  Formation_of_DNA_binding_complex.Qw2.species_end = {1053.64, 546.32}
+  Formation_of_DNA_binding_complex.Qw2.b1 = {1040.07, 516.4}
+  Formation_of_DNA_binding_complex.Qw2.b2 = {1049.12, 533.16}
+  Disassociation_of_DNA_binding_complex.position = {984.52, 505.66}
+  Disassociation_of_DNA_binding_complex.Qw2.rxn_end = {989.05, 509.26}
+  Disassociation_of_DNA_binding_complex.Qw2.species_end = {1037.32, 546.32}
+  Disassociation_of_DNA_binding_complex.Qw2.b1 = {998.1, 516.44}
+  Disassociation_of_DNA_binding_complex.Qw2.b2 = {1019.98, 533.18}
+  Disassociation_of_DNA_binding_complex.Dw.rxn_end = {980, 502.07}
+  Disassociation_of_DNA_binding_complex.Dw.species_end = {950.62, 544.3}
+  Disassociation_of_DNA_binding_complex.Dw.b1 = {970.94, 494.89}
+  Disassociation_of_DNA_binding_complex.Dw.b2 = {958.52, 517.8}
+  Disassociation_of_DNA_binding_complex.Py1.rxn_end = {980, 502.07}
+  Disassociation_of_DNA_binding_complex.Py1.species_end = {992.71, 442.7}
+  Disassociation_of_DNA_binding_complex.Py1.b1 = {970.94, 494.89}
+  Disassociation_of_DNA_binding_complex.Py1.b2 = {979.56, 467}
+  Formation_of_transcription_initiation_complex.position = {861.18, 624.98}
+  Formation_of_transcription_initiation_complex.Dw.rxn_end = {859.25, 619.52}
+  Formation_of_transcription_initiation_complex.Dw.species_end = {919.81, 575.22}
+  Formation_of_transcription_initiation_complex.Dw.b1 = {855.4, 608.6}
+  Formation_of_transcription_initiation_complex.Dw.b2 = {886.64, 589.18}
+  Formation_of_transcription_initiation_complex.Rw.rxn_end = {859.25, 619.52}
+  Formation_of_transcription_initiation_complex.Rw.species_end = {819.1, 586.99}
+  Formation_of_transcription_initiation_complex.Rw.b1 = {855.4, 608.6}
+  Formation_of_transcription_initiation_complex.Rw.b2 = {836.29, 595.06}
+  Formation_of_transcription_initiation_complex.Qw1.rxn_end = {863.1, 630.44}
+  Formation_of_transcription_initiation_complex.Qw1.species_end = {886.43, 658.54}
+  Formation_of_transcription_initiation_complex.Qw1.b1 = {866.96, 641.37}
+  Formation_of_transcription_initiation_complex.Qw1.b2 = {877.66, 652.68}
+  Disassociation_of_transcription_initiation_complex.position = {875.82, 585.36}
+  Disassociation_of_transcription_initiation_complex.Qw1.rxn_end = {877.74, 590.82}
+  Disassociation_of_transcription_initiation_complex.Qw1.species_end = {901.36, 658.54}
+  Disassociation_of_transcription_initiation_complex.Qw1.b1 = {881.6, 601.75}
+  Disassociation_of_transcription_initiation_complex.Qw1.b2 = {892.44, 632.87}
+  Disassociation_of_transcription_initiation_complex.Dw.rxn_end = {873.89, 579.9}
+  Disassociation_of_transcription_initiation_complex.Dw.species_end = {919.81, 565.09}
+  Disassociation_of_transcription_initiation_complex.Dw.b1 = {870.04, 568.97}
+  Disassociation_of_transcription_initiation_complex.Dw.b2 = {893.96, 564.3}
+  Disassociation_of_transcription_initiation_complex.Rw.rxn_end = {873.89, 579.9}
+  Disassociation_of_transcription_initiation_complex.Rw.species_end = {819.1, 571.95}
+  Disassociation_of_transcription_initiation_complex.Rw.b1 = {870.04, 568.97}
+  Disassociation_of_transcription_initiation_complex.Rw.b2 = {843.61, 567.73}
+
+  // CV terms:
+  Cell hasProperty "http://identifiers.org/ncit/C48694"
+  Py hasInstance "http://identifiers.org/ncit/C19398",
+                 "http://identifiers.org/ncit/C948"
+  Py hasInstance "http://identifiers.org/uniprot/P0AC51"
+  Py hasProperty "http://identifiers.org/ncit/C19398"
+  Py1 hasInstance "http://identifiers.org/ncit/C19398",
+                  "http://identifiers.org/ncit/C948"
+  Py1 hasInstance "http://identifiers.org/uniprot/P0AC51"
+  Py1 isPartOf "http://identifiers.org/ncit/C19398"
+  Dw origin "http://identifiers.org/ecogene/EG13132"
+  Rw identity "http://identifiers.org/ncit/C20076"
+  Qw1 origin "http://identifiers.org/ecogene/EG13132"
+  Qw1 hasInstance "http://identifiers.org/go/GO:0006352"
+  Qw2 hasInstance "http://identifiers.org/ncit/C19398",
+                  "http://identifiers.org/uniprot/P0AC51"
+  Qw2 hasInstance "http://identifiers.org/ncit/C449"
+  Qw2 hasInstance "http://identifiers.org/ncit/C948"
+  Qw2 isPartOf "http://identifiers.org/ncit/C19398"
+  Zn_2 identity "http://identifiers.org/chebi/CHEBI:29105"
+  r3 hasProperty "http://identifiers.org/sbo/SBO:0000153"
+  r4 hasProperty "http://identifiers.org/sbo/SBO:0000156"
+  k_1 hasProperty "http://identifiers.org/sbo/SBO:0000156"
+  k2 hasProperty "http://identifiers.org/sbo/SBO:0000153"
+  k_2 hasProperty "http://identifiers.org/sbo/SBO:0000156"
+  k1a hasProperty "http://identifiers.org/sbo/SBO:0000153"
+  Formation_of_the_Zn4Zur_complex hasProperty "http://identifiers.org/ncit/C82888"
+  Dissociation_of_Zn4Zur_complex hasProperty "http://identifiers.org/ncit/C82888"
+  Formation_of_DNA_binding_complex hasProperty "http://identifiers.org/ncit/C82888"
+  Disassociation_of_DNA_binding_complex hasProperty "http://identifiers.org/ncit/C82888"
+  Formation_of_transcription_initiation_complex hasProperty "http://identifiers.org/ncit/C82888"
+  Disassociation_of_transcription_initiation_complex hasProperty "http://identifiers.org/ncit/C82888"
+
+  model publication "http://identifiers.org/pubmed/18950480"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1172501439",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000966"
+  model identity "http://identifiers.org/biomodels.db/MODEL1172501439"
+  model isVersionOf "http://identifiers.org/go/GO:0055069"
+  model isVersionOf "http://identifiers.org/mamo/MAMO_0000046"
+  model hasTaxon "http://identifiers.org/taxonomy/562"
+  model hasProperty "http://identifiers.org/ncit/C19077",
+                    "http://identifiers.org/mamo/MAMO_0000046"
+
+  // Other annotations:
+  Cell created "2019-12-03T16:39:02Z"
+  Cell modified "2019-12-03T16:39:02Z"
+  Cell creator1.givenName "Sankalpa"
+  Cell creator1.familyName "Venkatraghavan"
+  Cell creator1.organization "Indian Institute of Technology Madras"
+  Cell creator1.email "sankalpavenkatraghavan@gmail.com"
+  model created "2019-12-03T16:38:24Z"
+  model modified "2019-12-03T16:38:24Z"
+  model creator1.givenName "Prashant"
+  model creator1.familyName "Govindarajan"
+  model creator1.organization "Indian Institute of Technology Madras"
+  model creator1.email "bs17b011@smail.iitm.ac.in"
+  model creator2.givenName "Sankalpa"
+  model creator2.familyName "Venkatraghavan"
+  model creator2.organization "Indian Institute of Technology Madras"
+  model creator2.email "sankalpavenkatraghavan@gmail.com"
+  model creator3.givenName "Sahana"
+  model creator3.familyName "Gangadharan"
+  model creator3.organization "Indian Institute of Technology Madras"
+  model creator3.email "be17b038@smail.iitm.ac.in"
+  model creator4.givenName "Sowmya Manojna"
+  model creator4.familyName "Narasimha"
+  model creator4.organization "Indian Institute of Technology Madras"
+  model creator4.email "sowmyamanojna@smail.iitm.ac.in"
+  model creator5.givenName "Sathvik"
+  model creator5.familyName "Anantakrishnan"
+  model creator5.organization "Indian Institute of Technology Madras"
+  model creator5.email "sathvikanantakrishnan@smail.iitm.ac.in"
+
+  // Notes:
+  model notes ```
+BACKGROUND: The zinc homeostasis system in Escherichia coli is one of the most intensively
+studied prokaryotic zinc homeostasis systems. Its underlying regulatory machine consists
+of repression on zinc influx through ZnuABC by Zur (Zn2+ uptake regulator) and activation
+on zinc efflux via ZntA by ZntR (a zinc-responsive regulator). Although these transcriptional
+regulations seem to be well characterized, and there is an abundance of detailed
+in vitro experimental data available, as yet there is no mathematical model to help
+interpret these data. To our knowledge, the work described here is the first attempt
+to use a mathematical model to simulate these regulatory relations and to help explain
+the in vitro experimental data. RESULTS: We develop a unified mathematical model
+consisting of 14 reactions to simulate the in vitro transcriptional response of the
+zinc homeostasis system in E. coli. Firstly, we simulate the in vitro Zur-DNA interaction
+by using two of these reactions, which are expressed as 4 ordinary differential equations
+(ODEs). By imposing the conservation restraints and solving the relevant steady state
+equations, we find that the simulated sigmoidal curve matches the corresponding experimental
+data. Secondly, by numerically solving the ODEs for simulating the Zur and ZntR run-off
+transcription experiments, and depicting the simulated concentrations of zntA and
+znuC transcripts as a function of free zinc concentration, we find that the simulated
+curves fit the corresponding in vitro experimental data. Moreover, we also perform
+simulations, after taking into consideration the competitive effects of ZntR with
+the zinc buffer, and depict the simulated concentration of zntA transcripts as a
+function of the total ZntR concentration, both in the presence and absence of Zn(II).
+The obtained simulation results are in general agreement with the corresponding experimental
+data. CONCLUSION: Simulation results show that our model can quantitatively reproduce
+the results of several of the in vitro experiments conducted by Outten CE and her
+colleagues. Our model provides a detailed insight into the dynamics of the regulatory
+system and also provides a general framework for simulating in vitro metal-binding
+and transcription experiments and interpreting the relevant experimental data.
+```
+  Py notes "Zn2Zur Complex"
+  Py1 notes "Zn4Zur Complex"
+  Dw notes "free znuC DNA"
+  Rw notes "RNA polymerase"
+  Qw1 notes "znuC transcription initiation complex"
+  Qw2 notes "Zn4Zur-DNA complex"
+  Zn_2 notes "Zinc 2+"
+  Formation_of_the_Zn4Zur_complex notes "Zn2Zur (Py) + Zn2+ -> Zn4Zur (Py1)"
+  Dissociation_of_Zn4Zur_complex notes "Zn4Zur (Py1) -> Zn2Zur (Py) + Zn2+"
+  Formation_of_DNA_binding_complex notes "free znuC DNA (Dw) + Zn4Zur (Py1) -> Zn4Zur-DNA complex (Qw2)"
+  Formation_of_transcription_initiation_complex notes ```
+Rna polymerase (Rw) binds to the free Znu DNA (Dw) to form the transcription initiation 
+complex (Qw1)
+```
+  Disassociation_of_transcription_initiation_complex notes ```
+The transcription initiation complex (Qw1) disassociates to form Rna polymerase 
+(Rw) binds to the free Znu DNA (Dw)
+```
+end
+
+Cui2008___in_vitro_transcriptional_response_of_zinc_homeostasis_system_in_Escherichia_coli is "Cui2008 - in vitro transcriptional response of zinc homeostasis system in Escherichia coli"
