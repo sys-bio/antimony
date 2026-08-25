@@ -1,16 +1,15 @@
 To use these Windows executables:
-   * QTAntimony is a simple editor that can convert models between Antimony,
-     SBML, and CellML.  It can read Antimony, SBML, and CellML files, and you
-     can edit any and translate between them.  Do note that if you convert one 
-     format to the other, modify the latter, then translate it back, you will 
-     often lose information in the process--any annotation or unit definitions
-     in the SBML file will not survive the round-trip, for example.  However, 
-     it should be enough to get started with the language and start to 
-     experiment.
+   * QTAntimony is a simple editor that can convert models between Antimony and
+     SBML.  It can read Antimony and SBML files, and you can edit any and
+     translate between them.  Do note that if you convert one format to the
+     other, modify the latter, then translate it back, you will often lose
+     information in the process--any annotation or unit definitions in the SBML
+     file will not survive the round-trip, for example.  However, it should be
+     enough to get started with the language and start to experiment.
 
    * While specific translators still exist, 'sbtranslate' can be used to
      convert between formats that Antimony understands.  The precompiled
-     binary can be used to convert files between Antimony, SBML, and CellML.
+     binary can be used to convert files between Antimony and SBML.
 
      You must use at least one of the following options to set the output
      format of this translator:
@@ -20,7 +19,6 @@ To use these Windows executables:
         -o sbml-comp: Output all models in a single SBML file using the
                        'comp' package.
         -o allsbml  : Output each model and submodel as a separate SBML model
-        -o cellml   : Output the 'main' model as CellML
 
      Each file will be exported to the desired format separately.  Multiple
      output formats are possible; a separate '-o [format]' is needed for each
