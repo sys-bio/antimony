@@ -521,3 +521,34 @@ jobs:
         with:
           name: sbml-test-suite-results
           path: ${{ runner.workspace }}/sbml-test-suite-results.xml
+
+      # Round-trips every curated BioModels model (sys-bio/temp-biomodels)
+      # through Antimony and compares tellurium's SED-ML execution of the
+      # original vs. round-tripped SBML. Shares the wheel installed for the
+      # SBML Test Suite step above; only needs its own requirements on top.
+      - name: Install BioModels round-trip test requirements
+        if: matrix.platform.name == 'macos-14-release'
+        shell: bash
+        run: python${{ matrix.python_version }} -m pip install -r "${GITHUB_WORKSPACE}/src/bindings/python/biomodels_roundtrip/requirements.txt"
+
+      - name: Fetch BioModels SBML/SED-ML files
+        if: matrix.platform.name == 'macos-14-release'
+        shell: bash
+        run: |
+          python${{ matrix.python_version }} "${GITHUB_WORKSPACE}/src/bindings/python/biomodels_roundtrip/fetch_biomodels.py" \
+            --dest "${RUNNER_WORKSPACE}/biomodels"
+
+      - name: Run BioModels round-trip tests
+        if: matrix.platform.name == 'macos-14-release'
+        shell: bash
+        run: |
+          cd "${GITHUB_WORKSPACE}/src/bindings/python/biomodels_roundtrip"
+          python${{ matrix.python_version }} -m pytest -ra --junitxml="${RUNNER_WORKSPACE}/biomodels-roundtrip-results.xml" \
+            --biomodels-dir="${RUNNER_WORKSPACE}/biomodels"
+
+      - name: Upload BioModels round-trip results
+        if: always() && matrix.platform.name == 'macos-14-release'
+        uses: actions/upload-artifact@main
+        with:
+          name: biomodels-roundtrip-results
+          path: ${{ runner.workspace }}/biomodels-roundtrip-results.xml
