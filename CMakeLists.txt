@@ -63,6 +63,13 @@ INCLUDE(CPack)
 
 SET(LIBANTIMONY_VERSION_STRING "v${LIBANTIMONY_VERSION_MAJOR}.${LIBANTIMONY_VERSION_MINOR}${LIBANTIMONY_VERSION_PATCH}${LIBANTIMONY_VERSION_RELEASE}")
 
+# Bare version (no leading 'v'), written to a file so tooling outside of
+# CMake itself -- e.g. the GitHub Actions step that packages
+# win32/antimonyInstaller.iss via 'iscc /DMyAppVersion=...' -- can pick up
+# the current version without parsing this file.
+SET(LIBANTIMONY_VERSION_STRING_BARE "${LIBANTIMONY_VERSION_MAJOR}.${LIBANTIMONY_VERSION_MINOR}${LIBANTIMONY_VERSION_PATCH}${LIBANTIMONY_VERSION_RELEASE}")
+file(WRITE "${CMAKE_BINARY_DIR}/antimony_version.txt" "${LIBANTIMONY_VERSION_STRING_BARE}")
+
 
 option(BUILD_SHARED_LIBS  "Build shared library (Set to OFF to build static libraries)" ON)
 set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, options are: None (CMAKE_CXX_FLAGS or CMAKE_C_FLAGS are used), Debug, Release, RelWithDebInfo, MinSizeRel" )
@@ -660,6 +667,9 @@ if (WITH_QTANTIMONY)
         set(MACOSX_BUNDLE_ICON_FILE ${QTANTIMONY_SRC_DIR}antimony.icns)
         install(TARGETS QTAntimony DESTINATION bin)
         install(FILES ${QTANTIMONY_SRC_DIR}antimony.ico ${QTANTIMONY_SRC_DIR}antimony_ico.png DESTINATION bin)
+        if (WIN32)
+          install(FILES ${CMAKE_SOURCE_DIR}/win32/README.txt DESTINATION bin)
+        endif (WIN32)
 
         set_target_properties(QTAntimony PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/QTAntimony/$<0:>")
 

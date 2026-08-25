@@ -308,6 +308,38 @@ jobs:
           cd ${RUNNER_WORKSPACE}/build-antimony
           ctest -C ${{ matrix.platform.build_type }} --output-on-failure --verbose --extra-verbose --progress
 
+      # Only the windows-latest-release leg has a QTAntimony.exe built with
+      # the exact Qt version (5.15.2, see 'Install Qt' above) win32/antimonyInstaller.iss
+      # expects, so the installer is only packaged there. InstallDir points
+      # iscc at this leg's actual install prefix (see 'Configure CMake for
+      # Antimony' above) rather than the '..\install-release' sibling
+      # directory the .iss defaults to for local/manual runs.
+      - name: Install Inno Setup
+        if: matrix.platform.name == 'windows-latest-release'
+        shell: bash
+        run: choco install innosetup --no-progress -y
+
+      - name: Build QTAntimony installer
+        if: matrix.platform.name == 'windows-latest-release'
+        shell: bash
+        # MSYS_NO_PATHCONV=1: Git Bash auto-converts any argument that looks
+        # like a POSIX path (starts with '/') into a Windows path before
+        # handing it to a native .exe. iscc's /D switches start with '/' and
+        # aren't paths at all, so without this they get mangled and iscc
+        # fails with 'You may not specify more than one script filename.'
+        run: |
+          cd ${RUNNER_WORKSPACE}/build-antimony
+          ANTIMONY_VERSION=$(cat antimony_version.txt)
+          cd ${GITHUB_WORKSPACE}/win32
+          MSYS_NO_PATHCONV=1 iscc "/DInstallDir=${RUNNER_WORKSPACE}/install-antimony" "/DMyAppVersion=${ANTIMONY_VERSION}" antimonyInstaller.iss
+
+      - name: Upload QTAntimony installer
+        if: matrix.platform.name == 'windows-latest-release'
+        uses: actions/upload-artifact@main
+        with:
+          name: antimonyInstaller-windows
+          path: win32/antimonyInstaller_v*.exe
+
       # Valgrind is Linux-only (no Windows support, weak/no Apple Silicon
       # support), so this only runs on one leg of the matrix rather than
       # across every platform/config combination. 
