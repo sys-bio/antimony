@@ -188,6 +188,26 @@ TEST(AntimonyBasic, test_initialAmount_txt)
   compareStringTranslation("species x in C=3/C", "initialAmount.xml");
 }
 
+TEST(AntimonyBasic, test_initialAmountNeg_txt)
+{
+  compareStringTranslation("species x in C=-3/C", "initialAmountNeg.xml");
+}
+
+TEST(AntimonyBasic, test_initialAmountNeg)
+{
+  compareFileTranslation("initialAmountNeg");
+}
+
+TEST(AntimonyBasic, test_initialConcentrationNeg_txt)
+{
+  compareStringTranslation("substanceOnly species y in C=-4*C", "initialConcentrationNeg.xml");
+}
+
+TEST(AntimonyBasic, test_initialConcentrationNeg)
+{
+  compareFileTranslation("initialConcentrationNeg");
+}
+
 TEST(AntimonyBasic, test_initialAssignment)
 {
   compareFileTranslation("initialAssignment");

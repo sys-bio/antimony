@@ -1230,16 +1230,10 @@ void Module::LoadSBML(Model* sbml)
   for (unsigned int comp = 0; comp < sbml->getNumCompartments(); comp++) {
     const Compartment* compartment = sbml->getCompartment(comp);
     sbmlname = getNameFromSBMLObject(compartment, "_C");
-    if (compartment->getSBOTerm() == 410) {
-      //The 'implicit compartment'
-      defaultcompartments.insert(sbmlname);
-      continue;
-    }
-    if (sbmlname == DEFAULTCOMP && compartment->getConstant() && compartment->isSetSize() && compartment->getSize() == 1.0) {
+    if (compartment->getSBOTerm() == 410 && sbmlname == DEFAULTCOMP && compartment->getConstant() && compartment->isSetSize() && compartment->getSize() == 1.0) {
       defaultcompartments.insert(sbmlname);
       continue;
       //LS NOTE: we assume this was created with Antimony, and ignore the auto-generated 'default compartment'
-      // Later versions of antimony now set the SBO terms to 410, so we might not need this code very long.
     }
     Variable* var = AddOrFindVariable(&sbmlname);
     var->PopulateCVTerms((SBase*)compartment);

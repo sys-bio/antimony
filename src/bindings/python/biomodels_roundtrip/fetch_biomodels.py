@@ -20,6 +20,9 @@ import os
 import subprocess
 import xml.etree.ElementTree as ET
 
+MANIFEST_NS = "http://identifiers.org/combine.specifications/omex-manifest"
+SBML_FORMAT = "http://identifiers.org/combine.specifications/sbml"
+SEDML_FORMAT = "http://identifiers.org/combine.specifications/sed-ml"
 SBML_FORMAT_SUFFIX = "/sbml"
 SEDML_FORMAT_SUFFIX = "/sed-ml"
 

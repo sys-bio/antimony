@@ -341,7 +341,7 @@ double Formula::ToAmountOrConcentration() const
     return GetReal(m_components[0].first);
   }
   else if (m_components.size() == 4) {
-    return GetReal(m_components[1].first);
+    return -GetReal(m_components[1].first);
   }
   assert(false);
   return 0;
