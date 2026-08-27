@@ -1986,6 +1986,10 @@ void Module::LoadSBML(Model* sbml)
   //Finally, fix the fact that 'time' used to be OK in functions (l2v1), but is no longer (l2v2).
   g_registry.FixTimeInFunctions();
   LoadLayout(sbml);
+
+  if (m_defaultCompartments.size() > 1) {
+    g_registry.AddWarning("Multiple default compartments discovered and merged into a single 'default_compartment' compartment.  If they were intended to be distinguished from each other, remove the SBO:0000410 annotations.");
+  }
 }
 
 void Module::fixFBCStrictIfNeeded(SBMLDocument* doc)

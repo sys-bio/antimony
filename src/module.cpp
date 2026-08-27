@@ -288,6 +288,7 @@ Variable* Module::AddOrFindVariable(const string* name)
         newvar->SetFormula(&form);
         newvar->SetSBOTerm(410);
         newvar->SetIsConst(true);
+        m_defaultCompartments.erase(*name);
     }
     if (*name == DEFAULTCOMP) {
         m_explicitDefaultCompartment = true;
