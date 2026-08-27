@@ -1226,12 +1226,11 @@ void Module::LoadSBML(Model* sbml)
   }
 
   //Compartments
-  set<string> defaultcompartments;
   for (unsigned int comp = 0; comp < sbml->getNumCompartments(); comp++) {
     const Compartment* compartment = sbml->getCompartment(comp);
     sbmlname = getNameFromSBMLObject(compartment, "_C");
-    if (compartment->getSBOTerm() == 410 && sbmlname == DEFAULTCOMP && compartment->getConstant() && compartment->isSetSize() && compartment->getSize() == 1.0) {
-      defaultcompartments.insert(sbmlname);
+    if (compartment->getSBOTerm() == 410 && compartment->getConstant() && compartment->isSetSize() && compartment->getSize() == 1.0) {
+      m_defaultCompartments.insert(sbmlname);
       continue;
       //LS NOTE: we assume this was created with Antimony, and ignore the auto-generated 'default compartment'
     }
@@ -1275,7 +1274,7 @@ void Module::LoadSBML(Model* sbml)
       double amount = species->getInitialAmount();
       formula.AddNum(amount);
       if (!species->getHasOnlySubstanceUnits()) {
-        if (amount != 0 && defaultcompartments.find(species->getCompartment()) == defaultcompartments.end()) {
+        if (amount != 0 && m_defaultCompartments.find(species->getCompartment()) == m_defaultCompartments.end()) {
           Variable* compartment = AddOrFindVariable(&(species->getCompartment()));
           Formula* compform = compartment->GetFormula();
           formula.AddMathThing('/');
@@ -1288,7 +1287,7 @@ void Module::LoadSBML(Model* sbml)
       double conc = species->getInitialConcentration();
       formula.AddNum(conc);
       if (species->getHasOnlySubstanceUnits()) {
-        if (conc != 0 && defaultcompartments.find(species->getCompartment()) == defaultcompartments.end()) {
+        if (conc != 0 && m_defaultCompartments.find(species->getCompartment()) == m_defaultCompartments.end()) {
           Variable* compartment = AddOrFindVariable(&(species->getCompartment()));
           Formula* compform = compartment->GetFormula();
           formula.AddMathThing('*');
@@ -1304,7 +1303,7 @@ void Module::LoadSBML(Model* sbml)
       var->SetIsConst(true);
     }
     Variable* compartment = NULL;
-    if (defaultcompartments.find(species->getCompartment()) == defaultcompartments.end()) {
+    if (m_defaultCompartments.find(species->getCompartment()) == m_defaultCompartments.end()) {
       compartment = AddOrFindVariable(&(species->getCompartment()));
       compartment->SetType(varCompartment);
       var->SetCompartment(compartment);
@@ -1706,7 +1705,7 @@ void Module::LoadSBML(Model* sbml)
       }
     }
     if (reaction->isSetCompartment()) {
-      if (defaultcompartments.find(reaction->getCompartment()) == defaultcompartments.end()) {
+      if (m_defaultCompartments.find(reaction->getCompartment()) == m_defaultCompartments.end()) {
         Variable* compartment = AddOrFindVariable(&(reaction->getCompartment()));
         compartment->SetType(varCompartment);
         arxn->SetCompartment(compartment);

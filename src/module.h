@@ -85,6 +85,7 @@ private:
   int m_sbmlversion;
 
   bool m_explicitDefaultCompartment;
+  std::set<std::string> m_defaultCompartments;
 
   //Caching for speed:
   std::map<std::vector<std::string>, Variable*> m_varmap;
