@@ -1,0 +1,19 @@
+//------------------------------------------
+//The combined Model
+// The bistable switch has two proteins - y and z
+// z also interacts with the oscillator to disrupt it
+// the FFN can be used to change the state of the bistable switch
+//------------------------------------------
+// EFFECT: the duration of signal x determines whether the oscillator turns on
+//------------------------------------------
+
+import "bistable.txt"
+import "ring_oscillator.txt"
+import "feed_forward_network.txt"
+
+model combined_model(x)
+   A: bistable(y,z)
+   B: ringoscil(z)
+   C: ffn(x, y)
+end
+

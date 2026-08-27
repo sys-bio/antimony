@@ -1,0 +1,18 @@
+//------------------------------------------
+//Feed Forward Network (Coherent Type 1)
+//The FFN is meant to reduce noise -- the signal x has to last long enough
+//if x is short lived, then g2 does not receive the signal
+//------------------------------------------
+model ffn(x, s2)
+   gene g1, g2;         
+   species x, s1, s2;
+   
+   g1: -> s1; x/(1 + x)         //gene 1 makes protein s1
+   s1 -> ; k1*s1                //s1 degrades
+   g2: -> s2; x*s1/(1 + x + s1) //gene 2 makes protein s2
+   s2 -> ; k2*s2		//s2 degrades
+
+   k0 = 0.1
+   k1 = 0.1
+   k2 = 0.1*k0
+end
