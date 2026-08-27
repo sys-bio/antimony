@@ -6,7 +6,7 @@
 # whereas the .htm/.docx/.rst outputs have no such extra dependency.
 
 execute_process(
-    COMMAND ${PANDOC_EXECUTABLE} AntimonyTutorial.md -o AntimonyTutorial.pdf
+    COMMAND ${PANDOC_EXECUTABLE} --toc -s --lua-filter=pandoc_strip_toc_marker.lua AntimonyTutorial.md -o AntimonyTutorial.pdf
     WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
     RESULT_VARIABLE PANDOC_PDF_RESULT
     ERROR_VARIABLE PANDOC_PDF_ERROR

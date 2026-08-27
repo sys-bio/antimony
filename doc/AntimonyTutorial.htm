@@ -1,4 +1,287 @@
-<h1 id="antimony-reference">Antimony Reference</h1>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>AntimonyTutorial</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+</head>
+<body>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#antimony-tutorial" id="toc-antimony-tutorial">Antimony
+Reference</a>
+<ul>
+<li><a href="#background" id="toc-background">Background</a></li>
+<li><a href="#change-log" id="toc-change-log">Change Log</a></li>
+<li><a href="#introduction-and-basics"
+id="toc-introduction-and-basics">Introduction and Basics</a></li>
+<li><a href="#model-elements" id="toc-model-elements">Model Elements</a>
+<ul>
+<li><a href="#comments" id="toc-comments">Comments</a></li>
+<li><a href="#reactions" id="toc-reactions">Reactions</a></li>
+<li><a href="#rate-laws-and-initializing-values"
+id="toc-rate-laws-and-initializing-values">Rate Laws and Initializing
+Values</a></li>
+<li><a href="#defining-basic-elements"
+id="toc-defining-basic-elements">Defining basic elements</a></li>
+<li><a href="#boundary-species" id="toc-boundary-species">Boundary
+Species</a></li>
+<li><a href="#compartments" id="toc-compartments">Compartments</a></li>
+<li><a href="#assignments" id="toc-assignments">Assignments</a></li>
+<li><a href="#events-basic" id="toc-events-basic">Events
+(basic)</a></li>
+<li><a href="#function-definitions"
+id="toc-function-definitions">Function Definitions</a></li>
+<li><a href="#annotation" id="toc-annotation">Annotation</a></li>
+<li><a href="#modular-models" id="toc-modular-models">Modular
+Models</a></li>
+<li><a href="#importing-files" id="toc-importing-files">Importing
+Files</a></li>
+</ul></li>
+<li><a href="#signals" id="toc-signals">Signals</a>
+<ul>
+<li><a href="#step-input" id="toc-step-input">Step Input</a></li>
+<li><a href="#ramp" id="toc-ramp">Ramp</a></li>
+<li><a href="#ramp-then-stop" id="toc-ramp-then-stop">Ramp then
+Stop</a></li>
+<li><a href="#pulse" id="toc-pulse">Pulse</a></li>
+<li><a href="#sinusoidal-input" id="toc-sinusoidal-input">Sinusoidal
+Input</a></li>
+</ul></li>
+<li><a href="#language-reference" id="toc-language-reference">Language
+Reference</a>
+<ul>
+<li><a href="#species-and-reactions"
+id="toc-species-and-reactions">Species and Reactions</a></li>
+<li><a href="#substance-only-species"
+id="toc-substance-only-species">Substance-only species</a></li>
+<li><a href="#named-stoichiometries"
+id="toc-named-stoichiometries">Named stoichiometries</a></li>
+<li><a href="#modules" id="toc-modules">Modules</a></li>
+<li><a href="#constant-and-variable-symbols"
+id="toc-constant-and-variable-symbols">Constant and variable
+symbols</a></li>
+<li><a href="#compartments-1"
+id="toc-compartments-1">Compartments</a></li>
+<li><a href="#events" id="toc-events">Events</a></li>
+<li><a href="#assignment-rules" id="toc-assignment-rules">Assignment
+Rules</a></li>
+<li><a href="#rate-rules" id="toc-rate-rules">Rate Rules</a></li>
+<li><a href="#algebraic-rules" id="toc-algebraic-rules">Algebraic
+Rules</a></li>
+<li><a href="#display-names" id="toc-display-names">Display
+Names</a></li>
+<li><a href="#units" id="toc-units">Units</a></li>
+<li><a href="#dna-strands" id="toc-dna-strands">DNA Strands</a></li>
+<li><a href="#interactions" id="toc-interactions">Interactions</a></li>
+<li><a href="#predefined-function-definitions"
+id="toc-predefined-function-definitions">Predefined Function
+Definitions</a></li>
+<li><a href="#uncertainty-information"
+id="toc-uncertainty-information">Uncertainty Information</a></li>
+<li><a href="#sbo-and-cvterms" id="toc-sbo-and-cvterms">SBO and
+cvterms</a></li>
+<li><a href="#flux-balance-constraints"
+id="toc-flux-balance-constraints">Flux Balance Constraints</a></li>
+<li><a href="#other-files" id="toc-other-files">Other files</a></li>
+<li><a href="#importing-and-exporting-antimony-models"
+id="toc-importing-and-exporting-antimony-models">Importing and Exporting
+Antimony Models</a></li>
+</ul></li>
+<li><a href="#layout-and-render" id="toc-layout-and-render">Layout and
+Render</a>
+<ul>
+<li><a href="#basic-layout-information"
+id="toc-basic-layout-information">Basic layout information</a></li>
+<li><a href="#positioning-model-elements"
+id="toc-positioning-model-elements">Positioning model elements</a></li>
+<li><a href="#sizing-model-elements"
+id="toc-sizing-model-elements">Sizing model elements</a></li>
+<li><a href="#reaction-arcs" id="toc-reaction-arcs">Reaction
+arcs</a></li>
+<li><a href="#reaction-source-or-sinks"
+id="toc-reaction-source-or-sinks">Reaction source or sinks</a></li>
+<li><a href="#species-alias-nodes" id="toc-species-alias-nodes">Species
+alias nodes</a></li>
+<li><a href="#general-styles" id="toc-general-styles">General
+styles</a></li>
+<li><a href="#style-settings" id="toc-style-settings">Style
+settings</a></li>
+<li><a href="#a-full-example" id="toc-a-full-example">A full
+example</a></li>
+</ul></li>
+<li><a href="#appendix-converting-between-sbml-and-antimony"
+id="toc-appendix-converting-between-sbml-and-antimony">Appendix:
+Converting between SBML and Antimony</a></li>
+<li><a href="#further-reading" id="toc-further-reading">Further
+Reading</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="antimony-tutorial">Antimony Reference</h1>
 <p>Different authoring tools have different ways of allowing the user to
 build models, and these approaches have individual advantages and
 disadvantages. In Antimony (and in Tellurium, which uses it), the main
@@ -8,89 +291,6 @@ and a shorthand form that allows editing without the structure and
 overhead of working with XML directly. This guide will show you the
 intricacies of working with Antimony. More information can be found at
 https://github.com/sys-bio/antimony/.</p>
-<h2 id="table-of-contents">Table of contents</h2>
-<ul>
-<li><a href="#background">Background</a></li>
-<li><a href="#change-log">Change Log</a></li>
-<li><a href="#introduction-and-basics">Introduction</a></li>
-<li><a href="#model-elements">Model Elements</a>
-<ul>
-<li><a href="#comments">Comments</a></li>
-<li><a href="#reactions">Reactions</a></li>
-<li><a href="#rate-laws-and-initializing-values">Rate Laws and
-Initializing Values</a></li>
-<li><a href="#defining-basic-elements">Defining basic elements</a></li>
-<li><a href="#boundary-species">Boundary Species</a></li>
-<li><a href="#compartments">Compartments</a></li>
-<li><a href="#assignments">Assignments</a>
-<ul>
-<li><a href="#assignments-in-time">Assignments in Time</a></li>
-<li><a href="#piecewise-assignments">Piecewise Assignments</a></li>
-</ul></li>
-<li><a href="#events-basic">Events</a></li>
-<li><a href="#function-definitions">Function Definitions</a></li>
-<li><a href="#annotation">Annotation</a></li>
-<li><a href="#modular-models">Modular Models</a></li>
-<li><a href="#importing-files">Importing Files</a></li>
-</ul></li>
-<li><a href="#signals">Signals</a>
-<ul>
-<li><a href="#step-input">Step input</a></li>
-<li><a href="#ramp">Ramp</a></li>
-<li><a href="#ramp-then-stop">Ramp then stop</a></li>
-<li><a href="#pulse">Pulse</a></li>
-<li><a href="#sinusoidal-input">Sinusoidal input</a></li>
-</ul></li>
-<li><a href="#language-reference">Language Reference</a>
-<ul>
-<li><a href="#species-and-reactions">Species and Reactions</a>
-<ul>
-<li><a href="#substance-only-species">Substance-only species</a></li>
-</ul></li>
-<li><a href="#modules">Modules</a>
-<ul>
-<li><a href="#module-conversion-factors">Module conversion
-factors</a></li>
-<li><a href="#submodel-deletions">Submodel deletions</a></li>
-</ul></li>
-<li><a href="#constant-and-variable-symbols">Constant and variable
-symbols</a></li>
-<li><a href="#compartments">Compartments</a></li>
-<li><a href="#events">Events</a></li>
-<li><a href="#assignment-rules">Assignment Rules</a></li>
-<li><a href="#rate-rules">Rate Rules</a></li>
-<li><a href="#display-names">Display Names</a></li>
-<li><a href="#units">Units</a></li>
-<li><a href="#dna-strands">DNA Strands</a></li>
-<li><a href="#interactions">Interactions</a></li>
-<li><a href="#predefined-function-definitions">Predefined Function
-Definitions</a></li>
-<li><a href="#uncertainty-information">Uncertainty Information</a></li>
-<li><a href="#sbo-and-cvterms">SBO and CVTerms</a></li>
-<li><a href="#flux-balance-constraints">Flux Balance
-Constraints</a></li>
-<li><a href="#other-files">Other files</a></li>
-<li><a href="#importing-and-exporting-antimony-models">Importing and
-Exporting Antimony Models</a></li>
-</ul></li>
-<li><a href="#layout-and-render">Layout and Render</a>
-<ul>
-<li><a href="#basic-layout-information">Basic layout
-information</a></li>
-<li><a href="#positioning-model-elements">Positioning model
-elements</a></li>
-<li><a href="#sizing-model-elements">Sizing model elements</a></li>
-<li><a href="#reaction-arcs">Reaction arcs</a></li>
-<li><a href="#reaction-source-or-sinks">Reaction source or
-sinks</a></li>
-<li><a href="#species-alias-nodes">Species alias nodes</a></li>
-<li><a href="#general-styles">General styles</a></li>
-<li><a href="#style-settings">Style settings</a></li>
-</ul></li>
-<li><a href="#appendix-converting-between-sbml-and-antimony">Appendix:
-Converting between SBML and Antimony</a></li>
-<li><a href="#further-reading">Further reading</a></li>
-</ul>
 <h2 id="background">Background</h2>
 <p>Since the advent of SBML (the Systems Biology Markup Language)
 computer models of biological systems have been able to be transferred
@@ -125,12 +325,13 @@ interfaces.</li>
 <h2 id="change-log">Change Log</h2>
 <p>The 3.2 release cleaned up the build system, increased efficiency,
 and fixed numerous bugs, mostly discovered through converting SBML Test
-Suite models to Antimony and back to SBML, and ensuring that a
-simulation of the round-tripped model matched a simulation of the
+Suite models and BioModels to Antimony and back to SBML, and ensuring
+that a simulation of the round-tripped model matched a simulation of the
 original model. The entirety of the SBML Test Suite (with the exception
-of ‘fast’ reactions, now deprecated in SBML) now successfully round-trip
-through Antimony without loss of information (though some things may
-change structurally for hierarchical models).</p>
+of ‘fast’ reactions, now deprecated in SBML) now successfully
+round-trips through Antimony without loss of information (though some
+things may change structurally for hierarchical models), as do most
+BioModels.</p>
 <p>The 3.1 release changed FBC support to version 3 of that package,
 changing how FBC constraints were translated to SBML (but not changing
 how they were declared in Antimony), and adding support for gene
@@ -481,8 +682,8 @@ cycle is reset.</p>
   S2 = 0
   k1 = 0.5
 end</code></pre>
-<p>For more advanced usage of events, see <a
-href="#events">below</a>.</p>
+<p>For more advanced usage of events, see
+<a href="#events">below</a>.</p>
 <h3 id="function-definitions">Function Definitions</h3>
 <p>You may create user-defined functions in a similar fashion to the way
 you create modules, and then use these functions in Antimony equations.
@@ -2141,3 +2342,5 @@ href="http://sbml.org/Documents/Specifications/SBML_Level_3/Packages/comp">comp
 package</a>.</li>
 <li><a href="AntimonyTutorial.pdf">This manual</a> in PDF format.</li>
 </ul>
+</body>
+</html>

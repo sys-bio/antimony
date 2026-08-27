@@ -762,9 +762,9 @@ if(PANDOC_EXECUTABLE)
     # may skip it (no PDF engine available) without failing the build.
     add_custom_command(
         OUTPUT ${ANTIMONY_TUTORIAL_HTM} ${ANTIMONY_TUTORIAL_DOCX} ${ANTIMONY_TUTORIAL_RST}
-        COMMAND ${PANDOC_EXECUTABLE} AntimonyTutorial.md -o AntimonyTutorial.htm
-        COMMAND ${PANDOC_EXECUTABLE} AntimonyTutorial.md -o AntimonyTutorial.docx
-        COMMAND ${PANDOC_EXECUTABLE} AntimonyTutorial.md -o AntimonyTutorial.rst
+        COMMAND ${PANDOC_EXECUTABLE} --toc -s --lua-filter=pandoc_strip_toc_marker.lua AntimonyTutorial.md -o AntimonyTutorial.htm
+        COMMAND ${PANDOC_EXECUTABLE} --toc -s --lua-filter=pandoc_strip_toc_marker.lua AntimonyTutorial.md -o AntimonyTutorial.docx
+        COMMAND ${PANDOC_EXECUTABLE} --toc -s --lua-filter=pandoc_strip_toc_marker.lua AntimonyTutorial.md -o AntimonyTutorial.rst
         COMMAND ${CMAKE_COMMAND} -DPANDOC_EXECUTABLE=${PANDOC_EXECUTABLE} -P ${CMAKE_SOURCE_DIR}/doc/pandoc_optional_pdf.cmake
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/doc
         DEPENDS ${ANTIMONY_TUTORIAL_MD}
@@ -864,6 +864,7 @@ if(DOXYGEN_FOUND)
     add_custom_command(TARGET docs POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E echo "Regenerating Doxygen API docs from antimony_api.h, enums.h, and doc/antimony-*.txt"
         COMMAND ${DOXYGEN_EXECUTABLE} ${ANTIMONY_DOXYFILE_FOR_DOXYGEN}
+        COMMAND ${CMAKE_COMMAND} -DDOC_DIR=${CMAKE_SOURCE_DIR}/doc -DOUTPUT_DIR=${ANTIMONY_DOXYGEN_OUTPUT} -P ${CMAKE_SOURCE_DIR}/doc/copy_docs_assets.cmake
         COMMAND ${CMAKE_COMMAND} -E echo "-- Regenerated Doxygen API docs"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/doc
         COMMENT "Regenerating Doxygen API docs from antimony_api.h, enums.h, and doc/antimony-*.txt"

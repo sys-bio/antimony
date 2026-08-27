@@ -1,4 +1,4 @@
-Antimony Reference
+Antimony Reference {#antimony-tutorial}
 ==================
 
 Different authoring tools have different ways of allowing the user to
@@ -11,63 +11,7 @@ This guide will show you the intricacies of working with Antimony.
 More information can be found at https://github.com/sys-bio/antimony/.
 
 
-## Table of contents
-  - [Background](#background)
-  - [Change Log](#change-log)
-  - [Introduction](#introduction-and-basics)
-  - [Model Elements](#model-elements)
-    - [Comments](#comments)
-    - [Reactions](#reactions)
-    - [Rate Laws and Initializing Values](#rate-laws-and-initializing-values)
-    - [Defining basic elements](#defining-basic-elements)
-    - [Boundary Species](#boundary-species)
-    - [Compartments](#compartments)
-    - [Assignments](#assignments)
-      - [Assignments in Time](#assignments-in-time)
-      - [Piecewise Assignments](#piecewise-assignments)
-    - [Events](#events-basic)
-    - [Function Definitions](#function-definitions)
-    - [Annotation](#annotation)
-    - [Modular Models](#modular-models)
-    - [Importing Files](#importing-files)
-  - [Signals](#signals)
-    - [Step input](#step-input)
-    - [Ramp](#ramp)
-    - [Ramp then stop](#ramp-then-stop)
-    - [Pulse](#pulse)
-    - [Sinusoidal input](#sinusoidal-input)
-  - [Language Reference](#language-reference)
-    - [Species and Reactions](#species-and-reactions)
-        - [Substance-only species](#substance-only-species)
-    - [Modules](#modules)
-      - [Module conversion factors](#module-conversion-factors)
-      - [Submodel deletions](#submodel-deletions)
-    - [Constant and variable symbols](#constant-and-variable-symbols)
-    - [Compartments](#compartments)
-    - [Events](#events)
-    - [Assignment Rules](#assignment-rules)
-    - [Rate Rules](#rate-rules)
-    - [Display Names](#display-names)
-    - [Units](#units)
-    - [DNA Strands](#dna-strands)
-    - [Interactions](#interactions)
-    - [Predefined Function Definitions](#predefined-function-definitions)
-    - [Uncertainty Information](#uncertainty-information)
-    - [SBO and CVTerms](#sbo-and-cvterms)
-    - [Flux Balance Constraints](#flux-balance-constraints)
-    - [Other files](#other-files)
-    - [Importing and Exporting Antimony Models](#importing-and-exporting-antimony-models)
-  - [Layout and Render](#layout-and-render)
-    - [Basic layout information](#basic-layout-information)
-    - [Positioning model elements](#positioning-model-elements)
-    - [Sizing model elements](#sizing-model-elements)
-    - [Reaction arcs](#reaction-arcs)
-    - [Reaction source or sinks](#reaction-source-or-sinks)
-    - [Species alias nodes](#species-alias-nodes)
-    - [General styles](#general-styles)
-    - [Style settings](#style-settings)
-  - [Appendix: Converting between SBML and Antimony](#appendix-converting-between-sbml-and-antimony)
-  - [Further reading](#further-reading)
+[TOC]
 
 ## Background
 
@@ -104,7 +48,7 @@ be used in other contexts as well. Its main features include:
 
 ## Change Log
 
-The 3.2 release cleaned up the build system, increased efficiency, and fixed numerous bugs, mostly discovered through converting SBML Test Suite models to Antimony and back to SBML, and ensuring that a simulation of the round-tripped model matched a simulation of the original model. The entirety of the SBML Test Suite (with the exception of 'fast' reactions, now deprecated in SBML) now successfully round-trip through Antimony without loss of information (though some things may change structurally for hierarchical models).
+The 3.2 release cleaned up the build system, increased efficiency, and fixed numerous bugs, mostly discovered through converting SBML Test Suite models and BioModels to Antimony and back to SBML, and ensuring that a simulation of the round-tripped model matched a simulation of the original model. The entirety of the SBML Test Suite (with the exception of 'fast' reactions, now deprecated in SBML) now successfully round-trips through Antimony without loss of information (though some things may change structurally for hierarchical models), as do most BioModels.
 
 The 3.1 release changed FBC support to version 3 of that package, changing 
 how FBC constraints were translated to SBML (but not changing how they
@@ -521,7 +465,7 @@ reset.
       k1 = 0.5
     end
 
-For more advanced usage of events, see [below](#events).
+For more advanced usage of events, see <a href="#events">below</a>.
 
 ### Function Definitions
 
@@ -547,7 +491,7 @@ k2*s1 + k3`.
 ### Annotation
 
 Antimony elements can be annotated with URNs using annotation keywords  You can
-see the [full list](#sbo-and-cvterms) below, but in general, you annotate in the
+see the <a href="#sbo-and-cvterms">full list</a> below, but in general, you annotate in the
 following way:
 
     //Species
@@ -593,7 +537,7 @@ tick marks \`\`\` :
 
 Antimony was actually originally designed to allow the modular creation
 of models, and has a basic syntax set up to do so. For a full discussion
-of Antimony modularity, see [below](#modules), but at the most
+of Antimony modularity, see <a href="#modules">below</a>, but at the most
 basic level, you define a re-usable module with the 'model' syntax,
 followed by parentheses where you define the elements you wish to
 expose, then import it by using the model's name, and the local
@@ -1743,7 +1687,7 @@ kinetic law to parse, this is how to add species to that list.
 
 ### Predefined Function Definitions
 
-In addition to the [user-defined function definitions](#function-definitions),
+In addition to the <a href="#function-definitions">user-defined function definitions</a>,
 there are several built-in functions defined in Antimony.
 All of the functions present in the MathML subset used in SBML Level 3 Level 2
 are likewise defined here, and include:
@@ -2483,5 +2427,5 @@ converting models between SBML and Antimony:
     models](http://antimony.sourceforge.net/antimony-examples.html) show
     how to use the [comp
     package](http://sbml.org/Documents/Specifications/SBML_Level_3/Packages/comp).
-  - [This manual](AntimonyTutorial.pdf) in
+  - <a href="AntimonyTutorial.pdf">This manual</a> in
     PDF format.
