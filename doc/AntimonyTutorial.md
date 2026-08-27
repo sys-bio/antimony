@@ -2424,7 +2424,7 @@ converting models between SBML and Antimony:
 ## Further Reading
 
   - Lucian Smith's [example
-    models](http://antimony.sourceforge.net/antimony-examples.html) show
+    models](https://antimony.readthedocs.io/en/latest/antimony-examples.html) show
     how to use the [comp
     package](http://sbml.org/Documents/Specifications/SBML_Level_3/Packages/comp).
   - <a href="AntimonyTutorial.pdf">This manual</a> in

@@ -53,10 +53,17 @@ Source: {#InstallDir}\lib\libantimony.dll; DestDir: {app}
 Source: {#InstallDir}\lib\libantimony.lib; DestDir: {app}
 Source: ..\doc\examples\ex_antimony_output.txt; DestDir: {app}
 Source: ..\doc\examples\ex_sbml_input.xml; DestDir: {app}
-Source: ..\doc\examples\ex_sbml_output___main_sbml.xml; DestDir: {app}
-Source: ..\doc\examples\ex_sbml_output_bistable_sbml.xml; DestDir: {app}
-Source: ..\doc\examples\ex_sbml_output_combined_model_sbml.xml; DestDir: {app}
-Source: ..\doc\examples\ex_sbml_output_ffn_sbml.xml; DestDir: {app}
-Source: ..\doc\examples\ex_sbml_output_ringoscil_sbml.xml; DestDir: {app}
 Source: ..\doc\examples\ex_antimony_input.txt; DestDir: {app}
+Source: ..\doc\examples\bistable.txt; DestDir: {app}
+Source: ..\doc\examples\bistable.xml; DestDir: {app}
+Source: ..\doc\examples\feed_forward_network.txt; DestDir: {app}
+Source: ..\doc\examples\feed_forward_network.xml; DestDir: {app}
+Source: ..\doc\examples\ring_oscillator.txt; DestDir: {app}
+Source: ..\doc\examples\ring_oscillator.xml; DestDir: {app}
+Source: ..\doc\examples\combined.txt; DestDir: {app}
+Source: ..\doc\examples\combined_comp.xml; DestDir: {app}
+Source: ..\doc\examples\combined_flat.xml; DestDir: {app}
+Source: ..\doc\examples\combined_with_signal.txt; DestDir: {app}
+Source: ..\doc\examples\combined_with_signal_comp.xml; DestDir: {app}
+Source: ..\doc\examples\combined_with_signal_flat.xml; DestDir: {app}
 Source: "..\doc\examples\biomodels\*"; DestDir: "{app}\biomodels"; Flags: recursesubdirs createallsubdirs

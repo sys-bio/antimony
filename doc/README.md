@@ -1,3 +1,9 @@
+These docs can be read at
+
+http://antimony.readthedocs.io/
+
+The following instructions are for developers wishing to rebuild/test the docs:
+
 Rebuilding AntimonyTutorial docs
 =================================
 
