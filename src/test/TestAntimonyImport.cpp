@@ -7,7 +7,9 @@
 #include "antimony_api.h"
 #include <iostream>
 
+#include <sstream>
 #include <string>
+#include <vector>
 #include "gtest/gtest.h"
 
 using namespace std;
@@ -24,13 +26,32 @@ void compareFileImport(const string& base)
     EXPECT_TRUE(ret != -1);
     char* sbml2ant = getAntimonyString(NULL);
     EXPECT_TRUE(sbml2ant != NULL);
+    string sbml2antStr(sbml2ant);
+
+    // Check SBML import warnings exist, then strip them for round-trip 
+    // check through Antimony.
+    char* sbmlWarnings = getWarnings();
+    if (sbmlWarnings != NULL) {
+        istringstream warningstream(sbmlWarnings);
+        string warningline;
+        string header = "\n// Warnings from automatic translation:\n";
+        while (getline(warningstream, warningline)) {
+            header += "//    " + warningline + "\n";
+        }
+        header += "\n";
+        size_t pos = sbml2antStr.find(header);
+        EXPECT_NE(pos, string::npos) << "Expected translation-warnings header not found in the SBML import output.";
+        if (pos != string::npos) {
+            sbml2antStr.erase(pos, header.size());
+        }
+    }
 
     string antimonyfile = dir + base + ".txt";
     ret = loadAntimonyFile(antimonyfile.c_str());
     EXPECT_TRUE(ret != -1);
 
     char* roundtrip = getAntimonyString(NULL);
-    EXPECT_STREQ(roundtrip, sbml2ant);
+    EXPECT_STREQ(roundtrip, sbml2antStr.c_str());
 
     freeAll();
 }
@@ -75,4 +96,9 @@ TEST(AntimonyImport, test_import_MODEL1504010000_url)
 TEST(AntimonyImport, test_import_case01155)
 {
     compareFileImport("case01155");
+}
+
+TEST(AntimonyImport, test_two_default_compartments)
+{
+  compareFileImport("two_default_compartments");
 }

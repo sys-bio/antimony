@@ -71,7 +71,8 @@ Module::Module(string name)
     m_childrenadded(false),
 #endif
     m_uniquevars(),
-    m_explicitDefaultCompartment(false)
+    m_explicitDefaultCompartment(false),
+    m_defaultCompartments()
 {
   m_sbmlnamespaces.addPackageNamespace("comp", 1);
   SBMLDocument sbml(&m_sbmlnamespaces);
@@ -128,7 +129,8 @@ Module::Module(const Module& src, string newtopname, string modulename)
     m_childrenadded(src.m_childrenadded),
 #endif
     m_uniquevars(),
-    m_explicitDefaultCompartment(src.m_explicitDefaultCompartment)
+    m_explicitDefaultCompartment(src.m_explicitDefaultCompartment),
+    m_defaultCompartments(src.m_defaultCompartments)
 {
   SetNewTopName(modulename, newtopname);
 #ifndef NCELLML
@@ -171,7 +173,8 @@ Module::Module(const Module& src)
     m_childrenadded(src.m_childrenadded),
 #endif
     m_uniquevars(src.m_uniquevars),
-    m_explicitDefaultCompartment(src.m_explicitDefaultCompartment)
+    m_explicitDefaultCompartment(src.m_explicitDefaultCompartment),
+    m_defaultCompartments(src.m_defaultCompartments)
 {
   CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(m_sbml.getPlugin("comp"));
   SBMLDocument* doctest = compdoc->getSBMLDocument();
@@ -236,6 +239,7 @@ Module& Module::operator=(const Module& src)
   m_biol_quals = src.m_biol_quals;
   m_sboTerm = src.m_sboTerm;
   m_explicitDefaultCompartment = src.m_explicitDefaultCompartment;
+  m_defaultCompartments = src.m_defaultCompartments;
   return *this;
 }
 
@@ -276,7 +280,7 @@ Variable* Module::AddOrFindVariable(const string* name)
   if (foundvar == NULL) {
     //Didn't find one--need to create a new one.
     Variable* newvar = new Variable(*name, this);
-    if (*name == DEFAULTCOMP) {
+    if (*name == DEFAULTCOMP || m_defaultCompartments.find(*name) != m_defaultCompartments.end()) {
         //The default compartment is being used explicitly in the model.
         newvar->SetType(varCompartment);
         Formula form;
@@ -284,6 +288,9 @@ Variable* Module::AddOrFindVariable(const string* name)
         newvar->SetFormula(&form);
         newvar->SetSBOTerm(410);
         newvar->SetIsConst(true);
+        m_defaultCompartments.erase(*name);
+    }
+    if (*name == DEFAULTCOMP) {
         m_explicitDefaultCompartment = true;
     }
     m_variables.push_back(newvar);
