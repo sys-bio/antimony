@@ -1,0 +1,151 @@
+// Created by libAntimony v3.2.0
+model *Tham2008_PDmodel_TumourShrinkage()
+
+  // Compartments and Species:
+  compartment COMpartment;
+  species Ce in COMpartment;
+
+  // Assignment Rules:
+  Exposure := piecewise(Dose, (time < (Cycle_Int*N_Cycle)) && (Dose_Int1 < rem_time) && (rem_time < Dose_Length), Dose, (time < (Cycle_Int*N_Cycle)) && (Dose_Int2 < rem_time) && (rem_time < (Dose_Int2 + Dose_Length)), 0);
+  Keq := ln(2)/Teq;
+  rem_time := (time*conversion_factor - floor(time*conversion_factor/(Cycle_Int*conversion_factor))*Cycle_Int*conversion_factor)/conversion_factor;
+  RateIn := Size_0*Kover;
+  Effect := 1 - Ce/(AE50 + Ce);
+  Kover := 1/T_Turnover;
+
+  // Rate Rules:
+  Ce' = Exposure/1 - Ce*Keq;
+  Size' = (RateIn*Effect - Kover*Size)*Size;
+
+  // Species initializations:
+  Ce = 0;
+
+  // Compartment initializations:
+  COMpartment = 1;
+  Exposure has mg;
+  Keq has per_week;
+  rem_time has week;
+
+  // Variable initializations:
+  conversion_factor = 604800;
+  conversion_factor has sec_per_week;
+  Cycle_Int = 3;
+  Cycle_Int has week;
+  Dose = 5203.84;
+  Dose has mg;
+  N_Cycle = 6;
+  N_Cycle has dimensionless;
+  Dose_Int1 = 0;
+  Dose_Int1 has week;
+  Dose_Length = 0.44359;
+  Dose_Length has week;
+  Dose_Int2 = 1;
+  Dose_Int2 has week;
+  Size = 6.66;
+  Size has cm;
+  RateIn has per_week;
+  Effect has dimensionless;
+  Kover has per_cm_per_week;
+  AE50 = 10600;
+  AE50 has mg;
+  Teq = 7.67;
+  Teq has week;
+  Size_0 = 6.66;
+  Size_0 has cm;
+  T_Turnover = 21.8;
+  T_Turnover has cm_week;
+
+  // Other declarations:
+  var Exposure, Keq, rem_time, Size, RateIn, Effect, Kover;
+  const COMpartment, conversion_factor, Cycle_Int, Dose, N_Cycle, Dose_Int1;
+  const Dose_Length, Dose_Int2, AE50, Teq, Size_0, T_Turnover;
+
+  // Unit definitions:
+  unit effect_unit = dimensionless;
+  unit week = 604800 second;
+  unit sec_per_week = second / 604800 second;
+  unit cm = 1e-2 metre;
+  unit mg = 1e-3 gram;
+  unit cm_week = 1e-2 metre * 604800 second;
+  unit per_week = 1 / 604800 second;
+  unit per_cm_per_week = 1 / (1e-2 metre * 604800 second);
+  unit m2 = metre^2;
+
+  // Display Names:
+  effect_unit is "normalised";
+
+  // SBO terms:
+  Ce.sboTerm = 247
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL0911120001"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000234"
+  model publication "http://identifiers.org/pubmed/18594002"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model isVersionOf "http://identifiers.org/go/GO:0002357"
+  model hasProperty "http://identifiers.org/doid/DOID:1324"
+  model created "2009-11-16T12:37:34Z"
+  model modified "2017-05-18T11:02:23Z"
+  model creator1.givenName "Vijayalakshmi"
+  model creator1.familyName "Chelliah"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "viji@ebi.ac.uk"
+  model creator2.givenName "Lai-San"
+  model creator2.familyName "Tham"
+  model creator2.organization "Department of Hematology-Oncology, National University Hospital."
+  model creator2.email "Tham_lai_san@lilly.com"
+  model creator3.givenName "Geoffrey"
+  model creator3.familyName "Nunns"
+  model creator3.organization "Auckland Bioengineering Institute, The Auckland University"
+  model creator3.email "gnunns1@jhu.edu"
+
+  // Notes:
+  model notes ```
+Tham2008 - PDmodel, Tumour shrinkage by gemcitabine and carboplatin 
+
+
+This model is described in the article:
+
+
+[A pharmacodynamic model for the time course of tumor shrinkage by gemcitabine + carboplatin in non-small cell lung cancer patients.](http://identifiers.org/pubmed/18594002 "Access to this publication") 
+
+
+Tham LS, Wang L, Soo RA, Lee SC, Lee HS, Yong WP, Goh BC, Holford NH. 
+
+Clin. Cancer Res. 2008 Jul; 14(13): 4213-4218 
+Abstract:
+
+
+PURPOSE: This tumor response pharmacodynamic model aims to describe primary lesion
+shrinkage in non-small cell lung cancer over time and determine if concentration-based
+exposure metrics for gemcitabine or that of its metabolites, 2&apos;,2&apos;-difluorodeoxyuridine
+or gemcitabine triphosphate, are better than gemcitabine dose for prediction of
+individual response. EXPERIMENTAL DESIGN: Gemcitabine was given thrice weekly
+on days 1 and 8 in combination with carboplatin, which was given only on day 1
+of every cycle. Gemcitabine amount in the body and area under the concentration-time
+curves of plasma gemcitabine, 2&apos;,2&apos;-difluorodeoxyuridine, and intracellular
+gemcitabine triphosphate in white cells were compared to determine which best
+describes tumor shrinkage over time. Tumor growth kinetics were described using
+a Gompertz-like model. RESULTS: The apparent half-life for the effect of gemcitabine
+was 7.67 weeks. The tumor turnover time constant was 21.8 week.cm. Baseline
+tumor size and gemcitabine amount in the body to attain 50% of tumor shrinkage
+were estimated to be 6.66 cm and 10,600 mg. There was no evidence of relapse during
+treatment. CONCLUSIONS: Concentration-based exposure metrics for gemcitabine
+and its metabolites were no better than gemcitabine amount in predicting tumor
+shrinkage in primary lung cancer lesions. Gemcitabine dose-based models did 
+marginally better than treatment-based models that ignored doses of drug administered
+to patients. Modeling tumor shrinkage in primary lesions can be used to quantify
+individual sensitivity and response to antitumor effects of anticancer drugs.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000234](http://identifiers.org/biomodels.db/BIOMD0000000234).
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication").
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+end
+
+Tham2008_PDmodel_TumourShrinkage is "Tham2008 - PDmodel, Tumour shrinkage by gemcitabine and carboplatin "

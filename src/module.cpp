@@ -71,7 +71,8 @@ Module::Module(string name)
     m_childrenadded(false),
 #endif
     m_uniquevars(),
-    m_explicitDefaultCompartment(false)
+    m_explicitDefaultCompartment(false),
+    m_defaultCompartments()
 {
   m_sbmlnamespaces.addPackageNamespace("comp", 1);
   SBMLDocument sbml(&m_sbmlnamespaces);
@@ -128,7 +129,8 @@ Module::Module(const Module& src, string newtopname, string modulename)
     m_childrenadded(src.m_childrenadded),
 #endif
     m_uniquevars(),
-    m_explicitDefaultCompartment(src.m_explicitDefaultCompartment)
+    m_explicitDefaultCompartment(src.m_explicitDefaultCompartment),
+    m_defaultCompartments(src.m_defaultCompartments)
 {
   SetNewTopName(modulename, newtopname);
 #ifndef NCELLML
@@ -171,7 +173,8 @@ Module::Module(const Module& src)
     m_childrenadded(src.m_childrenadded),
 #endif
     m_uniquevars(src.m_uniquevars),
-    m_explicitDefaultCompartment(src.m_explicitDefaultCompartment)
+    m_explicitDefaultCompartment(src.m_explicitDefaultCompartment),
+    m_defaultCompartments(src.m_defaultCompartments)
 {
   CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(m_sbml.getPlugin("comp"));
   SBMLDocument* doctest = compdoc->getSBMLDocument();
@@ -236,6 +239,7 @@ Module& Module::operator=(const Module& src)
   m_biol_quals = src.m_biol_quals;
   m_sboTerm = src.m_sboTerm;
   m_explicitDefaultCompartment = src.m_explicitDefaultCompartment;
+  m_defaultCompartments = src.m_defaultCompartments;
   return *this;
 }
 
@@ -276,7 +280,7 @@ Variable* Module::AddOrFindVariable(const string* name)
   if (foundvar == NULL) {
     //Didn't find one--need to create a new one.
     Variable* newvar = new Variable(*name, this);
-    if (*name == DEFAULTCOMP) {
+    if (*name == DEFAULTCOMP || m_defaultCompartments.find(*name) != m_defaultCompartments.end()) {
         //The default compartment is being used explicitly in the model.
         newvar->SetType(varCompartment);
         Formula form;
@@ -284,6 +288,9 @@ Variable* Module::AddOrFindVariable(const string* name)
         newvar->SetFormula(&form);
         newvar->SetSBOTerm(410);
         newvar->SetIsConst(true);
+        m_defaultCompartments.erase(*name);
+    }
+    if (*name == DEFAULTCOMP) {
         m_explicitDefaultCompartment = true;
     }
     m_variables.push_back(newvar);
@@ -316,8 +323,21 @@ Variable* Module::AddNewNumberedVariable(const string name)
 
 void Module::StoreVariable(Variable* var)
 {
+  // m_variables/m_uniquevars just grew (or, via SetNewTopName, got wholesale
+  // replaced); any cached GetNumVariablesOfType/GetNthVariableOfType results
+  // are now stale.
+  m_variablesOfTypeCache.clear();
   g_registry.StoreVariable(var);
   m_varmap.insert(make_pair(var->GetName(), var));
+  // Add to m_submoduleVars if it's a submodule.
+  if (var->GetType() == varModule) {
+    m_submoduleVars.push_back(var);
+  }
+}
+
+void Module::NoteSubmoduleVariable(Variable* var)
+{
+  m_submoduleVars.push_back(var);
 }
 
 bool Module::AddVariableToExportList(Variable* var)
@@ -424,6 +444,57 @@ void Module::AddSynchronizedPair(const Variable* oldvar, const Variable* newvar,
   }
   else {
     m_conversionFactors.push_back(conversionFactor->GetName());
+  }
+}
+
+//Promote a variable local to a submodule (e.g. 'sub1.E0') to a new top-level
+//variable (e.g. 'sub1_E0'), synchronizing the two so that 'subvar' becomes an
+//alias of the new variable ('sub1.E0 is sub1_E0;').  If 'subvar' is already
+//promoted (or is already top-level), it's returned unchanged.
+Variable* Module::PromoteToTopLevel(Variable* subvar)
+{
+  if (subvar == NULL) {
+    return NULL;
+  }
+  if (subvar->IsPointer()) {
+    return subvar->GetSameVariable();
+  }
+  vector<string> name = subvar->GetName();
+  if (name.size() <= 1) {
+    return subvar;
+  }
+  string newname = name[0];
+  for (size_t n=1; n<name.size(); n++) {
+    newname += "_" + name[n];
+  }
+  vector<string> candidate(1, newname);
+  Variable* newvar = GetVariable(candidate);
+  if (newvar == NULL) {
+    newvar = AddOrFindVariable(&newname);
+  }
+  else {
+    newvar = AddNewNumberedVariable(newname);
+  }
+  if (subvar->Synchronize(newvar, NULL)) {
+    //An error occurred (already set in the registry); leave things as they were.
+    return subvar;
+  }
+  return subvar->GetSameVariable();
+}
+
+//Promote every submodule-local variable referenced by 'formula' that isn't
+//already promoted.  See PromoteToTopLevel.
+void Module::PromoteReferencedVariables(const Formula* formula)
+{
+  if (formula == NULL) {
+    return;
+  }
+  vector<Variable*> vars = formula->GetVariables();
+  for (size_t v=0; v<vars.size(); v++) {
+    Variable* var = vars[v];
+    if (var != NULL && !var->IsPointer() && var->GetName().size() > 1 && var->GetType() != varDeleted) {
+      PromoteToTopLevel(var);
+    }
   }
 }
 
@@ -637,6 +708,26 @@ bool Module::AddObjective(const Variable* obj, bool maximize)
   return false;
 }
 
+bool Module::SetConversionFactor(Variable* var)
+{
+  if (m_modelConversionFactor.size() > 0) {
+    g_registry.SetError("Unable to set a new conversion factor for the model, since '" + ToStringFromVecDelimitedBy(m_modelConversionFactor, ".") + "' is already set as this model's conversion factor.");
+    return true;
+  }
+  if (var->SetType(varFormulaUndef)) {
+    g_registry.SetError("Cannot set the model's conversion factor to be '" + var->GetNameDelimitedBy(".") + "', because it cannot be used as a parameter.");
+    return true;
+  }
+  m_modelConversionFactor = var->GetName();
+  return false;
+}
+
+const Variable* Module::GetConversionFactor() const
+{
+  if (m_modelConversionFactor.size() == 0) return NULL;
+  return GetVariable(m_modelConversionFactor);
+}
+
 void Module::ClearReferencesTo(Variable* deletedvar, set<pair<vector<string>, deletion_type> >* ret)
 {
   set<pair<vector<string>, deletion_type> > temp;
@@ -647,9 +738,16 @@ void Module::ClearReferencesTo(Variable* deletedvar, set<pair<vector<string>, de
   if (deletedvar->GetIsEquivalentTo(GetVariable(m_returnvalue))) {
     m_returnvalue.clear();
   }
+  if (deletedvar->GetIsEquivalentTo(GetConversionFactor())) {
+    m_modelConversionFactor.clear();
+  }
   for (size_t sync=0; sync<m_conversionFactors.size(); sync++) {
+    if (m_conversionFactors[sync].empty()) {
+      //This synchronized pair had no conversion factor.
+      continue;
+    }
     Variable* convvar = GetVariable(m_conversionFactors[sync]);
-    if (convvar->GetSameVariable() == deletedvar) {
+    if (convvar != NULL && convvar->GetSameVariable() == deletedvar) {
       m_conversionFactors[sync].clear();
     }
   }
@@ -700,6 +798,19 @@ bool Module::DeleteFromSynchronized(Variable* deletedvar)
 
 Variable* Module::AddOrFindUnitDef(const UnitDef& unitdef)
 {
+  // First check to see if GetVariable can find the unit definition.
+  // If not, we do a more exhaustive search next.
+  string udname = unitdef.GetNameDelimitedBy("_");
+  vector<string> udnamevec(1, udname);
+  Variable* mapped = GetVariable(udnamevec);
+  if (mapped != NULL && mapped->GetType() == varUnitDefinition) {
+    UnitDef* match = mapped->GetUnitDef();
+    if (unitdef.Matches(match) ||
+        (!match->GetNameAutoGenerated() && unitdef.GetNameAutoGenerated() && unitdef.ComponentsMatch(match))) {
+      return mapped;
+    }
+  }
+
   for (size_t v=0; v<m_variables.size(); v++) {
     Variable* var = m_variables[v];
     if (var->GetType() != varUnitDefinition) continue;
@@ -729,7 +840,6 @@ Variable* Module::AddOrFindUnitDef(const UnitDef& unitdef)
     }
   }
   //Need a new variable;
-  string udname = unitdef.GetNameDelimitedBy("_");
   Variable* var = AddOrFindVariable(&udname); //Units that need to be created because of submodel variable promotion will have submodel-style names.
   if (var->SetUnitDef(&unitdef)) return NULL;
   return var;
@@ -833,6 +943,7 @@ void Module::AddDefaultInitialValues()
     case varSboTermWrapper:
     case varUncertWrapper:
     case varLayoutWrapper:
+    case varKineticLawWrapper:
     case varConstraint:
     case varAlgebraicRule:
     case varLayoutColorEtc:
@@ -840,14 +951,15 @@ void Module::AddDefaultInitialValues()
     case varGeneProductAssociation:
     case varSpeciesCharge:
     case varSpeciesChemicalFormula:
+    case varSpeciesConversionFactor:
       break;
     }
   }
 }
 
-bool Module::ProcessCVTerm(Annotated* a, const string* qual, vector<string>* resources)
+bool Module::ProcessCVTerm(Annotated* a, const string* qual, const vector<string>& resources)
 {
-    if (qual && resources) {
+    if (qual) {
         // qual can be a model or biology qualifier
         // is/identity is used by both - give priority to biology
         // to eliminate guesswork explicitly use one of:
@@ -857,20 +969,20 @@ bool Module::ProcessCVTerm(Annotated* a, const string* qual, vector<string>* res
         ModelQualifierType_t mq = DecodeModelQualifier(*qual);
         stringstream ss;
         if (bq != BQB_UNKNOWN) {
-            a->AppendBiolQualifiers(bq, *resources);
+            a->AppendBiolQualifiers(bq, resources);
         }
         else if (mq != BQM_UNKNOWN) {
-            a->AppendModelQualifiers(mq, *resources);
+            a->AppendModelQualifiers(mq, resources);
         }
         else if (CaselessStrCmp(true, *qual, "notes")) {
-            a->AppendNotes(*resources);
+            a->AppendNotes(resources);
         }
         else if (CaselessStrCmp(true, *qual, "created")) {
-            if (resources->size() > 1) {
+            if (resources.size() > 1) {
                 g_registry.SetError("Cannot set multiple 'created' dates.");
                 return true;
             }
-            a->SetCreated((*resources)[0]);
+            a->SetCreated(resources[0]);
         }
         else if (CaselessStrCmp(true, *qual, "modified")) {
             a->AppendModified(resources);
@@ -878,16 +990,13 @@ bool Module::ProcessCVTerm(Annotated* a, const string* qual, vector<string>* res
         else {
             ss << "Unrecognized qualifier \"" << *qual << "\"";
             g_registry.SetError(ss.str());
-            delete resources;
             return true;
         }
 
-        delete resources;
         return false;
     }
     else {
         g_registry.SetError("CV qualifier encountered but not enough arguments - pass qualifier and at least one resource");
-        delete resources;
         return true;
     }
 }
@@ -906,21 +1015,15 @@ Variable* Module::GetVariable(const vector<string>& name)
   if (found != m_varmap.end()) {
     return found->second;
   }
-  for (size_t var=0; var<m_variables.size(); var++) {
-    if (m_variables[var]->GetName() == name) {
-      //PrintVarMap(m_varmap);
-      m_varmap.insert(make_pair(name, m_variables[var]));
-      //assert(false); //already got?
-      return m_variables[var];
-    }
-    if (m_variables[var]->GetType() == varModule) {
-      Variable* subvar = m_variables[var]->GetModule()->GetVariable(name);
+  // The only time the above might not work for real is if we're looking for
+  // a submodule.  In order to not check every variable to see if it's a submodule,
+  // we keep a list as m_submoduleVars.
+  for (size_t sv=0; sv<m_submoduleVars.size(); sv++) {
+    Variable* submodvar = m_submoduleVars[sv];
+    if (submodvar->GetType() == varModule) {
+      Variable* subvar = submodvar->GetModule()->GetVariable(name);
       if (subvar != NULL) {
-        //PrintVarMap(m_varmap);
-        //cout << "and from subvar:" << endl;
-        //PrintVarMap(m_variables[var]->GetModule()->m_varmap);
         m_varmap.insert(make_pair(name, subvar));
-        //assert(false); //already got?
         return subvar;
       }
     }
@@ -949,12 +1052,13 @@ const Variable* Module::GetVariable(const vector<string>& name) const
   if (found != m_varmap.end()) {
     return found->second;
   }
-  for (size_t var=0; var<m_variables.size(); var++) {
-    if (m_variables[var]->GetName() == name) {
-      return m_variables[var];
-    }
-    if (m_variables[var]->GetType() == varModule) {
-      const Variable* subvar = m_variables[var]->GetModule()->GetVariable(name);
+  // As above: The only time the above might not work for real is if we're looking for
+  // a submodule.  In order to not check every variable to see if it's a submodule,
+  // we keep a list as m_submoduleVars.
+  for (size_t sv=0; sv<m_submoduleVars.size(); sv++) {
+    Variable* submodvar = m_submoduleVars[sv];
+    if (submodvar->GetType() == varModule) {
+      const Variable* subvar = submodvar->GetModule()->GetVariable(name);
       if (subvar != NULL) {
         return subvar;
       }
@@ -1209,6 +1313,7 @@ bool checkOverlapAndInsert(set<pair<string, int> >& fixed, set <pair<string, int
 bool Module::Finalize()
 {
   m_uniquevars.clear();
+  m_variablesOfTypeCache.clear();
   string cc = g_registry.GetCC();
 
   //Phase 1:  Error checking for loops
@@ -1219,18 +1324,6 @@ bool Module::Finalize()
     //LS NOTE: loops should be detected at assignment time, but it's possible I missed something.
     if (m_variables[var]->GetType() == varCompartment){
       if (m_variables[var]->AnyCompartmentLoops()) return true;
-    }
-    else if (m_variables[var]->GetType() == varInteraction) {
-      vector<vector<string> > rxns = m_variables[var]->GetReaction()->GetRight()->GetVariableList();
-      for (size_t rxn=0; rxn<rxns.size(); rxn++) {
-        Variable* rightvar = GetVariable(rxns[rxn]);
-        const Formula* form = rightvar->GetFormula();
-        if (!form->IsEmpty() &&
-            form->CheckIncludes(m_variables[var]->GetNamespace(), m_variables[var]->GetReaction()->GetLeft())) {
-          g_registry.AddErrorPrefix("According to the interaction '" + m_variables[var]->GetNameDelimitedBy(cc) + "', the formula for '" + rightvar->GetNameDelimitedBy(cc) + "' ('" + form->ToDelimitedStringWithEllipses(cc) + "') ");
-          return true;
-        }
-      }
     }
   }
 
@@ -1248,6 +1341,26 @@ bool Module::Finalize()
       }
     }
   }
+  //Phase 2.5:  Check that conversion factors reference constant variables.
+  for (size_t var=0; var<m_variables.size(); var++) {
+    if (m_variables[var]->GetType() == varSpeciesConversionFactor) {
+      vector<Variable*> cfvars = m_variables[var]->GetFormula()->GetVariables();
+      if (cfvars.size() == 1 && !cfvars[0]->GetIsConst()) {
+        string specname = m_variables[var]->GetNameDelimitedBy(cc);
+        specname.replace(specname.find("-cf"), 3, "");
+        g_registry.SetError("Unable to set the conversion factor for species '" + specname + "' to '" + cfvars[0]->GetNameDelimitedBy(cc) + "', because conversion factors must be constant.");
+        return true;
+      }
+    }
+  }
+  if (m_modelConversionFactor.size() > 0) {
+    Variable* cf = GetVariable(m_modelConversionFactor);
+    if (cf && !cf->GetIsConst()) {
+      g_registry.SetError("Unable to set the model's conversion factor to '" + cf->GetNameDelimitedBy(cc) + "', because conversion factors must be constant.");
+      return true;
+    }
+  }
+
   //Now check if the functions themselves use distributions
   for (size_t uf = 0; uf < g_registry.GetNumUserFunctions(); uf++) {
     if (g_registry.GetNthUserFunction(uf)->UsesDistrib()) {
@@ -1287,6 +1400,7 @@ bool Module::Finalize()
           case varUnitDefinition:
           case varDeleted:
           case varConstraint:
+          case varKineticLawWrapper:
           case varSboTermWrapper:
           case varUncertWrapper:
           case varStoichiometry:
@@ -1296,6 +1410,7 @@ bool Module::Finalize()
           case varGeneProductAssociation:
           case varSpeciesCharge:
           case varSpeciesChemicalFormula:
+          case varSpeciesConversionFactor:
             g_registry.SetError("Unable to add layout or render information to " + m_variables[var]->GetNameDelimitedBy(".") + ":  only species, reactions, and compartments can be visualized, and this element is of type '" + VarTypeToString(m_variables[var]->GetType()) + "'.");
               return true;
           }
@@ -1496,60 +1611,70 @@ bool Module::Finalize()
   if (m_variablename.empty()) {
     //Only test SBML on top-level modules.
     const SBMLDocument* sbmldoc = GetSBML(true); //Use the comp version if possible.
-    //We rely on libsbml's error checking to see if we need to set fbc's 'strict' flag to 'false' or not.
-    fixFBCStrictIfNeeded();
 
     stringstream stream;
-
     SBMLWriter writer;
     writer.writeSBML(sbmldoc, stream);
     string newSBML = stream.str();
     SBMLReader reader;
     SBMLDocument* testdoc = reader.readSBMLFromString(newSBML);
+
+    //To get all errors, need to call both 'readSBMLFromString' and 'checkConsistency()'.
     testdoc->setConsistencyChecks(LIBSBML_CAT_UNITS_CONSISTENCY, false);
     testdoc->checkConsistency();
+    if (testdoc->getNumErrors(LIBSBML_SEV_ERROR)) {
+      fixFBCStrictIfNeeded(testdoc);
+    }
+
     removeBooleanErrors(testdoc);
-    SBMLErrorLog* log = testdoc->getErrorLog();
     string trueerrors = "";
-    for (unsigned int err=0; err<log->getNumErrors(); err++) {
-      const SBMLError* error = log->getError(err);
-      unsigned int errtype = error->getSeverity();
-      switch(errtype) {
-      case 0: //LIBSBML_SEV_INFO:
-        if (m_libsbml_info != "") m_libsbml_info += "\n";
-        m_libsbml_info += error->getMessage();
-        break;
-      case 1: //LIBSBML_SEV_WARNING:
-        if (m_libsbml_warnings != "") m_libsbml_warnings += "\n";
-        m_libsbml_warnings += error->getMessage();
-        break;
-      case 2: //LIBSBML_SEV_ERROR:
-          if (error->getErrorId() >= 10700 && error->getErrorId() <= 10750) {
-              if (m_libsbml_warnings != "") m_libsbml_warnings += "\n";
-              m_libsbml_warnings += error->getMessage();
-          }
-          else {
-              if (trueerrors != "") trueerrors += "\n";
-              trueerrors += error->getMessage();
-          }
-          //  m_libsbml_warnings += error->getMessage(); //If we want to disable fail-on-error again.
-          break;
-      case 3: //LIBSBML_SEV_FATAL:
-        g_registry.SetError("Fatal error when creating an SBML document; unable to continue.  Error from libSBML:\n\n" + error->getMessage());
-        delete testdoc;
-        return true;
-      default:
-        g_registry.SetError("Unknown error when creating an SBML document--there should have only been four types, but we found a fifth?  libSBML may have been updated; try using an older version, perhaps.  Error from libSBML:\n\n" + error->getMessage());
-        delete testdoc;
-        return true;
-      }
+    unsigned int numErrors = testdoc->getErrorLog()->getNumFailsWithSeverity(LIBSBML_SEV_ERROR);
+    if (ProcessSBMLErrorLog(testdoc->getErrorLog(), trueerrors)) {
+      delete testdoc;
+      return true;
     }
     if (trueerrors != "") {
-      g_registry.SetError(SizeTToString(log->getNumFailsWithSeverity(LIBSBML_SEV_ERROR)) + " SBML error(s) when creating module '" + m_modulename + "'.  libAntimony tries to catch these errors before libSBML complains, but sometimes cannot.  Error message(s) from libSBML:\n\n" + trueerrors);
+      g_registry.SetError(SizeTToString(numErrors) + " SBML error(s) when creating module '" + m_modulename + "'.  libAntimony tries to catch these errors before libSBML complains, but sometimes cannot.  Error message(s) from libSBML:\n\n" + trueerrors);
       delete testdoc;
       return true;
     }
     delete testdoc;
+  }
+  return false;
+}
+
+bool Module::ProcessSBMLErrorLog(SBMLErrorLog* log, string& trueerrors)
+{
+  for (unsigned int err=0; err<log->getNumErrors(); err++) {
+    const SBMLError* error = log->getError(err);
+    unsigned int errtype = error->getSeverity();
+    switch(errtype) {
+    case 0: //LIBSBML_SEV_INFO:
+      if (m_libsbml_info != "") m_libsbml_info += "\n";
+      m_libsbml_info += error->getMessage();
+      break;
+    case 1: //LIBSBML_SEV_WARNING:
+      if (m_libsbml_warnings != "") m_libsbml_warnings += "\n";
+      m_libsbml_warnings += error->getMessage();
+      break;
+    case 2: //LIBSBML_SEV_ERROR:
+        if (error->getErrorId() >= 10700 && error->getErrorId() <= 10750) {
+            if (m_libsbml_warnings != "") m_libsbml_warnings += "\n";
+            m_libsbml_warnings += error->getMessage();
+        }
+        else {
+            if (trueerrors != "") trueerrors += "\n";
+            trueerrors += error->getMessage();
+        }
+        //  m_libsbml_warnings += error->getMessage(); //If we want to disable fail-on-error again.
+        break;
+    case 3: //LIBSBML_SEV_FATAL:
+      g_registry.SetError("Fatal error when creating an SBML document; unable to continue.  Error from libSBML:\n\n" + error->getMessage());
+      return true;
+    default:
+      g_registry.SetError("Unknown error when creating an SBML document--there should have only been four types, but we found a fifth?  libSBML may have been updated; try using an older version, perhaps.  Error from libSBML:\n\n" + error->getMessage());
+      return true;
+    }
   }
   return false;
 }
@@ -1580,9 +1705,14 @@ bool Module::CheckUndefined(const Formula* form)
   return false;
 }
 
-size_t Module::GetNumVariablesOfType(return_type rtype, bool comp) const
+const vector<Variable*>& Module::GetVariablesOfTypeCached(return_type rtype, bool comp) const
 {
-  size_t total = 0;
+  pair<return_type, bool> key(rtype, comp);
+  map<pair<return_type, bool>, vector<Variable*> >::iterator cacheit = m_variablesOfTypeCache.find(key);
+  if (cacheit != m_variablesOfTypeCache.end()) {
+    return cacheit->second;
+  }
+
   vector<Variable*> vars = m_uniquevars;
   if (comp) {
     vars = m_variables;
@@ -1597,54 +1727,40 @@ size_t Module::GetNumVariablesOfType(return_type rtype, bool comp) const
       }
     }
   }
-  if (rtype == allSymbols) return vars.size();
-  for (size_t nvar=0; nvar<vars.size(); nvar++) {
-    const Variable* var = vars[nvar];
-    if (AreEquivalent(rtype, var->GetType()) &&
-      AreEquivalent(rtype, var->GetIsConst())) {
+
+  vector<Variable*> result;
+  if (rtype == allSymbols) {
+    result = vars;
+  }
+  else {
+    for (size_t nvar=0; nvar<vars.size(); nvar++) {
+      Variable* var = vars[nvar];
+      if (AreEquivalent(rtype, var->GetType()) &&
+          AreEquivalent(rtype, var->GetIsConst())) {
         if (!(rtype == expandedStrands && !var->IsExpandedStrand())) {
-          total++;
+          result.push_back(var);
         }
+      }
     }
   }
-  return total;
+
+  pair<map<pair<return_type, bool>, vector<Variable*> >::iterator, bool> inserted =
+    m_variablesOfTypeCache.insert(make_pair(key, result));
+  return inserted.first->second;
+}
+
+size_t Module::GetNumVariablesOfType(return_type rtype, bool comp) const
+{
+  return GetVariablesOfTypeCached(rtype, comp).size();
 }
 
 const Variable* Module::GetNthConstVariableOfType(return_type rtype, size_t n, bool comp) const
 {
-  vector<Variable*> vars = m_uniquevars;
-  if (comp) {
-    vars = m_variables;
-    //These aren't necessarily unique--remove any that aren't.
-    vector<Variable*>::iterator varit = vars.begin();
-    while (varit != vars.end()) {
-      if ((*varit)->IsPointer()) {
-        varit = vars.erase(varit);
-      }
-      else {
-        varit++;
-      }
-    }
+  const vector<Variable*>& result = GetVariablesOfTypeCached(rtype, comp);
+  if (n >= result.size()) {
+    return NULL;
   }
-  if (rtype == allSymbols) {
-    assert(n < vars.size());
-    return vars[n];
-  }
-
-  size_t total = 0;
-  for (size_t nvar=0; nvar<vars.size(); nvar++) {
-    const Variable* var = vars[nvar];
-    if (AreEquivalent(rtype, var->GetType()) &&
-        AreEquivalent(rtype, var->GetIsConst())) {
-      if (!(rtype == expandedStrands && !var->IsExpandedStrand())) {
-        if (total == n) {
-          return var;
-        }
-        total++;
-      }
-    }
-  }
-  return NULL;
+  return result[n];
 }
 
 
@@ -1720,6 +1836,8 @@ bool Module::AreEquivalent(return_type rtype, var_type vtype) const
     return (vtype == varGeneProductAssociation);
   case allSpeciesFbcInfo:
     return (vtype == varSpeciesCharge || vtype == varSpeciesChemicalFormula);
+  case allSpeciesConversionFactors:
+    return (vtype == varSpeciesConversionFactor);
   }
   //This is just to to get compiler warnings if we switch vtype later, so
   // we remember to change the rest of this function:
@@ -1741,6 +1859,7 @@ bool Module::AreEquivalent(return_type rtype, var_type vtype) const
   case varSboTermWrapper:
   case varUncertWrapper:
   case varLayoutWrapper:
+  case varKineticLawWrapper:
   case varConstraint:
   case varStoichiometry:
   case varAlgebraicRule:
@@ -1749,6 +1868,7 @@ bool Module::AreEquivalent(return_type rtype, var_type vtype) const
   case varGeneProductAssociation:
   case varSpeciesCharge:
   case varSpeciesChemicalFormula:
+  case varSpeciesConversionFactor:
       break;
   }
   assert(false); //uncaught return type
@@ -1790,6 +1910,7 @@ bool Module::AreEquivalent(return_type rtype, bool isconst) const
   case allGeneProducts:
   case allGeneProductAssociations:
   case allSpeciesFbcInfo:
+  case allSpeciesConversionFactors:
     return true;
   }
   assert(false); //uncaught return_type
@@ -1816,7 +1937,8 @@ string Module::OutputOnly(vector<var_type> types, string name, string indent, st
       formula_type ftype = var->GetFormulaType();
       if (form != NULL && !form->IsEllipsesOnly() && (ftype == formulaINITIAL || ftype == formulaRATE)) {
         if (OrigFormulaIsAlready(var, origmap, form)) continue;
-        if ((type == varGeneProduct || type == varGeneProductAssociation)
+        if ((type == varGeneProduct || type == varGeneProductAssociation
+          || type == varSpeciesCharge || type == varSpeciesConversionFactor)
           && var->GetFormula()->IsEmpty()) {
           continue;
         }
@@ -1833,6 +1955,9 @@ string Module::OutputOnly(vector<var_type> types, string name, string indent, st
         }
         else if (type == varSpeciesCharge) {
           name.replace(name.find("-charge"), 7, ".charge");
+        }
+        else if (type == varSpeciesConversionFactor) {
+          name.replace(name.find("-cf"), 3, ".conversionFactor");
         }
         retval += indent + name + " = " + form->ToDelimitedStringWithEllipses(cc) + ";\n";
       }
@@ -2167,6 +2292,17 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
     }
   }
 
+  //The model's conversion factor, if any
+  if (m_modelConversionFactor.size() > 0) {
+    const Variable* cf = GetVariable(m_modelConversionFactor);
+    if (cf) {
+      retval += "\n" + indent + "model.conversionFactor = " + ToStringFromVecDelimitedBy(cf->GetName(), ".") + ";\n";
+    }
+    else {
+      assert(false); //A nonexistent variable?
+    }
+  }
+
   //Then events:
   firstone = true;
   for (size_t vnum=0; vnum<m_uniquevars.size(); vnum++) {
@@ -2241,6 +2377,11 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
   types.clear();
   types.push_back(varSpeciesCharge);
   retval += OutputOnly(types, "Species charges", indent, cc, origmap);
+
+  //The species conversion factors:
+  types.clear();
+  types.push_back(varSpeciesConversionFactor);
+  retval += OutputOnly(types, "Species conversion factors", indent, cc, origmap);
 
   //The associated species of gene products:
   types.clear();
@@ -2321,6 +2462,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
     case varSboTermWrapper:
     case varUncertWrapper:
     case varLayoutWrapper:
+    case varKineticLawWrapper:
     case varConstraint:
     case varStoichiometry:
     case varAlgebraicRule:
@@ -2329,6 +2471,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
     case varGeneProductAssociation:
     case varSpeciesCharge:
     case varSpeciesChemicalFormula:
+    case varSpeciesConversionFactor:
       break;
     }
   }
@@ -2411,6 +2554,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
       bool anysboterm = false;
       for (size_t var = 0; var < m_uniquevars.size(); var++) {
           string sboterms = m_uniquevars[var]->CreateSBOTermsAntimonySyntax(m_uniquevars[var]->GetNameDelimitedBy(cc), indent, "sboTerm");
+          sboterms += m_uniquevars[var]->CreateKineticLawSBOTermAntimonySyntax(indent, cc);
           if (anysboterm == false && sboterms.size() > 0) {
               retval += "\n" + indent + "// SBO terms:\n";
               anysboterm = true;
@@ -2426,6 +2570,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded, boo
       bool anycvterm = false;
       for (size_t var = 0; var < m_uniquevars.size(); var++) {
           string cvterms = m_uniquevars[var]->CreateCVTermsAntimonySyntax(m_uniquevars[var]->GetNameDelimitedBy(cc), indent);
+          cvterms += m_uniquevars[var]->CreateKineticLawCVTermsAntimonySyntax(indent, cc);
           if (anycvterm == false && cvterms.size() > 0) {
               retval += "\n" + indent + "// CV terms:\n";
               anycvterm = true;
@@ -2662,6 +2807,11 @@ void Module::FixNames()
 void Module::FillInOrigmap(map<const Variable*, Variable >& origmap) const
 {
   map<const Variable*, Variable >::iterator origmapiter;
+  //Variables synchronized with more than one, unrelated submodule element
+  //have no single submodule default to compare against; once we find such
+  //a conflict we exclude the variable from origmap for good, so its
+  //top-level value always gets printed explicitly rather than guessed at.
+  set<const Variable*> conflicted;
 
   for (size_t var=0; var<m_variables.size(); var++) {
     if (m_variables[var]->GetType() == varModule) {
@@ -2670,6 +2820,13 @@ void Module::FillInOrigmap(map<const Variable*, Variable >& origmap) const
       //cout << "Module " << mname[0] << endl;
       const Module* submod = m_variables[var]->GetModule();
       const Module* origmod = g_registry.GetModule(submod->GetModuleName());
+      //If this submodel has a time conversion factor, all rules were 
+      // rescaled on import.  We'll need to compare every rule within it was
+      //automatically rescaled when the submodel was set up (see
+      //Module::ConvertTime/ConvertExtent). Reproduce those same
+      //transformations here.
+      Variable* tcf = m_variables[var]->GetTimeConversionFactor();
+      Variable* xcf = m_variables[var]->GetExtentConversionFactor();
       for (size_t uniq=0; uniq<origmod->m_uniquevars.size(); uniq++) {
         const Variable* origmodvar = origmod->m_uniquevars[uniq];
         //cout << "Original: " << origmodvar->GetNameDelimitedBy(".") << ": " << FormulaTypeToString(origmodvar->GetFormulaType());
@@ -2679,6 +2836,20 @@ void Module::FillInOrigmap(map<const Variable*, Variable >& origmap) const
         Variable copied(*(origmod->m_uniquevars[uniq]));
         copied.ClearSameName();
         copied.SetNewTopName(m_modulename, mname[0]);
+        if (tcf != NULL) {
+          copied.GetRateRule()->AddInvTimeConversionFactor(tcf);
+          copied.GetRateRule()->ConvertTime(tcf);
+        }
+        var_type ctype = copied.GetType();
+        if (IsReaction(ctype) || ctype == varInteraction) {
+          if (tcf != NULL) {
+            copied.GetReaction()->GetFormula()->AddInvTimeConversionFactor(tcf);
+            copied.GetReaction()->GetFormula()->ConvertTime(tcf);
+          }
+          if (xcf != NULL) {
+            copied.GetReaction()->GetFormula()->AddConversionFactor(xcf);
+          }
+        }
         const Variable* origvar = GetVariable(copied.GetName());
         if (origvar == NULL) {
           assert(false);
@@ -2686,8 +2857,27 @@ void Module::FillInOrigmap(map<const Variable*, Variable >& origmap) const
         }
         origvar = origvar->GetSameVariable();
         assert(find(m_uniquevars.begin(), m_uniquevars.end(), origvar) != m_uniquevars.end());
+        if (conflicted.find(origvar) != conflicted.end()) continue;
         origmapiter = origmap.find(origvar);
         if (origmapiter == origmap.end()) {
+          //If this variable was synchronized with a conversion factor, the value
+          //it started with isn't directly comparable to the outer model's value
+          //anymore; apply the conversion factor here so later comparisons (and
+          //thus decisions about whether the outer value is redundant) are fair.
+          for (size_t sync=0; sync<m_synchronized.size(); sync++) {
+            if ((m_synchronized[sync].first == copied.GetName() && m_synchronized[sync].second == origvar->GetName()) ||
+                (m_synchronized[sync].second == copied.GetName() && m_synchronized[sync].first == origvar->GetName())) {
+              const Variable* conversionFactor = GetVariable(m_conversionFactors[sync]);
+              if (conversionFactor != NULL) {
+                copied.GetFormula()->AddConversionFactor(conversionFactor);
+                copied.GetRateRule()->AddConversionFactor(conversionFactor);
+                if (IsReaction(ctype) || ctype == varInteraction) {
+                  copied.GetReaction()->GetFormula()->AddConversionFactor(conversionFactor);
+                }
+              }
+              break;
+            }
+          }
           origmap.insert(make_pair(origvar, copied));
         }
         else {
@@ -2717,14 +2907,11 @@ void Module::FillInOrigmap(map<const Variable*, Variable >& origmap) const
             }
           }
           if (!synched) {
-            //Sync them randomly  LS DEBUG
-            //assert(false);
-            origmapiter->second.Synchronize(&copied, NULL);
-            //copied.Synchronize(&origmapiter->second);
-            if (!copied.IsPointer()) {
-              //The synchronization worked backwards from what we tried.
-              origmapiter->second = copied;
-            }
+            //These two submodules aren't related to each other, so we have
+            //no principled way to pick one's default over the other's;
+            //don't guess, just require the top-level value to be printed.
+            origmap.erase(origmapiter);
+            conflicted.insert(origvar);
           }
           //cout << "Final: " << origmapiter->second.ToString() << endl;
         }
@@ -2920,18 +3107,19 @@ void Module::FillInSyncmap(map<const Variable*, Variable >& syncmap) const
 {
   for (size_t s=0; s<m_synchronized.size(); s++) {
     const Variable* var = NULL;
+    const Variable* conversionFactor = GetVariable(m_conversionFactors[s]);
     if (m_synchronized[s].first.size() > 1) {
       var = GetVariable(m_synchronized[s].first);
-      AddVarToSyncMap(var, syncmap);
+      AddVarToSyncMap(var, conversionFactor, syncmap);
     }
     if (m_synchronized[s].second.size() > 1) {
       var = GetVariable(m_synchronized[s].second);
-      AddVarToSyncMap(var, syncmap);
+      AddVarToSyncMap(var, conversionFactor, syncmap);
     }
   }
 }
 
-void Module::AddVarToSyncMap(const Variable* var, map<const Variable*, Variable >& syncmap) const
+void Module::AddVarToSyncMap(const Variable* var, const Variable* conversionFactor, map<const Variable*, Variable >& syncmap) const
 {
   vector<string> origname = var->GetName();
   if (origname.size() <=1) {
@@ -2948,6 +3136,18 @@ void Module::AddVarToSyncMap(const Variable* var, map<const Variable*, Variable 
   Variable copied = *origvar;
   copied.ClearSameName();
   copied.SetNewTopName(m_modulename, submodname[0]);
+  var_type ctype = copied.GetType();
+  //Bake in the per-variable conversion factor (from a "* cf is" synchronization
+  //or a comp:replacedElement conversionFactor), the same way FillInOrigmap does
+  //for the Antimony text writer, so comparisons against this cached original
+  //are fair.
+  if (conversionFactor != NULL) {
+    copied.GetFormula()->AddConversionFactor(conversionFactor);
+    copied.GetRateRule()->AddConversionFactor(conversionFactor);
+    if (IsReaction(ctype) || ctype == varInteraction) {
+      copied.GetReaction()->GetFormula()->AddConversionFactor(conversionFactor);
+    }
+  }
   syncmap.insert(make_pair(var, copied));
 }
 
@@ -2983,6 +3183,7 @@ void Module::Convert(Variable* conv, Variable* cf, string modulename)
     case varGeneProduct:
     case varGeneProductAssociation:
     case varSpeciesCharge:
+    case varSpeciesConversionFactor:
       form = subvar->GetFormula();
       origform = *origsubvar->GetFormula();
       for (size_t vn=m_variablename.size() - origsubvar->GetName().size() + 1; vn > 0; vn--) {
@@ -3016,6 +3217,7 @@ void Module::Convert(Variable* conv, Variable* cf, string modulename)
     case varSboTermWrapper:
     case varUncertWrapper:
     case varLayoutWrapper:
+    case varKineticLawWrapper:
     case varLayoutColorEtc:
     case varSpeciesChemicalFormula:
       break;
@@ -3060,11 +3262,13 @@ void Module::ConvertTime(Variable* tcf)
     case varSboTermWrapper:
     case varUncertWrapper:
     case varLayoutWrapper:
+    case varKineticLawWrapper:
     case varLayoutColorEtc:
     case varGeneProduct:
     case varGeneProductAssociation:
     case varSpeciesCharge:
     case varSpeciesChemicalFormula:
+    case varSpeciesConversionFactor:
       break;
     }
   }
@@ -3098,6 +3302,7 @@ void Module::ConvertExtent(Variable* xcf)
     case varSboTermWrapper:
     case varUncertWrapper:
     case varLayoutWrapper:
+    case varKineticLawWrapper:
     case varConstraint:
     case varStoichiometry:
     case varAlgebraicRule:
@@ -3106,6 +3311,7 @@ void Module::ConvertExtent(Variable* xcf)
     case varGeneProductAssociation:
     case varSpeciesCharge:
     case varSpeciesChemicalFormula:
+    case varSpeciesConversionFactor:
       break;
     }
   }
@@ -3146,11 +3352,13 @@ void Module::UndoTimeExtentConversions(Variable* tcf, Variable* xcf)
     case varSboTermWrapper:
     case varUncertWrapper:
     case varLayoutWrapper:
+    case varKineticLawWrapper:
     case varLayoutColorEtc:
     case varGeneProduct:
     case varGeneProductAssociation:
     case varSpeciesCharge:
     case varSpeciesChemicalFormula:
+    case varSpeciesConversionFactor:
       break;
     }
   }

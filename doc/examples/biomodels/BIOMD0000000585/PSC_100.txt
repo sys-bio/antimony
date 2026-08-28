@@ -1,0 +1,175 @@
+// Created by libAntimony v3.2.0
+model *js_psc100_rationeu_1e8()
+
+  // Compartments and Species:
+  compartment cell;
+  species $Ifng in cell, $Ir in cell, $II in cell, $d1 in cell, $d2 in cell;
+  species $d3 in cell, $d4 in cell, $Stat1Pd in cell, $Stat1U in cell, $j4 in cell;
+  species $Stat1Pdn in cell, $i1 in cell, $i2 in cell, $i3 in cell, $i4 in cell;
+  species $j1 in cell, $mRNA in cell, $j2 in cell, $j3 in cell, $Stat1Un in cell;
+  species $Stat1ex in cell, $Stat1Pex in cell, $Socs1ex in cell, $RSNCex in cell;
+  species $RSPNCex in cell;
+
+  // Assignment Rules:
+  Stat1ex := 3*(Stat1U + Stat1Pd)/4 + (Stat1Un + Stat1Pdn)/4;
+  Stat1Pex := ((3*Stat1Pd + Stat1Pdn)/4)*scale_Stat1Pex;
+  Socs1ex := mRNA*scale_Socs1ex;
+  RSNCex := (Stat1Un + Stat1Pdn)/(Stat1U + Stat1Pd);
+  RSPNCex := Stat1Pdn/max(1e-15, Stat1Pd);
+
+  // Rate Rules:
+  Ifng' = (-(k0*Ifng) - k1*Ifng*Ir) + k2*II;
+  Ir' = -(k1*Ifng*Ir) + k2*II;
+  II' = k1*Ifng*Ir - k2*II;
+  d1' = 4*(II - d1)/taud;
+  d2' = 4*(d1 - d2)/taud;
+  d3' = 4*(d2 - d3)/taud;
+  d4' = 4*(d3 - d4)/taud;
+  Stat1Pd' = k4*II*Stat1U/(1 + k14*j4) - k6*Stat1Pd;
+  Stat1U' = (k3*d4 - k11*Stat1U) + k12*Stat1Un/3 - k4*II*Stat1U/(1 + k14*j4);
+  j4' = 4*(j3 - j4)/tauj;
+  Stat1Pdn' = 3*k6*Stat1Pd - k5*Stat1Pdn;
+  i1' = 4*(Stat1Pdn - i1)/tau;
+  i2' = 4*(i1 - i2)/tau;
+  i3' = 4*(i2 - i3)/tau;
+  i4' = 4*(i3 - i4)/tau;
+  j1' = 4*(mRNA - j1)/tauj;
+  mRNA' = k13 + k9*i4 - k10*mRNA;
+  j2' = 4*(j1 - j2)/tauj;
+  j3' = 4*(j2 - j3)/tauj;
+  Stat1Un' = (3*k11*Stat1U - k12*Stat1Un) + k5*Stat1Pdn;
+
+  // Species initializations:
+  Ifng = 100;
+  Ifng has substance_per_volume;
+  Ir = 0.00131284;
+  Ir has substance_per_volume;
+  II = 0;
+  II has substance_per_volume;
+  d1 = 0;
+  d1 has substance_per_volume;
+  d2 = 0;
+  d2 has substance_per_volume;
+  d3 = 0;
+  d3 has substance_per_volume;
+  d4 = 0;
+  d4 has substance_per_volume;
+  Stat1Pd = 0;
+  Stat1Pd has substance_per_volume;
+  Stat1U = 0.907502;
+  Stat1U has substance_per_volume;
+  j4 = 0;
+  j4 has substance_per_volume;
+  Stat1Pdn = 0;
+  Stat1Pdn has substance_per_volume;
+  i1 = 0;
+  i1 has substance_per_volume;
+  i2 = 0;
+  i2 has substance_per_volume;
+  i3 = 0;
+  i3 has substance_per_volume;
+  i4 = 0;
+  i4 has substance_per_volume;
+  j1 = 0;
+  j1 has substance_per_volume;
+  mRNA = 0.208345;
+  mRNA has substance_per_volume;
+  j2 = 0;
+  j2 has substance_per_volume;
+  j3 = 0;
+  j3 has substance_per_volume;
+  Stat1Un = 0.914104;
+  Stat1Un has substance_per_volume;
+  Stat1ex has substance_per_volume;
+  Stat1Pex has substance_per_volume;
+  Socs1ex has substance_per_volume;
+  RSNCex has substance_per_volume;
+  RSPNCex has substance_per_volume;
+
+  // Compartment initializations:
+  cell = 1;
+  cell has volume;
+
+  // Variable initializations:
+  k0 = 0.00399946;
+  k1 = 0.0231057;
+  k2 = 0.0422019;
+  taud = 200.965;
+  k4 = 50.4962;
+  k14 = 1.16416;
+  k6 = 0.965946;
+  k5 = 0.839496;
+  tau = 37.0745;
+  tauj = 228.074;
+  k3 = 10.3153;
+  k11 = 0.0567402;
+  k12 = 0.219033;
+  k13 = 0.00477674;
+  k9 = 0.113424;
+  k10 = 0.0117084;
+  scale_Stat1Pex = 12.1866;
+  scale_Socs1ex = 0.566011;
+
+  // Other declarations:
+  const cell, k0, k1, k2, taud, k4, k14, k6, k5, tau, tauj, k3, k11, k12;
+  const k13, k9, k10, scale_Stat1Pex, scale_Socs1ex;
+
+  // Unit definitions:
+  unit volume = litre;
+  unit substance = mole;
+  unit area = metre^2;
+  unit length = metre;
+  unit extent = substance;
+  unit time_unit = second;
+  unit substance_per_volume = mole / litre;
+
+  // Display Names:
+  Stat1Pd is "STAT1Dc";
+  Stat1U is "STAT1Uc";
+  k14 is "k12";
+  Stat1Pdn is "STAT1Dn";
+  mRNA is "SOCS1";
+  k11 is "k9";
+  k12 is "k10";
+  Stat1Un is "STAT1Un";
+  k13 is "k11";
+  k9 is "k7";
+  k10 is "k8";
+  Stat1ex is "STAT1 (observed)";
+  Stat1Pex is "STAT1D (observed)";
+  scale_Stat1Pex is "WB_STAT1D";
+  Socs1ex is "SOCS1 (observed)";
+  scale_Socs1ex is "PCR_SOCS1";
+  RSNCex is "RSNC (observed)";
+  RSPNCex is "RSPNC (observed)";
+
+  // CV terms:
+  Stat1ex isEncodedBy "http://identifiers.org/ensembl/ENSG00000115415"
+  Stat1ex isEncodedBy "http://identifiers.org/hgnc.symbol/STAT1"
+  Socs1ex isEncodedBy "http://identifiers.org/ensembl/ENSG00000185338"
+  Socs1ex isEncodedBy "http://identifiers.org/hgnc.symbol/SOCS1"
+
+  model isDescribedBy "http://identifiers.org/doi/10.1371/journal.pcbi.1002815"
+  model created "2015-09-21T15:38:51Z"
+  model modified "2015-09-21T16:14:26Z"
+  model creator1.givenName "Katja"
+  model creator1.familyName "Rateitschak"
+  model creator1.organization "University of Rostock"
+  model creator1.email "katja.rateitschak@uni-rostock.de"
+  model creator2.givenName "Felix"
+  model creator2.familyName "Winter"
+  model creator2.organization "University of Rostock"
+  model creator2.email "winter@kapora.de"
+
+  // Notes:
+  model notes ```
+This model can be used to recreate the upper rows of Fig. S1 from the supplementary 
+material of the following publication:Rateitschak K, Winter F, Lange F, Jaster R, 
+Wolkenhauer O (2012)Parameter Identifiability and Sensitivity Analysis Predict Targets 
+for Enhancement of STAT1 Activity in Pancreatic Cancer and Stellate CellsPLoS Computational 
+Biology 8: e1002815DOI: 10.1371/journal.pcbi.1002815experimental conditions: IFNgamma 
+= 100ng/ml
+```
+end
+
+js_psc100_rationeu_1e8 is "js_psc100_rationeu_1e8"

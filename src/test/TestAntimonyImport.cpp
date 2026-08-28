@@ -7,14 +7,14 @@
 #include "antimony_api.h"
 #include <iostream>
 
+#include <sstream>
 #include <string>
-#include <check.h>
+#include <vector>
+#include "gtest/gtest.h"
 
 using namespace std;
 
-BEGIN_C_DECLS
-
-extern char *TestDataDirectory;
+extern string TestDataDirectory;
 
 void compareFileImport(const string& base)
 {
@@ -23,75 +23,82 @@ void compareFileImport(const string& base)
     string dir(TestDataDirectory);
     string sbmlfile = dir + base + ".xml";
     long ret = loadSBMLFile(sbmlfile.c_str());
-    fail_unless(ret != -1);
+    EXPECT_TRUE(ret != -1);
     char* sbml2ant = getAntimonyString(NULL);
-    fail_unless(sbml2ant != NULL);
+    EXPECT_TRUE(sbml2ant != NULL);
+    string sbml2antStr(sbml2ant);
+
+    // Check SBML import warnings exist, then strip them for round-trip 
+    // check through Antimony.
+    char* sbmlWarnings = getWarnings();
+    if (sbmlWarnings != NULL) {
+        istringstream warningstream(sbmlWarnings);
+        string warningline;
+        string header = "\n// Warnings from automatic translation:\n";
+        while (getline(warningstream, warningline)) {
+            header += "//    " + warningline + "\n";
+        }
+        header += "\n";
+        size_t pos = sbml2antStr.find(header);
+        EXPECT_NE(pos, string::npos) << "Expected translation-warnings header not found in the SBML import output.";
+        if (pos != string::npos) {
+            sbml2antStr.erase(pos, header.size());
+        }
+    }
 
     string antimonyfile = dir + base + ".txt";
     ret = loadAntimonyFile(antimonyfile.c_str());
-    fail_unless(ret != -1);
+    EXPECT_TRUE(ret != -1);
 
     char* roundtrip = getAntimonyString(NULL);
-    fail_unless(string(roundtrip) == string(sbml2ant));
+    EXPECT_STREQ(roundtrip, sbml2antStr.c_str());
 
     freeAll();
 }
 
-
-
-START_TEST (test_import_RateOf)
+TEST(AntimonyImport, test_import_RateOf)
 {
     compareFileImport("BIOMD0000000696");
 }
-END_TEST
 
-
-START_TEST(test_import_GAMMA)
+TEST(AntimonyImport, test_import_GAMMA)
 {
     compareFileImport("BIOMD0000000118");
 }
-END_TEST
 
-
-START_TEST(test_import_same_unit_name)
+TEST(AntimonyImport, test_import_same_unit_name)
 {
     compareFileImport("same_unit_name");
 }
-END_TEST
 
-
-START_TEST(test_import_default_compartment)
+TEST(AntimonyImport, test_import_default_compartment)
 {
     compareFileImport("default_compartment");
 }
-END_TEST
 
-START_TEST(test_import_volume)
+TEST(AntimonyImport, test_import_volume)
 {
     compareFileImport("volume");
 }
-END_TEST
 
-
-
-
-Suite *
-create_suite_Import (void)
+// Tests reactions with multiple reactants/products, all with stoichiometry math.
+// Originally MODEL1504010000_url.xml
+TEST(AntimonyImport, test_import_MODEL1504010000_url)
 {
-  Suite *suite = suite_create("Antimony Import");
-  TCase *tcase = tcase_create("Antimony Import");
-
-  tcase_add_test(tcase, test_import_default_compartment);
-  tcase_add_test(tcase, test_import_GAMMA);
-  tcase_add_test(tcase, test_import_RateOf);
-  tcase_add_test(tcase, test_import_same_unit_name);
-  tcase_add_test(tcase, test_import_volume);
-
-  suite_add_tcase(suite, tcase);
-
-  return suite;
+    compareFileImport("oxphos_nad_redacted");
 }
 
-END_C_DECLS
+// SBML Test Suite case 1155:  a submodel event's delay is deleted via
+// comp:Deletion, leaving the rest of the event (trigger and assignments)
+// intact.  The event (and the variables its assignments target) should be
+// promoted to new top-level elements aliased back to the submodel with
+// 'is', rather than reprinted as a submodel-qualified redefinition.
+TEST(AntimonyImport, test_import_case01155)
+{
+    compareFileImport("case01155");
+}
 
-
+TEST(AntimonyImport, test_two_default_compartments)
+{
+  compareFileImport("two_default_compartments");
+}

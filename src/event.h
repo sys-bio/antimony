@@ -59,6 +59,7 @@ public:
 
   size_t GetNumAssignments() const {return m_varresults.size();};
   std::string GetNthAssignmentVariableName(size_t n, std::string cc) const;
+  Variable* GetNthAssignmentVariable(size_t n) const;
   std::string GetNthAssignmentFormulaString(size_t n, std::string cc, bool SBML) const;
   const Formula* GetAssignmentFormula(size_t n) const;
   std::string ToStringDelimitedBy(std::string cc) const;

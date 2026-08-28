@@ -1,0 +1,100 @@
+// Created by libAntimony v3.2.0
+model *Model_0()
+
+  // Compartments and Species:
+  compartment body;
+  substanceOnly species P in body, Q in body, R in body;
+
+  // Reactions:
+  reaction_0:  => P; body*(reaction_0_a*Q);
+  reaction_1: P => ; reaction_1_V*P/(reaction_1_Km + P);
+  reaction_2:  => Q; reaction_2_V1*(1 - Q)/(reaction_2_K1 + (1 - Q));
+  reaction_3: Q => ; reaction_3_V2*R*Q/(reaction_3_K2 + Q);
+  reaction_4:  => R; P*reaction_4_V3*(1 - R)/(reaction_4_k3 + (1 - R));
+  reaction_5: R => ; reaction_5_V*R/(reaction_5_Km + R);
+
+  // Species initializations:
+  P = 0.43*body;
+  Q = 0.8*body;
+  R = 0.55*body;
+
+  // Compartment initializations:
+  body = 1;
+
+  // Variable initializations:
+  reaction_0_a = 0.1;
+  reaction_1_V = 0.1;
+  reaction_1_Km = 0.2;
+  reaction_2_V1 = 1;
+  reaction_2_K1 = 0.01;
+  reaction_3_V2 = 1.5;
+  reaction_3_K2 = 0.01;
+  reaction_4_V3 = 6;
+  reaction_4_k3 = 0.01;
+  reaction_5_V = 2.5;
+  reaction_5_Km = 0.01;
+
+  // Other declarations:
+  const body;
+
+  // Unit definitions:
+  unit time_unit = 604800 second;
+  unit substance = dimensionless;
+
+  // Display Names:
+  time_unit is "weeks";
+  substance is "dimensionless";
+  reaction_0 is "Increase of  P";
+  reaction_1 is "Decrease of P";
+  reaction_2 is "Increase of Q";
+  reaction_3 is "Decrease of Q";
+  reaction_4 is "Increase of R";
+  reaction_5 is "Decrease of R";
+
+  // CV terms:
+  reaction_0 isVersionOf "http://identifiers.org/go/GO:0040018",
+                         "http://identifiers.org/go/GO:0035264"
+  reaction_1 isVersionOf "http://identifiers.org/go/GO:0040015"
+  reaction_2 isVersionOf "http://identifiers.org/go/GO:0007631"
+  reaction_3 isVersionOf "http://identifiers.org/go/GO:0002023"
+  reaction_4 isVersionOf "http://identifiers.org/go/GO:0048520"
+  reaction_5 isVersionOf "http://identifiers.org/go/GO:0048521"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL4644593552"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000079"
+  model publication "http://identifiers.org/pubmed/16595882"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model isVersionOf "http://identifiers.org/go/GO:0040014"
+  model created "2006-11-24T10:19:23Z"
+  model modified "2015-02-25T11:30:27Z"
+  model creator1.givenName "Enuo"
+  model creator1.familyName "He"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "enuo@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+This model is according to the paper of *A model for the dynamics of human weight
+cycling* by A. Goldbeter 2006.The figure3 (A) and (B) have been reproduced
+by Copasi 4.0.19(development) and SBMLodeSolver.The writer of the paper did not specify
+any units for the metabolites, so the creator of the model did not define the units
+as well.Both Q and R are normalized to vary between 0 and 1. 
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Creative Commons CC0") for more information. 
+
+In summary, you are entitled to use this encoded model in absolutely any manner you
+deem suitable, verbatim, or with modification, alone or embedded it in a larger context,
+redistribute it, commercially or not, in a restricted way or not.
+
+
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+  P notes "body weight"
+  Q notes "dietary intake"
+  R notes "degree of resolution measuring cognitive restraint"
+end
+
+Model_0 is "Goldbeter2006_weightCycling"

@@ -1,0 +1,295 @@
+// Created by libAntimony v3.2.0
+
+// Warnings from automatic translation:
+//    Layout error in model:  unable to draw an arc between the species '' and the reaction 'k_deg': '' is not a participant in that reaction.
+//    Unable to set layout_glyph_3.position to {668,240}.
+//    Layout error in model:  unable to draw an arc between the species '' and the reaction 'k_shed': '' is not a participant in that reaction.
+//    Unable to set layout_glyph_5.position to {372,61}.
+
+model *Giantsos_Adams2013___Growth_of_glycocalyx_under_static_conditions()
+
+  // Compartments and Species:
+  compartment default;
+  species s1 in default, s2 in default, s3 in default, $s6 in default, s4 in default;
+  species release in default, shedding in default;
+
+  // Reactions:
+  k_golgi: $s6 => s1; default*(s6*default*k_golgi_k3/default);
+  k_endo: s1 => s2; default*(s1*default*k_endo_k1/default);
+  k_exo: s2 => s1; default*(s2*default*k_exo_k2/default);
+  k_le: s2 => s3; default*(s2*default*k_le_k6/default);
+  k_lys: s3 => s4; default*(s3*default*k_lys_k7/default);
+  k_deg: s4 => release; default*(s4*default*k_deg_k8/default);
+  k_shed: s1 => shedding; default*(s1*default*k_shed_k4/default);
+
+  // Species initializations:
+  s1 = 0.1;
+  s2 = 0.4;
+  s3 = 0.4;
+  s6 = 0.05;
+  s4 = 1.23;
+  release = 0;
+  shedding = 0;
+
+  // Compartment initializations:
+  default = 1;
+
+  // Variable initializations:
+  k_golgi_k3 = 0.96;
+  k_endo_k1 = 0.05;
+  k_exo_k2 = 0.05;
+  k_le_k6 = 0.01;
+  k_lys_k7 = 0.01;
+  k_deg_k8 = 0.005;
+  k_shed_k4 = 0.033;
+
+  // Other declarations:
+  const default;
+
+  // Unit definitions:
+  unit time_unit = 3600 second;
+
+  // Display Names:
+  time_unit is "time";
+  s1 is "HS surface";
+  s2 is "early endosome";
+  s3 is "late endosome";
+  s6 is "golgi";
+  s4 is "lysosome";
+  k_golgi is "De novo HS production for Golgi aparatus";
+  k_endo is "HS exocytosis from recycling vesicles";
+  k_exo is "HS endocytosis";
+  k_le is "HS trafficking to late endosome";
+  k_lys is "HS trafficking to lysosome";
+  k_deg is "HS release from lysosome";
+  k_shed is "HS cell surface shedding";
+
+  // General layout options
+  model.layout = on
+  model.layout.size = {800, 600}
+  model.layout.background = "#FFFFFFFF"
+
+  // Species layout defaults
+  species.color = "#a0e0a030"
+
+  // Reaction layout defaults
+  reaction.lineColor = "#000000a0"
+  reaction.lineWidth = 3
+  reaction.fontColor = "#000000a0"
+
+  // Compartment layout defaults
+  compartment.lineColor = "#e69600b0"
+  compartment.fontColor = "#e69600b0"
+  compartment.fontStyle = normal
+
+  // Individual element layout information
+  s1.position = {218, 57}
+  s1.size = {80, 40}
+  s1.color = "#cccccc"
+  s1.lineColor = black
+  s1.lineWidth = 1
+  s1.font = Arial
+  s1.fontColor = black
+  s1.fontSize = 12
+  s2.position = {197, 178}
+  s2.size = {120, 40}
+  s2.color = "#cccccc"
+  s2.lineColor = black
+  s2.lineWidth = 1
+  s2.font = Arial
+  s2.fontColor = black
+  s2.fontSize = 12
+  s3.position = {360, 235}
+  s3.size = {100, 40}
+  s3.color = "#cccccc"
+  s3.lineColor = black
+  s3.lineWidth = 1
+  s3.font = Arial
+  s3.fontColor = black
+  s3.fontSize = 12
+  s6.position = {76, 111}
+  s6.size = {80, 40}
+  s6.color = "#cccccc"
+  s6.lineColor = black
+  s6.lineWidth = 1
+  s6.font = Arial
+  s6.fontColor = black
+  s6.fontSize = 12
+  s4.position = {516, 234}
+  s4.size = {100, 40}
+  s4.color = "#cccccc"
+  s4.lineColor = black
+  s4.lineWidth = 1
+  s4.font = Arial
+  s4.fontColor = black
+  s4.fontSize = 12
+  s4.shape = octagon
+  k_golgi.position = {167, 99}
+  k_golgi.lineColor = black
+  k_golgi.lineWidth = 1
+  k_golgi.s6.rxn_end = {159.7, 100.72}
+  k_golgi.s6.species_end = {116, 111}
+  k_golgi.s6.b1 = {0, 0}
+  k_golgi.s6.b2 = {0, 0}
+  k_golgi.s1.rxn_end = {174.3, 97.28}
+  k_golgi.s1.species_end = {218, 87}
+  k_golgi.s1.b1 = {0, 0}
+  k_golgi.s1.b2 = {0, 0}
+  k_endo.position = {257, 137.75}
+  k_endo.lineColor = black
+  k_endo.lineWidth = 1
+  k_endo.s1.b1 = {0, 0}
+  k_endo.s1.b2 = {0, 0}
+  k_endo.s1.seg2.species_end = {258, 97.5}
+  k_endo.s1.seg2.b1 = {0, 0}
+  k_endo.s1.seg2.b2 = {0, 0}
+  k_endo.s1.seg3.rxn_end = {258, 97.5}
+  k_endo.s1.seg3.species_end = {258, 97}
+  k_endo.s1.seg3.b1 = {0, 0}
+  k_endo.s1.seg3.b2 = {0, 0}
+  k_endo.s2.b1 = {0, 0}
+  k_endo.s2.b2 = {0, 0}
+  k_exo.position = {282.5, 137.5}
+  k_exo.lineColor = black
+  k_exo.lineWidth = 1
+  k_exo.s2.rxn_end = {283.33, 144.95}
+  k_exo.s2.species_end = {287, 178}
+  k_exo.s2.b1 = {0, 0}
+  k_exo.s2.b2 = {0, 0}
+  k_exo.s1.rxn_end = {281.67, 130.05}
+  k_exo.s1.species_end = {278, 97}
+  k_exo.s1.b1 = {0, 0}
+  k_exo.s1.b2 = {0, 0}
+  k_le.position = {338.5, 226.5}
+  k_le.lineColor = black
+  k_le.lineWidth = 1
+  k_le.s2.rxn_end = {331.53, 223.74}
+  k_le.s2.species_end = {317, 218}
+  k_le.s2.b1 = {0, 0}
+  k_le.s2.b2 = {0, 0}
+  k_le.s3.rxn_end = {345.47, 229.26}
+  k_le.s3.species_end = {360, 235}
+  k_le.s3.b1 = {0, 0}
+  k_le.s3.b2 = {0, 0}
+  k_lys.position = {488, 254.5}
+  k_lys.lineColor = black
+  k_lys.lineWidth = 1
+  k_lys.s3.rxn_end = {480.5, 254.63}
+  k_lys.s3.species_end = {460, 255}
+  k_lys.s3.b1 = {0, 0}
+  k_lys.s3.b2 = {0, 0}
+  k_lys.s4.rxn_end = {495.5, 254.37}
+  k_lys.s4.species_end = {516, 254}
+  k_lys.s4.b1 = {0, 0}
+  k_lys.s4.b2 = {0, 0}
+  k_deg.position = {642, 254.5}
+  k_deg.lineColor = black
+  k_deg.lineWidth = 1
+  k_deg.s4.rxn_end = {634.5, 254.36}
+  k_deg.s4.species_end = {616, 254}
+  k_deg.s4.b1 = {0, 0}
+  k_deg.s4.b2 = {0, 0}
+  k_deg.--.rxn_end = {649.5, 254.64}
+  k_deg.--.species_end = {668, 255}
+  k_deg.--.b1 = {0, 0}
+  k_deg.--.b2 = {0, 0}
+  k_deg.--.position = {668, 240}
+  k_deg.--.color = white
+  k_deg.--.lineColor = black
+  k_deg.--.lineWidth = 1
+  k_shed.position = {335, 76.5}
+  k_shed.lineColor = black
+  k_shed.lineWidth = 1
+  k_shed.s1.rxn_end = {327.5, 76.6}
+  k_shed.s1.species_end = {298, 77}
+  k_shed.s1.b1 = {0, 0}
+  k_shed.s1.b2 = {0, 0}
+  k_shed.--.rxn_end = {342.5, 76.4}
+  k_shed.--.species_end = {372, 76}
+  k_shed.--.b1 = {0, 0}
+  k_shed.--.b2 = {0, 0}
+  k_shed.--.position = {372, 61}
+  k_shed.--.color = white
+  k_shed.--.lineColor = black
+  k_shed.--.lineWidth = 1
+
+  // CV terms:
+  s1 identity "http://identifiers.org/ncit/C540"
+  s2 identity "http://identifiers.org/go/GO:0005769"
+  s3 identity "http://identifiers.org/go/GO:0005770"
+  s6 identity "http://identifiers.org/ncit/C13238"
+  s4 identity "http://identifiers.org/go/GO:0005764"
+  release hasProperty "http://identifiers.org/ncit/C42882"
+  k_golgi hasProperty "http://identifiers.org/ncit/C112927"
+  k_endo hasProperty "http://identifiers.org/ncit/C16568"
+  k_exo hasProperty "http://identifiers.org/ncit/C16544"
+  k_le hasProperty "http://identifiers.org/ncit/C48167"
+  k_lys hasProperty "http://identifiers.org/ncit/C48167"
+  k_deg hasProperty "http://identifiers.org/ncit/C42882"
+
+  model hasInstance "http://identifiers.org/mamo/MAMO_0000046",
+                    "http://identifiers.org/biomodels.db/MODEL1609100000",
+                    "http://identifiers.org/taxonomy/9606",
+                    "http://identifiers.org/ncit/C540"
+  model publication "http://identifiers.org/ncit/C540",
+                    "http://identifiers.org/pubmed/23805169"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1609100000",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000830"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000046"
+  model hasProperty "http://identifiers.org/biomodels.db/MODEL1609100000"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model created "2019-10-01T11:58:36Z"
+  model modified "2019-10-01T11:58:36Z"
+  model creator1.givenName "Sharif Shohan"
+  model creator1.familyName "Mohammad Umer"
+  model creator1.organization "EMBL - EBI"
+  model creator1.email "msharifshohan@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Giantsos-Adams2013 - Growth of glycocalyxunder static conditions 
+
+
+This model is described in the article:
+
+
+[Heparan Sulfate Regrowth Profiles Under Laminar Shear Flow Following Enzymatic Degradation.](http://identifiers.org/pubmed/23805169 "Access to this publication") 
+
+
+Giantsos-Adams KM, Koo AJ, Song S, Sakai J, Sankaran J, Shin JH, Garcia-Cardena
+G, Dewey CF. 
+
+Cell Mol Bioeng 2013 Jun; 6(2): 160-174 
+Abstract:
+
+
+The local hemodynamic shear stress waveforms present in an artery dictate the
+endothelial cell phenotype. The observed decrease of the apical glycocalyx layer
+on the endothelium in atheroprone regions of the circulation suggests that the
+glycocalyx may have a central role in determining atherosclerotic plaque formation.
+However, the kinetics for the cells&apos; ability to adapt its glycocalyx to the
+environment have not been quantitatively resolved. Here we report that the 
+heparan sulfate component of the glycocalyx of HUVECs increases by 1.4-fold following
+the onset of high shear stress, compared to static cultured cells, with a time
+constant of 19 h. Cell morphology experiments show that 12 h are required for
+the cells to elongate, but only after 36 h have the cells reached maximal alignment
+to the flow vector. Our findings demonstrate that following enzymatic degradation,
+heparan sulfate is restored to the cell surface within 12 h under flow whereas
+the time required is 20 h under static conditions. We also propose a model describing
+the contribution of endocytosis and exocytosis to apical heparan sulfate expression.
+The change in HS regrowth kinetics from static to high-shear EC phenotype implies
+a differential in the rate of endocytic and exocytic membrane turnover.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [MODEL1609100001](http://identifiers.org/biomodels.db/MODEL1609100001).
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication").
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+end
+
+Giantsos_Adams2013___Growth_of_glycocalyx_under_static_conditions is "GiantsosAdams2013 - Growth of glycocalyx under static conditions"

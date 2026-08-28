@@ -1,0 +1,167 @@
+// Created by libAntimony v3.2.0
+model *Waugh2006___Diabetic_Wound_Healing___Macrophage_Dynamics()
+
+  // Compartments and Species:
+  compartment COMpartment;
+  species $K_T in COMpartment, $T in COMpartment, $phi_I in COMpartment, $phi_R in COMpartment;
+
+  // Assignment Rules:
+  K_T := tau1*T^3 + tau2*T^2 + tau3*T + tau4;
+
+  // Rate Rules:
+  T' = k4*phi_I - d2*T;
+  phi_I' = alpha*K_T + k1*k2*phi_I*(1 - k3*(phi_I + phi_R)) - d1*phi_I;
+  phi_R' = (1 - alpha)*K_T + k1*k2*phi_R*(1 - k3*(phi_I + phi_R)) - d1*phi_R;
+
+  // Reactions:
+  Migration_of_monocytes_to_the_wound_site_phi_I:  => $phi_I; COMpartment*(alpha*K_T);
+  Mitotic_division_of_phi_I:  => $phi_I; COMpartment*(k1*k2*phi_I*(1 - k3*(phi_I + phi_R)));
+  Mitotic_division_of_phi_R:  => $phi_R; COMpartment*(k1*k2*phi_R*(1 - k3*(phi_I + phi_R)));
+  Removal_of_macrophages_from_the_wound_site: $phi_I => ; COMpartment*d1*phi_I;
+  Migration_of_monocytes_to_the_wound_sites_phi_R:  => $phi_R; COMpartment*((1 - alpha)*K_T);
+  Removal_of_macrophages_from_wound_site: $phi_R => ; COMpartment*d1*phi_R;
+  Production_of_T_by_inflammatory_macrophage:  => $T; COMpartment*(k4*phi_I);
+  Decay_of_T: $T => ; COMpartment*d2*T;
+
+  // Species initializations:
+  T = 6;
+  phi_I = 200;
+  phi_R = 200;
+
+  // Compartment initializations:
+  COMpartment = 1;
+
+  // Variable initializations:
+  tau1 = -2.47;
+  tau1 has unit_0;
+  tau2 = 21.94;
+  tau2 has unit_1;
+  tau3 = 6.41;
+  tau3 has unit_2;
+  tau4 = 1.75;
+  tau4 has unit_3;
+  alpha = 0.8;
+  alpha has unit_4;
+  k1 = 0.05;
+  k1 has unit_4;
+  k2 = 0.693;
+  k2 has unit_5;
+  k3 = 0.002;
+  k3 has unit_6;
+  d1 = 0.2;
+  d1 has unit_5;
+  k4 = 0.07;
+  k4 has unit_7;
+  d2 = 9.1;
+  d2 has unit_5;
+
+  // Other declarations:
+  const COMpartment, tau1, tau2, tau3, tau4, alpha, k1, k2, k3, d1, k4, d2;
+
+  // Unit definitions:
+  unit time_unit = 86400 second;
+  unit unit_0 = (0.0210258 metre)^6 / (gram^3 * second);
+  unit unit_1 = (0.442084e-3 metre)^3 / (gram^2 * second);
+  unit unit_2 = 1 / (11.5741e6 gram * second);
+  unit unit_3 = 1 / ((0.226202 metre)^3 * second);
+  unit unit_4 = 1 / dimensionless^-0;
+  unit unit_5 = 1 / 0.0115741e-3 second;
+  unit unit_6 = (0.1 metre)^3;
+  unit unit_7 = 0.0864 gram / ((0.0864e-6 dimensionless)^-0 * second);
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "8.64e-11*m^6/(g³*s)";
+  unit_1 is "0.0864*mm³/(g²*s)";
+  unit_2 is "1/(11.5741*Mg*s)";
+  unit_3 is "1/(0.0115741*m³*s)";
+  unit_4 is "1";
+  unit_5 is "1/(0.0115741*ms)";
+  unit_6 is "0.001*m³";
+  unit_7 is "0.0864*µg/s";
+  COMpartment is "Wound";
+  Migration_of_monocytes_to_the_wound_site_phi_I is "Migration of monocytes to the wound site phi_I";
+  Mitotic_division_of_phi_I is "Mitotic division of phi_I";
+  Mitotic_division_of_phi_R is "Mitotic division of phi_R";
+  Removal_of_macrophages_from_the_wound_site is "Removal of macrophages from the wound site";
+  Migration_of_monocytes_to_the_wound_sites_phi_R is "Migration of monocytes to the wound sites phi_R";
+  Removal_of_macrophages_from_wound_site is "Removal of macrophages from wound site";
+  Production_of_T_by_inflammatory_macrophage is "Production of T by inflammatory macrophage";
+  Decay_of_T is "Decay of T";
+
+  // CV terms:
+  COMpartment isVersionOf "http://identifiers.org/efo/0005756"
+  K_T isInstanceOf "http://identifiers.org/bto/BTO:0000876",
+                   "http://identifiers.org/go/GO:0035703"
+  K_T isVersionOf "http://identifiers.org/bto/BTO:0000876"
+  T isVersionOf "http://identifiers.org/pr/PR:000000046"
+  phi_I isVersionOf "http://identifiers.org/bto/BTO:0000801"
+  phi_I isVersionOf "http://identifiers.org/cl/CL:0000863"
+  k1 encodes "http://identifiers.org/ncit/C16864"
+  k2 encodes "http://identifiers.org/sbo/SBO:0000610"
+  phi_R isVersionOf "http://identifiers.org/bto/BTO:0000801"
+  phi_R hasProperty "http://identifiers.org/ncit/C17260"
+  d1 encodes "http://identifiers.org/sbo/SBO:0000179"
+  d2 encodes "http://identifiers.org/sbo/SBO:0000179"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1006230002",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000679"
+  model isVersionOf "http://identifiers.org/go/GO:0061041"
+  model hasProperty "http://identifiers.org/efo/0000400"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model isDescribedBy "http://identifiers.org/pubmed/16794927"
+  model created "2010-06-25T12:01:19Z"
+  model modified "2010-06-25T12:01:19Z"
+  model creator1.givenName "Catherine"
+  model creator1.familyName "Lloyd"
+  model creator1.organization "University of Auckland"
+  model creator1.email "c.lloyd@auckland.ac.nz"
+  model creator2.givenName "Matthew Grant"
+  model creator2.familyName "Roberts"
+  model creator2.organization "EMBL-EBI"
+  model creator2.email "mroberts@ebi.ac.uk"
+  model creator3.givenName "Sarubini"
+  model creator3.familyName "Kananathan"
+  model creator3.email "sarubini.kananathan"
+
+  // Notes:
+  model notes ```
+This a model from the article: 
+**Macrophage dynamics in diabetic wound dealing.** 
+Waugh HV, Sherratt JA. *Bull Math Biol* 2006 Jan;68(1):197-207
+[16794927](http://www.ncbi.nlm.nih.gov/pubmed/16794927) , 
+**Abstract:** 
+Wound healing in diabetes is a complex process, characterised by a chronicinflammation
+phase. The exact mechanism by which this occurs is not fullyunderstood, and whilst
+several treatments for healing diabetic wounds exist,very little research has been
+conducted towards the causes of the extendedinflammation phase. We describe a mathematical
+model which offers a possibleexplanation for diabetic wound healing in terms of the
+distribution ofmacrophage phenotypes being altered in the diabetic patient compared
+to normalwound repair. As a consequence of this, we put forward a suggestion fortreatment
+based on rectifying the macrophage phenotype imbalance. 
+
+This model was taken from the [CellML repository](http://www.cellml.org/models) and automatically converted to SBML. 
+The original model was: [ **Waugh HV, Sherratt JA. (2006) - version=1.0**
+](http://models.cellml.org/exposure/5f5e46fb3a5d3c2e85c81bef880f91d1) 
+The original CellML model was created by: 
+**Catherine Lloyd** 
+c.lloyd@auckland.ac.nz 
+The University of Auckland 
+
+
+This model originates from BioModels Database: A Database of Annotated Published
+Models (http://www.ebi.ac.uk/biomodels/). It is copyright (c) 2005-2011 The BioModels.net
+Team. 
+To the extent possible under law, all copyright and related or neighbouring
+rights to this encoded model have been dedicated to the public domain worldwide.
+Please refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Creative Commons CC0") for more information. 
+
+In summary, you are entitled to use this encoded model in absolutely any manner you
+deem suitable, verbatim, or with modification, alone or embedded it in a larger context,
+redistribute it, commercially or not, in a restricted way or not.. 
+
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+end
+
+Waugh2006___Diabetic_Wound_Healing___Macrophage_Dynamics is "Waugh2006 - Diabetic Wound Healing - Macrophage Dynamics"

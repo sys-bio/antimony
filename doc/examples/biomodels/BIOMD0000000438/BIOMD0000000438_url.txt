@@ -1,0 +1,183 @@
+// Created by libAntimony v3.2.0
+model *MODEL1301110000()
+
+  // Compartments and Species:
+  compartment default;
+  species s4 in default, s17 in default, s5 in default, s42 in default, s45 in default;
+  substanceOnly species s1 in default, s19 in default, s3 in default, s16 in default;
+  substanceOnly species s2 in default;
+
+  // Reactions:
+  re3: s19 => s3; re3_Y2*s19;
+  re2: s2 => s19; re2_k2*s2;
+  re4: s19 + s4 => s42; s19*s4*re4_k3 - re4_k4*s42;
+  re5: s42 + s16 => s17; s16*s42*re5_k5 - re5_k6*s17;
+  re8: s4 => s5; re8_Y3*s4;
+  re1: s1 => s2; re1_k1*s1 - re1_Y1*s2;
+  re14: s17 => s45; (re14_K7 + re14_K8*s17^re14_n1/(re14_K9^re14_n1 + s17^re14_n1))*(re14_k10 + re14_K11*s17^re14_n2/(re14_K12^re14_n2 + s17^re14_n2) - s45);
+
+  // Species initializations:
+  s1 = 1e-05;
+  s19 = 1e-06;
+  s3 = 0;
+  s4 = 5e-06;
+  s16 = 1e-05;
+  s17 = 0;
+  s5 = 0;
+  s42 = 0;
+  s2 = 0;
+  s45 = 0;
+
+  // Compartment initializations:
+  default = 1;
+  default has volume;
+
+  // Variable initializations:
+  re3_Y2 = 0.0696;
+  re3_Y2 has substance;
+  re2_k2 = 35.7;
+  re2_k2 has substance;
+  re4_k3 = 9600000;
+  re4_k3 has substance;
+  re4_k4 = 0;
+  re4_k4 has substance;
+  re5_k5 = 1960000;
+  re5_k5 has substance;
+  re5_k6 = 10.2;
+  re5_k6 has substance;
+  re8_Y3 = 0.0002832;
+  re8_Y3 has substance;
+  re1_k1 = 3.734;
+  re1_k1 has substance;
+  re1_Y1 = 0.348;
+  re1_Y1 has substance;
+  re14_K7 = 0.004051;
+  re14_K7 has substance;
+  re14_K8 = 0.009567;
+  re14_K8 has substance;
+  re14_K9 = 9.742e-08;
+  re14_K9 has substance;
+  re14_k10 = 6.5e-16;
+  re14_k10 has substance;
+  re14_K11 = 1e-14;
+  re14_K11 has substance;
+  re14_K12 = 2.4e-07;
+  re14_K12 has substance;
+  re14_n1 = 2;
+  re14_n1 has substance;
+  re14_n2 = 2;
+  re14_n2 has substance;
+
+  // Other declarations:
+  const default;
+
+  // Unit definitions:
+  unit substance = mole;
+  unit volume = litre;
+  unit area = metre^2;
+  unit length = metre;
+  unit time_unit = second;
+
+  // Display Names:
+  time_unit is "time";
+  s1 is "Ptet-LasR";
+  s19 is "LasR";
+  s3 is "sa3_degraded";
+  s4 is "3OC12HSL";
+  s16 is "pLuxR";
+  s17 is "A pLux";
+  s5 is "sa6_degraded";
+  s42 is "LasR/AHL";
+  s2 is "mRNA(LasR)";
+  s45 is "GFP";
+
+  // CV terms:
+  s19 identity "http://identifiers.org/uniprot/P25084"
+  s4 identity "http://identifiers.org/chebi/CHEBI:56080"
+  s17 isVersionOf "http://identifiers.org/go/GO:0000428"
+  s42 isVersionOf "http://identifiers.org/go/GO:0005667"
+  s2 isVersionOf "http://identifiers.org/chebi/CHEBI:33699"
+  s45 identity "http://identifiers.org/uniprot/P42212"
+  re3 isVersionOf "http://identifiers.org/go/GO:0030163"
+  re2 isVersionOf "http://identifiers.org/go/GO:0006412"
+  re4 isVersionOf "http://identifiers.org/go/GO:0008134"
+  re5 isVersionOf "http://identifiers.org/go/GO:0010843"
+  re1 isVersionOf "http://identifiers.org/go/GO:0009299"
+  re14 isVersionOf "http://identifiers.org/go/GO:0006412"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1301110000"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000438"
+  model publication "http://identifiers.org/doi/10.1016/j.ces.2012.12.016"
+  model hasTaxon "http://identifiers.org/taxonomy/131567"
+  model isVersionOf "http://identifiers.org/go/GO:0009372"
+  model created "2013-02-27T13:22:55Z"
+  model modified "2016-04-08T17:23:25Z"
+  model creator1.givenName "Vijayalakshmi"
+  model creator1.familyName "Chelliah"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "viji@ebi.ac.uk"
+  model creator2.givenName "Nazanin"
+  model creator2.familyName "Saeidi"
+  model creator2.organization "NTU"
+  model creator2.email "nazaninsaeidi@ntu.edu.sg"
+
+  // Notes:
+  model notes ```
+Saeidi2012 - Quorum sensing device that produces GFP 
+
+
+Saeidi *et al.* (2012) has modelled a quorum sensing device that
+produces green fluorescent protein (GFP) as reporter in the presence of Acyl Homoserine
+Lactone (AHL). 
+
+
+This model is described in the article:
+
+
+[Characterization of a quorum sensing device for synthetic biology design: Experimental and modeling validation](http://identifiers.org/doi/10.1016/j.ces.2012.12.016 "Access to this publication") 
+
+
+Nazanin Saeidi, Mohamed Arshath, Matthew Wook Chang, Chueh Loo Poh 
+
+Chemical Engineering Science. December 2012. 
+Abstract:
+
+
+Modeling of biological parts is of crucial importance as it enables the in silico
+study of synthetic biological systems prior to the actual construction of genetic
+circuits, which can be time consuming and costly. Because standard biological parts
+are utilized to build the synthetic systems, it is important that each of these standard
+parts is well characterized and has a corresponding mathematical model that could
+simulate the characteristics of the part. These models could be used in computer
+aided design (CAD) tools during the design stage to facilitate the building of the
+model of biological systems. This paper describes the development of a mathematical
+model that is able to simulate both the dynamic and static performance of a biological
+device created using standard parts. We modeled an example quorum sensing device
+that produces green fluorescent protein (GFP) as reporter in the presence of Acyl
+Homoserine Lactone (AHL). The parameters of the model were estimated using experimental
+results. The simulation results show that the model was able to simulate behavior
+similar to experimental results. Since it is important that these models and the
+content in the models can be searchable and readable by machines, standard SBML (system
+biology markup language) format was used to store the models. All parts and reactions
+are fully annotated to enable easy searching, and the models follow the Minimum Information
+Requested In the Annotation of Models (MIRIAM) compliance as well as the Minimum
+Information About a Simulation Experiment (MIASE).
+
+
+Figure 4a of the reference publication has been reproduced as curation figure. The
+plot shows the performance of the model at different concentrations of the inducer
+(3OC12HSL=5E-10, 5E-07, 5E-07).
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identifiedby: [MODEL1301110000](http://identifiers.org/biomodels.db/MODEL1301110000) . 
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resourcefor published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication") . 
+
+
+To the extent possible under law, all copyright and related orneighbouring rights
+to this encoded model have been dedicated to the publicdomain worldwide. Please refer
+to [CC0 Public DomainDedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+end
+
+MODEL1301110000 is "Saeidi2012 - Quorum sensing device that produces GFP"

@@ -203,15 +203,15 @@ public:
   bool GetRemoveFunctionDefinitions();
 
   // CV terms
-  bool ProcessGlobalCVTerm(const std::string* name, const std::string* qual, std::vector<std::string>* resources);
+  bool ProcessGlobalCVTerm(const std::string* name, const std::string* qual, const std::vector<std::string>& resources);
 
   bool ProcessCreatorTerm(Annotated* a, const std::string* creator, const std::string* cterm, double resource);
 
-  bool ProcessCreatorTerm(Annotated* a, const std::string* creator, const std::string* cterm, std::vector<std::string>* resources);
+  bool ProcessCreatorTerm(Annotated* a, const std::string* creator, const std::string* cterm, const std::vector<std::string>& resources);
 
   bool ProcessGlobalCreatorTerm(const std::string* name, const std::string* creator, const std::string* cterm, double resource);
 
-  bool ProcessGlobalCreatorTerm(const std::string* name, const std::string* creator, const std::string* cterm, std::vector<std::string>* resources);
+  bool ProcessGlobalCreatorTerm(const std::string* name, const std::string* creator, const std::string* cterm, const std::vector<std::string>& resources);
 
   bool CheckCreatorString(const std::string& qualifier, unsigned int& creator_number);
 

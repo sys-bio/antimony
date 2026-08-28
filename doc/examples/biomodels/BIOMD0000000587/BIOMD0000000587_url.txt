@@ -1,0 +1,209 @@
+// Created by libAntimony v3.2.0
+model *MODEL1512100001()
+
+  // Compartments and Species:
+  compartment yeast;
+  species G0 in yeast, G1 in yeast, rR in yeast, I in yeast, rI in yeast;
+  species R in yeast, RI in yeast, R2 in yeast, G2 in yeast, G3 in yeast;
+
+  // Assignment Rules:
+  Alpha := ModelValue_0/(24*3.344);
+  rho_b := ModelValue_2/ModelValue_18;
+  rho_0 := sqrt(ModelValue_3*ModelValue_2);
+  a_01 := piecewise(3*ModelValue_1, ModelValue_17 == 1, ModelValue_1);
+  a_12 := piecewise(2*ModelValue_1, ModelValue_17 == 1, 0);
+  a_23 := piecewise(1*ModelValue_1, ModelValue_17 == 1, 0);
+  t_10 := ModelValue_0;
+  t_21 := piecewise(2*ModelValue_0, ModelValue_17 == 1, 0);
+  t_32 := piecewise(3*ModelValue_0, ModelValue_17 == 1, 0);
+
+  // Reactions:
+  G1____G0___R2: G1 => G0 + R2; yeast*t_10*G1;
+  G0___R2____G1: G0 + R2 => G1; yeast*a_01*G0*R2;
+  G0____G0___rR: G0 => G0 + rR; yeast*rho_f*G0;
+  G1____G1___rR: G1 => G1 + rR; yeast*rho_b*G1;
+  rR___: rR => ; yeast*delta_m*rR;
+  ____rI:  => rI; yeast*rho_0;
+  rI___: rI => ; yeast*delta_m*rI;
+  rR____rR___R: rR => rR + R; yeast*beta*rR;
+  I___: I => ; yeast*delta_p*I;
+  rI____rI___I: rI => rI + I; yeast*beta*rI;
+  R___: R => ; yeast*delta_p*R;
+  R___I____RI: R + I => RI; yeast*gamma_*R*I;
+  _2___R____R2: 2 R => R2; yeast*gamma_*R^2;
+  R2____2___R: R2 => 2 R; yeast*epsilon_1*R2;
+  RI____R___I: RI => R + I; yeast*epsilon*RI;
+  RI___: RI => ; yeast*delta_p*RI;
+  R2___: R2 => ; yeast*delta_p*R2;
+  G1___R2____G2: G1 + R2 => G2; yeast*a_12*G1*R2;
+  G2____G1___R2: G2 => G1 + R2; yeast*t_21*G2;
+  G2____G2___rR: G2 => G2 + rR; yeast*rho_b*G2;
+  G2___R2____G3: G2 + R2 => G3; yeast*a_23*G2*R2;
+  G3____G2___R2: G3 => G2 + R2; yeast*t_32*G3;
+  G3____G3___rR: G3 => G3 + rR; yeast*rho_b*G3;
+
+  // Species initializations:
+  G0 = 1;
+  G1 = 0;
+  rR = 0;
+  I = 0;
+  rI = 0;
+  R = 0;
+  RI = 0;
+  R2 = 0;
+  G2 = 0;
+  G3 = 0;
+
+  // Compartment initializations:
+  yeast = 1;
+
+  // Variable initializations:
+  Theta = 0.02;
+  ModelValue_0 = Theta;
+  rho_f = 0.8928;
+  ModelValue_2 = rho_f;
+  ModelValue_18 = f;
+  ModelValue_3 = rho_b;
+  beta = 14.109;
+  delta_m = 0.0159;
+  delta_p = 0.0077;
+  gamma_ = 0.025;
+  epsilon = 0.024;
+  epsilon_1 = 6;
+  ModelValue_1 = Alpha;
+  ModelValue_17 = _3sites;
+  _3sites = 0;
+  f = 3.63;
+
+  // Other declarations:
+  var Alpha, rho_b, rho_0, a_01, a_12, a_23, t_10, t_21, t_32;
+  const yeast, Theta, ModelValue_0, rho_f, ModelValue_2, ModelValue_18, ModelValue_3;
+  const beta, delta_m, delta_p, gamma_, epsilon, epsilon_1, ModelValue_1;
+  const ModelValue_17, _3sites, f;
+
+  // Unit definitions:
+  unit volume = dimensionless;
+  unit time_unit = 60 second;
+  unit substance = item;
+
+  // Display Names:
+  time_unit is "time";
+  ModelValue_0 is "Initial for Theta";
+  ModelValue_2 is "Initial for rho_f";
+  ModelValue_18 is "Initial for f";
+  ModelValue_3 is "Initial for rho_b";
+  gamma_ is "gamma";
+  ModelValue_1 is "Initial for Alpha";
+  ModelValue_17 is "Initial for 3sites";
+  _3sites is "3sites";
+  G1____G0___R2 is "G1 -> G0 + R2";
+  G0___R2____G1 is "G0 + R2 -> G1";
+  G0____G0___rR is "G0 -> G0 + rR";
+  G1____G1___rR is "G1 -> G1 + rR";
+  rR___ is "rR -> ";
+  ____rI is " -> rI";
+  rI___ is "rI -> ";
+  rR____rR___R is "rR -> rR + R";
+  I___ is "I -> ";
+  rI____rI___I is "rI -> rI + I";
+  R___ is "R -> ";
+  R___I____RI is "R + I -> RI";
+  _2___R____R2 is "2 * R -> R2";
+  R2____2___R is "R2 -> 2 * R";
+  RI____R___I is "RI -> R + I";
+  RI___ is "RI -> ";
+  R2___ is "R2 -> ";
+  G1___R2____G2 is "G1 + R2 -> G2";
+  G2____G1___R2 is "G2 -> G1 + R2";
+  G2____G2___rR is "G2 -> G2 + rR";
+  G2___R2____G3 is "G2 + R2 -> G3";
+  G3____G2___R2 is "G3 -> G2 + R2";
+  G3____G3___rR is "G3 -> G3 + rR";
+
+  // SBO terms:
+  yeast.sboTerm = 290
+  G0.sboTerm = 196
+  G1.sboTerm = 196
+  rR.sboTerm = 278
+  I.sboTerm = 20
+  rI.sboTerm = 278
+  R.sboTerm = 207
+  RI.sboTerm = 609
+  R2.sboTerm = 608
+  G2.sboTerm = 196
+  G3.sboTerm = 196
+  Theta.sboTerm = 338
+
+  // CV terms:
+  yeast isVersionOf "http://identifiers.org/go/GO:0005623"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1512100001"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000587"
+  model publication "http://identifiers.org/pubmed/26764732"
+  model isVersionOf "http://identifiers.org/go/GO:0010468"
+  model hasTaxon "http://identifiers.org/taxonomy/4932"
+  model created "2015-01-26T17:46:49Z"
+  model modified "2016-03-17T13:18:09Z"
+  model creator1.givenName "Nick"
+  model creator1.familyName "Juty"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "juty@ebi.ac.uk"
+  model creator2.givenName "Sargis"
+  model creator2.familyName "Karapetyan"
+  model creator2.organization "Duke University"
+  model creator2.email "sk197@duke.edu"
+  model creator3.givenName "Vijayalakshmi"
+  model creator3.familyName "Chelliah"
+  model creator3.organization "EMBL-EBI"
+  model creator3.email "viji@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Karapetyan2016 - Genetic oscillatory network - Repressor Titration Circuit (RTC)
+
+
+This model is described in the article:
+
+
+[ Role of DNA binding sites and slow unbinding kinetics in titration-based oscillators. ](http://identifiers.org/pubmed/26764732 "Access to this publication") 
+
+
+Karapetyan S, Buchler NE. 
+
+Phys Rev E Stat Nonlin Soft Matter Phys 2015 Dec; 92(6-1): 062712 
+Abstract:
+
+
+Genetic oscillators, such as circadian clocks, are constantly perturbed by molecular
+noise arising from the small number of molecules involved in gene regulation. One
+of the strongest sources of stochasticity is the binary noise that arises from the
+binding of a regulatory protein to a promoter in the chromosomal DNA. In this study,
+we focus on two minimal oscillators based on activator titration and repressor titration
+to understand the key parameters that are important for oscillations and for overcoming
+binary noise. We show that the rate of unbinding from the DNA, despite traditionally
+being considered a fast parameter, needs to be slow to broaden the space of oscillatory
+solutions. The addition of multiple, independent DNA binding sites further expands
+the oscillatory parameter space for the repressor-titration oscillator and lengthens
+the period of both oscillators. This effect is a combination of increased effective
+delay of the unbinding kinetics due to multiple binding sites and increased promoter
+ultrasensitivity that is specific for repression. We then use stochastic simulation
+to show that multiple binding sites increase the coherence of oscillations by mitigating
+the binary noise. Slow values of DNA unbinding rate are also effective in alleviating
+molecular noise due to the increased distance from the bifurcation point. Our work
+demonstrates how the number of DNA binding sites and slow unbinding kinetics, which
+are often omitted in biophysical models of gene circuits, can have a significant
+impact on the temporal and stochastic dynamics of genetic oscillators.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000587](http://identifiers.org/biomodels.db/BIOMD0000000587).
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication").
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+end
+
+MODEL1512100001 is "Karapetyan2016 - Genetic oscillatory network - Repressor Titration Circuit (RTC)"

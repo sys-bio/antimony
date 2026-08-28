@@ -1,4 +1,4 @@
-Antimony Reference
+Antimony Reference {#antimony-tutorial}
 ==================
 
 Different authoring tools have different ways of allowing the user to
@@ -11,63 +11,7 @@ This guide will show you the intricacies of working with Antimony.
 More information can be found at https://github.com/sys-bio/antimony/.
 
 
-## Table of contents
-  - [Background](#background)
-  - [Change Log](#change-log)
-  - [Introduction](#introduction-and-basics)
-  - [Model Elements](#model-elements)
-    - [Comments](#comments)
-    - [Reactions](#reactions)
-    - [Rate Laws and Initializing Values](#rate-laws-and-initializing-values)
-    - [Defining basic elements](#defining-basic-elements)
-    - [Boundary Species](#boundary-species)
-    - [Compartments](#compartments)
-    - [Assignments](#assignments)
-      - [Assignments in Time](#assignments-in-time)
-      - [Piecewise Assignments](#piecewise-assignments)
-    - [Events](#events-basic)
-    - [Function Definitions](#function-definitions)
-    - [Annotation](#annotation)
-    - [Modular Models](#modular-models)
-    - [Importing Files](#importing-files)
-  - [Signals](#signals)
-    - [Step input](#step-input)
-    - [Ramp](#ramp)
-    - [Ramp then stop](#ramp-then-stop)
-    - [Pulse](#pulse)
-    - [Sinusoidal input](#sinusoidal-input)
-  - [Language Reference](#language-reference)
-    - [Species and Reactions](#species-and-reactions)
-        - [Substance-only species](#substance-only-species)
-    - [Modules](#modules)
-      - [Module conversion factors](#module-conversion-factors)
-      - [Submodel deletions](#submodel-deletions)
-    - [Constant and variable symbols](#constant-and-variable-symbols)
-    - [Compartments](#compartments)
-    - [Events](#events)
-    - [Assignment Rules](#assignment-rules)
-    - [Rate Rules](#rate-rules)
-    - [Display Names](#display-names)
-    - [Units](#units)
-    - [DNA Strands](#dna-strands)
-    - [Interactions](#interactions)
-    - [Predefined Function Definitions](#predefined-function-definitions)
-    - [Uncertainty Information](#uncertainty-information)
-    - [SBO and CVTerms](#sbo-and-cvterms)
-    - [Flux Balance Constraints](#flux-balance-constraints)
-    - [Other files](#other-files)
-    - [Importing and Exporting Antimony Models](#importing-and-exporting-antimony-models)
-  - [Layout and Render](#layout-and-render)
-    - [Basic layout information](#basic-layout-information)
-    - [Positioning model elements](#positioning-model-elements)
-    - [Sizing model elements](#sizing-model-elements)
-    - [Reaction arcs](#reaction-arcs)
-    - [Reaction source or sinks](#reaction-source-or-sinks)
-    - [Species alias nodes](#species-alias-nodes)
-    - [General styles](#general-styles)
-    - [Style settings](#style-settings)
-  - [Appendix: Converting between SBML and Antimony](#appendix-converting-between-sbml-and-antimony)
-  - [Further reading](#further-reading)
+[TOC]
 
 ## Background
 
@@ -103,6 +47,8 @@ be used in other contexts as well. Its main features include:
     interfaces.
 
 ## Change Log
+
+The 3.2 release cleaned up the build system, increased efficiency, and fixed numerous bugs, mostly discovered through converting SBML Test Suite models and BioModels to Antimony and back to SBML, and ensuring that a simulation of the round-tripped model matched a simulation of the original model. The entirety of the SBML Test Suite (with the exception of 'fast' reactions, now deprecated in SBML) now successfully round-trips through Antimony without loss of information (though some things may change structurally for hierarchical models), as do most BioModels.
 
 The 3.1 release changed FBC support to version 3 of that package, changing 
 how FBC constraints were translated to SBML (but not changing how they
@@ -519,7 +465,7 @@ reset.
       k1 = 0.5
     end
 
-For more advanced usage of events, see [below](#events).
+For more advanced usage of events, see <a href="#events">below</a>.
 
 ### Function Definitions
 
@@ -545,7 +491,7 @@ k2*s1 + k3`.
 ### Annotation
 
 Antimony elements can be annotated with URNs using annotation keywords  You can
-see the [full list](#sbo-and-cvterms) below, but in general, you annotate in the
+see the <a href="#sbo-and-cvterms">full list</a> below, but in general, you annotate in the
 following way:
 
     //Species
@@ -591,7 +537,7 @@ tick marks \`\`\` :
 
 Antimony was actually originally designed to allow the modular creation
 of models, and has a basic syntax set up to do so. For a full discussion
-of Antimony modularity, see [below](#modules), but at the most
+of Antimony modularity, see <a href="#modules">below</a>, but at the most
 basic level, you define a re-usable module with the 'model' syntax,
 followed by parentheses where you define the elements you wish to
 expose, then import it by using the model's name, and the local
@@ -848,15 +794,50 @@ Now, whenever ‘S1’ is used in the model, it is a reference to the
 species amount, and not its concentration. Defining an initial amount is
 also changed:
 
-S1 = 2.5;
+    S1 = 2.5;
 
 This will set the initial amount to 2.5, not the initial concentration.
 If you wish to set the initial concentration instead, use the compartment:
 
-S1 = 3.1*C
+    S1 = 3.1*C
 
 Because a concentration times the compartment volume yields an amount, in
 this formulation, '3.1' is set as the initial concentration.
+
+### Named stoichiometries
+
+A stoichiometry in a reaction may be given an ID instead of a number, and that ID may be set later:
+
+    J0: n A -> B; k1*A^n
+    n = 3
+
+The id of the stoichiometry may now be changed by other model constructs:  events, rate rules, and assignment rules may all use the value as a target:
+
+    J0: n A -> m B; k1*A^n
+    n := time/3
+    m = 1
+    at A < 3: m = 2
+
+This also gives the stoichiometry an ID that can be given a value directly (or be tracked) by some simulators (such as roadrunner).
+
+If you want to use the same ID for multiple stoichiometries, this can be done straightforwardly:
+
+    J0: n A -> n B; k1*A^n
+    n = 3
+
+However!  When translated to SBML, every stoichiometry must have a unique ID.  Therefore, an assignment rule will be created to set the value of B's stoichiometry to 'n'.  Effectively, the model will become:
+
+    J0: n A -> J0_B_stoich B; k1*A^n
+    n = 3
+    J0_B_stoich := n
+
+This is mathematically identical, but some simulators may balk at an assignment rule to a stoichiometry, as this is a feature of SBML that not everyone supports.  If this happens, just name all your stoichiometries uniquely:
+
+    J0: n A -> m B; k1*A^n
+    n = 3
+    m = 3
+
+and remember to change them both at the same time.
 
 ### Modules
 
@@ -1389,19 +1370,24 @@ In this situation, the value at t0 is considered to be false, meaning it
 can immediately transition to true if x is greater than 5, triggering
 the event. You may explicitly state the default by using 't0 = true'.
 
-Finally, a different class of events is often modeled in some situations
-where the trigger condition must persist in being true from the entire
-time between when the event is triggered to when it is executed. By
-default, this is not the case for Antimony events, and, once triggered,
-all events will execute. To change the class of your event, use the
-keyword 'persistent':
+Finally, by default, once a trigger changes from false to true, the event
+assignments will always be executed, perhaps after a delay, or perhaps
+after waiting for other simultaneously-triggered events to be executed.
+This is a 'persistent' event: the event remains in the 'queue' regardless
+of whether the trigger condition later changed from 'true' back to 'false'.
 
-    E1: at 3 after (x>5), persistent=true: y=3, x=r+2;
+However, the opposite is also possible:  some events' assignments will
+only be executed if the trigger remains 'true' up until the moment of 
+assignment execution.  These events are flagged as being 'non-persistent',
+indicating that their triggers must be continually checked until execution.
+In Antimony, you can set this directly by setting 'persistent=false':
+
+    E1: at 3 after (x>5), persistent=false: y=3, x=r+2;
 
 For this model, x must be greater than 5 for three seconds before
 executing its event assignments: if x dips below 5 during that time, the
 event will not fire. To explicitly declare the default situation, use
-'persistent=false'.
+'persistent=true'.
 
 The ability to change the default priority, t0, and persistent
 characteristics of events was introduced in SBML Level 3, so if you
@@ -1701,7 +1687,7 @@ kinetic law to parse, this is how to add species to that list.
 
 ### Predefined Function Definitions
 
-In addition to the [user-defined function definitions](#function-definitions),
+In addition to the <a href="#function-definitions">user-defined function definitions</a>,
 there are several built-in functions defined in Antimony.
 All of the functions present in the MathML subset used in SBML Level 3 Level 2
 are likewise defined here, and include:
@@ -1833,6 +1819,12 @@ date by keyword:
     A created.second "ss"
     A created.time "hh:mm:ss"
 
+An SBML reaction's kinetic law can be annotated separately from the reaction
+itself.  We can also do this in Antimony by appending '.kineticLaw' to 
+a reaction ID and setting the annotation there:
+
+    J0.kineticLaw.sboTerm = 42
+    J0.kineticLaw identity "cvterm"
 
 ### Flux Balance Constraints
 
@@ -2432,8 +2424,8 @@ converting models between SBML and Antimony:
 ## Further Reading
 
   - Lucian Smith's [example
-    models](http://antimony.sourceforge.net/antimony-examples.html) show
+    models](https://antimony.readthedocs.io/en/latest/antimony-examples.html) show
     how to use the [comp
     package](http://sbml.org/Documents/Specifications/SBML_Level_3/Packages/comp).
-  - [This manual](AntimonyTutorial.pdf) in
+  - <a href="AntimonyTutorial.pdf">This manual</a> in
     PDF format.

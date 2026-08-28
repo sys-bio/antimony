@@ -11,8 +11,8 @@ project(libantimony)
 # Set up version information.
 #
 SET(LIBANTIMONY_VERSION_MAJOR 3)
-SET(LIBANTIMONY_VERSION_MINOR 1)
-SET(LIBANTIMONY_VERSION_PATCH ".3")
+SET(LIBANTIMONY_VERSION_MINOR 2)
+SET(LIBANTIMONY_VERSION_PATCH ".0")
 SET(LIBANTIMONY_VERSION_RELEASE "")
 
 
@@ -28,7 +28,15 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
 endif()
 
 #Using 'tuple':
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+# C++14 minimum: required by the vendored GoogleTest 1.16.x (see
+# src/test/googletest/README.md), which uses std::make_index_sequence
+# and friends internally.
+# MSVC doesn't understand the GNU-style -std= flag (and already
+# defaults to a sufficiently modern standard), so only add it for
+# GCC/Clang to avoid a D9002 "unknown option" warning on every file.
+if(NOT MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+endif()
 
 include (InstallRequiredSystemLibraries)
 include (CMakeTestCCompiler)
@@ -55,6 +63,13 @@ INCLUDE(CPack)
 
 SET(LIBANTIMONY_VERSION_STRING "v${LIBANTIMONY_VERSION_MAJOR}.${LIBANTIMONY_VERSION_MINOR}${LIBANTIMONY_VERSION_PATCH}${LIBANTIMONY_VERSION_RELEASE}")
 
+# Bare version (no leading 'v'), written to a file so tooling outside of
+# CMake itself -- e.g. the GitHub Actions step that packages
+# win32/antimonyInstaller.iss via 'iscc /DMyAppVersion=...' -- can pick up
+# the current version without parsing this file.
+SET(LIBANTIMONY_VERSION_STRING_BARE "${LIBANTIMONY_VERSION_MAJOR}.${LIBANTIMONY_VERSION_MINOR}${LIBANTIMONY_VERSION_PATCH}${LIBANTIMONY_VERSION_RELEASE}")
+file(WRITE "${CMAKE_BINARY_DIR}/antimony_version.txt" "${LIBANTIMONY_VERSION_STRING_BARE}")
+
 
 option(BUILD_SHARED_LIBS  "Build shared library (Set to OFF to build static libraries)" ON)
 set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, options are: None (CMAKE_CXX_FLAGS or CMAKE_C_FLAGS are used), Debug, Release, RelWithDebInfo, MinSizeRel" )
@@ -73,18 +88,12 @@ set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, op
 #
 
 # which language bindings should be build
-option(WITH_SBML            "Generate SBML translations"      ON )
-if (WITH_SBML)
-    option(WITH_STATIC_SBML     "Use the static version of the libsbml library"      ON )
-    option(WITH_COMP_SBML       "Use the hierarchical composition package API"      ON )
-    OPTION(WITH_LIBSBML_EXPAT   "Set if libsbml was compiled with a separate expat library."  ON)
-    OPTION(WITH_LIBSBML_LIBXML  "Set if libsbml was compiled with a separate libxml library." OFF)
-    OPTION(WITH_LIBSBML_XERCES  "Set if libsbml was compiled with a separate xerces library." OFF)
-    OPTION(WITH_LIBSBML_COMPRESSION "Set if libsbml was compiled with separate zdll and bzip libraries." ON)
-endif()
 option(WITH_CELLML          "Generate CellML translations"    OFF )
+mark_as_advanced(WITH_CELLML)
+if(WITH_CELLML)
+  message(FATAL_ERROR "The ability to export Antimony to CellML is not currently functional.")
+endif()
 option(WITH_QTANTIMONY      "Generate QTAntimony"             ON )
-option(WITH_SWIG   "Regenerate SWIG-based language bindings." OFF )
 option(WITH_PYTHON       "Generate Python language bindings." OFF)
 if (WITH_PYTHON)
   option(PYTHON_SYSTEM_INSTALL  "Install the python bindings using setup.py and distutils.  May require admin privileges."    OFF )
@@ -106,10 +115,21 @@ set(ANT_DEPENDENCIES_INSTALL_PREFIX "${CMAKE_CURRENT_SOURCE_DIR}/dependencies"
 # This won't work in Visual Studio 2003, so we disable this option there.
 #
 if(NOT ${CMAKE_GENERATOR} MATCHES "Visual Studio 6" AND NOT ${CMAKE_GENERATOR} MATCHES "Visual Studio 7")
-    if (WITH_COMP_SBML)
-        option(WITH_CHECK    "Compile unit tests. Run with 'make test' or 'ctest'." OFF)
-    endif()
+    option(WITH_GTEST    "Compile unit tests. Run with 'make test' or 'ctest'." OFF)
 endif()
+
+#Create antimony_api.h from antimony_api.h.in
+set(ANTIMONY_API_IN "${CMAKE_CURRENT_SOURCE_DIR}/src/antimony_api.h.in")
+set(ANTIMONY_API    "${CMAKE_CURRENT_BINARY_DIR}/antimony_api.h")
+
+configure_file(${ANTIMONY_API_IN} ${ANTIMONY_API} @ONLY)
+
+# Generated antimony_api.h lands in the build dir, not src/, so every target
+# built from this CMakeLists.txt (library, static library, executables) needs
+# the build dir on its include path. In turn, the generated antimony_api.h 
+# file needs libutil.h and enums.h, which are no longer in the same directory.
+include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/src)
+
 
 
 
@@ -137,13 +157,6 @@ endif (WIN32)
 # Locate libsbml if needed
 #
 
-if (WITH_LIBSBML_COMPRESSION)
-  find_package(ZLIB CONFIG REQUIRED)
-  set(ZLIB_LIBRARY ZLIB::ZLIBSTATIC)
-  get_target_property(ZLIB_LIBRARY ZLIB::ZLIBSTATIC LOCATION)
-  set(ZLIB_INCLUDE_DIR "${ANT_DEPENDENCIES_INSTALL_PREFIX}/include/")
-endif()
-
 if (NOT DEFINED EXPAT_LIBRARY OR NOT DEFINED EXPAT_INCLUDE_DIR)
     find_package(expat CONFIG REQUIRED)
 
@@ -153,8 +166,6 @@ if (NOT DEFINED EXPAT_LIBRARY OR NOT DEFINED EXPAT_INCLUDE_DIR)
     message(STATUS "EXPAT_LIBRARY: ${EXPAT_LIBRARY}")
     set(EXPAT_INCLUDE_DIR "${ANT_DEPENDENCIES_INSTALL_PREFIX}/include/")
 endif()
-
-message(STATUS "zlibstatic: ${ZLIB_LIBRARY}")
 
 if (NOT DEFINED LIBSBML_INCLUDE_DIR)
     set(LIBSBML_INCLUDE_DIR "${ANT_DEPENDENCIES_INSTALL_PREFIX}/include/")
@@ -166,7 +177,39 @@ if (NOT DEFINED LIBSBML_LIBRARY)
 endif()
 
 set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${LIBSBML_LIBRARY} ${LIBSBML_LIBRARIES} )
-INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${LIBSBML_INCLUDE_DIR} ${EXPAT_INCLUDE_DIR} ${ZLIB_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${LIBSBML_INCLUDE_DIR} ${EXPAT_INCLUDE_DIR})
+
+####################################################################
+#
+# Antimony has required libSBML's 'comp' (Hierarchical Model Composition)
+# package since v2.1, back when 'comp' was optional and libsbml had to be
+# specially built with it. It's now a standard part of libsbml, so instead
+# of tracking that with our own WITH_COMP_SBML flag (which could drift out
+# of sync with what libsbml itself was actually built with), ask libsbml
+# directly: its own build writes LIBSBML_HAS_PACKAGE_COMP into
+# sbml/common/libsbml-config-packages.h when 'comp' is enabled. If it's
+# missing, fail configure now with a clear message rather than failing
+# later with confusing compile errors deep in module-sbml.cpp.
+#
+
+set(CMAKE_REQUIRED_INCLUDES ${LIBSBML_INCLUDE_DIR})
+check_cxx_source_compiles(
+"#include <sbml/common/libsbml-config-packages.h>
+#ifndef LIBSBML_HAS_PACKAGE_COMP
+#error libsbml was not compiled with the comp package
+#endif
+int main() { return 0; }
+"
+    LIBSBML_HAS_COMP_PACKAGE)
+unset(CMAKE_REQUIRED_INCLUDES)
+
+if (NOT LIBSBML_HAS_COMP_PACKAGE)
+    message(FATAL_ERROR
+"The libSBML found at '${LIBSBML_INCLUDE_DIR}' was not compiled with the "
+"'comp' (Hierarchical Model Composition) package, which antimony requires. "
+"Please rebuild/reinstall libSBML with -DENABLE_COMP=ON (or "
+"-DWITH_STABLE_PACKAGES=ON).")
+endif()
 
 ####################################################################
 #
@@ -240,121 +283,27 @@ else(WITH_CELLML)
 
 endif(WITH_CELLML)
 
-###############################################################
-#
-# Locate the libraries libsbml depends on, for static linking.
-#
+find_library(SBMLNETWORK_LIBRARY
+    NAMES libsbmlnetwork-static.lib sbmlnetwork-static.lib libsbmlnetwork-static sbmlnetwork-static libsbmlnetwork-staticmdd libsbmlnetwork-staticmd libsbmlnetwork-staticd libsbmlnetwork-staticd.a
+    PATHS /usr/lib /usr/local/lib
+          ${ANT_DEPENDENCIES_INSTALL_PREFIX}
+          ${CMAKE_SOURCE_DIR}
+          ${CMAKE_SOURCE_DIR}/dependencies/lib
+          ${LIBSBML_INCLUDE_DIR}/../lib
+    )
+set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${SBMLNETWORK_LIBRARY} )
 
-if(WITH_LIBSBML_EXPAT)
-    find_library(EXPAT_LIBRARY
-        NAMES libexpat.lib libexpat.so libexpat.dylib libexpat expat.lib expat.so expat.dylib expat libexpatdMD libexpatMD
-	PATHS /usr/lib /usr/local/lib
-              ${CMAKE_SOURCE_DIR}
-              ${CMAKE_SOURCE_DIR}/dependencies/lib
-              ${LIBSBML_INCLUDE_DIR}/../lib
-        )
-    set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${EXPAT_LIBRARY} )
-endif()
-
-if(WITH_LIBSBML_LIBXML)
-    find_library(LIBXML_LIBRARY
-        NAMES libxml2.lib libxml2.so libxml2.dylib libxml2 libxml2s libxml2sd
-        PATHS /usr/lib /usr/local/lib
-              ${CMAKE_SOURCE_DIR}
-              ${CMAKE_SOURCE_DIR}/dependencies/lib
-              ${LIBSBML_INCLUDE_DIR}/../lib
-        )
-    set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${LIBXML_LIBRARY} )
-
-    #The libxml library requires the libz library, too.
-    find_package(ZLIB CONFIG REQUIRED)
-    set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ZLIB::ZLIBSTATIC )
-
-    if(WIN32)
-      find_library(ICONV_LIBRARY
-          NAMES iconv.lib iconv.so iconv.dylib iconv libiconv.lib libiconv.so libiconv.dylib libiconv libiconv-static.lib libiconv-staticd.lib
-          PATHS /usr/lib /usr/local/lib
-                ${CMAKE_SOURCE_DIR}
-                ${CMAKE_SOURCE_DIR}/dependencies/lib
-                ${LIBSBML_INCLUDE_DIR}/../lib
+find_path(SBMLNETWORK_INCLUDE_DIR
+    NAMES sbmlnetwork/libsbmlnetwork_common.h
+    PATHS /usr/include /usr/local/include ${ANT_DEPENDENCIES_INSTALL_PREFIX}/include
+    DOC "The directory containing the SBMLNetwork include files."
           )
-      set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${ICONV_LIBRARY})
-      find_library(LIBCHARSET_LIBRARY
-          NAMES libcharset.lib libcharsetd.lib libcharsetmd.lib libcharsetmdd.lib
-          PATHS /usr/lib /usr/local/lib
-                ${CMAKE_SOURCE_DIR}
-                ${CMAKE_SOURCE_DIR}/dependencies/lib
-                ${LIBSBML_INCLUDE_DIR}/../lib
-          )
-      set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${LIBCHARSET_LIBRARY})
-    endif()
-endif()
 
-if(WITH_LIBSBML_XERCES)
-    find_library(XERCES_LIBRARY
-        NAMES xerces-c_static_3.lib xerces-c_static_3.so xerces-c_static_3.dylib xerces-c_static_3
-	PATHS /usr/lib /usr/local/lib
-              ${CMAKE_SOURCE_DIR}
-              ${CMAKE_SOURCE_DIR}/dependencies/lib
-              ${LIBSBML_INCLUDE_DIR}/../lib
-        )
-    set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${XERCES_LIBRARY} )
-endif()
-
-if(WITH_SBML)
-    find_library(SBMLNETWORK_LIBRARY
-        NAMES libsbmlnetwork-static.lib sbmlnetwork-static.lib libsbmlnetwork-static sbmlnetwork-static libsbmlnetwork-staticmdd libsbmlnetwork-staticmd libsbmlnetwork-staticd libsbmlnetwork-staticd.a
-	PATHS /usr/lib /usr/local/lib
-              ${ANT_DEPENDENCIES_INSTALL_PREFIX}
-              ${CMAKE_SOURCE_DIR}
-              ${CMAKE_SOURCE_DIR}/dependencies/lib
-              ${LIBSBML_INCLUDE_DIR}/../lib
-        )
-    set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${SBMLNETWORK_LIBRARY} )
-
-    find_path(SBMLNETWORK_INCLUDE_DIR
-        NAMES sbmlnetwork/libsbmlnetwork_common.h
-        PATHS /usr/include /usr/local/include ${ANT_DEPENDENCIES_INSTALL_PREFIX}/include
-        DOC "The directory containing the SBMLNetwork include files."
-              )
-
-    INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${SBMLNETWORK_INCLUDE_DIR} )
-    # SBMLNETWORK uses stuff from the 'dl' library on some platforms.  CMake defines CMAKE_DL_LIBS if so.
-    set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${CMAKE_DL_LIBS} )
-
-endif()
+INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${SBMLNETWORK_INCLUDE_DIR} )
+# SBMLNETWORK uses stuff from the 'dl' library on some platforms.  CMake defines CMAKE_DL_LIBS if so.
+set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${CMAKE_DL_LIBS} )
 
 message(STATUS "Antimony libs: ${LIBANTIMONY_LIBS}")
-
-###############################################################################
-#
-# If WITH_SWIG is selected, we need to find swig
-#
-if(WITH_SWIG)
-    find_program(SWIG_EXECUTABLE
-        NAMES swig
-        PATHS
-              "c:/Program Files (x86)/Swig"
-              c:/Program Files/Swig
-              c:/Program Files/swigwin-3.0.10
-              c:/Program Files/swigwin-4.0.2
-              /usr/local/bin
-              /opt/local/bin
-              /usr/bin
-        DOC "The file name of the swig executable."
-        )
-    find_package(SWIG)
-    set(SWIG_EXTRA_ARGS "" CACHE STRING "Extra arguments to SWIG" )
-endif(WITH_SWIG)
-
-if(WITH_SWIG)
-    message(STATUS "  Using SWIG                    = ${SWIG_EXECUTABLE}")
-
-    if (SWIG_FOUND AND SWIG_VERSION VERSION_LESS "2.0.4")
-        message(WARNING "   You are using swig version ${SWIG_VERSION} while we recommend at least version 2.0.4.")
-    endif()
-
-endif()
 
 if(WITH_PYTHON)
     message(STATUS "  Using Python                  = ${PYTHON_EXECUTABLE}")
@@ -363,15 +312,15 @@ endif()
 #message(STATUS "libantimony libs: ${LIBANTIMONY_LIBS}")
 set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${EXTRA_LIBS})
 
+# Cheap insurance against duplicate entries.
+list(REMOVE_DUPLICATES LIBANTIMONY_LIBS)
+
 ###############################################################################
 ## Enable support for testing ... can be invoked by running ctest
 # or make test
 #
 
-if(WITH_CHECK)
-
-    # we do use tests, that require 2.8.4
-    # cmake_minimum_required(VERSION 2.8.4)
+if(WITH_GTEST)
 
     # set test timeout to 3000 as the normal time limit is not sufficient
     # for the comp tests
@@ -379,109 +328,22 @@ if(WITH_CHECK)
 
     enable_testing()
 
-    find_library(LIBCHECK_LIBRARY
-        NAMES check libcheck
-        PATHS /usr/lib /usr/local/lib ${LIBSBML_DEPENDENCY_DIR}/lib
-        DOC "The file name of the libcheck library."
-    )
+    # Needed at the top level (before add_subdirectory(src/test)) so that
+    # gtest_discover_tests is available to the test CMakeLists.txt files.
+    include(GoogleTest)
 
-    find_path(LIBCHECK_INCLUDE_DIR
-        NAMES check.h
-        PATHS /usr/include /usr/local/include  ${LIBSBML_DEPENDENCY_DIR}/include
-        DOC "The directory containing the libcheck include files."
-              )
-
-    if(NOT EXISTS "${LIBCHECK_INCLUDE_DIR}/check.h")
-        message(FATAL_ERROR "The 'check' include directory appears to be invalid. It should contain the file check.h, but it does not.")
-    endif()
-
-    if(${CMAKE_GENERATOR} MATCHES "Visual Studio 6" OR ${CMAKE_GENERATOR} MATCHES "Visual Studio 7")
-        message(WARNING "Libcheck is not compatible with Visual Studio 2003 (or earlier versions).")
-    endif()
-
-  if (UNIX)
-      # setup valgrind
-      set(CMAKE_MEMORYCHECK_COMMAND valgrind)
-      set(CMAKE_MEMORYCHECK_COMMAND_OPTIONS
-         "--error-exitcode=1 --trace-children=yes --leak-check=full --show-reachable=yes --leak-resolution=high --track-origins=yes --error-limit=no ")
-
-      set(MEMCHECK_COMMAND
-         "${CMAKE_MEMORYCHECK_COMMAND} ${CMAKE_MEMORYCHECK_COMMAND_OPTIONS}")
-      separate_arguments(MEMCHECK_COMMAND)
-
-      # check that check compiles/links - needs cmake 3+
-
-      if(${CMAKE_VERSION} VERSION_GREATER 3.0.0)
-        set(CHECK_CHECK_CODE
-        "
-        #include <check.h>
-        
-        START_TEST (sanity_check)
-        {
-            fail_unless(5 == 5, \"this should succeed\");
-            fail_unless(6 == 5, \"this should fail\");
-        }
-        END_TEST
-        
-        int 
-        main(void)
-        {
-            Suite *s1 = suite_create(\"Core\");
-            TCase *tc1_1 = tcase_create(\"Core\");
-            SRunner *sr = srunner_create(s1);
-            int nf;
-        
-            suite_add_tcase(s1, tc1_1);
-            tcase_add_test(tc1_1, sanity_check);
-        
-            srunner_run_all(sr, CK_ENV);
-            nf = srunner_ntests_failed(sr);
-            srunner_free(sr);
-            ;
-            return nf == 0 ? 0 : 1;
-        }
-        " 
-        )
-
-        set(CMAKE_REQUIRED_LIBRARIES_CACHE ${CMAKE_REQUIRED_LIBRARIES})
-        unset(CHECK_CHECK_TEST CACHE)
-        unset(CHECK_CHECK_TEST2 CACHE)
-
-        set(CHECK_CHECK_TEST)
-        set(CMAKE_REQUIRED_LIBRARIES "-lcheck -lm ${EXTRA_LIBS}")
-        CHECK_C_SOURCE_COMPILES("${CHECK_CHECK_CODE}" CHECK_CHECK_TEST)
-
-        if (NOT CHECK_CHECK_TEST)
-            set(CHECK_CHECK_TEST2)
-            set(CMAKE_REQUIRED_LIBRARIES "-lcheck -lm -pthread -lrt -lsubunit ${EXTRA_LIBS}")
-            CHECK_C_SOURCE_COMPILES("${CHECK_CHECK_CODE}" CHECK_CHECK_TEST2)
-            
-            if (CHECK_CHECK_TEST2)
-                set(CHECK_TMP_LIBS "-pthread -lrt -lsubunit ${EXTRA_LIBS}")
-                string(STRIP "${CHECK_TMP_LIBS}" CHECK_TMP_LIBS)
-                set(EXTRA_LIBS "${CHECK_TMP_LIBS}" CACHE STRING
-                "List of additional libraries to link against.  Separate multiple
-                names using semicolons." FORCE)                
-                unset(CHECK_TMP_LIBS)
-                message(STATUS "Check requires the following EXTRA_LIBS : ${EXTRA_LIBS}")
-            else ()
-                message(WARNING
-"Check cannot compile tests, please specify the correct EXTRA_LIBS for your operating system.")            
-            endif (CHECK_CHECK_TEST2)
-            unset(CHECK_CHECK_TEST2 CACHE)
-
-        endif (NOT CHECK_CHECK_TEST)
-
-        unset(CHECK_CHECK_TEST CACHE)
-        set(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_FLAGS_CACHE})
-
-      endif(${CMAKE_VERSION} VERSION_GREATER 3.0.0)
-
-  endif(UNIX)
+    if (UNIX)
+        # Set up valgrind for `ctest -T memcheck`.
+        find_program(MEMORYCHECK_COMMAND valgrind)
+        set(MEMORYCHECK_TYPE "Valgrind")
+        set(MEMORYCHECK_COMMAND_OPTIONS
+           "--error-exitcode=1 --trace-children=yes --leak-check=full --show-reachable=yes --leak-resolution=high --track-origins=yes --error-limit=no")
+        set(MEMORYCHECK_SUPPRESSIONS_FILE "${CMAKE_SOURCE_DIR}/valgrind.supp")
+    endif(UNIX)
 
     include(CTest)
 
-endif(WITH_CHECK)
+endif(WITH_GTEST)
 
 
 ####################################################################
@@ -524,6 +386,7 @@ file(GLOB LIBANTIMONY_SOURCES
     ${ANTIMONY_SRC_DIR}dnastrand.cpp
     ${ANTIMONY_SRC_DIR}event.cpp
     ${ANTIMONY_SRC_DIR}formula.cpp
+    ${ANTIMONY_SRC_DIR}kineticLawWrapper.cpp
     ${ANTIMONY_SRC_DIR}layoutWrapper.cpp
     ${ANTIMONY_SRC_DIR}module.cpp
     ${ANTIMONY_SRC_DIR}reactantlist.cpp
@@ -544,7 +407,7 @@ file(GLOB LIBANTIMONY_SOURCES
 file(GLOB LIBANTIMONY_TRANSLATORS
     ${ANTIMONY_SRC_DIR}module-sbml.cpp
     ${ANTIMONY_SRC_DIR}module-cellml.cpp
-        )
+    )
 SET_SOURCE_FILES_PROPERTIES(
     ${ANTIMONY_SRC_DIR}module-sbml.cpp
     ${ANTIMONY_SRC_DIR}module-cellml.cpp
@@ -554,7 +417,7 @@ source_group(Translators FILES ${LIBANTIMONY_TRANSLATORS})
 
 file(GLOB LIBANTIMONY_HEADERS
         ${ANTIMONY_SRC_DIR}annotated.h
-        ${ANTIMONY_SRC_DIR}antimony_api.h
+        ${ANTIMONY_API}
         ${ANTIMONY_SRC_DIR}antimony_api_cpp.h
         ${ANTIMONY_SRC_DIR}cellmlx.h
         ${ANTIMONY_SRC_DIR}constraint.h
@@ -562,6 +425,7 @@ file(GLOB LIBANTIMONY_HEADERS
         ${ANTIMONY_SRC_DIR}enums.h
         ${ANTIMONY_SRC_DIR}event.h
         ${ANTIMONY_SRC_DIR}formula.h
+        ${ANTIMONY_SRC_DIR}kineticLawWrapper.h
         ${ANTIMONY_SRC_DIR}layoutWrapper.h
         ${ANTIMONY_SRC_DIR}libutil.h
         ${ANTIMONY_SRC_DIR}module.h
@@ -634,8 +498,8 @@ add_subdirectory(src/bindings)
 # Build the test libraries.
 #
 
-if(WITH_CHECK)
-    message(STATUS "  Using libcheck                = ${LIBCHECK_LIBRARY}")
+if(WITH_GTEST)
+    message(STATUS "  Using vendored GoogleTest      = ${CMAKE_CURRENT_SOURCE_DIR}/src/test/googletest")
     add_subdirectory(src/test)
 endif()
 
@@ -661,17 +525,15 @@ add_dependencies(sbtranslate ${LIBANTIMONY_LIBRARY}-static)
 target_link_libraries(sbtranslate ${LIBANTIMONY_LIBRARY}-static ${LIBANTIMONY_LIBS})
 install(TARGETS sbtranslate DESTINATION bin)
 
-if(WITH_SBML)
-  add_executable(antimony2sbml ${ANTIMONY_SRC_DIR}antimony2sbml.cpp)
-  add_dependencies(antimony2sbml ${LIBANTIMONY_LIBRARY}-static)
-  target_link_libraries(antimony2sbml ${LIBANTIMONY_LIBRARY}-static ${LIBANTIMONY_LIBS})
-  install(TARGETS antimony2sbml DESTINATION bin)
+add_executable(antimony2sbml ${ANTIMONY_SRC_DIR}antimony2sbml.cpp)
+add_dependencies(antimony2sbml ${LIBANTIMONY_LIBRARY}-static)
+target_link_libraries(antimony2sbml ${LIBANTIMONY_LIBRARY}-static ${LIBANTIMONY_LIBS})
+install(TARGETS antimony2sbml DESTINATION bin)
 
-  add_executable(sbml2antimony ${ANTIMONY_SRC_DIR}sbml2antimony.cpp)
-  add_dependencies(sbml2antimony ${LIBANTIMONY_LIBRARY}-static)
-  target_link_libraries(sbml2antimony ${LIBANTIMONY_LIBRARY}-static ${LIBANTIMONY_LIBS})
-  install(TARGETS sbml2antimony DESTINATION bin)
-endif(WITH_SBML)
+add_executable(sbml2antimony ${ANTIMONY_SRC_DIR}sbml2antimony.cpp)
+add_dependencies(sbml2antimony ${LIBANTIMONY_LIBRARY}-static)
+target_link_libraries(sbml2antimony ${LIBANTIMONY_LIBRARY}-static ${LIBANTIMONY_LIBS})
+install(TARGETS sbml2antimony DESTINATION bin)
 
 if(WITH_CELLML)
   add_executable(antimony2cellml ${ANTIMONY_SRC_DIR}antimony2cellml.cpp)
@@ -690,7 +552,7 @@ endif(WITH_CELLML)
 # Build QT Antimony
 #
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set (QTANTIMONY_SRC_DIR QTAntimony_src/)
@@ -805,6 +667,9 @@ if (WITH_QTANTIMONY)
         set(MACOSX_BUNDLE_ICON_FILE ${QTANTIMONY_SRC_DIR}antimony.icns)
         install(TARGETS QTAntimony DESTINATION bin)
         install(FILES ${QTANTIMONY_SRC_DIR}antimony.ico ${QTANTIMONY_SRC_DIR}antimony_ico.png DESTINATION bin)
+        if (WIN32)
+          install(FILES ${CMAKE_SOURCE_DIR}/win32/README.txt DESTINATION bin)
+        endif (WIN32)
 
         set_target_properties(QTAntimony PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/QTAntimony/$<0:>")
 
@@ -856,20 +721,165 @@ if(NOT UNIX)
 
 endif(NOT UNIX)
 
-###############################################################################
-#
-# Install win32 dependencies
-#
-#if (NOT UNIX)
-#   file(GLOB win_dependencies "${CMAKE_SOURCE_DIR}/win32/*.dll" "${CMAKE_CURRENT_SOURCE_DIR}/win32/README.txt")
-#   if (NOT WITH_STATIC_SBML)
-#      list(APPEND win_dependencies ${LIBSBML_DLL})
-#   endif()
-#   install(FILES ${win_dependencies} DESTINATION bin/)
-#   install(FILES "${CMAKE_SOURCE_DIR}/win32/platforms/qwindows.dll" DESTINATION bin/platforms/)
-#endif()
-
 if(WIN32 AND INSTALL_SYSTEM_RUNTIMES)
   include(InstallRequiredSystemLibraries)
   INSTALL(FILES ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} DESTINATION bin COMPONENT Libraries)
+endif()
+
+####################################################################
+#
+# 'docs' target: regenerate doc/AntimonyTutorial.{htm,docx,rst,pdf} from
+# doc/AntimonyTutorial.md using pandoc, then (if 'xxd' is available)
+# regenerate QTAntimony_src/Tutorial.xxd, then (if Doxygen is available) regenerate
+# the Doxygen API docs from the /** */ comments in src/antimony_api.h and
+# src/enums.h, plus the doc/antimony-*.txt pages, per doc/doxygen.antimony.cfg.
+# Not part of the default build -- run it explicitly, e.g.
+# 'cmake --build . --target docs'.
+#
+
+find_program(PANDOC_EXECUTABLE
+    NAMES pandoc
+    DOC "The pandoc executable, used by the 'docs' target to regenerate AntimonyTutorial.* from AntimonyTutorial.md."
+    )
+
+find_program(XXD_EXECUTABLE
+    NAMES xxd
+    DOC "The xxd executable, used by the 'docs' target to regenerate QTAntimony_src/Tutorial.xxd from AntimonyTutorial.htm."
+    )
+
+set(ANTIMONY_TUTORIAL_MD ${CMAKE_SOURCE_DIR}/doc/AntimonyTutorial.md)
+set(ANTIMONY_TUTORIAL_HTM ${CMAKE_SOURCE_DIR}/doc/AntimonyTutorial.htm)
+set(ANTIMONY_TUTORIAL_DOCX ${CMAKE_SOURCE_DIR}/doc/AntimonyTutorial.docx)
+set(ANTIMONY_TUTORIAL_RST ${CMAKE_SOURCE_DIR}/doc/AntimonyTutorial.rst)
+
+if(PANDOC_EXECUTABLE)
+    message(STATUS "  Using pandoc                  = ${PANDOC_EXECUTABLE}")
+
+    # OUTPUT/DEPENDS makes this a real file-level rule (like a .cpp -> .o
+    # compile step): pandoc only reruns when AntimonyTutorial.md is newer
+    # than the generated .htm/.docx/.rst. AntimonyTutorial.pdf is produced
+    # by the same command but left out of OUTPUT since pandoc_optional_pdf.cmake
+    # may skip it (no PDF engine available) without failing the build.
+    add_custom_command(
+        OUTPUT ${ANTIMONY_TUTORIAL_HTM} ${ANTIMONY_TUTORIAL_DOCX} ${ANTIMONY_TUTORIAL_RST}
+        COMMAND ${PANDOC_EXECUTABLE} --toc -s --lua-filter=pandoc_strip_toc_marker.lua AntimonyTutorial.md -o AntimonyTutorial.htm
+        COMMAND ${PANDOC_EXECUTABLE} --toc -s --lua-filter=pandoc_strip_toc_marker.lua AntimonyTutorial.md -o AntimonyTutorial.docx
+        COMMAND ${PANDOC_EXECUTABLE} --toc -s --lua-filter=pandoc_strip_toc_marker.lua AntimonyTutorial.md -o AntimonyTutorial.rst
+        COMMAND ${CMAKE_COMMAND} -DPANDOC_EXECUTABLE=${PANDOC_EXECUTABLE} -P ${CMAKE_SOURCE_DIR}/doc/pandoc_optional_pdf.cmake
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/doc
+        DEPENDS ${ANTIMONY_TUTORIAL_MD}
+        COMMENT "Regenerating AntimonyTutorial.htm, .docx, .rst, and .pdf from AntimonyTutorial.md"
+        VERBATIM
+        )
+
+    set(DOCS_DEPENDS ${ANTIMONY_TUTORIAL_HTM} ${ANTIMONY_TUTORIAL_DOCX} ${ANTIMONY_TUTORIAL_RST})
+else()
+    message(STATUS "  pandoc not found -- the 'docs' target will report an error instead of regenerating AntimonyTutorial.*")
+endif()
+
+set(ANTIMONY_TUTORIAL_XXD ${CMAKE_SOURCE_DIR}/QTAntimony_src/Tutorial.xxd)
+
+if(XXD_EXECUTABLE AND PANDOC_EXECUTABLE)
+    message(STATUS "  Using xxd                     = ${XXD_EXECUTABLE}")
+
+    # Same OUTPUT/DEPENDS treatment as the pandoc step above: only regenerate
+    # Tutorial.xxd when AntimonyTutorial.htm is newer than it.
+    add_custom_command(
+        OUTPUT ${ANTIMONY_TUTORIAL_XXD}
+        COMMAND ${CMAKE_COMMAND} -DXXD_EXECUTABLE=${XXD_EXECUTABLE} -P ${CMAKE_SOURCE_DIR}/doc/xxd_tutorial.cmake
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/doc
+        DEPENDS ${ANTIMONY_TUTORIAL_HTM}
+        COMMENT "Regenerating QTAntimony_src/Tutorial.xxd from AntimonyTutorial.htm"
+        VERBATIM
+        )
+
+    list(APPEND DOCS_DEPENDS ${ANTIMONY_TUTORIAL_XXD})
+elseif(XXD_EXECUTABLE)
+    message(STATUS "  xxd found but pandoc not found -- the 'docs' target will not update QTAntimony_src/Tutorial.xxd")
+else()
+    message(STATUS "  xxd not found -- the 'docs' target will not update QTAntimony_src/Tutorial.xxd")
+endif()
+
+add_custom_target(docs DEPENDS ${DOCS_DEPENDS})
+
+if(NOT PANDOC_EXECUTABLE)
+    add_custom_command(TARGET docs POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E echo "pandoc was not found (install it from https://pandoc.org/installing.html and re-run cmake) -- cannot regenerate AntimonyTutorial.*."
+        )
+endif()
+
+if(NOT XXD_EXECUTABLE OR NOT PANDOC_EXECUTABLE)
+    add_custom_command(TARGET docs POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E echo "xxd was not found -- QTAntimony_src/Tutorial.xxd was not updated (install xxd, e.g. via vim/Git for Windows, and re-run cmake)."
+        )
+endif()
+
+find_package(Doxygen)
+
+# A Cygwin-built doxygen doesn't recognize 'C:/...' as an absolute path (only
+# POSIX-style paths), so convert to Cygwin's '/cygdrive/c/...' form when
+# doxygen itself is a Cygwin build. Used for every generated file path handed
+# to doxygen via an environment variable below.
+function(antimony_doxygen_path OUT_VAR IN_PATH)
+    string(TOLOWER "${DOXYGEN_EXECUTABLE}" DOXYGEN_EXECUTABLE_LOWER)
+    # Deliberately nested rather than 'if(IN_PATH MATCHES ... AND
+    # DOXYGEN_EXECUTABLE_LOWER MATCHES "cygwin")': evaluating a second
+    # MATCHES in the same compound condition clobbers CMAKE_MATCH_1/2 from
+    # the first (that second pattern has no capture groups, so it clears
+    # them), leaving both empty by the time they're read below.
+    if(DOXYGEN_EXECUTABLE_LOWER MATCHES "cygwin")
+        if(IN_PATH MATCHES "^([A-Za-z]):(.*)$")
+            string(TOLOWER "${CMAKE_MATCH_1}" DOXYGEN_PATH_DRIVE)
+            set(${OUT_VAR} "/cygdrive/${DOXYGEN_PATH_DRIVE}${CMAKE_MATCH_2}" PARENT_SCOPE)
+            return()
+        endif()
+    endif()
+    set(${OUT_VAR} "${IN_PATH}" PARENT_SCOPE)
+endfunction()
+
+if(DOXYGEN_FOUND)
+    message(STATUS "  Using Doxygen                 = ${DOXYGEN_EXECUTABLE}")
+
+    # antimony_api.h no longer lives in src/ -- it's generated from
+    # src/antimony_api.h.in into the build directory (see ANTIMONY_API above).
+    antimony_doxygen_path(ANTIMONY_API_FOR_DOXYGEN "${ANTIMONY_API}")
+
+    # Likewise, antimony-mainpage.txt.in gets its @LIBANTIMONY_VERSION_STRING@
+    # placeholder substituted into the build directory (see
+    # LIBANTIMONY_VERSION_STRING above).
+    set(ANTIMONY_MAINPAGE_IN "${CMAKE_SOURCE_DIR}/doc/antimony-mainpage.txt.in")
+    set(ANTIMONY_MAINPAGE    "${CMAKE_CURRENT_BINARY_DIR}/antimony-mainpage.txt")
+    configure_file(${ANTIMONY_MAINPAGE_IN} ${ANTIMONY_MAINPAGE} @ONLY)
+    antimony_doxygen_path(ANTIMONY_MAINPAGE_FOR_DOXYGEN "${ANTIMONY_MAINPAGE}")
+
+    # Generated HTML goes to a build-directory staging folder and then gets installed.
+    set(ANTIMONY_DOXYGEN_OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/doxygen-html")
+    antimony_doxygen_path(ANTIMONY_DOXYGEN_OUTPUT_FOR_DOXYGEN "${ANTIMONY_DOXYGEN_OUTPUT}")
+
+    set(ANTIMONY_DOXYFILE_IN "${CMAKE_SOURCE_DIR}/doc/doxygen.antimony.cfg")
+    set(ANTIMONY_DOXYFILE    "${CMAKE_CURRENT_BINARY_DIR}/doxygen.antimony.cfg")
+    configure_file(${ANTIMONY_DOXYFILE_IN} ${ANTIMONY_DOXYFILE} @ONLY)
+    antimony_doxygen_path(ANTIMONY_DOXYFILE_FOR_DOXYGEN "${ANTIMONY_DOXYFILE}")
+
+    add_custom_command(TARGET docs POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E echo "Regenerating Doxygen API docs from antimony_api.h, enums.h, and doc/antimony-*.txt"
+        COMMAND ${DOXYGEN_EXECUTABLE} ${ANTIMONY_DOXYFILE_FOR_DOXYGEN}
+        COMMAND ${CMAKE_COMMAND} -DDOC_DIR=${CMAKE_SOURCE_DIR}/doc -DOUTPUT_DIR=${ANTIMONY_DOXYGEN_OUTPUT} -P ${CMAKE_SOURCE_DIR}/doc/copy_docs_assets.cmake
+        COMMAND ${CMAKE_COMMAND} -E echo "-- Regenerated Doxygen API docs"
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/doc
+        COMMENT "Regenerating Doxygen API docs from antimony_api.h, enums.h, and doc/antimony-*.txt"
+        VERBATIM
+        )
+
+    # 'cmake --build . --target docs' regenerates the staging folder above;
+    # 'cmake --install .' (a separate step) copies it to <prefix>/doc/.
+    # OPTIONAL, since the staging folder won't exist until 'docs' has been
+    # built at least once.
+    install(DIRECTORY "${ANTIMONY_DOXYGEN_OUTPUT}/" DESTINATION doc OPTIONAL)
+else()
+    message(STATUS "  Doxygen not found -- the 'docs' target will not regenerate the Doxygen API docs")
+
+    add_custom_command(TARGET docs POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E echo "Doxygen was not found -- API docs were not regenerated (install Doxygen from https://www.doxygen.nl/download.html and re-run cmake)."
+        )
 endif()

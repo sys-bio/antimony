@@ -81,10 +81,10 @@ jobs:
             build_type: Debug
             build_python: ON
             build_qt_antimony: OFF
-        libroadrunner_deps_owner: [ "sys-bio" ]
-        libroadrunner_deps_repo: [ "libroadrunner-deps" ]
-        libroadrunner_deps_name: [ "libroadrunner-deps" ]
-        libroadrunner_deps_release_version: [ "v2.3.1" ]
+        antimony_deps_owner: [ "sys-bio" ]
+        antimony_deps_repo: [ "libroadrunner-deps" ]
+        antimony_deps_name: [ "antimony-deps" ]
+        antimony_deps_release_version: [ "v2.3.5" ]
         python_version: [ "3.13" ]
 
     runs-on: ${{ matrix.platform.os_name }}
@@ -139,6 +139,13 @@ jobs:
           elif [ "${{ matrix.platform.os_type }}" == 'ubuntu' ]; then
             sudo apt-get update
             sudo apt-get install -y ccache
+            if [ "${{ matrix.platform.name }}" == 'ubuntu-latest-release' ]; then
+              # Needed for the "Run Antimony tests under valgrind" step below.
+              # (The debug-build valgrind run lives in a separate,
+              # manually-triggered workflow -- see
+              # .github/workflows/valgrind-debug-memcheck.yml.)
+              sudo apt-get install -y valgrind
+            fi
           elif [ "${{ matrix.platform.os_type }}" == 'manylinux' ]; then
             mkdir -p ccache
             cd ccache
@@ -173,7 +180,7 @@ jobs:
         if: matrix.platform.os_type != 'windows'
         uses: actions/cache@main
         with:
-          path: ${RUNNER_WORKSPACE}/.ccache
+          path: ${{ runner.workspace }}/.ccache
           key:
             ${{ runner.os }}-${{ steps.ccache_cache_timestamp.outputs.timestamp
             }}
@@ -217,58 +224,36 @@ jobs:
         shell: bash
         run: |
           cd ${RUNNER_WORKSPACE}
-          mkdir -p ${{ matrix.libroadrunner_deps_name }}-binaries
-          cd ${{ matrix.libroadrunner_deps_name }}-binaries
+          mkdir -p ${{ matrix.antimony_deps_name }}-binaries
+          cd ${{ matrix.antimony_deps_name }}-binaries
           if [ "${{ matrix.platform.os_type }}" == 'windows' ]; then
             compiler_version=$(ls "C:\Program Files\Microsoft Visual Studio")
-            binary_file_name=${{ matrix.libroadrunner_deps_name }}-${{ matrix.platform.os_type }}-msvc${compiler_version}-${host_architecture}-${{ matrix.platform.build_type }}
+            binary_file_name=${{ matrix.antimony_deps_name }}-${{ matrix.platform.os_type }}-msvc${compiler_version}-${host_architecture}-${{ matrix.platform.build_type }}
           elif [ "${{ matrix.platform.os_type }}" == 'macos' ]; then
             os_version=$(sw_vers -productVersion | cut -d '.' -f 1)
-            binary_file_name=${{ matrix.libroadrunner_deps_name }}-${{ matrix.platform.os_type }}-${os_version}-${host_architecture}-${{ matrix.platform.build_type }}
+            binary_file_name=${{ matrix.antimony_deps_name }}-${{ matrix.platform.os_type }}-${os_version}-${host_architecture}-${{ matrix.platform.build_type }}
           elif [ "${{ matrix.platform.os_type }}" == 'ubuntu' ]; then
             os_version=$(lsb_release -rs | cut -d '.' -f 1)
-            binary_file_name=${{ matrix.libroadrunner_deps_name }}-${{ matrix.platform.os_type }}-${os_version}-${host_architecture}-${{ matrix.platform.build_type }}
+            binary_file_name=${{ matrix.antimony_deps_name }}-${{ matrix.platform.os_type }}-${os_version}-${host_architecture}-${{ matrix.platform.build_type }}
           elif [ "${{ matrix.platform.os_type }}" == 'manylinux' ]; then
             os_name="${{ matrix.platform.name }}"
             os_name_without_build_type="${os_name%%-*}"
-            binary_file_name=${{ matrix.libroadrunner_deps_name }}-${os_name_without_build_type}-${host_architecture}-${{ matrix.platform.build_type }}
+            binary_file_name=${{ matrix.antimony_deps_name }}-${os_name_without_build_type}-${host_architecture}-${{ matrix.platform.build_type }}
           fi
-          curl -LO "https://github.com/${{ matrix.libroadrunner_deps_owner }}/${{ matrix.libroadrunner_deps_repo }}/releases/download/${{ matrix.libroadrunner_deps_release_version }}/$binary_file_name.zip"
+          curl -LO "https://github.com/${{ matrix.antimony_deps_owner }}/${{ matrix.antimony_deps_repo }}/releases/download/${{ matrix.antimony_deps_release_version }}/$binary_file_name.zip"
           unzip -q $binary_file_name.zip
           rm $binary_file_name.zip
-          echo ANT_DEPENDENCIES_INSTALL_PREFIX="-DANT_DEPENDENCIES_INSTALL_PREFIX=${RUNNER_WORKSPACE}/${{ matrix.libroadrunner_deps_name }}-binaries" >> "${GITHUB_ENV}"
-          #if [ "${{ matrix.platform.os_type }}" == 'windows' ]; then
-          #  echo EXPAT_LIBRARY="-DEXPAT_LIBRARY=${RUNNER_WORKSPACE}/${{ matrix.libroadrunner_deps_name }}-binaries/lib/${{ matrix.platform.expat_lib_name }}" >> "${GITHUB_ENV}"
-          #fi
-
-      - name: Install libcheck
-        shell: bash
-        run: |
-          cd ${RUNNER_WORKSPACE}
-          mkdir -p check
-          cd check
-          if [ "${{ matrix.platform.os_type }}" == 'windows' ]; then
-            curl -L https://github.com/sys-bio/antimony/releases/download/libcheck/check-${{ matrix.platform.build_type }}.zip > check.zip
-            unzip -q check.zip -d check
-            rm check.zip
-            echo LIBCHECK_INCLUDE_DIR="-DLIBCHECK_INCLUDE_DIR=${RUNNER_WORKSPACE}/check/check/include" >> "${GITHUB_ENV}"
-            echo LIBCHECK_LIBRARY="-DLIBCHECK_LIBRARY=${RUNNER_WORKSPACE}/check/check/lib/libcheck.lib" >> "${GITHUB_ENV}"
-          else
-            curl -L https://github.com/libcheck/check/releases/download/0.15.2/check-0.15.2.tar.gz > check.tar.gz
-            tar -zxf check.tar.gz
-            rm check.tar.gz
-            mkdir -p build-check
-            mkdir -p install-check
-            cd build-check
-            cmake -G "Ninja" -DCMAKE_INSTALL_PREFIX="${RUNNER_WORKSPACE}/check/install-check" -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=${{ matrix.platform.arch }} ../check-0.15.2
-            cmake --build . --target install
-            echo LIBCHECK_INCLUDE_DIR="-DLIBCHECK_INCLUDE_DIR=${RUNNER_WORKSPACE}/check/install-check/include" >> "${GITHUB_ENV}"
-            if [ "${{ matrix.platform.os_type }}" == 'manylinux' ]; then
-              echo LIBCHECK_LIBRARY="-DLIBCHECK_LIBRARY=${RUNNER_WORKSPACE}/check/install-check/lib64/libcheck.so" >> "${GITHUB_ENV}"
-            else
-              echo LIBCHECK_LIBRARY="-DLIBCHECK_LIBRARY=${RUNNER_WORKSPACE}/check/install-check/lib/libcheck.a" >> "${GITHUB_ENV}"
-            fi
+          if [ -d "$binary_file_name" ]; then
+            mv "$binary_file_name"/* .
+            rmdir "$binary_file_name"
           fi
+
+          echo ANT_DEPENDENCIES_INSTALL_PREFIX="-DANT_DEPENDENCIES_INSTALL_PREFIX=${RUNNER_WORKSPACE}/${{ matrix.antimony_deps_name }}-binaries" >> "${GITHUB_ENV}"
+
+
+          #if [ "${{ matrix.platform.os_type }}" == 'windows' ]; then
+          #  echo EXPAT_LIBRARY="-DEXPAT_LIBRARY=${RUNNER_WORKSPACE}/${{ matrix.antimony_deps_name }}-binaries/lib/${{ matrix.platform.expat_lib_name }}" >> "${GITHUB_ENV}"
+          #fi
 
       - name: Install Qt
         if : matrix.platform.build_qt_antimony == 'ON'
@@ -287,23 +272,28 @@ jobs:
         shell: bash
         run: |
           cd ${RUNNER_WORKSPACE}/build-antimony
+          EXTRA_CMAKE_ARGS=()
+          if [ "${{ matrix.platform.name }}" == 'ubuntu-latest-release' ]; then
+            # This is the leg the automatic valgrind memcheck step runs
+            # against (see "Run Antimony tests under valgrind" below). Keep
+            # full -O3 Release optimization (so it stays fast) but add -g
+            # so leak reports have real stack traces instead of bare
+            # addresses.
+            EXTRA_CMAKE_ARGS+=("-DCMAKE_CXX_FLAGS_RELEASE=-O3 -DNDEBUG -g")
+            EXTRA_CMAKE_ARGS+=("-DCMAKE_C_FLAGS_RELEASE=-O3 -DNDEBUG -g")
+          fi
           cmake $GITHUB_WORKSPACE \
           -G "Ninja" \
           -DCMAKE_C_COMPILER_LAUNCHER=${COMPILER_LAUNCHER} \
           -DCMAKE_CXX_COMPILER_LAUNCHER=${COMPILER_LAUNCHER} \
           -DCMAKE_BUILD_TYPE=${{ matrix.platform.build_type }} \
-          -DUSE_UNIVERSAL_BINARIES=OFF \
           -DCMAKE_OSX_ARCHITECTURES=${{ matrix.platform.arch }} \
           -DCMAKE_INSTALL_PREFIX="${RUNNER_WORKSPACE}/install-antimony" \
-          -DWITH_STATIC_SBML=ON \
           ${ANT_DEPENDENCIES_INSTALL_PREFIX} \
           -DWITH_QTANTIMONY=${{ matrix.platform.build_qt_antimony }} \
-          -DWITH_LIBSBML_EXPAT=ON \
-          -DWITH_LIBSBML_LIBXML=OFF \
-          -DWITH_CHECK=ON \
-          ${LIBCHECK_INCLUDE_DIR} \
-          ${LIBCHECK_LIBRARY} \
-          -DWITH_PYTHON=${{ matrix.platform.build_python }}
+          -DWITH_GTEST=ON \
+          -DWITH_PYTHON=${{ matrix.platform.build_python }} \
+          "${EXTRA_CMAKE_ARGS[@]}"
 
       - name: Build and install Antimony
         shell: bash
@@ -317,6 +307,97 @@ jobs:
         run: |
           cd ${RUNNER_WORKSPACE}/build-antimony
           ctest -C ${{ matrix.platform.build_type }} --output-on-failure --verbose --extra-verbose --progress
+
+      # Only the windows-latest-release leg has a QTAntimony.exe built with
+      # the exact Qt version (5.15.2, see 'Install Qt' above) win32/antimonyInstaller.iss
+      # expects, so the installer is only packaged there. InstallDir points
+      # iscc at this leg's actual install prefix (see 'Configure CMake for
+      # Antimony' above) rather than the '..\install-release' sibling
+      # directory the .iss defaults to for local/manual runs.
+      - name: Install Inno Setup
+        if: matrix.platform.name == 'windows-latest-release'
+        shell: bash
+        run: choco install innosetup --no-progress -y
+
+      - name: Build QTAntimony installer
+        if: matrix.platform.name == 'windows-latest-release'
+        shell: bash
+        # MSYS_NO_PATHCONV=1: Git Bash auto-converts any argument that looks
+        # like a POSIX path (starts with '/') into a Windows path before
+        # handing it to a native .exe. iscc's /D switches start with '/' and
+        # aren't paths at all, so without this they get mangled and iscc
+        # fails with 'You may not specify more than one script filename.'
+        run: |
+          cd ${RUNNER_WORKSPACE}/build-antimony
+          ANTIMONY_VERSION=$(cat antimony_version.txt)
+          cd ${GITHUB_WORKSPACE}/win32
+          MSYS_NO_PATHCONV=1 iscc "/DInstallDir=${RUNNER_WORKSPACE}/install-antimony" "/DMyAppVersion=${ANTIMONY_VERSION}" antimonyInstaller.iss
+
+      - name: Upload QTAntimony installer
+        if: matrix.platform.name == 'windows-latest-release'
+        uses: actions/upload-artifact@main
+        with:
+          name: antimonyInstaller-windows
+          path: win32/antimonyInstaller_v*.exe
+
+      # Valgrind is Linux-only (no Windows support, weak/no Apple Silicon
+      # support), so this only runs on one leg of the matrix rather than
+      # across every platform/config combination. 
+      #
+      # For a slower but fully accurate debug-build memcheck run (e.g. to
+      # dig into something this one flagged), trigger
+      # .github/workflows/valgrind-debug-memcheck.yml manually from the
+      # Actions tab.
+      #
+      # `ctest -T memcheck` only prints a per-test defect *count* to the
+      # console -- the actual valgrind report (stack traces, "definitely
+      # lost" byte counts, etc.) goes to a per-test log file instead:
+      # Testing/Temporary/MemoryChecker.<test-id>.log, one per test.
+      - name: Run Antimony tests under valgrind (memcheck), in chunks
+        if : matrix.platform.name == 'ubuntu-latest-release'
+        shell: bash
+        run: |
+          cd ${RUNNER_WORKSPACE}/build-antimony
+          chunk_size=20
+          total=$(ctest -N -C ${{ matrix.platform.build_type }} | grep "Total Tests:" | awk '{print $NF}')
+          echo "Running $total tests under valgrind, $chunk_size at a time"
+          overall_exit=0
+          start=1
+          while [ "$start" -le "$total" ]; do
+            end=$((start + chunk_size - 1))
+            if [ "$end" -gt "$total" ]; then
+              end=$total
+            fi
+
+            echo "::group::Running tests $start-$end of $total under valgrind"
+            ctest -T memcheck -C ${{ matrix.platform.build_type }} -I ${start},${end} --output-on-failure || overall_exit=1
+            echo "::endgroup::"
+
+            found_any=0
+            for i in $(seq $start $end); do
+              f="Testing/Temporary/MemoryChecker.$i.log"
+              [ -f "$f" ] || continue
+              if grep -qE "ERROR SUMMARY: [1-9]|(definitely|indirectly|possibly) lost: [1-9]|still reachable: [1-9]" "$f"; then
+                found_any=1
+                echo "::group::Valgrind defect: $f"
+                cat "$f"
+                echo "::endgroup::"
+              fi
+            done
+            if [ "$found_any" -eq 0 ]; then
+              echo "No valgrind defects in tests $start-$end."
+            fi
+
+            start=$((end + 1))
+          done
+          exit $overall_exit
+
+      - name: Upload memcheck logs
+        if: always() && matrix.platform.name == 'ubuntu-latest-release'
+        uses: actions/upload-artifact@main
+        with:
+          name: valgrind-release-memcheck-logs-run${{ github.run_number }}
+          path: ${{ runner.workspace }}/build-antimony/Testing/Temporary/
 
       - name: Set artifacts path and name
         shell: bash
@@ -338,14 +419,18 @@ jobs:
         run: |
           cd ${RUNNER_WORKSPACE}/install-antimony/bindings/python
           if [ "${{ matrix.platform.os_type }}" == 'windows' ]; then
-            ${{env.python_exe}} -m pip install setuptools wheel
-            ${{env.python_exe}} setup.py bdist_wheel
+            ${{env.python_exe}} -m pip install setuptools wheel build
+            ${{env.python_exe}} -m build --wheel --no-isolation --outdir dist
           elif [ "${{ matrix.platform.os_type }}" == 'manylinux' ]; then
-            python${{ matrix.python_version }} -m pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org setuptools wheel
-            python${{ matrix.python_version }} setup.py bdist_wheel
+            python${{ matrix.python_version }} -m pip install --root-user-action=ignore --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org setuptools wheel build
+            python${{ matrix.python_version }} -m build --wheel --no-isolation --outdir dist
+          elif [ "${{ matrix.platform.os_type }}" == 'macos' ]; then
+            export MACOSX_DEPLOYMENT_TARGET="$(sw_vers -productVersion | cut -d '.' -f 1).0"
+            python${{ matrix.python_version }} -m pip install setuptools wheel build
+            python${{ matrix.python_version }} -m build --wheel --no-isolation --outdir dist
           else
-            python${{ matrix.python_version }} -m pip install setuptools wheel
-            python${{ matrix.python_version }} setup.py bdist_wheel
+            python${{ matrix.python_version }} -m pip install setuptools wheel build
+            python${{ matrix.python_version }} -m build --wheel --no-isolation --outdir dist
           fi
 
       - name: Rename Python wheel artifacts
@@ -378,3 +463,92 @@ jobs:
         with:
           name: ${{env.python_wheel_artifacts_name}}
           path: ${{env.python_wheel_artifacts_file}}
+
+      # The SBML Test Suite round-trip only runs on one leg of the matrix,
+      # same reasoning as valgrind above: it's slow, and doesn't need to run
+      # on every OS/config combination to be useful. macos-14-release is
+      # chosen since ubuntu-latest-release is already dedicated to valgrind.
+      - name: Build Antimony Python wheel for SBML Test Suite round-trip
+        if: matrix.platform.name == 'macos-14-release'
+        shell: bash
+        run: |
+          cd ${RUNNER_WORKSPACE}/install-antimony/bindings/python
+          python${{ matrix.python_version }} -m pip install setuptools wheel build
+          python${{ matrix.python_version }} -m build --wheel --no-isolation --outdir dist-sbml-test-suite
+          python${{ matrix.python_version }} -m pip install dist-sbml-test-suite/antimony*.whl
+          python${{ matrix.python_version }} -m pip install -r "${GITHUB_WORKSPACE}/src/bindings/python/sbml_test_suite/requirements.txt"
+
+      - name: Download SBML Test Suite semantic cases
+        if: matrix.platform.name == 'macos-14-release'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd "${RUNNER_WORKSPACE}"
+          mkdir -p sbml-test-suite
+          asset_url=$(gh api repos/sbmlteam/sbml-test-suite/releases/latest \
+            --jq '.assets[] | select(.name | startswith("semantic_tests")) | .browser_download_url')
+          if [ -z "$asset_url" ]; then
+            echo "::error::Failed to find a semantic_tests asset in the latest sbml-test-suite release."
+            exit 1
+          fi
+          echo "Downloading ${asset_url}"
+          curl -fL "$asset_url" -o sbml-test-suite/semantic_tests.zip
+          unzip -q sbml-test-suite/semantic_tests.zip -d sbml-test-suite/extracted
+          # -quit makes find stop after the first match itself, rather than
+          # relying on a downstream `head -n 1` to cut it off -- piping into
+          # head closes the pipe early and GNU find treats that broken pipe
+          # as a fatal write error instead of exiting quietly.
+          settings_file=$(find "${RUNNER_WORKSPACE}/sbml-test-suite/extracted" -name '*-settings.txt' -print -quit)
+          if [ -z "$settings_file" ]; then
+            echo "::error::No *-settings.txt files found under sbml-test-suite/extracted -- unexpected archive layout."
+            exit 1
+          fi
+          cases_dir=$(dirname "$settings_file")
+          echo "SBML_TEST_SUITE_DIR=$(dirname "$cases_dir")" >> "${GITHUB_ENV}"
+
+      - name: Run SBML Test Suite round-trip tests
+        if: matrix.platform.name == 'macos-14-release'
+        shell: bash
+        run: |
+          cd "${GITHUB_WORKSPACE}/src/bindings/python/sbml_test_suite"
+          python${{ matrix.python_version }} -m pytest -ra --junitxml="${RUNNER_WORKSPACE}/sbml-test-suite-results.xml" \
+            --sbml-test-suite-dir="${SBML_TEST_SUITE_DIR}"
+
+      - name: Upload SBML Test Suite round-trip results
+        if: always() && matrix.platform.name == 'macos-14-release'
+        uses: actions/upload-artifact@main
+        with:
+          name: sbml-test-suite-results
+          path: ${{ runner.workspace }}/sbml-test-suite-results.xml
+
+      # Round-trips every curated BioModels model (sys-bio/temp-biomodels)
+      # through Antimony and compares tellurium's SED-ML execution of the
+      # original vs. round-tripped SBML. Shares the wheel installed for the
+      # SBML Test Suite step above; only needs its own requirements on top.
+      - name: Install BioModels round-trip test requirements
+        if: matrix.platform.name == 'macos-14-release'
+        shell: bash
+        run: python${{ matrix.python_version }} -m pip install -r "${GITHUB_WORKSPACE}/src/bindings/python/biomodels_roundtrip/requirements.txt"
+
+      - name: Fetch BioModels SBML/SED-ML files
+        if: matrix.platform.name == 'macos-14-release'
+        shell: bash
+        run: |
+          python${{ matrix.python_version }} "${GITHUB_WORKSPACE}/src/bindings/python/biomodels_roundtrip/fetch_biomodels.py" \
+            --dest "${RUNNER_WORKSPACE}/biomodels"
+
+      - name: Run BioModels round-trip tests
+        if: matrix.platform.name == 'macos-14-release'
+        shell: bash
+        run: |
+          cd "${GITHUB_WORKSPACE}/src/bindings/python/biomodels_roundtrip"
+          python${{ matrix.python_version }} -m pytest -ra --junitxml="${RUNNER_WORKSPACE}/biomodels-roundtrip-results.xml" \
+            --biomodels-dir="${RUNNER_WORKSPACE}/biomodels"
+
+      - name: Upload BioModels round-trip results
+        if: always() && matrix.platform.name == 'macos-14-release'
+        uses: actions/upload-artifact@main
+        with:
+          name: biomodels-roundtrip-results
+          path: ${{ runner.workspace }}/biomodels-roundtrip-results.xml

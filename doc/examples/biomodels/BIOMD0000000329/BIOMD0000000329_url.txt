@@ -1,0 +1,133 @@
+// Created by libAntimony v3.2.0
+model *BIOMD0000000329()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species a in compartment_, b in compartment_, c in compartment_;
+
+  // Reactions:
+  R1:  => a; compartment_*R1_v;
+  R2:  => a; compartment_*(R2_constant*a);
+  R3: a => ; compartment_*(R3_V*b*a/(R3_Km + a));
+  R4: a => ; compartment_*(R4_V*c*a/(R4_Km + a));
+  R5:  => b; compartment_*(R5_constant*a);
+  R6: b => ; compartment_*(R6_V*b/(R6_Km + b));
+  R7:  => c; compartment_*(R7_constant*a);
+  R8: c => ; compartment_*(R8_V*c/(R8_Km + c));
+
+  // Species initializations:
+  a = 0.01;
+  b = 0.01;
+  c = 0.01;
+
+  // Compartment initializations:
+  compartment_ = 1e-13;
+
+  // Variable initializations:
+  R1_v = 0.212;
+  R2_constant = 2.9;
+  R3_V = 1.52;
+  R3_Km = 0.19;
+  R4_V = 4.88;
+  R4_Km = 1.18;
+  R5_constant = 1.24;
+  R6_Km = 29.09;
+  R6_V = 32.24;
+  R7_constant = 13.58;
+  R8_Km = 0.16;
+  R8_V = 153;
+
+  // Other declarations:
+  const compartment_;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  a is "G-alpha";
+  b is "activePLC";
+  c is "Calcium";
+
+  // SBO terms:
+  compartment_.sboTerm = 290
+  a.sboTerm = 252
+  b.sboTerm = 14
+  c.sboTerm = 247
+
+  // CV terms:
+  compartment_ isVersionOf "http://identifiers.org/go/GO:0005623"
+  a isVersionOf "http://identifiers.org/uniprot/Q9JID2"
+  b isVersionOf "http://identifiers.org/uniprot/P10687"
+  c isVersionOf "http://identifiers.org/chebi/CHEBI:29108"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1105060000"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000329"
+  model publication "http://identifiers.org/pubmed/10968983"
+  model isVersionOf "http://identifiers.org/go/GO:0019722"
+  model hasTaxon "http://identifiers.org/taxonomy/10116"
+  model occursIn "http://identifiers.org/bto/BTO:0000575"
+  model created "2014-12-11T15:35:19Z"
+  model modified "2014-12-11T16:20:22Z"
+  model creator1.givenName "Vijayalakshmi"
+  model creator1.familyName "Chelliah"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "viji@ebi.ac.uk"
+  model creator2.givenName "Ursula"
+  model creator2.familyName "Kummer"
+  model creator2.organization "Ruprecht-Karls-Universität Heidelberg"
+  model creator2.email "ursula.kummer@bioquant.uni-heidelberg.de"
+  model creator3.givenName "Pedro"
+  model creator3.familyName "Mendes"
+  model creator3.organization "University of Manchester"
+  model creator3.email "pedro.mendes@manchester.ac.uk"
+
+  // Notes:
+  model notes ```
+Kummer2000 - Oscillations in CalciumSignalling 
+
+
+Simplified (3-variable) calcium oscillation model Kummer et al. (2000) Biophys.
+J. 79, 1188-1195 This model is defined in a small compartment with low concentrations.
+You can run it first with the LSODA ODE solver and then with the Gillespie Monte
+Carlo method (in Time Course widget). This illustrates that at low particle numbers,
+as here, the stochastic simulation and the ODE approach produce different results
+(the stochastic approach is more correct in these circumstances). This file also
+demonstrates the use of several different plots to visualize results, including
+a histogram.
+
+
+This model is described in the article:
+
+
+[Switching from simple to complex oscillations in calcium signaling.](http://identifiers.org/pubmed/10968983 "Access to this publication") 
+
+
+Kummer U, Olsen LF, Dixon CJ, Green AK, Bornberg-Bauer E, Baier G. 
+
+Biophys. J. 2000 Sep; 79(3): 1188-1195 
+Abstract:
+
+
+We present a new model for calcium oscillations based on experiments in hepatocytes.
+The model considers feedback inhibition on the initial agonist receptor complex
+by calcium and activated phospholipase C, as well as receptor type-dependent
+self-enhanced behavior of the activated G(alpha) subunit. It is able to show simple
+periodic oscillations and periodic bursting, and it is the first model to display
+chaotic bursting in response to agonist stimulations. Moreover, our model offers
+a possible explanation for the differences in dynamic behavior observed in response
+to different agonists in hepatocytes.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000329](http://identifiers.org/biomodels.db/BIOMD0000000329).
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication").
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+end
+
+BIOMD0000000329 is "Kummer2000 - Oscillations in Calcium Signalling"

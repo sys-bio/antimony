@@ -341,7 +341,7 @@ double Formula::ToAmountOrConcentration() const
     return GetReal(m_components[0].first);
   }
   else if (m_components.size() == 4) {
-    return GetReal(m_components[1].first);
+    return -GetReal(m_components[1].first);
   }
   assert(false);
   return 0;
@@ -434,21 +434,6 @@ bool Formula::GetIsConst() const
   return true;
 }
 
-//bool 
-
-bool Formula::CheckIncludes(string modname, const ReactantList* rlist) const
-{
-  string cc = g_registry.GetCC();
-  vector<vector<string> > varlist = rlist->GetVariableList();
-  for (size_t var=0; var<varlist.size(); var++) {
-    if (!ContainsVar(modname, varlist[var])) {
-      g_registry.SetError("should include the variable '" + g_registry.GetModule(modname)->GetVariable(varlist[var])->GetNameDelimitedBy(cc) + "' (either directly or indirectly), but it does not.");
-      return true;
-    }
-  }
-  return false;
-}
-
 bool Formula::ContainsVar(string modname, vector<string> vname) const
 {
   Module* module = g_registry.GetModule(modname);
@@ -468,6 +453,14 @@ bool Formula::ContainsVar(const Variable* outervar) const
       assert(subvar != NULL);
       if (subvar->GetIsEquivalentTo(outervar)) {
         return true;
+      }
+      // A species whose value is a concentration effectively also includes
+      // its compartment in the calculation of its value.
+      if (IsSpecies(subvar->GetType()) && !subvar->GetSubstOnly()) {
+        Variable* subcompartment = subvar->GetCompartment();
+        if (subcompartment != NULL && subcompartment->GetIsEquivalentTo(outervar)) {
+          return true;
+        }
       }
       const Formula* subformula = subvar->GetFormula();
       if (subformula != NULL) {
@@ -794,6 +787,8 @@ string Formula::ConvertOneSymbolToFunction(string formula) const
 
 vector<const Variable*> Formula::GetVariablesFrom(string formula, string module) const
 {
+  // Build up 'retval' in order, so the modifiers are added in deterministic order
+  // (useful for test comparisons).
   vector<const Variable*> retval;
   set<const Variable*> varset;
   string varname = "";
@@ -806,16 +801,19 @@ vector<const Variable*> Formula::GetVariablesFrom(string formula, string module)
       varname += formula[pos];
     }
     else if (foundname) {
-      varset.insert(g_registry.GetModule(module)->GetVariableFromSymbol(varname));
+      const Variable* var = g_registry.GetModule(module)->GetVariableFromSymbol(varname);
+      if (varset.insert(var).second) {
+        retval.push_back(var);
+      }
       foundname = false;
       varname = "";
     }
   }
   if (foundname) {
-    varset.insert(g_registry.GetModule(module)->GetVariableFromSymbol(varname));
-  }
-  for (set<const Variable*>::iterator var=varset.begin(); var != varset.end(); var++) {
-    retval.push_back(*var);
+    const Variable* var = g_registry.GetModule(module)->GetVariableFromSymbol(varname);
+    if (varset.insert(var).second) {
+      retval.push_back(var);
+    }
   }
   return retval;
 }

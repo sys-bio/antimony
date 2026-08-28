@@ -1,0 +1,273 @@
+// Created by libAntimony v3.2.0
+model *Muraro2011_CytokininAuxin_CrossRegulation()
+
+  // Compartments and Species:
+  compartment cell;
+  species IAAm in cell, IAAp in cell, AuxTIR1 in cell, AuxTIAA in cell, IAAs in cell;
+  species ARFIAA in cell, ARF2 in cell, Aux in cell, PINm in cell, PINp in cell;
+  species ARm in cell, ARp in cell, TIR1 in cell, ARF in cell, CRm in cell;
+  species CRp in cell, AHKph in cell, Ck in cell, ARRBph in cell, ARRAph in cell;
+  species ARRAm in cell, ARRAp in cell, ARRBp in cell, CkAHKph in cell, CkAHK in cell;
+  species F1 in cell, F2 in cell, F3 in cell, F4 in cell, F5a in cell, F5b in cell;
+  species F6 in cell;
+
+  // Assignment Rules:
+  TIR1 := alphaTIR1 - AuxTIR1 - AuxTIAA;
+  ARF := alphaARF - 2*ARF2 - ARFIAA;
+  ARRBp := alphaARRB - etaAHKph*ARRBph;
+  CkAHKph := alphaPH - AHKph - ARRAph - ARRBph;
+  CkAHK := alphaAHK - etaAHKph*(AHKph + CkAHKph);
+  F1 := ARF/thetaARF/(1 + ARF/thetaARF + ARF2/thetaARF2 + ARFIAA/thARFIAA + ARF*IAAp/psiARFIAA + ARF^2/psiARF + ARRBph/thARRBph);
+  F2 := (ARF2/thetaARF2 + ARF^2/psiARF)/(1 + ARF/thetaARF + ARF2/thetaARF2 + ARFIAA/thARFIAA + ARF*IAAp/psiARFIAA + ARF^2/psiARF + ARRBph/thARRBph);
+  F3 := ARRBph/thARRBph/(1 + ARF/thetaARF + ARF2/thetaARF2 + ARFIAA/thARFIAA + ARF*IAAp/psiARFIAA + ARF^2/psiARF + ARRBph/thARRBph);
+  F4 := ARRBph/thARRBph/(1 + ARRAph/thARRAph + ARRBph/thARRBph);
+  F5a := ARF/thetaARF/(1 + ARF/thetaARF + ARF2/thetaARF2 + ARFIAA/thARFIAA + ARF*IAAp/psiARFIAA + ARF^2/psiARF);
+  F5b := (ARF2/thetaARF2 + ARF^2/psiARF)/(1 + ARF/thetaARF + ARF2/thetaARF2 + ARFIAA/thARFIAA + ARF*IAAp/psiARFIAA + ARF^2/psiARF);
+  F6 := ARp/thetaARp/(1 + ARp/thetaARp);
+
+  // Reactions:
+  r1:  => IAAm; phiIAAp*(lambda1*F1 + F2 + lambda3*F3) - IAAm;
+  r2:  => IAAp; (1/eps)*((deltaIAAp*IAAm - la*IAAp*AuxTIR1) + ld*AuxTIAA) + etaARFIAA*(pd*ARFIAA - pa*IAAp*ARF);
+  r3:  => AuxTIR1; (1/eps)*((ka*Aux*TIR1 - kd*AuxTIR1) + (ld + 1)*AuxTIAA - la*AuxTIR1*IAAp);
+  r4:  => AuxTIAA; (1/eps)*(la*IAAp*AuxTIR1 - (ld + 1)*AuxTIAA);
+  r5:  => IAAs; (1/eps)*(AuxTIAA - muIAAs*IAAs);
+  r6:  => ARFIAA; pa*ARF*IAAp - pd*ARFIAA;
+  r7:  => ARF2; qa*ARF^2 - qd*ARF2;
+  r8:  => Aux; muAux*(alphaAux - Aux) - (1/eps)*etaAuxTIR1*(ka*Aux*TIR1 - kd*AuxTIR1);
+  r9:  => PINm; phiPINp*(lambda1*F5a + F5b) - PINm;
+  r10:  => PINp; (1/eps)*(deltaPINp*PINm - PINp);
+  r11:  => ARm; phiARp*(lambda1*F5a + F5b) - ARm;
+  r12:  => ARp; (1/eps)*(deltaARp*ARm - ARp);
+  r13:  => CRm; phiCRp*F4 - CRm;
+  r14:  => CRp; (1/eps)*(deltaCRp*CRm - CRp);
+  r15:  => AHKph; (1/eps)*(rd*CkAHKph - ra*AHKph*Ck);
+  r16:  => Ck; muCk*(alphaCk - Ck) - (etaCkPh/eps)*(ra*AHKph*Ck - rd*CkAHKph);
+  r17:  => ARRBph; (1/eps)*(ua*CkAHKph*ARRBp - ud*CkAHK*ARRBph);
+  r18:  => ARRAph; (1/eps)*(sa*CkAHKph*ARRAp - sd*CkAHK*ARRAph);
+  r19:  => ARRAm; phiARRAp*F6 - ARRAm;
+  r20:  => ARRAp; (1/eps)*((deltaARRAp*ARRAm - ARRAp) + etaAHKph*(sd*CkAHK*ARRAph - sa*CkAHKph*ARRAp));
+
+  // Species initializations:
+  IAAm = 0;
+  IAAp = 0;
+  AuxTIR1 = 0;
+  AuxTIAA = 0;
+  IAAs = 0;
+  ARFIAA = 0;
+  ARF2 = 0;
+  Aux = 1;
+  PINm = 0;
+  PINp = 0;
+  ARm = 0;
+  ARp = 0;
+  CRm = 0;
+  CRp = 0;
+  AHKph = 1;
+  Ck = 1;
+  ARRBph = 0;
+  ARRAph = 0;
+  ARRAm = 0;
+  ARRAp = 0;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  alphaTIR1 = 1;
+  alphaARF = 1;
+  alphaARRB = 2;
+  etaAHKph = 1;
+  alphaPH = 1;
+  alphaAHK = 1;
+  thetaARF = 0.1;
+  thetaARF2 = 0.01;
+  thARFIAA = 0.1;
+  psiARFIAA = 0.1;
+  psiARF = 0.1;
+  thARRBph = 0.1;
+  thARRAph = 0.1;
+  thetaARp = 0.1;
+  eps = 0.01;
+  lambda1 = 0.1;
+  lambda3 = 0.02;
+  alphaAux = 1;
+  phiIAAp = 100;
+  phiARp = 2;
+  phiPINp = 100;
+  deltaIAAp = 1;
+  deltaARp = 1;
+  deltaPINp = 1;
+  muAux = 0.1;
+  muIAAs = 1;
+  etaAuxTIR1 = 10;
+  etaARFIAA = 1;
+  la = 0.5;
+  ld = 0.1;
+  pa = 10;
+  pd = 10;
+  ka = 100;
+  kd = 1;
+  qa = 1;
+  qd = 1;
+  thetaIAAp = 0.1;
+  alphaCk = 1;
+  phiCRp = 2;
+  phiARRAp = 100;
+  deltaCRp = 1;
+  deltaARRAp = 1;
+  muCk = 0.1;
+  etaCkPh = 1;
+  ra = 1;
+  rd = 1;
+  ua = 1;
+  ud = 1;
+  sa = 1;
+  sd = 1;
+
+  // Other declarations:
+  const cell, alphaTIR1, alphaARF, alphaARRB, etaAHKph, alphaPH, alphaAHK;
+  const thetaARF, thetaARF2, thARFIAA, psiARFIAA, psiARF, thARRBph, thARRAph;
+  const thetaARp, eps, lambda1, lambda3, alphaAux, phiIAAp, phiARp, phiPINp;
+  const deltaIAAp, deltaARp, deltaPINp, muAux, muIAAs, etaAuxTIR1, etaARFIAA;
+  const la, ld, pa, pd, ka, kd, qa, qd, thetaIAAp, alphaCk, phiCRp, phiARRAp;
+  const deltaCRp, deltaARRAp, muCk, etaCkPh, ra, rd, ua, ud, sa, sd;
+
+  // SBO terms:
+  cell.sboTerm = 290
+  IAAm.sboTerm = 278
+  IAAp.sboTerm = 252
+  AuxTIR1.sboTerm = 296
+  AuxTIAA.sboTerm = 296
+  IAAs.sboTerm = 252
+  ARFIAA.sboTerm = 297
+  ARF2.sboTerm = 252
+  Aux.sboTerm = 247
+  PINm.sboTerm = 278
+  PINp.sboTerm = 252
+  ARm.sboTerm = 278
+  ARp.sboTerm = 252
+  TIR1.sboTerm = 252
+  ARF.sboTerm = 252
+  CRm.sboTerm = 278
+  CRp.sboTerm = 252
+  AHKph.sboTerm = 252
+  Ck.sboTerm = 247
+  ARRBph.sboTerm = 252
+  ARRAph.sboTerm = 252
+  ARRAm.sboTerm = 278
+  ARRAp.sboTerm = 252
+  ARRBp.sboTerm = 252
+  CkAHKph.sboTerm = 296
+  CkAHK.sboTerm = 296
+
+  // CV terms:
+  cell isVersionOf "http://identifiers.org/go/GO:0005623"
+  IAAm encodes "http://identifiers.org/uniprot/P49677"
+  IAAm isVersionOf "http://identifiers.org/chebi/CHEBI:33699"
+  IAAp isVersionOf "http://identifiers.org/uniprot/P49677"
+  AuxTIR1 hasPart "http://identifiers.org/chebi/CHEBI:22676",
+                  "http://identifiers.org/uniprot/Q570C0"
+  AuxTIAA hasPart "http://identifiers.org/chebi/CHEBI:22676",
+                  "http://identifiers.org/uniprot/Q570C0",
+                  "http://identifiers.org/uniprot/P49677"
+  IAAs isVersionOf "http://identifiers.org/uniprot/P49677"
+  ARFIAA isVersionOf "http://identifiers.org/uniprot/Q94JM3",
+                     "http://identifiers.org/uniprot/P49677"
+  ARF2 isVersionOf "http://identifiers.org/uniprot/Q94JM3"
+  Aux isVersionOf "http://identifiers.org/chebi/CHEBI:22676"
+  PINm encodes "http://identifiers.org/uniprot/Q9SL42"
+  PINp isVersionOf "http://identifiers.org/uniprot/Q9SL42"
+  ARm encodes "http://identifiers.org/uniprot/Q9FZ33"
+  ARp isVersionOf "http://identifiers.org/uniprot/Q9FZ33"
+  TIR1 isVersionOf "http://identifiers.org/uniprot/Q570C0"
+  ARF isVersionOf "http://identifiers.org/uniprot/Q94JM3"
+  CRm encodes "http://identifiers.org/uniprot/O82503"
+  CRp isVersionOf "http://identifiers.org/uniprot/O82503"
+  AHKph isVersionOf "http://identifiers.org/uniprot/Q9C5U0",
+                    "http://identifiers.org/kegg.compound/C00562"
+  Ck isVersionOf "http://identifiers.org/chebi/CHEBI:23530"
+  ARRBph isVersionOf "http://identifiers.org/uniprot/Q940D0",
+                     "http://identifiers.org/kegg.compound/C00562"
+  ARRAph isVersionOf "http://identifiers.org/uniprot/Q9ZWJ9",
+                     "http://identifiers.org/kegg.compound/C00562"
+  ARRAm encodes "http://identifiers.org/uniprot/Q940D0"
+  ARRAp isVersionOf "http://identifiers.org/uniprot/Q940D0"
+  ARRBp isVersionOf "http://identifiers.org/uniprot/Q940D0"
+  CkAHKph hasPart "http://identifiers.org/chebi/CHEBI:23530",
+                  "http://identifiers.org/uniprot/Q9C5U0"
+  CkAHK hasPart "http://identifiers.org/chebi/CHEBI:23530",
+                "http://identifiers.org/uniprot/Q9C5U0"
+  r1 isVersionOf "http://identifiers.org/go/GO:0009299"
+  r2 isVersionOf "http://identifiers.org/go/GO:0006412"
+  r3 isVersionOf "http://identifiers.org/go/GO:0006461"
+  r4 isVersionOf "http://identifiers.org/go/GO:0006461"
+  r5 isVersionOf "http://identifiers.org/go/GO:0043241"
+  r6 isVersionOf "http://identifiers.org/go/GO:0006461"
+  r7 isVersionOf "http://identifiers.org/go/GO:0006412"
+  r8 isVersionOf "http://identifiers.org/go/GO:0009851"
+  r9 isVersionOf "http://identifiers.org/go/GO:0009299"
+  r10 isVersionOf "http://identifiers.org/go/GO:0006412"
+  r11 isVersionOf "http://identifiers.org/go/GO:0009299"
+  r12 isVersionOf "http://identifiers.org/go/GO:0006412"
+  r13 isVersionOf "http://identifiers.org/go/GO:0009299"
+  r14 isVersionOf "http://identifiers.org/go/GO:0006412"
+  r15 isVersionOf "http://identifiers.org/go/GO:0016310"
+  r16 isVersionOf "http://identifiers.org/go/GO:0009691"
+  r17 isVersionOf "http://identifiers.org/go/GO:0016310"
+  r18 isVersionOf "http://identifiers.org/go/GO:0016310"
+  r19 isVersionOf "http://identifiers.org/go/GO:0009299"
+  r20 isVersionOf "http://identifiers.org/go/GO:0006412"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1203080000"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000416"
+  model publication "http://identifiers.org/pubmed/21640126"
+  model origin "http://identifiers.org/pubmed/20135237"
+  model hasTaxon "http://identifiers.org/taxonomy/3702"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000046"
+  model hasPart "http://identifiers.org/go/GO:0080036",
+                "http://identifiers.org/go/GO:0009734"
+  model created "2012-04-10T17:36:57Z"
+  model modified "2014-05-22T19:02:54Z"
+  model creator1.givenName "Vijayalakshmi"
+  model creator1.familyName "Chelliah"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "viji@ebi.ac.uk"
+  model creator2.givenName "Daniele"
+  model creator2.familyName "Muraro"
+  model creator2.organization "University of Nottingham"
+  model creator2.email "Daniele.Muraro@nottingham.ac.uk"
+
+  // Notes:
+  model notes ```
+This model is from the article: 
+** The influence of cytokinin-auxin cross-regulation on cell-fate determination
+in Arabidopsis thaliana root development** 
+Muraro D, Byrne H, King J, Voss U, Kieber J, Bennett M. *J Theor Biol.*2011
+Aug 21;283(1):152-67.PMID: [21640126](http://www.ncbi.nlm.nih.gov/pubmed/21640126), 
+**Abstract:** 
+Root growth and development in Arabidopsis thaliana are sustained by a specialised
+zone termed the meristem, which contains a population of dividing and differentiating
+cells that are functionally analogous to a stem cell niche in animals. The hormones
+auxin and cytokinin control meristem size antagonistically. Local accumulation of
+auxin promotes cell division and the initiation of a lateral root primordium. By
+contrast, high cytokinin concentrations disrupt the regular pattern of divisions
+that characterises lateral root development, and promote differentiation. The way
+in which the hormones interact is controlled by a genetic regulatory network. In
+this paper, we propose a deterministic mathematical model to describe this network
+and present model simulations that reproduce the experimentally observed effects
+of cytokinin on the expression of auxin regulated genes. We show how auxin response
+genes and auxin efflux transporters may be affected by the presence of cytokinin.
+We also analyse and compare the responses of the hormones auxin and cytokinin to
+changes in their supply with the responses obtained by genetic mutations of SHY2,
+which encodes a protein that plays a key role in balancing cytokinin and auxin regulation
+of meristem size. We show that although shy2 mutations can qualitatively reproduce
+the effect of varying auxin and cytokinin supply on their response genes, some elements
+of the network respond differently to changes in hormonal supply and to genetic mutations,
+implying a different, general response of the network. We conclude that an analysis
+based on the ratio between these two hormones may be misleading and that a mathematical
+model can serve as a useful tool for stimulate further experimental work by predicting
+the response of the network to changes in hormone levels and to other genetic mutations.
+```
+end
+
+Muraro2011_CytokininAuxin_CrossRegulation is "Muraro2011_Cytokinin-Auxin_CrossRegulation"

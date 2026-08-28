@@ -1,0 +1,369 @@
+// Created by libAntimony v3.2.0
+model *Model_1()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species acc in compartment_, toc1_mrna in compartment_, toc1_1 in compartment_;
+  species toc1_2 in compartment_, cca1_mrna in compartment_, cca1_c in compartment_;
+  species cca1_n in compartment_, toc1luc_mrna in compartment_, toc1luc_1 in compartment_;
+  species toc1luc_2 in compartment_, cca1luc_mrna in compartment_, cca1luc in compartment_;
+  species luc_mrna in compartment_, luc in compartment_;
+
+  // Assignment Rules:
+  toc1luc := toc1luc_1 + toc1luc_2;
+
+  // Reactions:
+  reaction_1:  => acc; compartment_*(acc_rate*ceil(sin(pi*time/12)/2));
+  reaction_2: acc => ; compartment_*(acc_rate*acc);
+  reaction_3:  => toc1_mrna; compartment_*((1 + 0*time)*(0*time + (1 + 0*time)*(L_toc1 + R_toc1_acc*acc)/(1 + L_toc1 + R_toc1_acc*acc + (R_toc1_cca1*((1 + parameter_4*(effcopies_cca1_LHY7 - 1))*cca1_n))^H_toc1_cca1)));
+  reaction_4: toc1_2 => ; compartment_*((1 + 0*time)*(ceil(sin(pi*time/12)/2)*D_toc1_2_l + (1 - ceil(sin(pi*time/12)/2))*D_toc1_2_d)*toc1_2);
+  reaction_5:  => toc1_1; compartment_*((1 + 0*time)*T_toc1*toc1_mrna);
+  reaction_6: toc1_1 => toc1_2; compartment_*((ceil(sin(pi*time/12)/2)*Di_toc1_12_l + (1 - ceil(sin(pi*time/12)/2))*Di_toc1_12_d)*toc1_1);
+  reaction_7: toc1_mrna => ; compartment_*D_mrna_toc1*toc1_mrna;
+  reaction_8:  => cca1_mrna; compartment_*((1 + 0*time)*(0*time + (1 + 0*time)*((1 + parameter_2*(effcopies_toc1_TOC8 - 1))*toc1_2*(ceil(sin(pi*time/12)/2)*R_cca1_toc1_2_l + (1 - ceil(sin(pi*time/12)/2))*R_cca1_toc1_2_d))^H_cca1_toc1/(((1 + parameter_2*(effcopies_toc1_TOC8 - 1))*toc1_2*(ceil(sin(pi*time/12)/2)*R_cca1_toc1_2_l + (1 - ceil(sin(pi*time/12)/2))*R_cca1_toc1_2_d))^H_cca1_toc1 + 1)));
+  reaction_9: cca1_mrna => ; compartment_*D_mrna_cca1*cca1_mrna;
+  reaction_10:  => cca1_c; compartment_*((1 + 0*time)*T_cca1*cca1_mrna);
+  reaction_11: cca1_c => cca1_n; compartment_*Di_cca1_cn*cca1_c;
+  reaction_12: cca1_c => ; compartment_*((1 + 0*time)*(ceil(sin(pi*time/12)/2)*D_cca1_l + (1 - ceil(sin(pi*time/12)/2))*D_cca1_d)*cca1_c);
+  reaction_13: cca1_n => ; compartment_*((1 + 0*time)*(ceil(sin(pi*time/12)/2)*D_cca1_l + (1 - ceil(sin(pi*time/12)/2))*D_cca1_d)*cca1_n);
+  reaction_14:  => luc_mrna; compartment_*(parameter_3*(1 + 0*time)*(L_toc1 + R_toc1_acc*acc)/(1 + L_toc1 + R_toc1_acc*acc + (R_toc1_cca1*cca1_n)^H_toc1_cca1));
+  reaction_15: luc_mrna => ; compartment_*D_mrna_luc*luc_mrna;
+  reaction_16:  => luc; compartment_*((1 + 0*time)*parameter_1*luc_mrna);
+  reaction_17: luc => ; compartment_*D_luc*luc;
+  reaction_18:  => toc1luc_mrna; compartment_*(parameter_2*(1 + 0*time)*(1 + 0*time)*(L_toc1 + R_toc1_acc*acc)/(1 + L_toc1 + R_toc1_acc*acc + (R_toc1_cca1*cca1_n)^H_toc1_cca1));
+  reaction_19: toc1luc_mrna => ; compartment_*D_mrna_toc1*toc1luc_mrna;
+  reaction_20:  => toc1luc_1; compartment_*((1 + 0*time)*T_toc1*toc1luc_mrna);
+  reaction_21: toc1luc_1 => toc1luc_2; compartment_*((ceil(sin(pi*time/12)/2)*Di_toc1_12_l + (1 - ceil(sin(pi*time/12)/2))*Di_toc1_12_d)*toc1luc_1);
+  reaction_22: toc1luc_2 => ; compartment_*((1 + 0*time)*(ceil(sin(pi*time/12)/2)*D_toc1_2_l + (1 - ceil(sin(pi*time/12)/2))*D_toc1_2_d)*toc1luc_2);
+  reaction_23: toc1luc_1 => ; compartment_*D_luc*toc1luc_1;
+  reaction_24: toc1luc_2 => ; compartment_*D_luc*toc1luc_2;
+  reaction_25:  => luc_mrna; compartment_*(parameter_5*(1 + 0*time)*(toc1_2*(ceil(sin(pi*time/12)/2)*R_cca1_toc1_2_l + (1 - ceil(sin(pi*time/12)/2))*R_cca1_toc1_2_d))^H_cca1_toc1/((toc1_2*(ceil(sin(pi*time/12)/2)*R_cca1_toc1_2_l + (1 - ceil(sin(pi*time/12)/2))*R_cca1_toc1_2_d))^H_cca1_toc1 + 1));
+  reaction_26:  => cca1luc_mrna; compartment_*(parameter_4*(1 + 0*time)*(1 + 0*time)*(toc1_2*(ceil(sin(pi*time/12)/2)*R_cca1_toc1_2_l + (1 - ceil(sin(pi*time/12)/2))*R_cca1_toc1_2_d))^H_cca1_toc1/((toc1_2*(ceil(sin(pi*time/12)/2)*R_cca1_toc1_2_l + (1 - ceil(sin(pi*time/12)/2))*R_cca1_toc1_2_d))^H_cca1_toc1 + 1));
+  reaction_27: cca1luc_mrna => ; compartment_*D_mrna_cca1*cca1luc_mrna;
+  reaction_28:  => cca1luc; compartment_*((1 + 0*time)*T_cca1*cca1luc_mrna);
+  reaction_30: cca1luc => ; compartment_*((1 + 0*time)*(ceil(sin(pi*time/12)/2)*D_cca1_l + (1 - ceil(sin(pi*time/12)/2))*D_cca1_d)*cca1luc);
+  reaction_32: cca1luc => ; compartment_*D_luc*cca1luc;
+
+  // Species initializations:
+  acc = 0.272067372878265;
+  toc1_mrna = 0.0385665277682963;
+  toc1_1 = 0.206521274112594;
+  toc1_2 = 0.312711901675853;
+  cca1_mrna = 0.104555645465821;
+  cca1_c = 0.051315426489096;
+  cca1_n = 3.07283764226433;
+  toc1luc_mrna = 0;
+  toc1luc_1 = 0;
+  toc1luc_2 = 0;
+  cca1luc_mrna = 0;
+  cca1luc = 0;
+  luc_mrna = 0;
+  luc = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  D_luc = 0.182881217463259;
+  D_mrna_luc = 1;
+  acc_rate = 0.0820132250303287;
+  R_toc1_cca1 = 1.08706126858966;
+  H_toc1_cca1 = 2.07807738692343;
+  L_toc1 = 0.0001;
+  R_toc1_acc = 0.231107032949407;
+  D_mrna_toc1 = 0.29213049778373;
+  T_toc1 = 0.769970172977886;
+  Di_toc1_12_l = 0.136490583368648;
+  Di_toc1_12_d = 0.326619492089715;
+  D_toc1_2_l = 0.461550559180802;
+  D_toc1_2_d = 0.356613920551118;
+  H_cca1_toc1 = 2.5007062880634;
+  R_cca1_toc1_2_l = 3.27520292103832;
+  R_cca1_toc1_2_d = 1.38563901682266;
+  D_mrna_cca1 = 1.33082080954527;
+  T_cca1 = 4.90486610428652;
+  Di_cca1_cn = 10;
+  D_cca1_l = 0.424177877449438;
+  D_cca1_d = 0.269380178154091;
+  effcopies_cca1_LHY7 = 1.13965755508623;
+  effcopies_toc1_TOC8 = 1;
+  parameter_1 = 1;
+  parameter_2 = 0;
+  parameter_3 = 0;
+  parameter_4 = 0;
+  parameter_5 = 0;
+
+  // Other declarations:
+  var toc1luc;
+  const compartment_, D_luc, D_mrna_luc, acc_rate, R_toc1_cca1, H_toc1_cca1;
+  const L_toc1, R_toc1_acc, D_mrna_toc1, T_toc1, Di_toc1_12_l, Di_toc1_12_d;
+  const D_toc1_2_l, D_toc1_2_d, H_cca1_toc1, R_cca1_toc1_2_l, R_cca1_toc1_2_d;
+  const D_mrna_cca1, T_cca1, Di_cca1_cn, D_cca1_l, D_cca1_d, effcopies_cca1_LHY7;
+  const effcopies_toc1_TOC8, parameter_1, parameter_2, parameter_3, parameter_4;
+  const parameter_5;
+
+  // Unit definitions:
+  unit time_unit = 3600 second;
+  unit substance = 1e-9 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  parameter_1 is "T_luc";
+  parameter_2 is "rep_TOC1";
+  parameter_3 is "rep_pTOC1";
+  parameter_4 is "rep_CCA1";
+  parameter_5 is "rep_pCCA1";
+  reaction_1 is "Light accumulator increase";
+  reaction_2 is "Light accumulator decrease";
+  reaction_3 is "TOC1 transcription";
+  reaction_4 is "TOC1 degradation";
+  reaction_5 is "TOC1 translation";
+  reaction_6 is "TOC1 conversion";
+  reaction_7 is "TOC1 mRNA degradation";
+  reaction_8 is "CCA1 transcription";
+  reaction_9 is "CCA1 mRNA degradation";
+  reaction_10 is "CCA1 translation";
+  reaction_11 is "CCA1 nuclear transport";
+  reaction_12 is "CCA1 degradation, cytosol";
+  reaction_13 is "CCA1 degradation, nucleus";
+  reaction_14 is "LUC transcription, pTOC1";
+  reaction_15 is "LUC mRNA degradation";
+  reaction_16 is "LUC translation";
+  reaction_17 is "LUC decay";
+  reaction_18 is "TOC1-LUC transcription";
+  reaction_19 is "TOC1-LUC mRNA degradation";
+  reaction_20 is "TOC1-LUC translation";
+  reaction_21 is "TOC1-LUC conversion";
+  reaction_22 is "TOC1-LUC degradation";
+  reaction_23 is "TOC1-LUC(1) deactivation";
+  reaction_24 is "TOC1-LUC(2) deactivation";
+  reaction_25 is "LUC transcription, pCCA1";
+  reaction_26 is "CCA1-LUC transcription";
+  reaction_27 is "CCA1-LUC mRNA degradation";
+  reaction_28 is "CCA1-LUC translation";
+  reaction_30 is "CCA1-LUC degradation";
+  reaction_32 is "CCA1-LUC deactivation";
+
+  // SBO terms:
+  compartment_.sboTerm = 290
+  acc.sboTerm = 236
+  toc1_mrna.sboTerm = 278
+  toc1_1.sboTerm = 252
+  toc1_2.sboTerm = 252
+  cca1_mrna.sboTerm = 278
+  cca1_c.sboTerm = 252
+  cca1_n.sboTerm = 252
+  toc1luc_mrna.sboTerm = 278
+  toc1luc_1.sboTerm = 252
+  toc1luc_2.sboTerm = 252
+  cca1luc_mrna.sboTerm = 278
+  cca1luc.sboTerm = 252
+  luc_mrna.sboTerm = 278
+  luc.sboTerm = 247
+  D_luc.sboTerm = 349
+  D_mrna_luc.sboTerm = 356
+  acc_rate.sboTerm = 9
+  R_toc1_cca1.sboTerm = 9
+  H_toc1_cca1.sboTerm = 9
+  L_toc1.sboTerm = 153
+  R_toc1_acc.sboTerm = 153
+  D_mrna_toc1.sboTerm = 356
+  T_toc1.sboTerm = 153
+  Di_toc1_12_l.sboTerm = 153
+  Di_toc1_12_d.sboTerm = 153
+  D_toc1_2_l.sboTerm = 356
+  D_toc1_2_d.sboTerm = 356
+  H_cca1_toc1.sboTerm = 153
+  R_cca1_toc1_2_l.sboTerm = 153
+  R_cca1_toc1_2_d.sboTerm = 153
+  D_mrna_cca1.sboTerm = 356
+  T_cca1.sboTerm = 153
+  Di_cca1_cn.sboTerm = 9
+  D_cca1_l.sboTerm = 356
+  D_cca1_d.sboTerm = 356
+  effcopies_cca1_LHY7.sboTerm = 9
+  effcopies_toc1_TOC8.sboTerm = 9
+  parameter_1.sboTerm = 9
+  parameter_2.sboTerm = 9
+  parameter_3.sboTerm = 9
+  parameter_4.sboTerm = 9
+  parameter_5.sboTerm = 9
+  reaction_1.sboTerm = 393
+  reaction_2.sboTerm = 179
+  reaction_3.sboTerm = 183
+  reaction_4.sboTerm = 179
+  reaction_5.sboTerm = 184
+  reaction_6.sboTerm = 182
+  reaction_7.sboTerm = 179
+  reaction_8.sboTerm = 183
+  reaction_9.sboTerm = 179
+  reaction_10.sboTerm = 184
+  reaction_11.sboTerm = 185
+  reaction_12.sboTerm = 179
+  reaction_13.sboTerm = 179
+  reaction_14.sboTerm = 183
+  reaction_15.sboTerm = 179
+  reaction_16.sboTerm = 184
+  reaction_17.sboTerm = 179
+  reaction_18.sboTerm = 183
+  reaction_19.sboTerm = 179
+  reaction_20.sboTerm = 184
+  reaction_21.sboTerm = 182
+  reaction_22.sboTerm = 179
+  reaction_23.sboTerm = 176
+  reaction_24.sboTerm = 176
+  reaction_25.sboTerm = 183
+  reaction_26.sboTerm = 183
+  reaction_27.sboTerm = 179
+  reaction_28.sboTerm = 184
+  reaction_30.sboTerm = 179
+  reaction_32.sboTerm = 176
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/go/GO:0005623"
+  toc1_mrna isHomologTo "http://identifiers.org/chebi/CHEBI:33699"
+  toc1_1 isVersionOf "http://identifiers.org/uniprot/Q9LKL2"
+  toc1_2 isVersionOf "http://identifiers.org/uniprot/Q9LKL2"
+  cca1_mrna isVersionOf "http://identifiers.org/chebi/CHEBI:33699"
+  cca1_c isHomologTo "http://identifiers.org/uniprot/P92973"
+  cca1_n isHomologTo "http://identifiers.org/uniprot/P92973"
+  toc1luc_mrna isVersionOf "http://identifiers.org/chebi/CHEBI:33699"
+  toc1luc_1 hasPart "http://identifiers.org/uniprot/Q9LKL2"
+  toc1luc_2 isVersionOf "http://identifiers.org/uniprot/Q9LKL2"
+  cca1luc_mrna isVersionOf "http://identifiers.org/chebi/CHEBI:33699"
+  cca1luc isVersionOf "http://identifiers.org/uniprot/P92973"
+  luc_mrna isVersionOf "http://identifiers.org/chebi/CHEBI:33699"
+  luc isVersionOf "http://identifiers.org/chebi/CHEBI:25078"
+  reaction_1 isVersionOf "http://identifiers.org/go/GO:0009058"
+  reaction_2 isVersionOf "http://identifiers.org/go/GO:0009056"
+  reaction_3 isVersionOf "http://identifiers.org/go/GO:0006351"
+  reaction_4 isVersionOf "http://identifiers.org/go/GO:0009056"
+  reaction_5 isVersionOf "http://identifiers.org/go/GO:0006412"
+  reaction_6 isVersionOf "http://identifiers.org/mod/MOD:00000"
+  reaction_7 isVersionOf "http://identifiers.org/go/GO:0009056"
+  reaction_8 isVersionOf "http://identifiers.org/go/GO:0006351"
+  reaction_9 isVersionOf "http://identifiers.org/go/GO:0009056"
+  reaction_10 isVersionOf "http://identifiers.org/go/GO:0006412"
+  reaction_11 isVersionOf "http://identifiers.org/go/GO:0051169"
+  reaction_12 isVersionOf "http://identifiers.org/go/GO:0009056"
+  reaction_13 isVersionOf "http://identifiers.org/go/GO:0009056"
+  reaction_14 isVersionOf "http://identifiers.org/go/GO:0006351"
+  reaction_15 isVersionOf "http://identifiers.org/go/GO:0009056"
+  reaction_16 isVersionOf "http://identifiers.org/go/GO:0006412"
+  reaction_17 isVersionOf "http://identifiers.org/go/GO:0030163"
+  reaction_18 isVersionOf "http://identifiers.org/go/GO:0006351"
+  reaction_19 isVersionOf "http://identifiers.org/go/GO:0009056"
+  reaction_20 isVersionOf "http://identifiers.org/go/GO:0006412"
+  reaction_21 isVersionOf "http://identifiers.org/mod/MOD:00000"
+  reaction_22 isVersionOf "http://identifiers.org/go/GO:0009056"
+  reaction_23 isVersionOf "http://identifiers.org/go/GO:0030163"
+  reaction_24 hasVersion "http://identifiers.org/go/GO:0030163"
+  reaction_25 isVersionOf "http://identifiers.org/go/GO:0006351"
+  reaction_26 isVersionOf "http://identifiers.org/go/GO:0006351"
+  reaction_27 isVersionOf "http://identifiers.org/go/GO:0009056"
+  reaction_28 isVersionOf "http://identifiers.org/go/GO:0006412"
+  reaction_30 isVersionOf "http://identifiers.org/go/GO:0009056"
+  reaction_32 isVersionOf "http://identifiers.org/go/GO:0030163"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1107230000"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000350"
+  model publication "http://identifiers.org/pubmed/21219507"
+  model isVersionOf "http://identifiers.org/kegg.pathway/map04710",
+                    "http://identifiers.org/go/GO:0042752"
+  model hasTaxon "http://identifiers.org/taxonomy/70448"
+  model created "2011-08-09T16:20:30Z"
+  model modified "2016-04-08T17:02:19Z"
+  model creator1.givenName "Andrew J"
+  model creator1.familyName "Millar"
+  model creator1.organization "Institute of Molecular Plant Sciences, University of Edinburgh"
+  model creator1.email "andrew.millar@ed.ac.uk"
+  model creator2.givenName "Troein"
+  model creator2.familyName "Carl"
+  model creator2.organization "Institute of Molecular Plant Sciences, University of Edinburgh"
+  model creator2.email "carl.troein@ed.ac.uk"
+  model creator3.givenName "Vijayalakshmi"
+  model creator3.familyName "Chelliah"
+  model creator3.organization "EMBL-EBI"
+  model creator3.email "viji@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+This model is from the article: 
+** Multiple light inputs to a simple clock circuit allow complex biological rhythms**
+
+Troein C, Corellou F, Dixon LE, van Ooijen G, O&apos;Neill JS, Bouget FY, Millar
+AJ. *Plant J.*2011 Apr;66(2):375-85. [21219507](http://www.ncbi.nlm.nih.gov/pubmed/21219507), 
+**Abstract:** 
+Circadian clocks are biological timekeepers that allow living cells to time their
+activity in anticipation of predictable environmental changes. Detailed understanding
+of the circadian network of higher plants, such as Arabidopsis thaliana, is hampered
+by the high number of partially redundant genes. However, the picoeukaryotic alga
+Ostreococcus tauri, which was recently shown to possess a small number of non-redundant
+clock genes, presents an attractive alternative target for detailed modelling of
+circadian clocks in the green lineage. Based on extensive time-series data from in
+vivo reporter gene assays, we developed a model of the Ostreococcus clock as a feedback
+loop between the genes TOC1 and CCA1. The model reproduces the dynamics of the transcriptional
+and translational reporters over a range of photoperiods. Surprisingly, the model
+is also able to predict the transient behaviour of the clock when the light conditions
+are altered. Despite the apparent simplicity of the clock circuit, it displays considerable
+complexity in its response to changing light conditions. Systematic screening of
+the effects of altered day length revealed a complex relationship between phase and
+photoperiod, which is also captured by the model. The complex light response is shown
+to stem from circadian gating of light-dependent mechanisms. This study provides
+insights into the contributions of light inputs to the Ostreococcus clock. The model
+suggests that a high number of light-dependent reactions are important for flexible
+timing in a circadian clock with only one feedback loop. 
+
+**Note: Two-gene model of the Ostreococcus circadian clock** 
+
+This is a model of the circadian clock of Ostreococcus tauri, with a negative feedback
+loop between TOC1 and CCA1 (a.k.a. LHY) and multiple light inputs. It was used and
+described in Troein et al., Plant Journal (2011).
+
+The model incorporates luciferase reporters, and in this SBML model the four different
+versions of the model for transcriptional and translational reporter lines (pTOC1::LUC,
+pCCA1::LUC, TOC1-LUC and CCA1-LUC) are all accessible by setting one of the rep_X
+parameters to 1 and the others to 0. You can also set all four to 0 to only simulate
+the non-reporter core of the system.
+
+Input to the system should be provided by modifying the "light" function.
+An implementation of LD 12:12 is provided as an example, but the model was also used
+with more complicated light regimes that vary between data sets and are not convenient
+to express directly in SBML.
+
+The functions "ox_cca1" and "ox_toc1" can be altered to add overexpression
+of CCA1 and TOC1. Setting either to x gives additional, constitutive transcription
+at x times the maximal (and typically not realizable) transcription rate of the native
+gene. The overexpression mutant fits in Figure 7 of Troein et al. (2011) used ox_cca1
+= 0.115 and oc_toc1 = 0.0584, respectively.
+
+The functions "copies_toc1" and "copies_cca1" are normally 1
+but can be lowered to simulate knockdown experiments. The functions "transcription",
+"translation" and "proteasome" can be modified to simulate the
+effects of altering the overall rate of transcription, translation and protein degradation.
+
+The parameters were fitted specifically to data from transgenic reporter lines TOC8,
+pTOC3, LHY7 and pLHY7 (Corellou et al., Plant Cell 2009). Parameters that begin with
+"effcopies" describe the effective number of copies of CCA1 or TOC1 in
+the respective translational fusion lines, with anything above 1 due to the fusion
+proteins.
+
+For the model fitting, the initial values were fitted to the data in the various
+time courses. The initial values given here correspond to the limit cycle of the
+system in LD 12:12. The system converges to the limit cycle in just a few days under
+most light conditions, so these initial values are biologically meaningful.
+
+The species cca1luc_c and cca1luc_n have been merged into cca1luc (which corresponds
+to the observable luminescence signal), because Copasi refused to run the system
+otherwise. For TOC1-LUC, the predicted output signal is the sum of toc1luc_1 and
+toc1luc_2.
+
+This model originates from BioModels Database: A Database of Annotated Published
+Models (http://www.ebi.ac.uk/biomodels/). It is copyright (c) 2005-2011 The BioModels.net
+Team. 
+For more information see the [terms of use](http://www.ebi.ac.uk/biomodels/legal.html). 
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+end
+
+Model_1 is "Troein2011_ClockCircuit_OstreococcusTauri"

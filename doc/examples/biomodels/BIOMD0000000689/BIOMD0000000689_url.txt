@@ -1,0 +1,204 @@
+// Created by libAntimony v3.2.0
+model *Thiaville2016___Folate_pathway_model_with_induced_PanB_reaction()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species H2_HMPt in compartment_, $ATP in compartment_, H2_HMPterinPP in compartment_;
+  species $AMP in compartment_, p_ABA in compartment_, $PPi in compartment_;
+  species H2_Pteroate in compartment_, $L_Glutamate in compartment_, $Phosphate in compartment_;
+  species $ADP in compartment_, DHF in compartment_, $L_serine in compartment_;
+  species $Glycine in compartment_, $NADP in compartment_, $NADPH in compartment_;
+  species THF in compartment_, CH2_THF in compartment_;
+
+  // Reactions:
+  FolK: $ATP + H2_HMPt => $AMP + H2_HMPterinPP; compartment_*FolK_k1*ATP*H2_HMPt;
+  FolP: p_ABA + H2_HMPterinPP => $PPi + H2_Pteroate; compartment_*FolP_k1*p_ABA*H2_HMPterinPP;
+  FolC: $L_Glutamate + $ATP + H2_Pteroate => DHF + $ADP + $Phosphate; compartment_*FolC_k1*L_Glutamate*ATP*H2_Pteroate;
+  GlyA: THF + $L_serine -> CH2_THF + $Glycine; compartment_*(GlyA_k1*THF*L_serine - GlyA_k2*CH2_THF*Glycine);
+  FolA: DHF + $NADPH => $NADP + THF; compartment_*FolA_k1*DHF*NADPH;
+  PanB: CH2_THF => H2_HMPt + p_ABA; compartment_*PanB_k1*CH2_THF;
+  p_ABA_production:  => p_ABA; compartment_*p_ABA_production_v;
+  H2_HMPt_production:  => H2_HMPt; compartment_*H2_HMPt_production_v;
+  THF_drain: THF => ; compartment_*(THF_drain_V*THF/(THF_drain_Km + THF));
+  CH2_THF_drain: CH2_THF => ; compartment_*(CH2_THF_drain_V*CH2_THF/(CH2_THF_drain_Km + CH2_THF));
+
+  // Species initializations:
+  H2_HMPt = 3.315e-06;
+  ATP = 0.0096;
+  H2_HMPterinPP = 1e-05;
+  AMP = 0.00028;
+  p_ABA = 1e-05;
+  PPi = 0.0005;
+  H2_Pteroate = 1e-05;
+  L_Glutamate = 0.000846;
+  Phosphate = 0.01;
+  ADP = 0.00056;
+  DHF = 1e-05;
+  L_serine = 6.8e-05;
+  Glycine = 0.000277;
+  NADP = 9.4e-07;
+  NADPH = 9.4e-07;
+  THF = 0.000169;
+  CH2_THF = 8.47e-05;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  FolK_k1 = 15.8;
+  FolP_k1 = 4000;
+  FolC_k1 = 3602.18;
+  GlyA_k1 = 4080;
+  GlyA_k2 = 2000;
+  FolA_k1 = 31170;
+  PanB_k1 = 0.0121;
+  p_ABA_production_v = 1.66e-07;
+  H2_HMPt_production_v = 1.66e-07;
+  THF_drain_Km = 0.0001571;
+  THF_drain_V = 1.243e-07;
+  CH2_THF_drain_Km = 5.921e-05;
+  CH2_THF_drain_V = 1.726e-07;
+
+  // Other declarations:
+  const compartment_;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  H2_HMPt is "H2-HMPt";
+  H2_HMPterinPP is "H2-HMPterinPP";
+  p_ABA is "p-ABA";
+  H2_Pteroate is "H2-Pteroate";
+  L_Glutamate is "L-Glutamate";
+  L_serine is "L-serine";
+  CH2_THF is "CH2-THF";
+  p_ABA_production is "p-ABA_production";
+  H2_HMPt_production is "H2-HMPt_production";
+  CH2_THF_drain is "CH2-THF_drain";
+
+  // CV terms:
+  H2_HMPt isVersionOf "http://identifiers.org/kegg.compound/C01300"
+  H2_HMPt isVersionOf "http://identifiers.org/chebi/CHEBI:38797"
+  ATP isVersionOf "http://identifiers.org/kegg.compound/C00002"
+  ATP isVersionOf "http://identifiers.org/chebi/CHEBI:15422"
+  H2_HMPterinPP isVersionOf "http://identifiers.org/kegg.compound/C01300"
+  H2_HMPterinPP hasProperty "http://identifiers.org/go/GO:0016310"
+  H2_HMPterinPP isVersionOf "http://identifiers.org/chebi/CHEBI:38797"
+  AMP isVersionOf "http://identifiers.org/chebi/CHEBI:16027"
+  AMP isVersionOf "http://identifiers.org/kegg.compound/C00020"
+  p_ABA isVersionOf "http://identifiers.org/chebi/CHEBI:17836"
+  p_ABA isVersionOf "http://identifiers.org/kegg.compound/C00568"
+  PPi isVersionOf "http://identifiers.org/kegg.compound/C00013"
+  H2_Pteroate isVersionOf "http://identifiers.org/chebi/CHEBI:38793"
+  H2_Pteroate isVersionOf "http://identifiers.org/kegg.compound/C00921"
+  L_Glutamate isVersionOf "http://identifiers.org/kegg.compound/C00025"
+  L_Glutamate isVersionOf "http://identifiers.org/chebi/CHEBI:29987"
+  Phosphate isVersionOf "http://identifiers.org/chebi/CHEBI:26020"
+  ADP isVersionOf "http://identifiers.org/kegg.compound/C00008"
+  ADP isVersionOf "http://identifiers.org/chebi/CHEBI:16761"
+  DHF isVersionOf "http://identifiers.org/chebi/CHEBI:57451"
+  DHF isVersionOf "http://identifiers.org/kegg.compound/C00415"
+  L_serine isVersionOf "http://identifiers.org/chebi/CHEBI:17822"
+  L_serine isVersionOf "http://identifiers.org/kegg.compound/C00065"
+  Glycine isVersionOf "http://identifiers.org/kegg.compound/C00037"
+  Glycine isVersionOf "http://identifiers.org/chebi/CHEBI:15428"
+  NADP isVersionOf "http://identifiers.org/kegg.compound/C00006"
+  NADP isVersionOf "http://identifiers.org/chebi/CHEBI:25523"
+  NADPH isVersionOf "http://identifiers.org/kegg.compound/C00005"
+  NADPH isVersionOf "http://identifiers.org/chebi/CHEBI:16474"
+  THF isVersionOf "http://identifiers.org/kegg.compound/C00101"
+  THF isVersionOf "http://identifiers.org/chebi/CHEBI:67016"
+  CH2_THF isVersionOf "http://identifiers.org/kegg.compound/C00143"
+  CH2_THF isVersionOf "http://identifiers.org/chebi/CHEBI:12071"
+  FolK isEncodedBy "http://identifiers.org/uniprot/P26281"
+  FolK isVersionOf "http://identifiers.org/kegg.reaction/R03503"
+  FolP isEncodedBy "http://identifiers.org/uniprot/P0AC13"
+  FolP isVersionOf "http://identifiers.org/kegg.reaction/R03067"
+  FolC isEncodedBy "http://identifiers.org/uniprot/P08192"
+  FolC isVersionOf "http://identifiers.org/kegg.reaction/R02237"
+  GlyA isEncodedBy "http://identifiers.org/uniprot/P0A825"
+  GlyA isVersionOf "http://identifiers.org/kegg.reaction/R00945"
+  FolA isEncodedBy "http://identifiers.org/uniprot/P0ABQ4"
+  FolA isVersionOf "http://identifiers.org/kegg.reaction/R00939"
+  PanB isEncodedBy "http://identifiers.org/uniprot/P31057"
+  PanB isVersionOf "http://identifiers.org/kegg.reaction/R03066"
+  p_ABA_production isVersionOf "urn:miriam:sbo:SBO%3A0000393"
+  H2_HMPt_production isVersionOf "urn:miriam:sbo:SBO%3A0000393"
+  THF_drain isVersionOf "urn:miriam:sbo:SBO%3A0000179"
+  CH2_THF_drain isVersionOf "urn:miriam:sbo:SBO%3A0000179"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1602280002"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000689"
+  model publication "http://identifiers.org/pubmed/27065985"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1602280002"
+  model hasPart "http://identifiers.org/chebi/CHEBI:67016"
+  model hasProperty "http://identifiers.org/go/GO:0046656"
+  model hasTaxon "http://identifiers.org/taxonomy/562"
+  model isDescribedBy "http://identifiers.org/pubmed/27065985"
+  model hasPart "http://identifiers.org/ec-code/2.1.2.11"
+  model created "2015-03-03T00:36:59Z"
+  model modified "2018-03-12T15:24:35Z"
+  model creator1.givenName "Christopher"
+  model creator1.familyName "Henry"
+  model creator1.organization "University of Chicago"
+  model creator1.email "chenry@mcs.anl.gov"
+  model creator2.givenName "Matthew Grant"
+  model creator2.familyName "Roberts"
+  model creator2.organization "EMBL-EBI"
+  model creator2.email "mroberts@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Henry2016 Folate pathway model with inducedPanB reaction 
+
+
+This model is described in the article:
+
+
+[Experimental and Metabolic Modeling Evidence for a Folate-Cleaving Side-Activity of Ketopantoate Hydroxymethyltransferase (PanB).](http://identifiers.org/pubmed/27065985 "Access to this publication") 
+
+
+Thiaville JJ, Frelin O, García-Salinas C, Harrison K, Hasnain G, Horenstein NA,
+Díaz de la Garza RI, Henry CS, Hanson AD, de Crécy-Lagard V. 
+
+Front Microbiol 2016; 7: 431 
+Abstract:
+
+
+Tetrahydrofolate (THF) and its one-carbon derivatives, collectively termed folates,
+are essential cofactors, but are inherently unstable. While it is clear that chemical
+oxidation can cleave folates or damage their pterin precursors, very little
+is known about enzymatic damage to these molecules or about whether the folate
+biosynthesis pathway responds adaptively to damage to its end-products. The presence
+of a duplication of the gene encoding the folate biosynthesis enzyme 6-hydroxymethyl-7,8-dihydropterin
+pyrophosphokinase (FolK) in many sequenced bacterial genomes combined with a strong
+chromosomal clustering of the folK gene with panB, encoding the 5,10-methylene-THF-dependent
+enzyme ketopantoate hydroxymethyltransferase, led us to infer that PanB has a
+side activity that cleaves 5,10-methylene-THF, yielding a pterin product that
+is recycled by FolK. Genetic and metabolic analyses of Escherichia coli strains
+showed that overexpression of PanB leads to accumulation of the likely folate
+cleavage product 6-hydroxymethylpterin and other pterins in cells and medium,
+and-unexpectedly-to a 46% increase in total folate content. In silico modeling
+of the folate biosynthesis pathway showed that these observations are consistent
+with the in vivo cleavage of 5,10-methylene-THF by a side-activity of PanB, with
+FolK-mediated recycling of the pterin cleavage product, and with regulation
+of folate biosynthesis by folates or their damage products.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [MODEL1602280002](http://identifiers.org/biomodels.db/MODEL1602280002).
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication").
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+  H2_HMPt notes "6-hydroxymethyldihydropterin"
+  H2_HMPterinPP notes "6-hydroxymethyldihydropterin"
+end
+
+Thiaville2016___Folate_pathway_model_with_induced_PanB_reaction is "Thiaville2016 - Folate pathway model (PanB overexpression)"

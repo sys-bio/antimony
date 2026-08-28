@@ -1,15 +1,16 @@
-model oscli()
+// Created by libAntimony v3.2.0
+model *oscli()
 
   // Compartments and Species:
   compartment compartment_;
-  species S1 in compartment_, S2 in compartment_, X0 in compartment_, X1 in compartment_;
-  species X2 in compartment_;
+  species S1 in compartment_, S2 in compartment_, $X0 in compartment_, $X1 in compartment_;
+  species $X2 in compartment_;
 
   // Reactions:
-  J0: X0 -> S1; J0_v0;
-  J1: S1 -> X1; J1_k3 * S1;
-  J2: S1 -> S2; (J2_k1 * S1 - J2_k_1 * S2) * (1 + J2_c * pow(S2, J2_q));
-  J3: S2 -> X2; J3_k2 * S2;
+  J0: $X0 => S1; J0_v0;
+  J1: S1 => $X1; J1_k3*S1;
+  J2: S1 => S2; (J2_k1*S1 - J2_k_1*S2)*(1 + J2_c*S2^J2_q);
+  J3: S2 => $X2; J3_k2*S2;
 
   // Species initializations:
   S1 = 0;
@@ -18,10 +19,10 @@ model oscli()
   X1 = 0;
   X2 = 0;
 
-  // Compartments initializations:
+  // Compartment initializations:
   compartment_ = 1;
 
-  // Other initializations:
+  // Variable initializations:
   J0_v0 = 8;
   J1_k3 = 0;
   J2_k1 = 1;
@@ -30,5 +31,8 @@ model oscli()
   J2_q = 3;
   J3_k2 = 5;
 
-  const X0 in compartment_, X1 in compartment_, X2 in compartment_;
+  // Other declarations:
+  const compartment_, J0_v0, J1_k3, J2_k1, J2_k_1, J2_c, J2_q, J3_k2;
 end
+
+oscli is "Oscli (Heinrich model)"

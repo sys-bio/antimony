@@ -1,0 +1,85 @@
+// Created by libAntimony v3.2.0
+model *DeBoeck2021___Modular_approach_to_modeling_the_cell_cycle__simple_cell_cycle_model()
+
+  // Compartments and Species:
+  compartment default_compartment;
+  species CycCdk;
+
+  // Rate Rules:
+  APC' = (1/epsilon)*(CycCdk^n/((K*(1 + alpha*APC*(APC - 1)*(APC - r)))^n + CycCdk^n) - APC);
+
+  // Reactions:
+  _J0:  -> CycCdk; default_compartment*(ks/default_compartment);
+  _J1: CycCdk -> ; default_compartment*(bdeg*CycCdk*APC/default_compartment);
+
+  // Species initializations:
+  CycCdk = 17.45;
+
+  // Compartment initializations:
+  default_compartment = 1;
+
+  // Variable initializations:
+  ks = 1.1;
+  bdeg = 0.1;
+  APC = 0.04;
+  epsilon = 0.1;
+  n = 15;
+  K = 20;
+  alpha = 4.16;
+  r = 0.5;
+
+  // Other declarations:
+  var APC;
+  const ks, bdeg, epsilon, n, K, alpha, r, default_compartment;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = litre;
+  unit time_unit = 60e-3 second;
+  unit substance = mole;
+
+  // Display Names:
+  time_unit is "time";
+  _J0 is "CycCdk synthesis";
+  _J1 is "CycCdk degradation";
+
+  // SBO terms:
+  default_compartment.sboTerm = 410
+
+  // CV terms:
+  CycCdk isVersionOf "http://identifiers.org/go/GO:0097125"
+  APC isVersionOf "http://identifiers.org/go/GO:0005680"
+  _J0 isVersionOf "http://identifiers.org/ncit/C61408"
+  _J1 isVersionOf "http://identifiers.org/SBO:0000179"
+
+  model publication "http://identifiers.org/doi:10.1371/journal.pcbi.1009008"
+  model model_source "http://identifiers.org/biomodels.db/MODEL2212060001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000001079"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000045"
+  model occursIn "http://identifiers.org/ncit/C12508"
+  model isDescribedBy "http://identifiers.org/pubmed/34379640"
+  model hasProperty "http://identifiers.org/go/GO:0007049",
+                    "http://identifiers.org/go/GO:0051301",
+                    "http://identifiers.org/ncit/C19987",
+                    "http://identifiers.org/mamo/MAMO_0000045"
+  model created "2023-06-23T09:56:58Z"
+  model modified "2023-06-23T09:56:58Z"
+  model creator1.givenName "Krishna"
+  model creator1.familyName "Tiwari"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "ktiwari@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Models the production and degradation of cyclin B that drives the early embryonic
+cell cycle.Cyclin B is degraded by APC/C. The activity of APC/C is modeled not through
+biochemical interactions, but through a &apos;functional response curve&apos;. This
+can be ultrasensitive (with the parameter alpha=0). in this case the system does
+not oscillate. Importantly the response can be made bistable and the form of the
+bistability can be easily prescribed. With a bistable response, the system oscillates.The
+uploaded file corresponds to the model used for Figs.3H, I in the publication.
+```
+end
+
+DeBoeck2021___Modular_approach_to_modeling_the_cell_cycle__simple_cell_cycle_model is "DeBoeck2021 - Modular approach to modeling the cell cycle, simple cell cycle model"

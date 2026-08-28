@@ -1,0 +1,477 @@
+// Created by libAntimony v3.2.0
+model *MODEL1305280000()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species L in compartment_, R in compartment_, LR in compartment_, Gabg in compartment_;
+  species RGabg in compartment_, LRGabg in compartment_, RRGSm in compartment_;
+  species LRRGSm in compartment_, RRGSmGabg in compartment_, LRRGSmGabg in compartment_;
+  species GaGTP in compartment_, Gbg in compartment_, Effector in compartment_;
+  species GaGTPEffector in compartment_, RGSc in compartment_, RGSm in compartment_;
+  species RGSmGaGTP in compartment_, GaGTPEffectorOFF in compartment_, RGSmGaGTPEffectorOFF in compartment_;
+  species GaGDPP in compartment_, LRRGSmGaGTP in compartment_, RRGSmGaGTP in compartment_;
+  species LRRGSmGaGTPEffectorOFF in compartment_, GaGDP in compartment_, P in compartment_;
+  species z1 in compartment_, z2 in compartment_, z3 in compartment_;
+
+  // Reactions:
+  R1: L + R => LR; compartment_*L*R*R1_k1;
+  R2: R + Gabg => RGabg; compartment_*R*Gabg*R2_k2;
+  R3: LR + Gabg => LRGabg; compartment_*LR*Gabg*R3_k3;
+  R4: L + RGabg => LRGabg; compartment_*L*RGabg*R4_k4;
+  R5: L + RRGSm => LRRGSm; compartment_*L*RRGSm*R5_k5;
+  R6: RRGSm + Gabg => RRGSmGabg; compartment_*RRGSm*Gabg*R6_k6;
+  R7: LRRGSm + Gabg => LRRGSmGabg; compartment_*LRRGSm*Gabg*R7_k7;
+  R8: L + RRGSmGabg => LRRGSmGabg; compartment_*L*RRGSmGabg*R8_k8;
+  R9: LRGabg => LR + GaGTP + Gbg; compartment_*LRGabg*R9_k9;
+  R10: Gabg => GaGTP + Gbg; compartment_*Gabg*R10_k10;
+  R11: LRRGSmGabg => GaGTP + Gbg + LRRGSm; compartment_*LRRGSmGabg*R11_k11;
+  R12: Effector + GaGTP => GaGTPEffector; compartment_*Effector*GaGTP*R12_k12;
+  R13: RGSc => RGSm; compartment_*RGSc*R13_k13;
+  R14: RGSm => RGSc; compartment_*RGSm*R14_k14;
+  R15: R + RGSc => RRGSm; compartment_*R*RGSc*R15_k15;
+  R16: RRGSm => R + RGSm; compartment_*RRGSm*R16_k16;
+  R17: LR + RGSc => LRRGSm; compartment_*LR*RGSc*R17_k17;
+  R18: LRRGSm => LR + RGSm; compartment_*LRRGSm*R18_k18;
+  R19: RGabg + RGSc => RRGSmGabg; compartment_*RGabg*RGSc*R19_k19;
+  R20: RRGSmGabg => RGabg + RGSm; compartment_*RRGSmGabg*R20_k20;
+  R21: LRGabg + RGSc => LRRGSmGabg; compartment_*LRGabg*RGSc*R21_k21;
+  R22: GaGTP + RGSc => RGSmGaGTP; compartment_*GaGTP*RGSc*R22_k22;
+  R23: RGSmGaGTP => GaGTP + RGSc; compartment_*RGSmGaGTP*R23_k23;
+  R24: GaGTPEffectorOFF + RGSc => RGSmGaGTPEffectorOFF; compartment_*GaGTPEffectorOFF*RGSc*R24_k24;
+  R25: GaGTPEffector => GaGTPEffectorOFF; compartment_*GaGTPEffector*R25_k25;
+  R26: GaGTP => GaGDPP; compartment_*GaGTP*R26_k26;
+  R27: GaGTP + RGSm => RGSmGaGTP; compartment_*GaGTP*RGSm*R27_k27;
+  R28: RGSmGaGTP => GaGDPP + RGSc; compartment_*RGSmGaGTP*R28_k28;
+  R29: GaGTP + LRRGSm => LRRGSmGaGTP; compartment_*GaGTP*LRRGSm*R29_k29;
+  R30: LRRGSmGaGTP => GaGDPP + LRRGSm; compartment_*LRRGSmGaGTP*R30_k30;
+  R31: GaGTP + RRGSm => RRGSmGaGTP; compartment_*GaGTP*RRGSm*R31_k31;
+  R32: RRGSmGaGTP => GaGDPP + RRGSm; compartment_*RRGSmGaGTP*R32_k32;
+  R33: GaGTPEffectorOFF => GaGDPP + Effector; compartment_*GaGTPEffectorOFF*R33_k33;
+  R34: GaGTPEffectorOFF + RGSm => RGSmGaGTPEffectorOFF; compartment_*GaGTPEffectorOFF*RGSm*R34_k34;
+  R35: RGSmGaGTPEffectorOFF => GaGDPP + RGSc + Effector; compartment_*RGSmGaGTPEffectorOFF*R35_k35;
+  R36: GaGTPEffectorOFF + LRRGSm => LRRGSmGaGTPEffectorOFF; compartment_*GaGTPEffectorOFF*LRRGSm*R36_k36;
+  R37: LRRGSmGaGTPEffectorOFF => GaGDPP + LRRGSm + Effector; compartment_*LRRGSmGaGTPEffectorOFF*R37_k37;
+  R38: GaGDPP => GaGDP + P; compartment_*GaGDPP*R38_k38;
+  R39: GaGDP + Gbg => Gabg; compartment_*GaGDP*Gbg*R39_k39;
+  R40: P => ; compartment_*P*R40_k40;
+  R41:  => z1; compartment_*GaGTPEffector*ka;
+  R42: z1 => z2; compartment_*z1*ka;
+  R43: z2 => z3; compartment_*z2*ka;
+  R44: z3 => ; compartment_*z3*ka;
+
+  // Events:
+  Ligand_addition: at time >= 14: L = L + Ligand_conc;
+
+  // Species initializations:
+  L = 0;
+  L has nanoMolar;
+  R = 205;
+  R has nanoMolar;
+  LR = 0;
+  LR has nanoMolar;
+  Gabg = 0;
+  Gabg has nanoMolar;
+  RGabg = 0;
+  RGabg has nanoMolar;
+  LRGabg = 0;
+  LRGabg has nanoMolar;
+  RRGSm = 0;
+  RRGSm has nanoMolar;
+  LRRGSm = 0;
+  LRRGSm has nanoMolar;
+  RRGSmGabg = 0;
+  RRGSmGabg has nanoMolar;
+  LRRGSmGabg = 0;
+  LRRGSmGabg has nanoMolar;
+  GaGTP = 0;
+  GaGTP has nanoMolar;
+  Gbg = 205;
+  Gbg has nanoMolar;
+  Effector = 305;
+  Effector has nanoMolar;
+  GaGTPEffector = 0;
+  GaGTPEffector has nanoMolar;
+  RGSc = 60;
+  RGSc has nanoMolar;
+  RGSm = 0;
+  RGSm has nanoMolar;
+  RGSmGaGTP = 0;
+  RGSmGaGTP has nanoMolar;
+  GaGTPEffectorOFF = 0;
+  GaGTPEffectorOFF has nanoMolar;
+  RGSmGaGTPEffectorOFF = 0;
+  RGSmGaGTPEffectorOFF has nanoMolar;
+  GaGDPP = 0;
+  GaGDPP has nanoMolar;
+  LRRGSmGaGTP = 0;
+  LRRGSmGaGTP has nanoMolar;
+  RRGSmGaGTP = 0;
+  RRGSmGaGTP has nanoMolar;
+  LRRGSmGaGTPEffectorOFF = 0;
+  LRRGSmGaGTPEffectorOFF has nanoMolar;
+  GaGDP = 205;
+  GaGDP has nanoMolar;
+  P = 0;
+  P has nanoMolar;
+  z1 = 0;
+  z1 has nanoMolar;
+  z2 = 0;
+  z2 has nanoMolar;
+  z3 = 0;
+  z3 has nanoMolar;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  Ligand_conc = 0.1;
+  Ligand_conc has nanoMolar;
+  ka = 1.5;
+  ka has FirstOrder;
+  R1_k1 = 0.0025;
+  R1_k1 has SecondOrder;
+  R2_k2 = 0.005;
+  R2_k2 has SecondOrder;
+  R3_k3 = 0.02;
+  R3_k3 has SecondOrder;
+  R4_k4 = 0.005;
+  R4_k4 has SecondOrder;
+  R5_k5 = 0.005;
+  R5_k5 has SecondOrder;
+  R6_k6 = 0.005;
+  R6_k6 has SecondOrder;
+  R7_k7 = 0.02;
+  R7_k7 has SecondOrder;
+  R8_k8 = 0.005;
+  R8_k8 has SecondOrder;
+  R9_k9 = 50;
+  R9_k9 has FirstOrder;
+  R10_k10 = 0.2;
+  R10_k10 has FirstOrder;
+  R11_k11 = 40;
+  R11_k11 has FirstOrder;
+  R12_k12 = 10;
+  R12_k12 has SecondOrder;
+  R13_k13 = 0.0005;
+  R13_k13 has FirstOrder;
+  R14_k14 = 0.005;
+  R14_k14 has FirstOrder;
+  R15_k15 = 0.1;
+  R15_k15 has SecondOrder;
+  R16_k16 = 100;
+  R16_k16 has FirstOrder;
+  R17_k17 = 0.1;
+  R17_k17 has SecondOrder;
+  R18_k18 = 100;
+  R18_k18 has FirstOrder;
+  R19_k19 = 0.1;
+  R19_k19 has SecondOrder;
+  R20_k20 = 0.1;
+  R20_k20 has FirstOrder;
+  R21_k21 = 0.1;
+  R21_k21 has SecondOrder;
+  R22_k22 = 60;
+  R22_k22 has SecondOrder;
+  R23_k23 = 0.05;
+  R23_k23 has FirstOrder;
+  R24_k24 = 0.0001;
+  R24_k24 has SecondOrder;
+  R25_k25 = 1;
+  R25_k25 has FirstOrder;
+  R26_k26 = 0.005;
+  R26_k26 has FirstOrder;
+  R27_k27 = 500;
+  R27_k27 has SecondOrder;
+  R28_k28 = 2.5;
+  R28_k28 has FirstOrder;
+  R29_k29 = 100;
+  R29_k29 has SecondOrder;
+  R30_k30 = 2.5;
+  R30_k30 has FirstOrder;
+  R31_k31 = 0.5;
+  R31_k31 has SecondOrder;
+  R32_k32 = 0.5;
+  R32_k32 has FirstOrder;
+  R33_k33 = 0.005;
+  R33_k33 has FirstOrder;
+  R34_k34 = 50;
+  R34_k34 has SecondOrder;
+  R35_k35 = 0.3;
+  R35_k35 has FirstOrder;
+  R36_k36 = 50;
+  R36_k36 has SecondOrder;
+  R37_k37 = 0.3;
+  R37_k37 has FirstOrder;
+  R38_k38 = 1000;
+  R38_k38 has FirstOrder;
+  R39_k39 = 1000;
+  R39_k39 has SecondOrder;
+  R40_k40 = 10;
+  R40_k40 has FirstOrder;
+
+  // Other declarations:
+  const compartment_, Ligand_conc, ka;
+
+  // Unit definitions:
+  unit nanoMolar = 1e-9 mole / litre;
+  unit hour = 3600 second;
+  unit FirstOrder = 1 / 3600 second;
+  unit SecondOrder = litre / (1e-9 mole * 3600 second);
+  unit nanomole = 1e-9 mole;
+
+  // Display Names:
+  nanoMolar is "nM";
+  hour is "hr";
+  FirstOrder is "1/hr";
+  SecondOrder is "1/(nM*hr)";
+  nanomole is "nm";
+  compartment_ is "cell";
+  R1 is "Receptor-Ligand association";
+  R2 is "Receptor-Gprotein association";
+  R3 is "LR-Gprotein association";
+  R4 is "Ligand-RGabg association";
+  R5 is "Ligand-RRGSm association";
+  R6 is "RRGSm-Gprotein association";
+  R7 is "LRRGSm-Gprotein association";
+  R8 is "Ligand-RRGSmGabg association";
+  R9 is "Gprotein activation by LR";
+  R10 is "Gprotein spontaneous activation";
+  R11 is "Gprotein activation by LRRGSm";
+  R12 is "Effector-GaGTP association";
+  R13 is "RGS in cytosol moves to membrane";
+  R14 is "RGS in membrane moves to cytosol";
+  R15 is "Receptor recruits RGSc to membrane";
+  R16 is "R-RGSm dissociation";
+  R17 is "LR recruits RGSc to membrane";
+  R18 is "LR-RGSm dissociation";
+  R19 is "RGabg recruits RGSc to membrane";
+  R20 is "RRGSmGabg dissociation";
+  R21 is "LRGabg recruits RGSc to membrane";
+  R22 is "GaGTP recruits RGSc to membrane";
+  R23 is "RGSmGaGTP dissociation";
+  R24 is "GaGTPEffectorOFF recruits RGS from cytosol";
+  R25 is "Effector turns off";
+  R26 is "GaGTP hydrolyzes GTP";
+  R27 is "GaGTP-RGSm association";
+  R28 is "RGSmGaGTP hydrolyzes GTP";
+  R29 is "GaGTP-LRRGSm association";
+  R30 is "LRRGSmGaGTP hydrolyzes GTP";
+  R31 is "GaGTP-RRGSm association";
+  R32 is "RRGSmGaGTP hydrolyzes GTP";
+  R33 is "GaGTPEffectorOFF hydrolyzes GTP";
+  R34 is "GaGTPEffectorOFF-RGSm association";
+  R35 is "RGSmGaGTPEffectorOFF hydrolyzes GTP";
+  R36 is "GaGTPEffectorOFF-LRRGSm association";
+  R37 is "LRRGSmGaGTPEffectorOFF hydrolyzes GTP";
+  R38 is "Phosphate release";
+  R39 is "Gprotein subunits association";
+  R40 is "Phosphate degradation";
+  R41 is "Delay 1";
+  R42 is "Delay 2";
+  R43 is "Delay 3";
+  R44 is "Final output";
+
+  // SBO terms:
+  compartment_.sboTerm = 290
+  L.sboTerm = 280
+  R.sboTerm = 244
+  LR.sboTerm = 296
+  Gabg.sboTerm = 297
+  RGabg.sboTerm = 297
+  LRGabg.sboTerm = 296
+  RRGSm.sboTerm = 297
+  LRRGSm.sboTerm = 296
+  RRGSmGabg.sboTerm = 297
+  LRRGSmGabg.sboTerm = 296
+  GaGTP.sboTerm = 296
+  Gbg.sboTerm = 297
+  RGSc.sboTerm = 252
+  RGSm.sboTerm = 252
+  RGSmGaGTP.sboTerm = 296
+  GaGDPP.sboTerm = 296
+  LRRGSmGaGTP.sboTerm = 296
+  RRGSmGaGTP.sboTerm = 296
+  GaGDP.sboTerm = 296
+  P.sboTerm = 247
+
+  // CV terms:
+  compartment_ isVersionOf "http://identifiers.org/go/GO:0005623"
+  L isVersionOf "http://identifiers.org/sbo/SBO:0000280"
+  R isVersionOf "http://identifiers.org/interpro/IPR000239"
+  LR hasPart "http://identifiers.org/interpro/IPR000239",
+             "http://identifiers.org/sbo/SBO:0000280"
+  Gabg hasPart "http://identifiers.org/interpro/IPR001019",
+               "http://identifiers.org/interpro/IPR001632",
+               "http://identifiers.org/interpro/IPR001770"
+  RGabg hasPart "http://identifiers.org/interpro/IPR000239",
+                "http://identifiers.org/interpro/IPR001019",
+                "http://identifiers.org/interpro/IPR001632",
+                "http://identifiers.org/interpro/IPR001770"
+  LRGabg hasPart "http://identifiers.org/interpro/IPR000239",
+                 "http://identifiers.org/interpro/IPR001019",
+                 "http://identifiers.org/interpro/IPR001632",
+                 "http://identifiers.org/interpro/IPR001770",
+                 "http://identifiers.org/sbo/SBO:0000280"
+  RRGSm hasPart "http://identifiers.org/interpro/IPR000239",
+                "http://identifiers.org/interpro/IPR000342"
+  RRGSm occursIn "http://identifiers.org/fma/FMA:63841"
+  LRRGSm occursIn "http://identifiers.org/fma/FMA:63841"
+  LRRGSm hasPart "http://identifiers.org/interpro/IPR000239",
+                 "http://identifiers.org/interpro/IPR000342",
+                 "http://identifiers.org/sbo/SBO:0000280"
+  RRGSmGabg hasPart "http://identifiers.org/interpro/IPR000239",
+                    "http://identifiers.org/interpro/IPR000342",
+                    "http://identifiers.org/interpro/IPR001019",
+                    "http://identifiers.org/interpro/IPR001632",
+                    "http://identifiers.org/interpro/IPR001770"
+  RRGSmGabg occursIn "http://identifiers.org/fma/FMA:63841"
+  LRRGSmGabg occursIn "http://identifiers.org/fma/FMA:63841"
+  LRRGSmGabg hasPart "http://identifiers.org/interpro/IPR000239",
+                     "http://identifiers.org/interpro/IPR001019",
+                     "http://identifiers.org/interpro/IPR000342",
+                     "http://identifiers.org/interpro/IPR001632",
+                     "http://identifiers.org/interpro/IPR001770",
+                     "http://identifiers.org/sbo/SBO:0000280"
+  GaGTP hasPart "http://identifiers.org/chebi/CHEBI:15996",
+                "http://identifiers.org/interpro/IPR001019"
+  Gbg hasPart "http://identifiers.org/interpro/IPR001632",
+              "http://identifiers.org/interpro/IPR001770"
+  Effector isVersionOf "http://identifiers.org/chebi/CHEBI:35224"
+  GaGTPEffector hasPart "http://identifiers.org/chebi/CHEBI:15996",
+                        "http://identifiers.org/interpro/IPR001019"
+  GaGTPEffector isVersionOf "http://identifiers.org/chebi/CHEBI:35224"
+  RGSc occursIn "http://identifiers.org/fma/FMA:66835"
+  RGSc isVersionOf "http://identifiers.org/interpro/IPR000342"
+  RGSm occursIn "http://identifiers.org/fma/FMA:63841"
+  RGSm isVersionOf "http://identifiers.org/interpro/IPR000342"
+  RGSmGaGTP occursIn "http://identifiers.org/fma/FMA:63841"
+  RGSmGaGTP hasPart "http://identifiers.org/chebi/CHEBI:15996",
+                    "http://identifiers.org/interpro/IPR000342",
+                    "http://identifiers.org/interpro/IPR001019"
+  GaGTPEffectorOFF hasPart "http://identifiers.org/chebi/CHEBI:15996",
+                           "http://identifiers.org/interpro/IPR001019"
+  GaGTPEffectorOFF hasProperty "http://identifiers.org/pato/PATO:0002355"
+  GaGTPEffectorOFF isVersionOf "http://identifiers.org/chebi/CHEBI:35224"
+  RGSmGaGTPEffectorOFF isVersionOf "http://identifiers.org/chebi/CHEBI:35224"
+  RGSmGaGTPEffectorOFF hasPart "http://identifiers.org/chebi/CHEBI:15996",
+                               "http://identifiers.org/interpro/IPR000342",
+                               "http://identifiers.org/interpro/IPR001019"
+  RGSmGaGTPEffectorOFF hasProperty "http://identifiers.org/pato/PATO:0002355"
+  GaGDPP hasPart "http://identifiers.org/chebi/CHEBI:17552",
+                 "http://identifiers.org/interpro/IPR001019"
+  GaGDPP hasProperty "http://identifiers.org/pato/PATO:0002220"
+  LRRGSmGaGTP hasPart "http://identifiers.org/chebi/CHEBI:15996",
+                      "http://identifiers.org/interpro/IPR000342",
+                      "http://identifiers.org/interpro/IPR000239",
+                      "http://identifiers.org/interpro/IPR001019",
+                      "http://identifiers.org/sbo/SBO:0000280"
+  RRGSmGaGTP hasPart "http://identifiers.org/chebi/CHEBI:15996",
+                     "http://identifiers.org/interpro/IPR000239",
+                     "http://identifiers.org/interpro/IPR000342",
+                     "http://identifiers.org/interpro/IPR001019"
+  LRRGSmGaGTPEffectorOFF hasPart "http://identifiers.org/chebi/CHEBI:15996",
+                                 "http://identifiers.org/interpro/IPR000239",
+                                 "http://identifiers.org/interpro/IPR001019",
+                                 "http://identifiers.org/interpro/IPR000342",
+                                 "http://identifiers.org/sbo/SBO:0000280"
+  LRRGSmGaGTPEffectorOFF isVersionOf "http://identifiers.org/chebi/CHEBI:35224"
+  LRRGSmGaGTPEffectorOFF hasProperty "http://identifiers.org/pato/PATO:0002355"
+  GaGDP hasPart "http://identifiers.org/chebi/CHEBI:17552",
+                "http://identifiers.org/interpro/IPR001019"
+  P isVersionOf "http://identifiers.org/chebi/CHEBI:18367"
+  z1 hasProperty "http://identifiers.org/sbo/SBO:0000225"
+  z2 hasProperty "http://identifiers.org/sbo/SBO:0000225"
+  z3 hasProperty "http://identifiers.org/sbo/SBO:0000225"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1305280000"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000479"
+  model publication "http://identifiers.org/pubmed/23900842"
+  model origin "http://identifiers.org/biomodels.db/BIOMD0000000439",
+               "http://identifiers.org/pubmed/15313578"
+  model hasTaxon "http://identifiers.org/taxonomy/4932"
+  model isVersionOf "http://identifiers.org/go/GO:0043087"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2013-09-13T12:39:39Z"
+  model modified "2014-04-28T16:04:49Z"
+  model creator1.givenName "Vijayalakshmi"
+  model creator1.familyName "Chelliah"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "viji@ebi.ac.uk"
+  model creator2.givenName "Wayne"
+  model creator2.familyName "Croft"
+  model creator2.organization "University of Warwick"
+  model creator2.email "Wayne.Croft@warwick.ac.uk"
+  model creator3.givenName "Manuel"
+  model creator3.familyName "Esparza-Franco"
+  model creator3.organization "University of Warwick"
+  model creator3.email "M.A.Esparza-Franco@warwick.ac.uk"
+
+  // Notes:
+  model notes ```
+Croft2013 - GPCR-RGS interaction that compartmentalizes RGS activity 
+
+
+Through modelling studies, the classic quaternary complex (ligand-GPCR-G-RGS) has
+been extended to include an additional layer of regulation through GPCR-RGS interactions,
+which facilitate the compartmentalization of RGS activity into the plasma membrane
+and non-plasma compartments.
+
+
+This model is described in the article:
+
+
+[A physiologically required G protein-coupled receptor (GPCR)-regulator of G protein signaling (RGS) interaction that compartmentalizes RGS activity.](http://identifiers.org/pubmed/23900842 "Access to this publication") 
+
+
+Croft W, Hill C, McCann E, Bond M, Esparza-Franco M, Bennett J, Rand D, Davey J,
+Ladds G. 
+
+J Biol Chem. 2013 Sep 20;288(38):27327-42. 
+Abstract:
+
+
+G protein-coupled receptors (GPCRs) can interact with regulator of G protein signaling
+(RGS) proteins. However, the effects of such interactions on signal transduction
+and their physiological relevance have been largely undetermined. Ligand-bound GPCRs
+initiate by promoting exchange of GDP for GTP on the Gα subunit of heterotrimeric
+G proteins. Signaling is terminated by hydrolysis of GTP to GDP through intrinsic
+GTPase activity of the Gα subunit, a reaction catalyzed by RGS proteins. Using yeast
+as a tool to study GPCR signaling in isolation, we define an interaction between
+the cognate GPCR (Mam2) and RGS (Rgs1), mapping the interaction domains. This reaction
+tethers Rgs1 at the plasma membrane and is essential for physiological signaling
+response. In vivo quantitative data inform the development of a kinetic model of
+the GTPase cycle, which extends previous attempts by including GPCR-RGS interactions.
+In vivo and in silico data confirm that GPCR-RGS interactions can impose an additional
+layer of regulation through mediating RGS subcellular localization to compartmentalize
+RGS activity within a cell, thus highlighting their importance as potential targets
+to modulate GPCR signaling pathways.
+
+
+**Author&apos;s comment on reproducing the plots:** 
+To reproduce dose-response plots in the publication, the model is simulated
+with 12 different ligand concentrations (see parameter Ligand_conc). 
+For each ligand concentration, a single value corresponding to total
+amount of output must be obtained, by calculating the area under the curve of the
+trajectory of species z3, from time=0 to time=30. 
+These total output values are then used to build a dose-response plot
+(authors used GraphPad Prism). 
+Mutant strains are simulated with alternative parameter values or initial
+conditions specified in the Supplementary Material. 
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identifiedby: [BIOMD0000000479](http://identifiers.org/biomodels.db/BIOMD0000000479) . 
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resourcefor published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication") . 
+
+
+To the extent possible under law, all copyright and related orneighbouring rights
+to this encoded model have been dedicated to the publicdomain worldwide. Please refer
+to [CC0 Public DomainDedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+  Ligand_conc notes ```
+Dose-response plots use: 0.1, 1, 3.16228, 10, 31.6228, 100, 316.228, 1000,
+3162.28, 10000, 31622.8, 100000
+```
+end
+
+MODEL1305280000 is "Croft2013 - GPCR-RGS interaction that compartmentalizes RGS activity"

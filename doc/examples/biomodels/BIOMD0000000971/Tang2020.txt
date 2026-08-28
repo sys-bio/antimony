@@ -1,0 +1,173 @@
+// Created by libAntimony v3.2.0
+model *Tang2020___Estimation_of_transmission_risk_of_COVID_19_and_impact_of_public_health_interventions()
+
+  // Compartments and Species:
+  compartment Wuhan;
+  species Susceptible in Wuhan, Exposed in Wuhan, Infected in Wuhan, Asymptomatic in Wuhan;
+  species Susceptible_quarantined in Wuhan, Exposed_quarantined in Wuhan;
+  species Hospitalised in Wuhan, Recovered in Wuhan;
+
+  // Assignment Rules:
+  Infected_0 := Infected + Asymptomatic;
+
+  // Reactions:
+  Susceptible_to_Exposed: Susceptible => Exposed; Wuhan*(beta*c*(1 - q)*Susceptible*(Infected + theta*Asymptomatic));
+  Susceptible_to_Susceptible_quarantined: Susceptible => Susceptible_quarantined; Wuhan*(c*q*(1 - beta)*Susceptible*(Infected + theta*Asymptomatic));
+  Quarantined_to_Susceptible: Susceptible_quarantined => Susceptible; Wuhan*lambda*Susceptible_quarantined;
+  Exposed_to_Infected: Exposed => Infected; Wuhan*(sigma*rho*Exposed);
+  Exposed_to_Asymptomatic: Exposed => Asymptomatic; Wuhan*(sigma*(1 - rho)*Exposed);
+  Infected_to_Hospitalised: Infected => Hospitalised; Wuhan*delta_I*Infected;
+  Infected_to_Recovered: Infected => Recovered; Wuhan*gamma_I*Infected;
+  Asymptomatic_to_Recovered: Asymptomatic => Recovered; Wuhan*gamma_A*Asymptomatic;
+  Hospitalised_to_Recovered: Hospitalised => Recovered; Wuhan*gamma_H*Hospitalised;
+  Infected_to_Deceased: Infected => ; Wuhan*alpha*Infected;
+  Hospitalised_to_Deceased: Hospitalised => ; Wuhan*alpha*Hospitalised;
+  Susceptible_to_Exposed_quarantined: Susceptible => Exposed_quarantined; Wuhan*(beta*c*q*Susceptible*(Infected + theta*Asymptomatic));
+  Exposed_quarantined_to_Hospitalised: Exposed_quarantined => Hospitalised; Wuhan*delta_q*Exposed_quarantined;
+
+  // Events:
+  Lockdown: at 0 after time > 9, persistent=false: c = c_lockdown, q = q_lockdown;
+
+  // Species initializations:
+  Susceptible = 11081000;
+  Susceptible has substance_per_volume;
+  Exposed = 105.1;
+  Exposed has substance_per_volume;
+  Infected = 27.679;
+  Infected has substance_per_volume;
+  Asymptomatic = 53.539;
+  Asymptomatic has substance_per_volume;
+  Susceptible_quarantined = 739;
+  Susceptible_quarantined has substance_per_volume;
+  Exposed_quarantined = 1.1642;
+  Exposed_quarantined has substance_per_volume;
+  Hospitalised = 1;
+  Hospitalised has substance_per_volume;
+  Recovered = 2;
+  Recovered has substance_per_volume;
+
+  // Compartment initializations:
+  Wuhan = 1;
+  Wuhan has volume;
+
+  // Variable initializations:
+  c = 14.781;
+  c_lockdown = 14.781;
+  q = 1.8887e-07;
+  q_lockdown = 1.8887e-07;
+  beta = 2.1011e-08;
+  sigma = 0.142857;
+  lambda = 0.0714285;
+  rho = 0.86834;
+  delta_I = 0.13266;
+  delta_q = 0.1259;
+  gamma_I = 0.33029;
+  gamma_A = 0.13978;
+  gamma_H = 0.11624;
+  alpha = 1.7826e-05;
+  theta = 1;
+
+  // Other declarations:
+  var c, q, Infected_0;
+  const Wuhan, c_lockdown, q_lockdown, beta, sigma, lambda, rho, delta_I;
+  const delta_q, gamma_I, gamma_A, gamma_H, alpha, theta;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+  unit extent = substance;
+  unit substance_per_volume = item / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  Infected_0 is "Infected";
+
+  // CV terms:
+  Wuhan identity "http://identifiers.org/ncit/C25632"
+  Wuhan isPartOf "http://identifiers.org/ncit/C16428"
+  Susceptible identity "http://identifiers.org/ido/0000514"
+  Susceptible isVersionOf "http://identifiers.org/ncit/C171133"
+  Exposed identity "http://identifiers.org/ido/0000514"
+  Exposed isVersionOf "http://identifiers.org/ncit/C171133"
+  Exposed hasProperty "http://identifiers.org/ido/0000597"
+  Infected identity "http://identifiers.org/ido/0000511"
+  Infected isVersionOf "http://identifiers.org/ncit/C171133"
+  Asymptomatic identity "http://identifiers.org/ido/0000569"
+  Asymptomatic identity "http://identifiers.org/ido/0000511"
+  Asymptomatic isVersionOf "http://identifiers.org/ncit/C171133"
+  Susceptible_quarantined identity "http://identifiers.org/ncit/C71902"
+  Susceptible_quarantined identity "http://identifiers.org/ido/0000514"
+  Susceptible_quarantined isVersionOf "http://identifiers.org/ncit/C171133"
+  Exposed_quarantined identity "http://identifiers.org/ncit/C71902"
+  Exposed_quarantined identity "http://identifiers.org/ido/0000514"
+  Exposed_quarantined isVersionOf "http://identifiers.org/ncit/C171133"
+  Exposed_quarantined hasProperty "http://identifiers.org/ido/0000597"
+  Hospitalised isVersionOf "http://identifiers.org/ido/0000511"
+  Hospitalised isVersionOf "http://identifiers.org/ncit/C171133"
+  Hospitalised hasProperty "http://identifiers.org/ncit/C25179"
+  Recovered hasProperty "http://identifiers.org/ido/0000621"
+  Susceptible_to_Exposed identity "http://identifiers.org/ido/0000597"
+  Susceptible_to_Exposed isVersionOf "http://identifiers.org/ncit/C171133"
+  Susceptible_to_Susceptible_quarantined identity "http://identifiers.org/ncit/C71902"
+  Susceptible_to_Susceptible_quarantined isVersionOf "http://identifiers.org/ncit/C171133"
+  Exposed_to_Infected identity "http://identifiers.org/ncit/C171133"
+  Exposed_to_Asymptomatic identity "http://identifiers.org/ncit/C168121"
+  Exposed_to_Asymptomatic identity "http://identifiers.org/ncit/C171133"
+  Infected_to_Hospitalised identity "http://identifiers.org/ncit/C25179"
+  Infected_to_Hospitalised isVersionOf "http://identifiers.org/ncit/C171133"
+  Infected_to_Recovered identity "http://identifiers.org/ncit/C25746"
+  Asymptomatic_to_Recovered identity "http://identifiers.org/ncit/C25746"
+  Hospitalised_to_Recovered identity "http://identifiers.org/ncit/C25746"
+  Infected_to_Deceased identity "http://identifiers.org/ncit/C28554"
+  Infected_to_Deceased isVersionOf "http://identifiers.org/ncit/C171133"
+  Hospitalised_to_Deceased identity "http://identifiers.org/ncit/C28554"
+  Hospitalised_to_Deceased isVersionOf "http://identifiers.org/ncit/C171133"
+  Susceptible_to_Exposed_quarantined identity "http://identifiers.org/ncit/C71902"
+  Susceptible_to_Exposed_quarantined identity "http://identifiers.org/ido/0000597"
+  Susceptible_to_Exposed_quarantined isVersionOf "http://identifiers.org/ncit/C171133"
+  Exposed_quarantined_to_Hospitalised identity "http://identifiers.org/ncit/C25179"
+  Exposed_quarantined_to_Hospitalised isVersionOf "http://identifiers.org/ncit/C171133"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL2011020001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000971"
+  model identity "http://identifiers.org/doid/DOID:0080600"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model hasTaxon "http://identifiers.org/taxonomy/2697049"
+  model isDescribedBy "http://identifiers.org/pubmed/32046137"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000028"
+  model created "2020-10-30T01:31:09Z"
+  model modified "2020-10-30T01:31:09Z"
+  model creator1.givenName "Kausthubh"
+  model creator1.familyName "Ramachandran"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "kramachandran@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Since the emergence of the first cases in Wuhan, China, the novel coronavirus (2019-nCoV)
+infection has been quickly spreading out to other provinces and neighboring countries.
+Estimation of the basic reproduction number by means of mathematical modeling can
+be helpful for determining the potential and severity of an outbreak and providing
+critical information for identifying the type of disease interventions and intensity.
+A deterministic compartmental model was devised based on the clinical progression
+of the disease, epidemiological status of the individuals, and intervention measures.
+The estimations based on likelihood and model analysis show that the control reproduction
+number may be as high as 6.47 (95% CI 5.71–7.23). Sensitivity analyses show that
+interventions, such as intensive contact tracing followed by quarantine and isolation,
+can effectively reduce the control reproduction number and transmission risk, with
+the effect of travel restriction adopted by Wuhan on 2019-nCoV infection in Beijing
+being almost equivalent to increasing quarantine by a 100 thousand baseline value.
+It is essential to assess how the expensive, resource-intensive measures implemented
+by the Chinese authorities can contribute to the prevention and control of the 2019-nCoV
+infection, and how long they should be maintained. Under the most restrictive measures,
+the outbreak is expected to peak within two weeks (since 23 January 2020) with a
+significant low peak value. With travel restriction (no imported exposed individuals
+to Beijing), the number of infected individuals in seven days will decrease by 91.14%
+in Beijing, compared with the scenario of no travel restriction.
+```
+end
+
+Tang2020___Estimation_of_transmission_risk_of_COVID_19_and_impact_of_public_health_interventions is "Tang2020 - Estimation of transmission risk of COVID-19 and impact of public health interventions"

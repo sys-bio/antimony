@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by libAntimony version v3.2.0 with libSBML version 5.21.1. -->
+<sbml xmlns="http://www.sbml.org/sbml/level3/version2/core" xmlns:comp="http://www.sbml.org/sbml/level3/version1/comp/version1" level="3" version="2" comp:required="true">
+  <model metaid="__main" id="__main">
+    <listOfCompartments>
+      <compartment sboTerm="SBO:0000410" id="default_compartment" spatialDimensions="3" size="1" constant="true"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="A" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="B" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="C" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="D" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+    </listOfSpecies>
+    <listOfParameters>
+      <parameter id="k1" constant="true"/>
+      <parameter id="k2" constant="true"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="J0_B_stoich">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> n </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J1_C_stoich">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> n </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J1_B_stoich">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> n </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J2_B_stoich">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> n </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J2_C_stoich">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> m </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J2_D_stoich">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> n </ci>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+    <listOfReactions>
+      <reaction id="J0" reversible="true">
+        <listOfReactants>
+          <speciesReference id="n" species="A" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference sboTerm="SBO:0000481" id="J0_B_stoich" species="B" constant="false"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k1 </ci>
+              <apply>
+                <power/>
+                <ci> A </ci>
+                <ci> n </ci>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J1" reversible="true">
+        <listOfReactants>
+          <speciesReference sboTerm="SBO:0000481" id="J1_C_stoich" species="C" constant="false"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference sboTerm="SBO:0000481" id="J1_B_stoich" species="B" constant="false"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k1 </ci>
+              <apply>
+                <power/>
+                <ci> C </ci>
+                <ci> n </ci>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J2" reversible="true">
+        <listOfReactants>
+          <speciesReference id="m" species="A" constant="true"/>
+          <speciesReference sboTerm="SBO:0000481" id="J2_B_stoich" species="B" constant="false"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference sboTerm="SBO:0000481" id="J2_C_stoich" species="C" constant="false"/>
+          <speciesReference sboTerm="SBO:0000481" id="J2_D_stoich" species="D" constant="false"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <ci> k2 </ci>
+          </math>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>

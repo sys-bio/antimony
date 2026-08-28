@@ -1,0 +1,534 @@
+// Created by libAntimony v3.2.0
+model *Heldt2018___Proliferation_quiescence_decision_pormoted_by_p21_in_response_to_DNA_damage()
+
+  // Compartments and Species:
+  compartment Cell;
+  species Rb in Cell, pRb in Cell, E2f in Cell, RbE2f in Cell, E1 in Cell;
+  species C1 in Cell, pC1 in Cell, E1C1 in Cell, P21 in Cell, Ce in Cell;
+  species Ca in Cell, CeP21 in Cell, CaP21 in Cell, aPcna in Cell, iPcna in Cell;
+  species Rc in Cell, pRc in Cell, aRc in Cell, iRc in Cell, Dna in Cell;
+  species P53 in Cell, Dam in Cell, Pr in Cell, $tRb in Cell, $tE2f in Cell;
+  species $tE1 in Cell, $tC1 in Cell, $tCe in Cell, $tCa in Cell, $tP21 in Cell;
+
+  // Assignment Rules:
+  tRb := Rb + pRb + RbE2f;
+  tE2f := E2f + RbE2f;
+  tE1 := E1 + E1C1;
+  tC1 := C1 + pC1 + E1C1;
+  tCe := Ce + CeP21;
+  tCa := Ca + CaP21;
+  tP21 := P21 + CeP21 + CaP21 + iPcna + iRc;
+
+  // Reactions:
+  Phosphorylation_of_Rb: Rb => pRb; Cell*((kPhRbCd*Cd + kPhRbCe*Ce + kPhRbCa*Ca)*Rb);
+  Phosphorylation_Rb_in_Rb_E2F_complexes: RbE2f => pRb + E2f; Cell*((kPhRbCd*Cd + kPhRbCe*Ce + kPhRbCa*Ca)*RbE2f);
+  Dephosphorylation_of_Rb: pRb => Rb; Cell*kDpRb*pRb;
+  Synthesis_of_E2F:  => E2f; Cell*(kSyE2f + kSyE2fE2f*E2f/(jSyE2f + E2f));
+  Degradation_of_E2F: E2f => ; Cell*kDeE2f*E2f;
+  Degradation_of_E2F_in_Rb_E2F_complexes: RbE2f => Rb; Cell*kDeE2f*RbE2f;
+  Association_dissociation_of_Rb_and_E2F: Rb + E2f -> RbE2f; Cell*(kAsRbE2f*Rb*E2f - kDsRbE2f*RbE2f);
+  Synthesis_of_p21:  => P21; Cell*(kSyP21 + kSyP21P53*P53);
+  Synthesis_of_CycE: E2f => E2f + Ce; Cell*kSyCe*E2f;
+  Synthesis_of_CycA: E2f => E2f + Ca; Cell*kSyCa*E2f;
+  Association_dissociation_of_CycE_Cdk2_and_p21: Ce + P21 -> CeP21; Cell*(kAsCyP21*Ce*P21 - kDsCyP21*CeP21);
+  Association_dissociation_of_CycA_Cdk2_and_p21: Ca + P21 -> CaP21; Cell*(kAsCyP21*Ca*P21 - kDsCyP21*CaP21);
+  Degradation_of_p21_in_CycE_Cdk2_p21_complexes: CeP21 => Ce; Cell*((kDeP21 + kDeP21Cy*Skp2*(Ce + Ca) + kDeP21aRc*Cdt2*aRc)*CeP21);
+  Degradation_of_p21_in_CycA_Cdk2_p21_complexes: CaP21 => Ca; Cell*((kDeP21 + kDeP21Cy*Skp2*(Ce + Ca) + kDeP21aRc*Cdt2*aRc)*CaP21);
+  Degradation_of_CycE_in_CycE_Cdk2_complexes: Ce => ; Cell*((kDeCe + kDeCeCa*Ca)*Ce);
+  Degradation_of_CycE_in_CycE_Cdk2_p21_complexes: CeP21 => P21; Cell*((kDeCe + kDeCeCa*Ca)*CeP21);
+  Degradation_of_CycA_in_CycA_Cdk2_complexes: Ca => ; Cell*((kDeCa + kDeCaC1*C1)*Ca);
+  Degradation_of_CycA_in_CycA_Cdk2_p21_complexes: CaP21 => P21; Cell*((kDeCa + kDeCaC1*C1)*CaP21);
+  Degradation_of_free_p21: P21 => ; Cell*((kDeP21 + kDeP21Cy*Skp2*(Ce + Ca) + kDeP21aRc*Cdt2*aRc)*P21);
+  Synthesis_of_Emi1: E2f => E2f + E1; Cell*kSyE1*E2f;
+  Degradation_of_Emi1: E1 => ; Cell*kDeE1*E1;
+  Association_dissociation_of_Emi1_APC_C_Cdh1_complexes: E1 + C1 -> E1C1; Cell*(kAsE1C1*E1*C1 - kDsE1C1*E1C1);
+  Degradation_of_Emi1_in_Emi1_APC_C_Cdh1_complexes: E1C1 => C1; Cell*kDeE1C1*E1C1;
+  Phosphorylation_of_free_APC_C_Cdh1: C1 => pC1; Cell*((kPhC1 + kPhC1Ce*Ce + kPhC1Ca*Ca)*C1);
+  Phosphorylation_of_APC_C_Cdh1_in_Emi1_APC_C_Cdh1_complexes: E1C1 => E1 + pC1; Cell*((kPhC1 + kPhC1Ce*Ce + kPhC1Ca*Ca)*E1C1);
+  Dephosphorylation_of_APC_C_Cdh1: pC1 => C1; Cell*kDpC1*pC1;
+  Nuclear_import_of_active_PCNA:  => aPcna; Cell*kImPc;
+  Nuclear_export_of_active_PCNA: aPcna => ; Cell*kExPc*aPcna;
+  Nuclear_export_of_inactive_PCNA: iPcna => P21; Cell*kExPc*iPcna;
+  Association_dissociation_of_PCNA_and_p21: aPcna + P21 -> iPcna; Cell*(kAsPcP21*aPcna*P21 - kDsPcP21*iPcna);
+  Degradation_of_p21_in_PCNA_p21_complexes: iPcna => aPcna; Cell*((kDeP21 + kDeP21Cy*Skp2*(Ce + Ca) + kDeP21aRc*Cdt2*aRc)*iPcna);
+  Association_dissociation_of_active_PCNA_and_replication_complexes: aPcna + pRc -> aRc; Cell*(kAsRcPc*aPcna*pRc - kDsRcPc*aRc);
+  Association_dissociation_of_inactive_PCNA_and_replication_complexes: iPcna + pRc -> iRc; Cell*(kAsRcPc*iPcna*pRc - kDsRcPc*iRc);
+  Phosphorylation_priming_of_replication_complexes: Rc => pRc; Cell*((kPhRc*(Ce + Ca)^n/(jCy^n + (Ce + Ca)^n))*Rc);
+  Dephosphorylation_of_replication_complexes: pRc => Rc; Cell*kDpRc*pRc;
+  Association_dissociation_of_p21_and_replication_complexes: aRc + P21 -> iRc; Cell*(kAsPcP21*aRc*P21 - kDsPcP21*iRc);
+  Degradation_of_p21_in_inactive_replication_complexes: iRc => aRc; Cell*((kDeP21 + kDeP21Cy*Skp2*(Ce + Ca) + kDeP21aRc*Cdt2*aRc)*iRc);
+  Dissassembly_of_RC: Rc => ; Cell*piecewise(0, Dna < 1, piecewise(1*Rc, Dna > 1, 0.5*Rc));
+  Dissassembly_of_pRC: pRc => ; Cell*piecewise(0, Dna < 1, piecewise(1*pRc, Dna > 1, 0.5*pRc));
+  Dissassembly_of_aRC: aRc => aPcna; Cell*piecewise(0, Dna < 1, piecewise(1*aRc, Dna > 1, 0.5*aRc));
+  Dissassembly_of_iRC: iRc => iPcna; Cell*piecewise(0, Dna < 1, piecewise(1*iRc, Dna > 1, 0.5*iRc));
+  Synthesis_of_DNA: aRc => aRc + Dna; Cell*kSyDna*aRc;
+  Synthesis_of_p53:  => P53; Cell*kSyP53;
+  Degradation_of_p53: P53 => ; Cell*((kDeP53/(jP53 + Dam))*P53);
+  Induction_of_DNA_damage:  => Dam; Cell*kGeDam;
+  Induction_of_DNA_damage_by_replication: aRc => aRc + Dam; Cell*kGeDamArc*aRc;
+  Synthesis_of_APC_C_Cdh1_activity_probe:  => Pr; Cell*kSyPr;
+  Degradation_of_APC_C_Cdh1_activity_probe: Pr => ; Cell*((kDePr + kDeCaC1*C1)*Pr);
+  Repair_of_DNA_damage: Dam => ; Cell*((kReDam + kReDamP53*P53/(jDam + Dam))*Dam);
+
+  // Species initializations:
+  Rb = 0;
+  pRb = 5;
+  E2f = 0;
+  RbE2f = 0;
+  E1 = 0;
+  C1 = 0;
+  pC1 = 1;
+  E1C1 = 0;
+  P21 = 0.6;
+  Ce = 0.5;
+  Ca = 1.2;
+  CeP21 = 0;
+  CaP21 = 0;
+  aPcna = 0.5;
+  iPcna = 0;
+  Rc = 1;
+  pRc = 0;
+  aRc = 0;
+  iRc = 0;
+  Dna = 0;
+  P53 = 0;
+  Dam = 0;
+  Pr = 0.5;
+
+  // Compartment initializations:
+  Cell = 1;
+
+  // Variable initializations:
+  Cd = 0.65;
+  Skp2 = 1;
+  Cdt2 = 1;
+  kSyE2f = 0.03;
+  kSyE2fE2f = 0.04;
+  jSyE2f = 0.2;
+  kAsRbE2f = 5;
+  kDsRbE2f = 0.005;
+  kDeE2f = 0.05;
+  kPhRbCd = 0.2;
+  kPhRbCe = 0.3;
+  kPhRbCa = 0.3;
+  kDpRb = 0.05;
+  kSyE1 = 0.005;
+  kDeE1C1 = 0.005;
+  kDeE1 = 0.0005;
+  kPhC1 = 0;
+  kPhC1Ce = 0.01;
+  kPhC1Ca = 1;
+  kDpC1 = 0.05;
+  kAsE1C1 = 10;
+  kDsE1C1 = 0.01;
+  kSyP21 = 0.002;
+  kSyP21P53 = 0.008;
+  kDeP21 = 0.0025;
+  kDeP21Cy = 0.007;
+  kDeP21aRc = 1;
+  kSyCe = 0.01;
+  kSyCa = 0.02;
+  kAsCyP21 = 1;
+  kDsCyP21 = 0.05;
+  kDeCe = 0.004;
+  kDeCa = 0.01;
+  kDeCeCa = 0.015;
+  kDeCaC1 = 2;
+  kImPc = 0.003;
+  kExPc = 0.006;
+  kPhRc = 0.1;
+  kDpRc = 0.05;
+  jCy = 1.8;
+  n = 6;
+  kAsRcPc = 0.01;
+  kDsRcPc = 0.001;
+  kAsPcP21 = 100;
+  kDsPcP21 = 0.01;
+  kSyDna = 0.0093;
+  kSyP53 = 0.05;
+  kDeP53 = 0.05;
+  jP53 = 0.01;
+  kGeDam = 0.001;
+  kGeDamArc = 0.012;
+  kReDam = 0.001;
+  kReDamP53 = 0.005;
+  jDam = 0.5;
+  kSyPr = 0.01;
+  kDePr = 0.0001;
+
+  // Other declarations:
+  const Cell, Cd, Skp2, Cdt2, kSyE2f, kSyE2fE2f, jSyE2f, kAsRbE2f, kDsRbE2f;
+  const kDeE2f, kPhRbCd, kPhRbCe, kPhRbCa, kDpRb, kSyE1, kDeE1C1, kDeE1, kPhC1;
+  const kPhC1Ce, kPhC1Ca, kDpC1, kAsE1C1, kDsE1C1, kSyP21, kSyP21P53, kDeP21;
+  const kDeP21Cy, kDeP21aRc, kSyCe, kSyCa, kAsCyP21, kDsCyP21, kDeCe, kDeCa;
+  const kDeCeCa, kDeCaC1, kImPc, kExPc, kPhRc, kDpRc, jCy, n, kAsRcPc, kDsRcPc;
+  const kAsPcP21, kDsPcP21, kSyDna, kSyP53, kDeP53, jP53, kGeDam, kGeDamArc;
+  const kReDam, kReDamP53, jDam, kSyPr, kDePr;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 60 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  Cell is "cell";
+  Rb is "Retinoblastoma_protein";
+  pRb is "Retinoblastoma_protein_hyperphosphorylated";
+  E2f is "E2f_active";
+  RbE2f is "Retinoblastoma_protein_E2f_complex_inactive";
+  E1 is "Emi1";
+  C1 is "Cdh1_C_APC_active";
+  pC1 is "C_Cdh1_APC_phosphorylated_inactive";
+  E1C1 is "Emi1_C_Cdh1_complex_inactive";
+  Ce is "CyclinE_Cdk2_active";
+  Ca is "CyclinA_Cdk2";
+  CeP21 is "CyclinE_Cdk2_P21_complex_inactive";
+  CaP21 is "CyclinA_Cdk2_P21_complex_inactive";
+  aPcna is "Pcna_nuclear_active";
+  iPcna is "PCNA_Nuclear_inactive";
+  Rc is "Pre_Replication_complex";
+  pRc is "Pre_Replication_complex_primed";
+  aRc is "Pre_Replication_complex_active";
+  iRc is "Pre_Replication_complex_inactive";
+  Dam is "Dna_damage";
+  Pr is "Activity_probe_of_APC_C_Cdh1";
+  tRb is "Retinoblastoma_protein_total";
+  tE2f is "E2f_total";
+  tE1 is "Emi1_total";
+  tC1 is "C_Cdh1_APC_total";
+  tCe is "CyclinE_Cdk2_total";
+  tCa is "CyclinA_Cdk2_total";
+  tP21 is "P21_total";
+  Phosphorylation_of_Rb is "Phosphorylation of Rb";
+  Phosphorylation_Rb_in_Rb_E2F_complexes is "Phosphorylation Rb in Rb:E2F complexes";
+  Dephosphorylation_of_Rb is "Dephosphorylation of Rb";
+  Synthesis_of_E2F is "Synthesis of E2F";
+  Degradation_of_E2F is "Degradation of E2F";
+  Degradation_of_E2F_in_Rb_E2F_complexes is "Degradation of E2F in Rb:E2F complexes";
+  Association_dissociation_of_Rb_and_E2F is "Association/dissociation of Rb and E2F";
+  Synthesis_of_p21 is "Synthesis of p21";
+  Synthesis_of_CycE is "Synthesis of CycE";
+  Synthesis_of_CycA is "Synthesis of CycA";
+  Association_dissociation_of_CycE_Cdk2_and_p21 is "Association/dissociation of CycE:Cdk2 and p21";
+  Association_dissociation_of_CycA_Cdk2_and_p21 is "Association/dissociation of CycA:Cdk2 and p21";
+  Degradation_of_p21_in_CycE_Cdk2_p21_complexes is "Degradation of p21 in CycE:Cdk2:p21 complexes";
+  Degradation_of_p21_in_CycA_Cdk2_p21_complexes is "Degradation of p21 in CycA:Cdk2:p21 complexes";
+  Degradation_of_CycE_in_CycE_Cdk2_complexes is "Degradation of CycE in CycE:Cdk2 complexes";
+  Degradation_of_CycE_in_CycE_Cdk2_p21_complexes is "Degradation of CycE in CycE:Cdk2:p21 complexes";
+  Degradation_of_CycA_in_CycA_Cdk2_complexes is "Degradation of CycA in CycA:Cdk2 complexes";
+  Degradation_of_CycA_in_CycA_Cdk2_p21_complexes is "Degradation of CycA in CycA:Cdk2:p21 complexes";
+  Degradation_of_free_p21 is "Degradation of free p21";
+  Synthesis_of_Emi1 is "Synthesis of Emi1";
+  Degradation_of_Emi1 is "Degradation of Emi1";
+  Association_dissociation_of_Emi1_APC_C_Cdh1_complexes is "Association/dissociation of Emi1:APC/C^Cdh1 complexes";
+  Degradation_of_Emi1_in_Emi1_APC_C_Cdh1_complexes is "Degradation of Emi1 in Emi1:APC/C^Cdh1 complexes";
+  Phosphorylation_of_free_APC_C_Cdh1 is "Phosphorylation of free APC/C^Cdh1";
+  Phosphorylation_of_APC_C_Cdh1_in_Emi1_APC_C_Cdh1_complexes is "Phosphorylation of APC/C^Cdh1 in Emi1:APC/C^Cdh1 complexes";
+  Dephosphorylation_of_APC_C_Cdh1 is "Dephosphorylation of APC/C^Cdh1";
+  Nuclear_import_of_active_PCNA is "Nuclear import of active PCNA";
+  Nuclear_export_of_active_PCNA is "Nuclear export of active PCNA";
+  Nuclear_export_of_inactive_PCNA is "Nuclear export of inactive PCNA";
+  Association_dissociation_of_PCNA_and_p21 is "Association/dissociation of PCNA and p21";
+  Degradation_of_p21_in_PCNA_p21_complexes is "Degradation of p21 in PCNA:p21 complexes";
+  Association_dissociation_of_active_PCNA_and_replication_complexes is "Association/dissociation of active PCNA and replication complexes";
+  Association_dissociation_of_inactive_PCNA_and_replication_complexes is "Association/dissociation of inactive PCNA and replication complexes";
+  Phosphorylation_priming_of_replication_complexes is "Phosphorylation/priming of replication complexes";
+  Dephosphorylation_of_replication_complexes is "Dephosphorylation of replication complexes";
+  Association_dissociation_of_p21_and_replication_complexes is "Association/dissociation of p21 and replication complexes";
+  Degradation_of_p21_in_inactive_replication_complexes is "Degradation of p21 in inactive replication complexes";
+  Dissassembly_of_RC is "Dissassembly of RC";
+  Dissassembly_of_pRC is "Dissassembly of pRC";
+  Dissassembly_of_aRC is "Dissassembly of aRC";
+  Dissassembly_of_iRC is "Dissassembly of iRC";
+  Synthesis_of_DNA is "Synthesis of DNA";
+  Synthesis_of_p53 is "Synthesis of p53";
+  Degradation_of_p53 is "Degradation of p53";
+  Induction_of_DNA_damage is "Induction of DNA damage";
+  Induction_of_DNA_damage_by_replication is "Induction of DNA damage by replication";
+  Synthesis_of_APC_C_Cdh1_activity_probe is "Synthesis of APC/C^Cdh1 activity probe";
+  Degradation_of_APC_C_Cdh1_activity_probe is "Degradation of APC/C^Cdh1 activity probe";
+  Repair_of_DNA_damage is "Repair of DNA damage";
+
+  // CV terms:
+  Cell isVersionOf "http://identifiers.org/go/GO:0005623"
+  Rb isVersionOf "http://identifiers.org/uniprot/Q08999"
+  pRb isVersionOf "http://identifiers.org/uniprot/Q08999"
+  pRb hasProperty "http://identifiers.org/pato/PATO:0002221"
+  E2f isVersionOf "http://identifiers.org/uniprot/Q01094"
+  E2f hasProperty "http://identifiers.org/pato/PATO:0002354"
+  RbE2f hasPart "http://identifiers.org/uniprot/Q08999"
+  RbE2f hasProperty "http://identifiers.org/go/GO:0032991"
+  RbE2f hasPart "http://identifiers.org/uniprot/Q01094"
+  RbE2f hasProperty "http://identifiers.org/pato/PATO:0002355"
+  E1 isVersionOf "http://identifiers.org/uniprot/Q9UKT4"
+  C1 isVersionOf "http://identifiers.org/go/GO:0005680"
+  C1 hasProperty "http://identifiers.org/pato/PATO:0002354"
+  pC1 isVersionOf "http://identifiers.org/go/GO:0005680"
+  pC1 hasProperty "http://identifiers.org/pato/PATO:0002220"
+  pC1 hasProperty "http://identifiers.org/pato/PATO:0002355"
+  E1C1 hasPart "http://identifiers.org/uniprot/Q9UKT4"
+  E1C1 hasProperty "http://identifiers.org/go/GO:0032991"
+  E1C1 hasPart "http://identifiers.org/go/GO:0005680"
+  E1C1 hasProperty "http://identifiers.org/pato/PATO:0002355"
+  P21 isVersionOf "http://identifiers.org/uniprot/P38936"
+  Ce hasPart "http://identifiers.org/uniprot/P24941"
+  Ce hasProperty "http://identifiers.org/go/GO:0032991"
+  Ce hasPart "http://identifiers.org/uniprot/P24864"
+  Ce hasProperty "http://identifiers.org/pato/PATO:0002354"
+  Ca hasPart "http://identifiers.org/uniprot/P24941"
+  Ca hasPart "http://identifiers.org/uniprot/P20248"
+  Ca hasProperty "http://identifiers.org/go/GO:0032991"
+  CeP21 hasPart "http://identifiers.org/uniprot/P24941"
+  CeP21 hasProperty "http://identifiers.org/pato/PATO:0002355"
+  CeP21 hasPart "http://identifiers.org/uniprot/P24864"
+  CeP21 hasProperty "http://identifiers.org/go/GO:0032991"
+  CaP21 hasPart "http://identifiers.org/uniprot/P20248"
+  CaP21 hasProperty "http://identifiers.org/pato/PATO:0002355"
+  CaP21 hasPart "http://identifiers.org/uniprot/P38936"
+  CaP21 hasProperty "http://identifiers.org/go/GO:0032991"
+  CaP21 hasPart "http://identifiers.org/uniprot/P24941"
+  aPcna isVersionOf "http://identifiers.org/uniprot/P12004"
+  aPcna hasProperty "http://identifiers.org/pato/PATO:0002354"
+  iPcna isVersionOf "http://identifiers.org/uniprot/P12004"
+  iPcna hasProperty "http://identifiers.org/pato/PATO:0002355"
+  Rc isVersionOf "http://identifiers.org/ncit/C28685"
+  pRc isVersionOf "http://identifiers.org/ncit/C28685"
+  pRc hasProperty "http://identifiers.org/pato/PATO:0002220"
+  pRc hasProperty "urn:miriam:sbo:SBO%3A0000643"
+  aRc isVersionOf "http://identifiers.org/ncit/C28685"
+  aRc hasProperty "http://identifiers.org/pato/PATO:0002354"
+  iRc isVersionOf "http://identifiers.org/ncit/C28685"
+  iRc hasProperty "http://identifiers.org/pato/PATO:0002355"
+  Dna isVersionOf "http://identifiers.org/ncit/C449"
+  P53 isVersionOf "http://identifiers.org/uniprot/P04637"
+  Dam isVersionOf "http://identifiers.org/ncit/C449"
+  Dam hasProperty "http://identifiers.org/pato/PATO:0001167"
+  tRb isVersionOf "http://identifiers.org/uniprot/Q08999"
+  tE2f isVersionOf "http://identifiers.org/uniprot/Q01094"
+  tE1 isVersionOf "http://identifiers.org/uniprot/Q9UKT4"
+  tC1 isVersionOf "http://identifiers.org/go/GO:0005680"
+  tCe hasPart "http://identifiers.org/uniprot/P24941"
+  tCe hasProperty "http://identifiers.org/go/GO:0032991"
+  tCe hasPart "http://identifiers.org/uniprot/P24864"
+  tCa hasPart "http://identifiers.org/uniprot/P20248"
+  tCa hasProperty "http://identifiers.org/go/GO:0032991"
+  tCa hasPart "http://identifiers.org/uniprot/P24941"
+  tP21 isVersionOf "http://identifiers.org/uniprot/P38936"
+  Phosphorylation_of_Rb isVersionOf "http://identifiers.org/go/GO:0006468"
+  Phosphorylation_Rb_in_Rb_E2F_complexes isVersionOf "http://identifiers.org/go/GO:0006468"
+  Dephosphorylation_of_Rb isVersionOf "urn:miriam:sbo:SBO%3A0000330"
+  Synthesis_of_E2F isVersionOf "http://identifiers.org/ncit/C61408"
+  Degradation_of_E2F isVersionOf "urn:miriam:sbo:SBO%3A0000179"
+  Degradation_of_E2F_in_Rb_E2F_complexes isVersionOf "urn:miriam:sbo:SBO%3A0000179"
+  Association_dissociation_of_Rb_and_E2F isVersionOf "urn:miriam:sbo:SBO%3A0000180"
+  Association_dissociation_of_Rb_and_E2F isVersionOf "urn:miriam:sbo:SBO%3A0000526"
+  Synthesis_of_p21 isVersionOf "http://identifiers.org/ncit/C61408"
+  Synthesis_of_CycE isVersionOf "http://identifiers.org/ncit/C61408"
+  Synthesis_of_CycA isVersionOf "http://identifiers.org/ncit/C61408"
+  Association_dissociation_of_CycE_Cdk2_and_p21 isVersionOf "urn:miriam:sbo:SBO%3A0000526"
+  Association_dissociation_of_CycE_Cdk2_and_p21 isVersionOf "urn:miriam:sbo:SBO%3A0000180"
+  Association_dissociation_of_CycA_Cdk2_and_p21 isVersionOf "urn:miriam:sbo:SBO%3A0000526"
+  Association_dissociation_of_CycA_Cdk2_and_p21 isVersionOf "urn:miriam:sbo:SBO%3A0000180"
+  Degradation_of_p21_in_CycE_Cdk2_p21_complexes isVersionOf "urn:miriam:sbo:SBO%3A0000179"
+  Degradation_of_p21_in_CycA_Cdk2_p21_complexes isVersionOf "urn:miriam:sbo:SBO%3A0000179"
+  Degradation_of_CycE_in_CycE_Cdk2_complexes isVersionOf "urn:miriam:sbo:SBO%3A0000179"
+  Degradation_of_CycE_in_CycE_Cdk2_p21_complexes isVersionOf "urn:miriam:sbo:SBO%3A0000179"
+  Degradation_of_CycA_in_CycA_Cdk2_complexes isVersionOf "urn:miriam:sbo:SBO%3A0000179"
+  Degradation_of_CycA_in_CycA_Cdk2_p21_complexes isVersionOf "urn:miriam:sbo:SBO%3A0000179"
+  Degradation_of_free_p21 isVersionOf "urn:miriam:sbo:SBO%3A0000179"
+  Synthesis_of_Emi1 isVersionOf "http://identifiers.org/ncit/C61408"
+  Degradation_of_Emi1 isVersionOf "urn:miriam:sbo:SBO%3A0000179"
+  Association_dissociation_of_Emi1_APC_C_Cdh1_complexes isVersionOf "urn:miriam:sbo:SBO%3A0000180"
+  Association_dissociation_of_Emi1_APC_C_Cdh1_complexes isVersionOf "urn:miriam:sbo:SBO%3A0000526"
+  Degradation_of_Emi1_in_Emi1_APC_C_Cdh1_complexes isVersionOf "urn:miriam:sbo:SBO%3A0000179"
+  Phosphorylation_of_free_APC_C_Cdh1 isVersionOf "http://identifiers.org/go/GO:0006468"
+  Phosphorylation_of_APC_C_Cdh1_in_Emi1_APC_C_Cdh1_complexes isVersionOf "http://identifiers.org/go/GO:0006468"
+  Dephosphorylation_of_APC_C_Cdh1 isVersionOf "urn:miriam:sbo:SBO%3A0000330"
+  Nuclear_import_of_active_PCNA isVersionOf "http://identifiers.org/go/GO:0051170"
+  Nuclear_export_of_active_PCNA isVersionOf "http://identifiers.org/go/GO:0051168"
+  Nuclear_export_of_inactive_PCNA isVersionOf "http://identifiers.org/go/GO:0051168"
+  Association_dissociation_of_PCNA_and_p21 isVersionOf "urn:miriam:sbo:SBO%3A0000526"
+  Association_dissociation_of_PCNA_and_p21 isVersionOf "urn:miriam:sbo:SBO%3A0000180"
+  Degradation_of_p21_in_PCNA_p21_complexes isVersionOf "urn:miriam:sbo:SBO%3A0000179"
+  Association_dissociation_of_active_PCNA_and_replication_complexes isVersionOf "urn:miriam:sbo:SBO%3A0000526"
+  Association_dissociation_of_active_PCNA_and_replication_complexes isVersionOf "urn:miriam:sbo:SBO%3A0000180"
+  Association_dissociation_of_inactive_PCNA_and_replication_complexes isVersionOf "urn:miriam:sbo:SBO%3A0000526"
+  Association_dissociation_of_inactive_PCNA_and_replication_complexes isVersionOf "urn:miriam:sbo:SBO%3A0000180"
+  Phosphorylation_priming_of_replication_complexes isVersionOf "http://identifiers.org/go/GO:0006468"
+  Dephosphorylation_of_replication_complexes isVersionOf "urn:miriam:sbo:SBO%3A0000330"
+  Association_dissociation_of_p21_and_replication_complexes isVersionOf "urn:miriam:sbo:SBO%3A0000180"
+  Association_dissociation_of_p21_and_replication_complexes isVersionOf "urn:miriam:sbo:SBO%3A0000526"
+  Degradation_of_p21_in_inactive_replication_complexes isVersionOf "urn:miriam:sbo:SBO%3A0000179"
+  Dissassembly_of_RC isVersionOf "urn:miriam:sbo:SBO%3A0000179"
+  Dissassembly_of_pRC isVersionOf "urn:miriam:sbo:SBO%3A0000179"
+  Dissassembly_of_aRC isVersionOf "http://identifiers.org/ncit/C52475"
+  Dissassembly_of_iRC isVersionOf "http://identifiers.org/ncit/C52475"
+  Synthesis_of_DNA isVersionOf "http://identifiers.org/ncit/C61408"
+  Synthesis_of_p53 isVersionOf "http://identifiers.org/ncit/C61408"
+  Degradation_of_p53 isVersionOf "urn:miriam:sbo:SBO%3A0000179"
+  Induction_of_DNA_damage isVersionOf "http://identifiers.org/ncit/C16507"
+  Induction_of_DNA_damage_by_replication isVersionOf "http://identifiers.org/ncit/C16507"
+  Synthesis_of_APC_C_Cdh1_activity_probe isVersionOf "http://identifiers.org/ncit/C61408"
+  Degradation_of_APC_C_Cdh1_activity_probe isVersionOf "urn:miriam:sbo:SBO%3A0000179"
+  Repair_of_DNA_damage isVersionOf "http://identifiers.org/go/GO:0006281"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1703030000"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000700"
+  model publication "http://identifiers.org/pubmed/29463760"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1703030000"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000700"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000046"
+  model hasPart "http://identifiers.org/go/GO:0051726"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model hasPart "http://identifiers.org/go/GO:0042769"
+  model created "2017-03-01T11:13:07Z"
+  model modified "2018-05-17T16:39:54Z"
+  model creator1.givenName "Frank Stefan"
+  model creator1.familyName "Heldt"
+  model creator1.organization "University of Oxford"
+  model creator1.email "stefan.heldt@bioch.ox.ac.uk"
+  model creator2.givenName "Matthieu"
+  model creator2.familyName "MAIRE"
+  model creator2.organization "EMBL-EBI"
+  model creator2.email "matt.maire@free.fr"
+
+  // Notes:
+  model notes ```
+Heldt2018 - Proliferation-quiescence decisionin response to DNA damage 
+
+
+This model is described in the article:
+
+
+[A comprehensive model for the proliferation-quiescence decision in response to endogenous DNA damage in human cells.](http://identifiers.org/pubmed/29463760 "Access to this publication") 
+
+
+Heldt FS, Barr AR, Cooper S, Bakal C, Novák B. 
+
+Proc. Natl. Acad. Sci. U.S.A. 2018 Feb; : 
+Abstract:
+
+
+Human cells that suffer mild DNA damage can enter a reversible state of growth
+arrest known as quiescence. This decision to temporarily exit the cell cycle is
+essential to prevent the propagation of mutations, and most cancer cells harbor
+defects in the underlying control system. Here we present a mechanistic mathematical
+model to study the proliferation-quiescence decision in nontransformed human 
+cells. We show that two bistable switches, the restriction point (RP) and the
+G1/S transition, mediate this decision by integrating DNA damage and mitogen signals.
+In particular, our data suggest that the cyclin-dependent kinase inhibitor p21
+(Cip1/Waf1), which is expressed in response to DNA damage, promotes quiescence
+by blocking positive feedback loops that facilitate G1 progression downstream
+of serum stimulation. Intriguingly, cells exploit bistability in the RP to convert
+graded p21 and mitogen signals into an all-or-nothing cell-cycle response.
+The same mechanism creates a window of opportunity where G1 cells that have passed
+the RP can revert to quiescence if exposed to DNA damage. We present experimental
+evidence that cells gradually lose this ability to revert to quiescence as
+they progress through G1 and that the onset of rapid p21 degradation at the G1/S
+transition prevents this response altogether, insulating S phase from mild, endogenous
+DNA damage. Thus, two bistable switches conspire in the early cell cycle to
+provide both sensitivity and robustness to external stimuli.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [MODEL1703030000](http://identifiers.org/biomodels.db/MODEL1703030000).
+
+To cite BioModels Database, please use: [Chelliah V et al. BioModels: ten-year anniversary. Nucl. Acids Res. 2015, 43(Database issue):D542-8](http://identifiers.org/pubmed/25414348).
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+  Rb notes "(AU) hypo-phosphorylated Rb"
+  pRb notes "(AU) hyper-phosphorylated Rb"
+  E2f notes "(AU) free, active E2F"
+  RbE2f notes "(AU) Rb:E2F complexes (inactive)"
+  E1 notes "(AU) free Emi1"
+  C1 notes "(AU) free, active APC/C^Cdh1"
+  pC1 notes "(AU) phosphorylated APC/C^Cdh1 (inactive)"
+  E1C1 notes "(AU) Emi1:APC/C^Cdh1 complexes (inactive) ; Emi1 is an APC_C_Cdh1 inhibitator"
+  P21 notes "(AU) free p21"
+  Ce notes "(AU) free, active CycE:Cdk2"
+  Ca notes "(AU) free, active CycA:Cdk2"
+  CeP21 notes "(AU) CycE:Cdk2:p21 complexes (inactive)"
+  CaP21 notes "(AU) CycA:Cdk2:p21 complexes (inactive)"
+  aPcna notes "(AU) active, nuclear PCNA"
+  iPcna notes "(AU) inactive, nuclear PCNA"
+  Rc notes "(AU) pre-replication complexes"
+  pRc notes "(AU) primed replication complexes"
+  aRc notes "(AU) active replication complexes"
+  iRc notes "(AU) inactive replication complexes"
+  Dna notes "(AU) DNA"
+  P53 notes "(AU) p53 transcription factor"
+  Dam notes "(AU) DNA damage"
+  Pr notes "(AU) APC/C^Cdh1 activity probe"
+  tRb notes "(AU) total Rb protein"
+  tE2f notes "(AU) total E2F protein"
+  tE1 notes "(AU) total Emi1 protein"
+  tC1 notes ```
+(AU) total APC/C^Cdh1 protein ; APC/C^Cdh1 protein ubiquitin E3 ligase that is 
+active
+```
+  tCe notes "(AU) total CycE:Cdk2"
+  tCa notes "(AU) total CycA:Cdk2"
+  tP21 notes "(AU) total p21 protein"
+  Cd notes "(AU) relative CycD:Cdk4/6 level"
+  Skp2 notes "(-) relative SCF^Skp2 level"
+  Cdt2 notes "(-) relative CRL4^Cdt2 level"
+  kSyE2f notes "(AU/min) constitutive E2F synthesis"
+  kSyE2fE2f notes "(AU/min) E2F-dependent E2F synthesis"
+  jSyE2f notes "(AU) Michealis-Menten constant for E2F synthesis"
+  kAsRbE2f notes "(1/(AU\*min)) association of Rb and E2F"
+  kDsRbE2f notes "(1/min) dissociation of Rb:E2F complexes"
+  kDeE2f notes "(1/min) constiutive E2F degradation"
+  kPhRbCd notes "(1/(AU\*min)) CycD:CDK4/6-mediated Rb phosphorylation"
+  kPhRbCe notes "(1/(AU\*min)) CycE:CDK2-mediated Rb phosphorylation"
+  kPhRbCa notes "(1/(AU\*min)) CycA:Cdk2-mediated Rb phosphorylation"
+  kDpRb notes "(1/min) dephosphorylation of Rb"
+  kSyE1 notes "(1/min) constitutive Emi1 synthesis"
+  kDeE1C1 notes "(1/min) Cdh1-mediated Emi1 degradation"
+  kDeE1 notes "(1/min) constitutive Emi1 degradation"
+  kPhC1 notes "(1/min) constitutive Cdh1 phosphorylation"
+  kPhC1Ce notes "(1/(AU\*min)) CycE-mediated Cdh1 phosphorylation"
+  kPhC1Ca notes "(1/(AU\*min)) CycA-mediated Cdh1 phosphorylation"
+  kDpC1 notes "(1/min) Cdh1 dephosphorylation"
+  kAsE1C1 notes "(1/(AU\*min)) association of Emi1 and Cdh1"
+  kDsE1C1 notes "(1/min) dissociation of Emi1:Cdh1 complexes"
+  kSyP21 notes "(AU/min) constitutive p21 synthesis"
+  kSyP21P53 notes "(1/min) p53-dependent synthesis of p21"
+  kDeP21 notes "(1/min) constitutive p21 degradation"
+  kDeP21Cy notes "(1/(AU\*min)) cyclin:CDK2-mediated p21 degradation (Skp2-dependent)"
+  kDeP21aRc notes "(1/(AU\*min)) aRC-mediated p21 degradation (Cdt2-dependent)"
+  kSyCe notes "(1/min) constitutive CycE synthesis"
+  kSyCa notes "(1/min) constitutive CycA synthesis"
+  kAsCyP21 notes "(1/(AU\*min)) association of cyclin:CDK2 and p21"
+  kDsCyP21 notes "(1/min) dissociation of cyclin:CDK2:p21 complexes"
+  kDeCe notes "(1/min) constitutive CycE degradation"
+  kDeCa notes "(1/min) constitutive CycA degradation"
+  kDeCeCa notes "(1/(AU\*min)) CycA:CDK2-mediated CycE degradation (Skp2-dependent)"
+  kDeCaC1 notes "(1/(AU\*min)) Cdh1-mediated CycA degradation"
+  kImPc notes "(AU/min) PCNA import into the nucleus"
+  kExPc notes "(1/min) PCNA export from the nucleus"
+  kPhRc notes "(1/min) cyclin:CDK2-mediated phosphorylation/priming of RCs"
+  kDpRc notes "(1/min) dephosphorylation of pRCs"
+  jCy notes "(AU) CDK2 threshold for the phosphorylation/priming of RCs"
+  n notes "(-) hill coefficient for the phosphorylation/priming of RCs"
+  kAsRcPc notes "(1/(AU\*min)) association of phosphorylated/primed RCs and PCNA"
+  kDsRcPc notes "(1/min) dissociation of pRC:PCNA complexes"
+  kAsPcP21 notes "(1/(AU\*min)) association of PCNA and p21"
+  kDsPcP21 notes "(1/min) dissociation of PCNA:p21 complexes"
+  kSyDna notes "(1/min) DNA synthesis by aRCs"
+  kSyP53 notes "(AU/min) constitutive p53 synthesis"
+  kDeP53 notes "(AU/min) DNA damage-dependent degradation of p53"
+  jP53 notes "(AU) inhibition constant of p53 degradation by DNA damage"
+  kGeDam notes "(AU/min) replication-independent DNA damage"
+  kGeDamArc notes "(1/min) replication-dependent DNA damage"
+  kReDam notes "(1/min) p53-independent DNA damage repair"
+  kReDamP53 notes "(1/min) p53-dependent DNA damage repair"
+  jDam notes "(AU) DNA damage threshold for repair"
+  kSyPr notes "(AU/min) constitutive synthesis of Cdh1-activity probe"
+  kDePr notes "(1/min) constitutive degradation of Cdh1-activity probe"
+end
+
+Heldt2018___Proliferation_quiescence_decision_pormoted_by_p21_in_response_to_DNA_damage is "Heldt2018 - Proliferation-quiescence decision in response to DNA damage"

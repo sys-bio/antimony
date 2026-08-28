@@ -1,5 +1,6 @@
 #include "TabManager.h"
 #include "Translator.h"
+#include "QTAntimony.h"
 #include "CellMLTab.h"
 #include "ChangeableTextBox.h"
 #include "CopyMessageBox.h"
@@ -276,6 +277,11 @@ void TabManager::Translate(int tab)
     ChangeableTextBox* oldtab = textbox(tab);
     if (oldtab == NULL) return;
     setUpdatesEnabled(false);
+    // Clear whatever the previous translate left loaded.
+    clearPreviousLoads();
+#ifndef WIN32
+    freeAll();
+#endif
     QString tabtext = oldtab->toPlainText();
     if (!tabtext.isEmpty()) {
       oldtab->SetOriginal();
@@ -289,10 +295,6 @@ void TabManager::Translate(int tab)
     else {
         TranslateSBML(tab, tabtext);
     }
-    clearPreviousLoads();
-#ifndef WIN32
-    freeAll();
-#endif
     setUpdatesEnabled(true);
 }
 
@@ -396,10 +398,7 @@ void TabManager::TranslateAntimony(QString& text)
 			setTabText(tabnum, tab_s->GetTabName());
 		}
 	}
-    clearPreviousLoads();
-#ifndef WIN32
-    freeAll();
-#endif
+    // Deliberately not clearing the registry here.
 }
 
 void TabManager::TranslateSBML(int tab, const QString& text)
@@ -455,10 +454,6 @@ void TabManager::TranslateSBML(int tab, const QString& text)
       cellmltab->SetTranslatedText(QString(cellmltext));
       cellmltab->SetTranslated();
     }
-#endif
-    clearPreviousLoads();
-#ifndef WIN32
-    freeAll();
 #endif
 }
 
@@ -517,10 +512,6 @@ void TabManager::TranslateCellML(QString& text)
             tabnum++;
         }
     }
-    clearPreviousLoads();
-#ifndef WIN32
-    freeAll();
-#endif
 }
 
 void TabManager::SetAllSBMLLevelsAndVersions()
@@ -577,6 +568,14 @@ void TabManager::SetAllSBMLLevelsAndVersions()
   }
 }
 
+void TabManager::SetFlattenSilently(bool flatten)
+{
+  m_flatten = flatten;
+  if (m_actionFlatten) {
+    m_actionFlatten->setChecked(flatten);
+  }
+}
+
 void TabManager::SetFlatten(bool flatten)
 {
   AntimonyTab* anttab = static_cast<AntimonyTab*>(textbox(m_anttab));
@@ -584,31 +583,29 @@ void TabManager::SetFlatten(bool flatten)
   if (m_flatten==flatten) return; //Don't try to switch anything.
   m_flatten = flatten;
   //change the flattening state
+  // The model is already loaded in the registry (tabs are kept synchronized
+  // on every switch/translate), so getting the other flatten representation
+  // doesn't need a reload at all.
   for (int tnum=m_sbmltab; tnum<count(); tnum++) {
     SBMLTab* sbmltab = static_cast<SBMLTab*>(textbox(tnum));
+    QString modelname = sbmltab->GetModelName();
     QString SBML;
     if (flatten) {
-      int ret = loadSBMLStringWithLocation(sbmltab->toPlainText().toLatin1(), sbmltab->GetFilename().toLatin1());
-      if (ret==-1) {
-        //Error in the SBML itself.
-        char* error = getLastError();
-        emit FailedSBMLTranslation();
-        textbox(0)->DisplayError(error);
-        continue;
-      }
-      SBML = getSBMLString(NULL);
+      SBML = QString(getSBMLString(modelname.toLatin1()));
     }
     else {
-      QString modelname = sbmltab->GetModelName();
-      loadAntimonyString(anttab->toPlainText().toLatin1());
-      SBML = getCompSBMLString(modelname.toLatin1());
+      SBML = QString(getCompSBMLString(modelname.toLatin1()));
       if (sbmltab->GetLevelAndVersionCode() < 6) {
         sbmltab->StoreLevelAndVersion(3, 2);
       }
     }
     sbmltab->SetTranslatedText(SBML);
   }
-  clearPreviousLoads();
+  // The SBML tabs above are now freshly "Translated" (regenerated views),
+  // but nothing is literally the original.  Set the Antimony tab to be
+  // the official 'original' tab, as it's the closest to 'the model's internal
+  // state'.
+  anttab->SetOriginal();
 }
 
 void TabManager::SetDimensionless(bool isDimensionless)
@@ -725,6 +722,7 @@ bool TabManager::CanIClose()
     }
     if (someunsaved) {
         QMessageBox msgBox2;
+        QTAntimony::ApplyWindowIcon(&msgBox2);
         msgBox2.setStyleSheet("QMessageBox { messagebox-text-interaction-flags: 1 }");
         msgBox2.setText("Some tabs are still unsaved.");
         msgBox2.setInformativeText("Close window anyway?");

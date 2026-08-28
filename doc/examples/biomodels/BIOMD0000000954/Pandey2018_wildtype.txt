@@ -1,0 +1,353 @@
+// Created by libAntimony v3.2.0
+model *Pandey2018_reversible_transition_between_quiescence_and_proliferation()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species Myc in compartment_, CycDT in compartment_, CycET in compartment_;
+  species CycAT in compartment_, E2FT in compartment_, Comp1 in compartment_;
+  species Comp2 in compartment_, Rbp in compartment_, CkiT in compartment_;
+  species CycECki in compartment_, CycDCki in compartment_, CycACki in compartment_;
+  species Cdh1dp in compartment_, Emi1T in compartment_, EmiC in compartment_;
+  species Cdh1 in compartment_, UbI in compartment_, $E2F in compartment_;
+  species $Rb in compartment_, Rbpp in compartment_, $CycE in compartment_;
+  species $CycD in compartment_, $CycA in compartment_, $Cdh1p in compartment_;
+  species $Cdh1T in compartment_;
+
+  // Assignment Rules:
+  E2F := E2FT - Comp1 - Comp2;
+  Rb := RbT - Rbp - Rbpp - Comp1 - Comp2;
+  CycE := CycET - CycECki;
+  CycD := CycDT - CycDCki;
+  CycA := CycAT - CycACki;
+  Cdh1p := Cdh1T - Cdh1 - EmiC;
+
+  // Reactions:
+  reaction_for_Myc_production:  => Myc; compartment_*(Ksm*S);
+  reaction_for_Myc_decay: Myc => ; compartment_*(Kdm*Myc);
+  reaction_for_CycDT_production:  => CycDT; compartment_*(Kscycdm*Myc + Kscycds*S);
+  reaction_CycDT_decay: CycDT => ; compartment_*(Kdcycd*CycDT);
+  reaction_for_CycET_production:  => CycET; compartment_*(Kscyceb + Kscycem*Myc + Kscyce*(E2F/(Khcyce + E2F)));
+  reaction_CycET_decay: CycET => ; compartment_*((Kdcyce + Kdcycea*CycA)*CycET);
+  reaction_for_CycAT_production:  => CycAT; compartment_*(Kscyca*(E2F/(Khcyca + E2F)));
+  reaction_CycAT_decay: CycAT => ; compartment_*((Kdcyca + Kdcycac*Cdh1)*CycAT);
+  reaction_for_E2FT_production:  => E2FT; compartment_*(Kse2fb + Kse2fm*Myc + Kse2f*(E2F/(Khe2f + E2F)));
+  reaction_E2FT_decay: E2FT => ; compartment_*((Kde2f + Kde2fa*CycA)*E2FT);
+  reaction_Comp1_production:  => Comp1; compartment_*(Kase2f*E2F*Rb + Kdprbp*(Comp2/(JdpRb + Comp2)));
+  reaction_Comp1_decay: Comp1 => ; compartment_*(Kdise2f*Comp1 + Kprb*CycD*(Comp1/(JpRb + Comp1)) + Kppeb*(CycE + CycA)*(Comp1/(JppRb + Comp1)) + (Kde2f + Kde2fa*CycA)*Comp1);
+  reaction_for_Comp2_production:  => Comp2; compartment_*(Kase2f*E2F*Rbp + Kprb*CycD*(Comp1/(JpRb + Comp1)));
+  reaction_Comp2_decay: Comp2 => ; compartment_*(Kdise2f*Comp2 + Kdprbp*(Comp2/(JdpRb + Comp2)) + Kprbp*(CycE + CycA)*(Comp2/(JpRbp + Comp2)) + (Kde2f + Kde2fa*CycA)*Comp2);
+  reactionfor_Rbp_production:  => Rbp; compartment_*(Kprb*CycD*(Rb/(JpRb + Rb)) + Kdise2f*Comp2 + (Kde2f + Kde2fa*CycA)*Comp2);
+  reaction_for_Rbp_decay: Rbp => ; compartment_*(Kase2f*E2F*Rbp + Kdprbp*(Rbp/(JpRb + Rbp)) + Kprbp*(CycE + CycA)*(Rbp/(JpRbp + Rbp)));
+  reaction_for_CkiT_production:  => CkiT; compartment_*Kscki;
+  reaction_for_CkiT_decay: CkiT => ; compartment_*((Kdcki + Kdckic*(CycE + CycA)*UbI)*CkiT);
+  reaction_for_CycECki_production:  => CycECki; compartment_*(Kascki*CycE*(CkiT - CycECki - CycDCki - CycACki));
+  reaction_for_CycECki_decay: CycECki => ; compartment_*((Kdiscki + Kdcyce + Kdcycea*CycA + Kdcki + Kdckic*(CycE + CycA)*UbI)*CycECki);
+  reaction_for_CycDCki_production:  => CycDCki; compartment_*(Kascki*CycD*(CkiT - CycECki - CycDCki - CycACki));
+  reaction_for_CycDCki_decay: CycDCki => ; compartment_*((Kdiscki + Kdcycd + Kdcki + Kdckic*(CycE + CycA)*UbI)*CycDCki);
+  reaction_for_CycACki_production:  => CycACki; compartment_*(Kascki*CycA*(CkiT - CycECki - CycDCki - CycACki));
+  reaction_for_CycACki_decay: CycACki => ; compartment_*((Kdiscki + Kdcyca + Kdcycac*Cdh1 + Kdcki + Kdckic*(CycE + CycA)*UbI)*CycACki);
+  reaction_for_Cdh1dp_production:  => Cdh1dp; compartment_*(Kacdh1*((Cdh1T - Cdh1dp)/(JdpCdh1 + (Cdh1T - Cdh1dp))));
+  reaction_for_Cdh1dp_decay: Cdh1dp => ; compartment_*((Kicdh1e*CycE + Kicdh1a*CycA)*(Cdh1dp/(JpCdh1 + Cdh1dp)));
+  reaction_for_Emi1T_production:  => Emi1T; compartment_*(Ksemi1*(E2F/(Khemi1 + E2F)));
+  reaction_for_Emi1T_decay: Emi1T => ; compartment_*((Kdemi1 + Kdemi1c*Cdh1)*Emi1T);
+  reaction_for_EmiC_production:  => EmiC; compartment_*(Kascdh1*(Cdh1T - EmiC)*(Emi1T - EmiC));
+  reaction_for_EmiC_decay: EmiC => ; compartment_*((Kdiscdh1 + Kdemi1 + Kdemi1c*Cdh1)*EmiC);
+  reaction_for_Cdh1_production:  => Cdh1; compartment_*(Kacdh1*((Cdh1T - EmiC - Cdh1)/(JdpCdh1 + (Cdh1T - Cdh1dp))) + (Kdiscdh1 + Kdemi1 + Kdemi1c*Cdh1)*(Cdh1dp - Cdh1));
+  reaction_for_Cdh1_decay: Cdh1 => ; compartment_*((Kicdh1e*CycE + Kicdh1a*CycA)*(Cdh1/(JpCdh1 + Cdh1dp)) + Kascdh1*Cdh1*(Emi1T - EmiC));
+  reaction_for_UbI_production:  => UbI; compartment_*Ksub1;
+  reaction_for_UbI_decay: UbI => ; compartment_*((Kdub1 + Kdub1c*Cdh1)*UbI);
+  reaction_for_Rbpp_production:  => Rbpp; compartment_*(Kprbp*(CycE + CycA)*(Rbp/(JpRbp + Rbp)) + Kprbp*(CycE + CycA)*(Comp2/(JpRbp + Comp2)) + Kppeb*(CycE + CycA)*(Rb/(JppRb + Rb)) + Kppeb*(CycE + CycA)*(Comp1/(JppRb + Comp1)));
+  reaction_for_Rbpp_decay: Rbpp => ; compartment_*(Kdprbpp*(Rbpp/(JdpRb + Rbpp)));
+
+  // Species initializations:
+  Myc = 0;
+  Myc has substance_per_volume;
+  CycDT = 0;
+  CycDT has substance_per_volume;
+  CycET = 0.119;
+  CycET has substance_per_volume;
+  CycAT = 0;
+  CycAT has substance_per_volume;
+  E2FT = 0.106;
+  E2FT has substance_per_volume;
+  Comp1 = 0.105;
+  Comp1 has substance_per_volume;
+  Comp2 = 0;
+  Comp2 has substance_per_volume;
+  Rbp = 0;
+  Rbp has substance_per_volume;
+  CkiT = 0.2;
+  CkiT has substance_per_volume;
+  CycECki = 0.115;
+  CycECki has substance_per_volume;
+  CycDCki = 0;
+  CycDCki has substance_per_volume;
+  CycACki = 0;
+  CycACki has substance_per_volume;
+  Cdh1dp = 1;
+  Cdh1dp has substance_per_volume;
+  Emi1T = 0.002;
+  Emi1T has substance_per_volume;
+  EmiC = 0.002;
+  EmiC has substance_per_volume;
+  Cdh1 = 0.998;
+  Cdh1 has substance_per_volume;
+  UbI = 0.02;
+  UbI has substance_per_volume;
+  E2F has substance_per_volume;
+  Rb has substance_per_volume;
+  Rbpp = 0.001;
+  Rbpp has substance_per_volume;
+  CycE has substance_per_volume;
+  CycD has substance_per_volume;
+  CycA has substance_per_volume;
+  Cdh1p has substance_per_volume;
+  Cdh1T = 1;
+  Cdh1T has substance_per_volume;
+
+  // Compartment initializations:
+  compartment_ = 1;
+  compartment_ has volume;
+
+  // Variable initializations:
+  RbT = 1;
+  S = 1;
+  Ksm = 0.1;
+  Kdm = 0.1;
+  Kscycdm = 0.004;
+  Kscycds = 0.004;
+  Kdcycd = 0.008;
+  Kscyceb = 0.0001;
+  Kscycem = 0;
+  Kscyce = 0.004;
+  Kdcyce = 0.001;
+  Kdcycea = 0.01;
+  Khcyce = 0.25;
+  Kscyca = 0.008;
+  Kdcyca = 0.004;
+  Kdcycac = 0.5;
+  Khcyca = 0.1;
+  Kse2fm = 0;
+  Kse2f = 0.004;
+  Kde2f = 0.003;
+  Kde2fa = 0.01;
+  Khe2f = 0.25;
+  Kase2f = 100;
+  Kdise2f = 1;
+  Kprb = 5;
+  Kdprbp = 1;
+  Kppeb = 0.5;
+  Kdprbpp = 0.1;
+  Kprbp = 2;
+  JpRb = 0.01;
+  JpRbp = 0.05;
+  JdpRb = 0.05;
+  JppRb = 0.5;
+  Kscki = 0.04;
+  Kdcki = 0.2;
+  Kascki = 100;
+  Kdiscki = 0.1;
+  Ksub1 = 0.004;
+  Kdub1 = 0.002;
+  Kdub1c = 0.2;
+  Ksemi1 = 0.45;
+  Kdemi1 = 0.2;
+  Kdemi1c = 2;
+  Khemi1 = 0.1;
+  Kascdh1 = 100;
+  Kdiscdh1 = 0.1;
+  Kacdh1 = 0.1;
+  Kicdh1e = 0.14;
+  Kicdh1a = 0.2;
+  JdpCdh1 = 0.02;
+  JpCdh1 = 0.25;
+  Kse2fb = 0.0003;
+  Kdckic = 1;
+
+  // Other declarations:
+  const compartment_, RbT, S, Ksm, Kdm, Kscycdm, Kscycds, Kdcycd, Kscyceb;
+  const Kscycem, Kscyce, Kdcyce, Kdcycea, Khcyce, Kscyca, Kdcyca, Kdcycac;
+  const Khcyca, Kse2fm, Kse2f, Kde2f, Kde2fa, Khe2f, Kase2f, Kdise2f, Kprb;
+  const Kdprbp, Kppeb, Kdprbpp, Kprbp, JpRb, JpRbp, JdpRb, JppRb, Kscki, Kdcki;
+  const Kascki, Kdiscki, Ksub1, Kdub1, Kdub1c, Ksemi1, Kdemi1, Kdemi1c, Khemi1;
+  const Kascdh1, Kdiscdh1, Kacdh1, Kicdh1e, Kicdh1a, JdpCdh1, JpCdh1, Kse2fb;
+  const Kdckic;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = second;
+  unit substance = 1e-3 mole;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "compartment";
+  reaction_for_Myc_production is "reaction for Myc production";
+  reaction_for_Myc_decay is "reaction for Myc decay";
+  reaction_for_CycDT_production is "reaction for CycDT production";
+  reaction_CycDT_decay is "reaction CycDT decay";
+  reaction_for_CycET_production is "reaction for CycET production";
+  reaction_CycET_decay is "reaction CycET decay";
+  reaction_for_CycAT_production is "reaction for CycAT production";
+  reaction_CycAT_decay is "reaction CycAT decay";
+  reaction_for_E2FT_production is "reaction for E2FT production";
+  reaction_E2FT_decay is "reaction E2FT decay";
+  reaction_Comp1_production is "reaction Comp1 production";
+  reaction_Comp1_decay is "reaction Comp1 decay";
+  reaction_for_Comp2_production is "reaction for Comp2 production";
+  reaction_Comp2_decay is "reaction Comp2 decay";
+  reactionfor_Rbp_production is "reactionfor Rbp production";
+  reaction_for_Rbp_decay is "reaction for Rbp decay";
+  reaction_for_CkiT_production is "reaction for CkiT production";
+  reaction_for_CkiT_decay is "reaction for CkiT decay";
+  reaction_for_CycECki_production is "reaction for CycECki production";
+  reaction_for_CycECki_decay is "reaction for CycECki decay";
+  reaction_for_CycDCki_production is "reaction for CycDCki production";
+  reaction_for_CycDCki_decay is "reaction for CycDCki decay";
+  reaction_for_CycACki_production is "reaction for CycACki production";
+  reaction_for_CycACki_decay is "reaction for CycACki decay";
+  reaction_for_Cdh1dp_production is "reaction for Cdh1dp production";
+  reaction_for_Cdh1dp_decay is "reaction for Cdh1dp decay";
+  reaction_for_Emi1T_production is "reaction for Emi1T production";
+  reaction_for_Emi1T_decay is "reaction for Emi1T decay";
+  reaction_for_EmiC_production is "reaction for EmiC production";
+  reaction_for_EmiC_decay is "reaction for EmiC decay";
+  reaction_for_Cdh1_production is "reaction for Cdh1 production";
+  reaction_for_Cdh1_decay is "reaction for Cdh1 decay";
+  reaction_for_UbI_production is "reaction for UbI production";
+  reaction_for_UbI_decay is "reaction for UbI decay";
+  reaction_for_Rbpp_production is "reaction for Rbpp production";
+  reaction_for_Rbpp_decay is "reaction for Rbpp decay";
+
+  // CV terms:
+  Myc hasProperty "http://identifiers.org/uniprot/P01106"
+  CycDT hasProperty "http://identifiers.org/uniprot/P24385"
+  CycDT hasProperty "http://identifiers.org/ncit/C25304"
+  CycET hasProperty "http://identifiers.org/ncit/C25304"
+  CycET hasProperty "http://identifiers.org/uniprot/P24864"
+  CycAT hasProperty "http://identifiers.org/ncit/C25304"
+  CycAT hasProperty "http://identifiers.org/uniprot/P20248"
+  E2FT hasProperty "http://identifiers.org/ncit/C25304"
+  E2FT hasProperty "http://identifiers.org/pr/PR:000050007"
+  Comp1 hasProperty "http://identifiers.org/go/GO:0035189"
+  Comp2 hasProperty "http://identifiers.org/pato/PATO:0002220"
+  Comp2 hasProperty "http://identifiers.org/go/GO:0035189"
+  Rbp hasProperty "http://identifiers.org/ncit/C44044"
+  Rbp hasProperty "http://identifiers.org/uniprot/P06400"
+  Rbp hasProperty "http://identifiers.org/pato/PATO:0002262"
+  CkiT hasProperty "http://identifiers.org/ncit/C2185"
+  CkiT hasProperty "http://identifiers.org/ncit/C25304"
+  CycECki hasProperty "http://identifiers.org/ncit/C2185"
+  CycECki hasProperty "http://identifiers.org/uniprot/P24864"
+  CycDCki hasProperty "http://identifiers.org/uniprot/P24385"
+  CycDCki hasProperty "http://identifiers.org/ncit/C2185"
+  CycACki hasProperty "http://identifiers.org/ncit/C2185"
+  CycACki hasProperty "http://identifiers.org/uniprot/P20248"
+  Cdh1dp hasProperty "http://identifiers.org/ncit/C25304"
+  Cdh1dp hasProperty "http://identifiers.org/pato/PATO:0002263"
+  Cdh1dp hasProperty "http://identifiers.org/uniprot/Q9UM11"
+  Emi1T hasProperty "http://identifiers.org/ncit/C25304"
+  Emi1T hasProperty "http://identifiers.org/uniprot/Q9UKT4"
+  EmiC hasProperty "http://identifiers.org/ncit/C47881"
+  EmiC hasProperty "http://identifiers.org/uniprot/Q9UKT4"
+  EmiC hasProperty "http://identifiers.org/uniprot/Q9UM11"
+  EmiC hasProperty "http://identifiers.org/pato/PATO:0002220"
+  EmiC hasProperty "http://identifiers.org/pato/PATO:0002263"
+  Cdh1 hasProperty "http://identifiers.org/omit/0006811"
+  Cdh1 hasProperty "http://identifiers.org/uniprot/Q9UM11"
+  Cdh1 hasProperty "http://identifiers.org/pato/PATO:0002263"
+  UbI hasProperty "http://identifiers.org/ncit/C16796"
+  UbI hasProperty "http://identifiers.org/ncit/C17227"
+  E2F hasProperty "http://identifiers.org/pr/PR:000050007"
+  Rb hasProperty "http://identifiers.org/uniprot/P06400"
+  Rbpp hasProperty "http://identifiers.org/ncit/C17648"
+  Rbpp hasProperty "http://identifiers.org/pato/PATO:0002262"
+  Rbpp hasProperty "http://identifiers.org/uniprot/P06400"
+  CycE hasProperty "http://identifiers.org/uniprot/P24864"
+  CycD hasProperty "http://identifiers.org/uniprot/P24385"
+  CycA hasProperty "http://identifiers.org/uniprot/P20248"
+  Cdh1p hasProperty "http://identifiers.org/uniprot/Q9UM11"
+  Cdh1p hasProperty "http://identifiers.org/pato/PATO:0002220"
+  Cdh1p hasProperty "http://identifiers.org/omit/0006811"
+  Cdh1T hasProperty "http://identifiers.org/ncit/C25304"
+  Cdh1T hasProperty "http://identifiers.org/uniprot/Q9UM11"
+  reaction_for_Myc_production hasProperty "http://identifiers.org/sbo/SBO:0000393"
+  reaction_for_Myc_decay hasProperty "http://identifiers.org/ncit/C75947"
+  reaction_for_CycDT_production hasProperty "http://identifiers.org/sbo/SBO:0000393"
+  reaction_CycDT_decay hasProperty "http://identifiers.org/ncit/C75947"
+  reaction_for_CycET_production hasProperty "http://identifiers.org/sbo/SBO:0000393"
+  reaction_CycET_decay hasProperty "http://identifiers.org/ncit/C75947"
+  reaction_for_CycAT_production hasProperty "http://identifiers.org/sbo/SBO:0000393"
+  reaction_CycAT_decay hasProperty "http://identifiers.org/ncit/C75947"
+  reaction_for_E2FT_production hasProperty "http://identifiers.org/sbo/SBO:0000393"
+  reaction_E2FT_decay hasProperty "http://identifiers.org/ncit/C75947"
+  reaction_Comp1_production hasProperty "http://identifiers.org/sbo/SBO:0000393"
+  reaction_Comp1_decay hasProperty "http://identifiers.org/ncit/C75947"
+  reaction_for_Comp2_production hasProperty "http://identifiers.org/sbo/SBO:0000393"
+  reaction_Comp2_decay hasProperty "http://identifiers.org/ncit/C75947"
+  reactionfor_Rbp_production hasProperty "http://identifiers.org/sbo/SBO:0000393"
+  reaction_for_Rbp_decay hasProperty "http://identifiers.org/ncit/C75947"
+  reaction_for_CkiT_production hasProperty "http://identifiers.org/sbo/SBO:0000393"
+  reaction_for_CkiT_decay hasProperty "http://identifiers.org/ncit/C75947"
+  reaction_for_CycECki_production hasProperty "http://identifiers.org/sbo/SBO:0000393"
+  reaction_for_CycECki_decay hasProperty "http://identifiers.org/ncit/C75947"
+  reaction_for_CycDCki_production hasProperty "http://identifiers.org/sbo/SBO:0000393"
+  reaction_for_CycDCki_decay hasProperty "http://identifiers.org/ncit/C75947"
+  reaction_for_CycACki_production hasProperty "http://identifiers.org/sbo/SBO:0000393"
+  reaction_for_CycACki_decay hasProperty "http://identifiers.org/ncit/C75947"
+  reaction_for_Cdh1dp_production hasProperty "http://identifiers.org/sbo/SBO:0000393"
+  reaction_for_Cdh1dp_decay hasProperty "http://identifiers.org/ncit/C75947"
+  reaction_for_Emi1T_production hasProperty "http://identifiers.org/sbo/SBO:0000393"
+  reaction_for_Emi1T_decay hasProperty "http://identifiers.org/ncit/C75947"
+  reaction_for_EmiC_production hasProperty "http://identifiers.org/sbo/SBO:0000393"
+  reaction_for_EmiC_decay hasProperty "http://identifiers.org/ncit/C75947"
+  reaction_for_Cdh1_production hasProperty "http://identifiers.org/sbo/SBO:0000393"
+  reaction_for_Cdh1_decay hasProperty "http://identifiers.org/ncit/C75947"
+  reaction_for_UbI_production hasProperty "http://identifiers.org/sbo/SBO:0000393"
+  reaction_for_UbI_decay hasProperty "http://identifiers.org/ncit/C75947"
+  reaction_for_Rbpp_production hasProperty "http://identifiers.org/sbo/SBO:0000393"
+  reaction_for_Rbpp_decay hasProperty "http://identifiers.org/ncit/C75947"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL2006220001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000954"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model isDescribedBy "http://identifiers.org/pubmed/29856829"
+  model hasProperty "http://identifiers.org/go/GO:0007049",
+                    "http://identifiers.org/go/GO:0044838",
+                    "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2020-06-15T14:17:11Z"
+  model modified "2020-06-18T16:45:40Z"
+  model creator1.givenName "Ahmad"
+  model creator1.familyName "Zyoud"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "ahmad.azd@hotmail.com"
+
+  // Notes:
+  model notes ```
+Cells switch between quiescence and proliferation states for maintaining tissue homeostasis
+and regeneration. At the restriction point (R-point), cells become irreversibly committed
+to the completion of the cell cycle independent of mitogen. The mechanism involving
+hyper-phosphorylation of retinoblastoma (Rb) and activation of transcription factor
+E2F is linked to the R-point passage. However, stress stimuli trigger exit from the
+cell cycle back to the mitogen-sensitive quiescent state after Rb hyper-phosphorylation
+but only until APC/CCdh1 inactivation. In this study, we developed a mathematical
+model to investigate the reversible transition between quiescence and proliferation
+in mammalian cells with respect to mitogen and stress signals. The model integrates
+the current mechanistic knowledge and accounts for the recent experimental observations
+with cells exiting quiescence and proliferating cells. We show that Cyclin E:Cdk2
+couples Rb-E2F and APC/CCdh1 bistable switches and temporally segregates the R-point
+and the G1/S transition. A redox-dependent mutual antagonism between APC/CCdh1 and
+its inhibitor Emi1 makes the inactivation of APC/CCdh1 bistable. We show that the
+levels of Cdk inhibitor (CKI) and mitogen control the reversible transition between
+quiescence and proliferation. Further, we propose that shifting of the mitogen-induced
+transcriptional program to G2-phase in proliferating cells might result in an intermediate
+Cdk2 activity at the mitotic exit and in the immediate inactivation of APC/CCdh1.
+Our study builds a coherent framework and generates hypotheses that can be further
+explored by experiments.
+```
+end
+
+Pandey2018_reversible_transition_between_quiescence_and_proliferation is "Pandey2018-reversible transition between quiescence and proliferation"

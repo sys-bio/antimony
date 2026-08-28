@@ -1,0 +1,40 @@
+// Created by libAntimony v3.2.0
+model *MODEL1504010000()
+
+  // Compartments and Species:
+  species PYR, ADP, P, O2, ATP, NADH, NAD;
+
+  // Assignment Rules:
+  OXPHOS_ADP_stoichiometry := -nop;
+  OXPHOS_P_stoichiometry := -nop;
+  OXPHOS_O2_stoichiometry := -nox;
+  OXPHOS_ATP_stoichiometry := nop;
+  MAS_ADP_stoichiometry := -nnad;
+  MAS_P_stoichiometry := -nnad;
+  MAS_ATP_stoichiometry := nnad;
+
+  // Reactions:
+  OXPHOS: PYR -> OXPHOS_ADP_stoichiometry ADP + OXPHOS_P_stoichiometry P + OXPHOS_O2_stoichiometry O2 + OXPHOS_ATP_stoichiometry ATP; V_OXPHOS*(PYR/(PYR + KM_OXPHOS_PYR))*(O2/(O2 + KM_OXPHOS_O2))*(ADP/(ADP + KM_OXPHOS_ADP));
+  MAS: NADH -> MAS_ADP_stoichiometry ADP + MAS_P_stoichiometry P + NAD + MAS_ATP_stoichiometry ATP; V_OXPHOS*(PYR/(PYR + KM_OXPHOS_PYR))*(O2/(O2 + KM_OXPHOS_O2))*(ADP/(ADP + KM_OXPHOS_ADP));
+
+  // Species initializations:
+  PYR = ;
+  ADP = ;
+  P = ;
+  O2 = ;
+  ATP = ;
+  NADH = ;
+  NAD = ;
+
+  // Variable initializations:
+  nop = ;
+  nox = ;
+  nnad = ;
+  V_OXPHOS = ;
+  KM_OXPHOS_PYR = ;
+  KM_OXPHOS_O2 = ;
+  KM_OXPHOS_ADP = ;
+
+  // Other declarations:
+  const nop, nox, nnad, V_OXPHOS, KM_OXPHOS_PYR, KM_OXPHOS_O2, KM_OXPHOS_ADP;
+end

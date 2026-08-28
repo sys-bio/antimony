@@ -1,0 +1,21 @@
+version: 2
+
+build:
+  os: ubuntu-24.04
+  tools:
+    python: "3.12"
+  jobs:
+    # Doxygen >= 1.12 duplicates the link text of any markdown [text](#anchor)
+    # link (https://github.com/doxygen/doxygen/issues/11207), which breaks
+    # the tutorial's table of contents. Pin to the last known-good release
+    # (apt's doxygen package can drift ahead of 1.11 over time) until that's
+    # fixed upstream, then this pre_build step can be dropped in favor of
+    # apt_packages: [doxygen].
+    pre_build:
+      - curl -sL -o /tmp/doxygen.tar.gz https://github.com/doxygen/doxygen/releases/download/Release_1_11_0/doxygen-1.11.0.linux.bin.tar.gz
+      - tar xzf /tmp/doxygen.tar.gz -C /tmp
+    build:
+      html:
+        - ANTIMONY_DOXYGEN_EXECUTABLE=/tmp/doxygen-1.11.0/bin/doxygen python doc/readthedocs_build.py
+        - mkdir -p $READTHEDOCS_OUTPUT/html
+        - cp -r doc/_readthedocs_doxygen_build/html/. $READTHEDOCS_OUTPUT/html/

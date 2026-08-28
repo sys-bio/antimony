@@ -1,0 +1,136 @@
+// Created by libAntimony v3.2.0
+model *Tham2008___PDmodel__Tumour_shrinkage_by_gemcitabine_and_carboplatin()
+
+  // Compartments and Species:
+  compartment COMpartment;
+
+  // Assignment Rules:
+  Keq := 0.693147180559945/Teq;
+  Effect := 1 - Ce/(AE50 + Ce);
+  Kover := 1/T_Turnover;
+  RateIn := TumorSize_0*Kover;
+
+  // Rate Rules:
+  Ce' = -Ce*Keq;
+  TumorSize' = (RateIn*Effect - Kover*TumorSize)*TumorSize;
+
+  // Events:
+  Dose1: at (((time - Dose_Int1)%Cycle_Int) == 0) && (time < (N_Cycle*Cycle_Int)): Ce = Ce + Dose;
+  Dose2: at (((time - Dose_Int2)%Cycle_Int) == 0) && (time < (N_Cycle*Cycle_Int)): Ce = Ce + Dose;
+
+  // Compartment initializations:
+  COMpartment = 1;
+
+  // Variable initializations:
+  Dose_Int1 = 0;
+  Dose_Int1 has unit_1;
+  Cycle_Int = 3;
+  Cycle_Int has unit_1;
+  N_Cycle = 6;
+  N_Cycle has unit_2;
+  Ce = 0;
+  Ce has unit_0;
+  Dose = 5203.84;
+  Dose has unit_0;
+  Dose_Int2 = -2;
+  Dose_Int2 has unit_1;
+  AE50 = 10600;
+  AE50 has unit_0;
+  Keq has unit_3;
+  Effect has unit_2;
+  Teq = 7.67;
+  Teq has unit_1;
+  Kover has unit_4;
+  T_Turnover = 21.8;
+  T_Turnover has unit_5;
+  RateIn has unit_3;
+  TumorSize_0 = 6.66;
+  TumorSize_0 has unit_6;
+  TumorSize = TumorSize_0;
+  TumorSize has unit_6;
+
+  // Other declarations:
+  var Ce, Keq, Effect, Kover, RateIn, TumorSize;
+  const COMpartment, Dose_Int1, Cycle_Int, N_Cycle, Dose, Dose_Int2, AE50;
+  const Teq, T_Turnover, TumorSize_0;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = litre;
+  unit time_unit = 604.8e3 second;
+  unit substance = mole;
+  unit unit_0 = 1e-3 gram;
+  unit unit_1 = 604.8e3 second;
+  unit unit_2 = 1 / dimensionless^-0;
+  unit unit_3 = 1 / 604.8e3 second;
+  unit unit_4 = 1 / (6.048e3 second * metre);
+  unit unit_5 = 6.048e3 second * metre;
+  unit unit_6 = 0.01 metre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "mg";
+  unit_1 is "604.8*ks";
+  unit_2 is "1";
+  unit_3 is "1/(604.8*ks)";
+  unit_4 is "1/(6.048*ks*m)";
+  unit_5 is "6.048*ks*m";
+  unit_6 is "0.01*m";
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL0911120001"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000234"
+  model publication "http://identifiers.org/pubmed/18594002"
+  model isVersionOf "http://identifiers.org/go/GO:0002357"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model hasProperty "http://identifiers.org/DOID:1324",
+                    "https://identifiers.org/mamo:MAMO_0000046"
+  model created "2009-11-16T12:37:34Z"
+  model modified "2017-05-18T11:02:23Z"
+
+  // Notes:
+  model notes ```
+PURPOSE: This tumor response pharmacodynamic model aims to describe primary lesion
+shrinkage in non-small cell lung cancer over time and determine if concentration-based
+exposure metrics for gemcitabine or that of its metabolites,n2&apos;,2&apos;-difluorodeoxyuridine
+or gemcitabine triphosphate, are better than gemcitabine dose for prediction of individual
+response. EXPERIMENTAL DESIGN: Gemcitabine was given thrice weekly on days 1 and
+8 in combination with carboplatin, which was given only on day 1 of every cycle.
+Gemcitabine amount in the body and area under the concentration-time curves of plasma
+gemcitabine, 2&apos;,2&apos;-difluorodeoxyuridine, and intracellular gemcitabine
+triphosphate in white cells were compared to determine which best describes tumor
+shrinkage over time. Tumor growth kinetics were described using a Gompertz-like model.RESULTS:
+The apparent half-life for the effect of gemcitabine was 7.67 weeks. The tumor turnover
+time constant was 21.8 week.cm. Baseline tumor size and gemcitabine amount in the
+body to attain 50% of tumor shrinkage were estimated to be 6.66 cm and 10,600 mg.
+There was no evidence of relapse during treatment.
+```
+  COMpartment notes "Unique compartment where the reactions are happening"
+  Dose_Int1 notes ```
+Time in a cycle at which the first dose of gemcitabine is administered. The model
+works modulo N_Cycle but copasi has issue when Time-N_Cycle is negative. Hence, we
+suggest to have a negative value for Dose_Int1 which correspond to the desired value,
+modulo N_Cycle.
+```
+  Cycle_Int notes "Duration of one treatment cycle"
+  N_Cycle notes "Number of gemcitabine treatment cycles"
+  Ce notes "Gemcitabine apparent amount"
+  Dose notes "Amount of gemcitabine administered"
+  Dose_Int2 notes ```
+Time in a cycle at which the second dose of gemcitabine is administered. The model
+works modulo N_Cycle but copasi has issue when Time-N_Cycle is negative. Hence, we
+suggest to have a negative value for Dose_Int2 which correspond to the desired value,
+modulo N_Cycle.
+```
+  AE50 notes "Gemcitabine dose at 50% of tumor shrinkage"
+  Keq notes "Apparent degradation rate of gemcitabine effect"
+  Effect notes "Inhibitory effect of gemcitabine"
+  Teq notes "Half-life of gemcitabine effect"
+  Kover notes "Turnover rate of the tumor"
+  T_Turnover notes "Tumor cells turnover"
+  RateIn notes "Basal growth rate of the tumor"
+  TumorSize_0 notes "Initial tumor size"
+  TumorSize notes "Tumor Size"
+end
+
+Tham2008___PDmodel__Tumour_shrinkage_by_gemcitabine_and_carboplatin is "Tham2008 - PDmodel, Tumour shrinkage by gemcitabine and carboplatin"

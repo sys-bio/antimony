@@ -1,0 +1,275 @@
+// Created by libAntimony v3.2.0
+model *Heitzler2012_GPCRsignalling()
+
+  // Compartments and Species:
+  compartment compartmentOne;
+  species HR in compartmentOne, G in compartmentOne, ERK in compartmentOne;
+  species PIP2 in compartmentOne, DAG in compartmentOne, PKC in compartmentOne;
+  species PKC_a in compartmentOne, GpERK in compartmentOne, bpERK in compartmentOne;
+  species barr1 in compartmentOne, barr2 in compartmentOne, G_a in compartmentOne;
+  species HRP1 in compartmentOne, Hbarr1RP1 in compartmentOne, Hbarr2RP1 in compartmentOne;
+  species HRP2 in compartmentOne, HRbarr2 in compartmentOne, Hbarr2RP2 in compartmentOne;
+  species GRK2_3 in compartmentOne, GRK5_6 in compartmentOne, $pERK in compartmentOne;
+
+  // Assignment Rules:
+  pERK := GpERK + bpERK;
+
+  // Reactions:
+  R_1: G => G_a; compartmentOne*(k0*G/compartmentOne);
+  R_2: G + HRP1 => G_a + HRP1; compartmentOne*(k1*G*HRP1/compartmentOne);
+  R_3: G + HR => G_a + HR; compartmentOne*(k2*G*HR/compartmentOne);
+  R_4: G_a + PIP2 => DAG + G_a; compartmentOne*(k3*G_a*PIP2/compartmentOne);
+  R_5: DAG + PKC => DAG + PKC_a; compartmentOne*(k4*DAG*PKC/compartmentOne);
+  R_6: ERK + PKC_a => GpERK + PKC_a; compartmentOne*(k5*ERK*PKC_a/compartmentOne);
+  R_7: G_a => G; compartmentOne*(k6*G_a/compartmentOne);
+  R_8: DAG => PIP2; compartmentOne*(k7*DAG/compartmentOne);
+  R_9: PKC_a => PKC; compartmentOne*(k8*PKC_a/compartmentOne);
+  R_10: GpERK => ERK; compartmentOne*(k9*GpERK/compartmentOne);
+  R_11: HR => HRP1; compartmentOne*(k10*GRK23*HR/compartmentOne);
+  R_12: barr1 + HRP1 => Hbarr1RP1; compartmentOne*(k11*barr1*HRP1/compartmentOne);
+  R_13: Hbarr1RP1 => barr1 + HRP1; compartmentOne*(k13*Hbarr1RP1/compartmentOne);
+  R_14: barr2 + HRP1 => Hbarr2RP1; compartmentOne*(k12*barr2*HRP1/compartmentOne);
+  R_15: Hbarr2RP1 => barr2 + HRP1; compartmentOne*(k14*Hbarr2RP1/compartmentOne);
+  R_16: Hbarr1RP1 => barr1 + HR; compartmentOne*(k15*Hbarr1RP1/compartmentOne);
+  R_17: Hbarr2RP1 => barr2 + HR; compartmentOne*(k16*Hbarr2RP1/compartmentOne);
+  R_18: HR => HRP2; compartmentOne*(k18*GRK56*HR/compartmentOne);
+  R_19: HRP2 => HR; compartmentOne*(k17*HRP2/compartmentOne);
+  R_20: barr2 + HR => HRbarr2; compartmentOne*(k19*barr2*HR/compartmentOne);
+  R_21: HRbarr2 => barr2 + HR; compartmentOne*(k23*HRbarr2/compartmentOne);
+  R_22: barr2 + HRP2 => Hbarr2RP2; compartmentOne*(k20*barr2*HRP2/compartmentOne);
+  R_23: Hbarr2RP2 => barr2 + HRP2; compartmentOne*(k24*Hbarr2RP2/compartmentOne);
+  R_24: ERK + HRbarr2 => bpERK + HRbarr2; compartmentOne*(k21*ERK*HRbarr2/compartmentOne);
+  R_25: ERK + Hbarr2RP2 => bpERK + Hbarr2RP2; compartmentOne*(k22*ERK*Hbarr2RP2/compartmentOne);
+  R_26: bpERK => ERK; compartmentOne*(k25*bpERK/compartmentOne);
+
+  // Species initializations:
+  HR = 0.08;
+  G = 56.99;
+  ERK = 4.243;
+  PIP2 = 0.997;
+  DAG = 0.009;
+  PKC = 8.842;
+  PKC_a = 0.002;
+  GpERK = 0.015;
+  bpERK = 0.015;
+  barr1 = 0.858;
+  barr2 = 0.483;
+  G_a = 0;
+  HRP1 = 0;
+  Hbarr1RP1 = 0;
+  Hbarr2RP1 = 0;
+  HRP2 = 0;
+  HRbarr2 = 0;
+  Hbarr2RP2 = 0;
+  GRK2_3 = 0.89944;
+  GRK5_6 = 1.518;
+
+  // Compartment initializations:
+  compartmentOne = 1;
+
+  // Variable initializations:
+  k0 = 0.000311;
+  k1 = 0.0178;
+  k2 = 7.6;
+  k3 = 4.63;
+  k4 = 0.0787;
+  k5 = 2.65;
+  k6 = 5.0985;
+  k7 = 0.461;
+  k8 = 1.77;
+  k9 = 3.04;
+  k10 = 2.27;
+  k11 = 2.61;
+  k12 = 2.59;
+  k13 = 0.00619;
+  k14 = 0.0311;
+  k15 = 6.54e-05;
+  k16 = 0.0723;
+  k17 = 0.0665;
+  k18 = 0.59;
+  k19 = 0.205;
+  k20 = 1.04;
+  k21 = 0.00042;
+  k22 = 14.44;
+  k23 = 1.05;
+  k24 = 0.347;
+  k25 = 0.762;
+  GRK23 = 0.899447579;
+  GRK56 = 1.5180818;
+  GRK23_si = 0.478865092;
+  GRK56_si = 0.00103512491;
+  P0_Ro = 0.00173556731;
+  P0_a_Ro = 2.09075206e-05;
+  barr2_0_si = 0.000112306963;
+  nDAG = 4.11974423;
+  nPKC = 7.20901786;
+
+  // Other declarations:
+  const compartmentOne, k0, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11;
+  const k12, k13, k14, k15, k16, k17, k18, k19, k20, k21, k22, k23, k24, k25;
+  const GRK23, GRK56, GRK23_si, GRK56_si, P0_Ro, P0_a_Ro, barr2_0_si, nDAG;
+  const nPKC;
+
+  // Display Names:
+  compartmentOne is "Cell";
+  G is "Gp";
+  GpERK is "Gp_pERK";
+  bpERK is "b_pERK";
+  barr1 is "b-arrestin1";
+  barr2 is "b-arrestin2";
+  G_a is "Gp_a";
+  HRP1 is "HR-P1";
+  Hbarr1RP1 is "HR-P1-b-arrestin1";
+  Hbarr2RP1 is "HR-P1-b-arrestin2";
+  HRP2 is "HR-P2";
+  HRbarr2 is "HR_b-arrestin2";
+  Hbarr2RP2 is "HR-P2-b-arrestin2";
+  GRK2_3 is "GRK2/3";
+  GRK5_6 is "GRK5/6";
+  R_1 is "Cons_Gp_activation";
+  R_2 is "Gp activation HR-P1";
+  R_3 is "Gp activation HR";
+  R_4 is "DAG production";
+  R_5 is "PKC activation DAG";
+  R_6 is "ERk phosphorylation PKC";
+  R_7 is "Gp_a deactivation";
+  R_8 is "DAG catalysis";
+  R_9 is "PKC_a deactivation";
+  R_10 is "G_pERK_dephosphorylation";
+  R_11 is "HR phosphorylation GRK23";
+  R_12 is "b-arrestin1 HR-P1 binding";
+  R_13 is "HR-P1-b-arrestin1 dissociation";
+  R_14 is "b-arrestin2 HR-P1 binding";
+  R_15 is "HR-P1-b-arrestin2 dissociation";
+  R_16 is "HR-P1-b-arrestin1 dissociation 2";
+  R_17 is "HR-P1-b-arrestin2 dissociation 2";
+  R_18 is "HR phosphorylation GRK56";
+  R_19 is "HR-P2 dephosphorylation";
+  R_20 is "b-arrestin2 HR binding";
+  R_21 is "HR_b-arrestin2 dissociation";
+  R_22 is "b-arrestin2 HR-P2 binding";
+  R_23 is "HR-P2-b-arrestin2 dissociation";
+  R_24 is "ERK phosphorylation 1";
+  R_25 is "ERK phosphorylation 2";
+  R_26 is "b_pERK dephosphorylation";
+
+  // CV terms:
+  compartmentOne hasProperty "http://identifiers.org/bto/BTO:0002733"
+  HR hasPart "http://identifiers.org/uniprot/P01019"
+  HR hasPart "http://identifiers.org/uniprot/P30556"
+  G isVersionOf "http://identifiers.org/uniprot/P63092"
+  ERK isVersionOf "http://identifiers.org/uniprot/P27361"
+  PIP2 identity "http://identifiers.org/chebi/CHEBI:83417"
+  DAG isVersionOf "http://identifiers.org/chebi/CHEBI:17962"
+  PKC isVersionOf "http://identifiers.org/uniprot/P17252"
+  PKC_a isVersionOf "http://identifiers.org/uniprot/P17252"
+  PKC_a hasProperty "http://identifiers.org/pato/PATO:0002354"
+  GpERK isVersionOf "http://identifiers.org/uniprot/P27361"
+  GpERK hasProperty "http://identifiers.org/pato/PATO:0002220"
+  bpERK isVersionOf "http://identifiers.org/uniprot/P27361"
+  bpERK hasProperty "http://identifiers.org/pato/PATO:0002220"
+  barr1 identity "http://identifiers.org/uniprot/P49407"
+  barr2 hasVersion "http://identifiers.org/uniprot/P32121"
+  G_a isVersionOf "http://identifiers.org/uniprot/P63092"
+  G_a hasProperty "http://identifiers.org/pato/PATO:0002354"
+  HRP1 hasPart "http://identifiers.org/uniprot/P30556"
+  HRP1 hasPart "http://identifiers.org/uniprot/P01019"
+  HRP1 hasProperty "http://identifiers.org/pato/PATO:0002220"
+  Hbarr1RP1 hasPart "http://identifiers.org/uniprot/P30556"
+  Hbarr1RP1 hasPart "http://identifiers.org/uniprot/P49407"
+  Hbarr1RP1 hasPart "http://identifiers.org/uniprot/P01019"
+  Hbarr1RP1 hasProperty "http://identifiers.org/pato/PATO:0002220"
+  Hbarr2RP1 hasPart "http://identifiers.org/uniprot/P01019"
+  Hbarr2RP1 hasPart "http://identifiers.org/uniprot/P30556"
+  Hbarr2RP1 hasPart "http://identifiers.org/uniprot/P32121"
+  Hbarr2RP1 hasProperty "http://identifiers.org/pato/PATO:0002220"
+  HRP2 hasPart "http://identifiers.org/uniprot/P01019"
+  HRP2 hasPart "http://identifiers.org/uniprot/P30556"
+  HRP2 hasProperty "http://identifiers.org/pato/PATO:0002220"
+  HRbarr2 hasPart "http://identifiers.org/uniprot/P01019"
+  HRbarr2 hasPart "http://identifiers.org/uniprot/P30556"
+  HRbarr2 hasPart "http://identifiers.org/uniprot/P32121"
+  Hbarr2RP2 hasPart "http://identifiers.org/uniprot/P30556"
+  Hbarr2RP2 hasPart "http://identifiers.org/uniprot/P01019"
+  Hbarr2RP2 hasPart "http://identifiers.org/uniprot/P32121"
+  Hbarr2RP2 hasProperty "http://identifiers.org/pato/PATO:0002220"
+  GRK2_3 hasProperty "http://identifiers.org/uniprot/P25098"
+  GRK2_3 hasProperty "http://identifiers.org/uniprot/P35626"
+  GRK5_6 hasProperty "http://identifiers.org/uniprot/P34947"
+  GRK5_6 hasProperty "http://identifiers.org/uniprot/P43250"
+  pERK isVersionOf "http://identifiers.org/uniprot/P27361"
+  pERK hasProperty "http://identifiers.org/pato/PATO:0002220"
+  R_1 hasProperty "http://identifiers.org/sbo/SBO:0000656"
+  R_2 hasProperty "http://identifiers.org/sbo/SBO:0000656"
+  R_3 hasProperty "http://identifiers.org/sbo/SBO:0000656"
+  R_4 hasProperty "http://identifiers.org/sbo/SBO:0000393"
+  R_5 hasProperty "http://identifiers.org/sbo/SBO:0000656"
+  R_6 hasProperty "http://identifiers.org/sbo/SBO:0000216"
+  R_7 hasProperty "http://identifiers.org/go/GO:0005085"
+  R_8 hasProperty "http://identifiers.org/sbo/SBO:0000172"
+  R_9 isVersionOf "http://identifiers.org/go/GO:0042313"
+  R_10 hasProperty "http://identifiers.org/sbo/SBO:0000216"
+  R_11 hasProperty "http://identifiers.org/sbo/SBO:0000216"
+  R_12 hasProperty "http://identifiers.org/go/GO:0005515"
+  R_13 hasProperty "http://identifiers.org/sbo/SBO:0000180"
+  R_14 hasProperty "http://identifiers.org/go/GO:0005515"
+  R_15 hasProperty "http://identifiers.org/sbo/SBO:0000180"
+  R_16 hasPart "http://identifiers.org/sbo/SBO:0000180"
+  R_17 hasProperty "http://identifiers.org/sbo/SBO:0000180"
+  R_18 hasProperty "http://identifiers.org/sbo/SBO:0000216"
+  R_19 hasPart "http://identifiers.org/go/GO:0016311"
+  R_20 hasProperty "http://identifiers.org/go/GO:0005515"
+  R_21 hasProperty "http://identifiers.org/sbo/SBO:0000180"
+  R_22 hasPart "http://identifiers.org/go/GO:0005515"
+  R_23 hasProperty "http://identifiers.org/sbo/SBO:0000180"
+  R_24 hasProperty "http://identifiers.org/sbo/SBO:0000216"
+  R_25 hasProperty "http://identifiers.org/sbo/SBO:0000216"
+  R_26 hasProperty "http://identifiers.org/go/GO:0016311"
+
+  model isInstanceOf "http://identifiers.org/biomodels.db/MODEL1012080000",
+                     "http://identifiers.org/bto/BTO:0000671",
+                     "http://identifiers.org/taxonomy/9606",
+                     "http://identifiers.org/go/GO:0007178"
+  model isInstanceOf "http://identifiers.org/go/GO:0038166"
+  model publication "http://identifiers.org/go/GO:0007178",
+                    "http://identifiers.org/go/GO:0038166",
+                    "http://identifiers.org/pubmed/22735336"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1012080000",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000842"
+  model identity "http://identifiers.org/biomodels.db/MODEL1012080000"
+  model occursIn "http://identifiers.org/bto/BTO:0000671"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+
+  // Notes:
+  model notes ```
+This model is from the article: 
+**Competing G protein-coupled receptor kinases balance G protein and β-arrestin
+signaling** 
+Heitzler D, Durand G, Gallay N, Rizk A, Ahn S, Kim J, Violin JD, Dupuy
+L, Gauthier C, Piketty V, Crépieux P, Poupon A, Clément F, Fages F, Lefkowitz RJ,
+Reiter E. *Mol Syst Biol.* 2012; 8: 590. [22735336](http://www.ncbi.nlm.nih.gov/pubmed/22735336) , 
+**Abstract:** 
+Seven-transmembrane receptors (7TMRs) are involved in nearly all aspects
+of chemical communications and represent major drug targets. 7TMRs transmit their
+signals not only via heterotrimeric G proteins but also through β-arrestins, whose
+recruitment to the activated receptor is regulated by G protein-coupled receptor
+kinases (GRKs). In this paper, we combined experimental approaches with computational
+modeling to decipher the molecular mechanisms as well as the hidden dynamics governing
+extracellular signal-regulated kinase (ERK) activation by the angiotensin II type
+1A receptor (AT(1A)R) in human embryonic kidney (HEK)293 cells. We built an abstracted
+ordinary differential equations (ODE)-based model that captured the available knowledge
+and experimental data. We inferred the unknown parameters by simultaneously fitting
+experimental data generated in both control and perturbed conditions. We demonstrate
+that, in addition to its well-established function in the desensitization of G-protein
+activation, GRK2 exerts a strong negative effect on β-arrestin-dependent signaling
+through its competition with GRK5 and 6 for receptor phosphorylation. Importantly,
+we experimentally confirmed the validity of this novel GRK2-dependent mechanism in
+both primary vascular smooth muscle cells naturally expressing the AT(1A)R, and HEK293
+cells expressing other 7TMRs.
+```
+  G notes "G protein"
+  GpERK notes "G protein activated ERK"
+  bpERK notes "beta arrestin activated ERK"
+end
+
+Heitzler2012_GPCRsignalling is "Heitzler2012 - GPCR signalling"

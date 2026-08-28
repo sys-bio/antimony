@@ -240,6 +240,11 @@ long ParseFile(string oldlocale)
 
 //Exported routines:
 
+LIB_EXTERN char* getVersionStr()
+{
+  return getCharStar(LIBANTIMONY_VERSION_STRING);
+}
+
 LIB_EXTERN long loadString(const char* model)
 {
   long retval = -1;
@@ -635,7 +640,14 @@ LIB_EXTERN char*  getNthModuleName(unsigned long n)
 LIB_EXTERN char* getMainModuleName()
 {
   const Module* mainmod = g_registry.GetMainModule();
-  if (mainmod==NULL) return NULL;
+  if (mainmod==NULL) {
+    string error = "There is no main module.";
+    if (g_registry.GetNumModules() == 0) {
+      error += "  In fact, there are no modules at all.  Try running loadModule(filename).";
+    }
+    g_registry.SetError(error);
+    return NULL;
+  }
   char* retval = getCharStar(mainmod->GetModuleName().c_str());
   return retval;
 }
@@ -799,6 +811,103 @@ LIB_EXTERN char* getNthReplacementSymbolNameBetween(const char* moduleName, cons
   if (!checkModule(moduleName)) return NULL;
   pair<string, string> replacement = g_registry.GetModule(moduleName)->GetNthSynchronizedVariablesBetween(formerSubmodName, replacementSubmodName, n);
   return getCharStar(replacement.second.c_str());
+}
+
+LIB_EXTERN unsigned long getNumUserFunctions()
+{
+  return static_cast<unsigned long>(g_registry.GetNumUserFunctions());
+}
+
+void reportUserFunctionIndexProblem(unsigned long n, unsigned long actualsize)
+{
+  string error = "There is no user-defined function with index " + SizeTToString(n) + ".";
+  if (actualsize == 0) {
+    error += "  In fact, there are no user-defined functions at all.";
+  }
+  else if (actualsize == 1) {
+    error += "  There is a single user-defined function with index 0.";
+  }
+  else {
+    error += "  Valid index values are 0 through " + SizeTToString(actualsize-1) + ".";
+  }
+  g_registry.SetError(error);
+}
+
+LIB_EXTERN char* getNthUserFunctionName(unsigned long n)
+{
+  const UserFunction* func = g_registry.GetNthUserFunction(n);
+  if (func == NULL) {
+    reportUserFunctionIndexProblem(n, static_cast<unsigned long>(g_registry.GetNumUserFunctions()));
+    return NULL;
+  }
+  return getCharStar(func->GetModuleName().c_str());
+}
+
+LIB_EXTERN unsigned long getNumUserFunctionArguments(unsigned long n)
+{
+  const UserFunction* func = g_registry.GetNthUserFunction(n);
+  if (func == NULL) {
+    reportUserFunctionIndexProblem(n, static_cast<unsigned long>(g_registry.GetNumUserFunctions()));
+    return 0;
+  }
+  return static_cast<unsigned long>(func->GetNumExportVariables());
+}
+
+LIB_EXTERN char** getNthUserFunctionArguments(unsigned long n)
+{
+  const UserFunction* func = g_registry.GetNthUserFunction(n);
+  if (func == NULL) {
+    reportUserFunctionIndexProblem(n, static_cast<unsigned long>(g_registry.GetNumUserFunctions()));
+    return NULL;
+  }
+  unsigned long numargs = static_cast<unsigned long>(func->GetNumExportVariables());
+  char** args = getCharStarStar(numargs);
+  if (args == NULL) return NULL;
+  for (unsigned long arg=0; arg<numargs; arg++) {
+    args[arg] = getCharStar(func->GetNthExportVariable(arg)[0].c_str());
+    if (args[arg] == NULL) return NULL;
+  }
+  return args;
+}
+
+void reportUserFunctionArgumentIndexProblem(unsigned long arg, unsigned long actualsize, unsigned long func)
+{
+  string error = "There is no argument with index " + SizeTToString(arg) + " in user-defined function " + SizeTToString(func) + ".";
+  if (actualsize == 0) {
+    error += "  In fact, that function has no arguments at all.";
+  }
+  else if (actualsize == 1) {
+    error += "  There is a single argument with index 0.";
+  }
+  else {
+    error += "  Valid index values are 0 through " + SizeTToString(actualsize - 1) + ".";
+  }
+  g_registry.SetError(error);
+}
+
+LIB_EXTERN char* getNthUserFunctionMthArgument(unsigned long n, unsigned long m)
+{
+  const UserFunction* userfunc = g_registry.GetNthUserFunction(n);
+  if (userfunc == NULL) {
+    reportUserFunctionIndexProblem(n, static_cast<unsigned long>(g_registry.GetNumUserFunctions()));
+    return NULL;
+  }
+  unsigned long numargs = static_cast<unsigned long>(userfunc->GetNumExportVariables());
+  if (m >= numargs) {
+    reportUserFunctionArgumentIndexProblem(m, numargs, n);
+    return NULL;
+  }
+  return getCharStar(userfunc->GetNthExportVariable(m)[0].c_str());
+}
+
+LIB_EXTERN char* getNthUserFunctionBody(unsigned long n)
+{
+  const UserFunction* func = g_registry.GetNthUserFunction(n);
+  if (func == NULL) {
+    reportUserFunctionIndexProblem(n, static_cast<unsigned long>(g_registry.GetNumUserFunctions()));
+    return NULL;
+  }
+  return getCharStar(func->GetFormula().ToDelimitedStringWithEllipses(g_registry.GetCC()).c_str());
 }
 
 LIB_EXTERN unsigned long getNumModules()
@@ -1019,7 +1128,7 @@ unsigned long getNumReactOrProdForRxnOrInt(const char* moduleName, unsigned long
     reportReactionIndexProblem(n, getNumSymbolsOfType(moduleName, rtype), moduleName, reaction);    
   }
   const Variable* rxn = mod->GetNthVariableOfType(rtype, n, false);
-  if (rxn->GetReaction() == NULL) {
+  if (rxn == NULL || rxn->GetReaction() == NULL) {
     return 0;
   }
   if (reactant) {
@@ -1085,6 +1194,15 @@ char* getNthRxnorIntMthReactantOrProductName(const char* moduleName, unsigned lo
 char** getNthRxnOrIntReactantOrProductNames(const char* moduleName, unsigned long n, bool reaction, bool reactant)
 {
   if (!checkModule(moduleName)) return NULL;
+  return_type rtype = allReactions;
+  if (!reaction) {
+    rtype = allInteractions;
+  }
+  unsigned long numlines = getNumSymbolsOfType(moduleName, rtype);
+  if (n >= numlines) {
+    reportReactionIndexProblem(n, numlines, moduleName, reaction);
+    return NULL;
+  }
   unsigned long vnum = getNumReactOrProdForRxnOrInt(moduleName, n, reaction, reactant);
   char** names = getCharStarStar(vnum);
   if (names == NULL) return NULL;
@@ -1205,6 +1323,38 @@ double getNthRxnOrIntMthReactantOrProductStoichiometries(const char* moduleName,
   return stoichiometries[m];
 }
 
+char* getNthRxnOrIntMthReactantOrProductStoichiometryString(const char* moduleName, unsigned long n, unsigned long m, bool reaction, bool reactant)
+{
+  if (!checkModule(moduleName)) return NULL;
+  return_type rtype = allReactions;
+  if (!reaction) {
+    rtype = allInteractions;
+  }
+  unsigned long numlines = getNumSymbolsOfType(moduleName, rtype);
+  if (n >= numlines) {
+    reportReactionIndexProblem(n, numlines, moduleName, reaction);
+    return NULL;
+  }
+  const Module* mod = g_registry.GetModule(moduleName);
+  const Variable* rxn = mod->GetNthVariableOfType(rtype, n, false);
+  if (rxn->GetReaction() == NULL) {
+    return NULL;
+  }
+  const ReactantList* rlist = reactant ? rxn->GetReaction()->GetLeft() : rxn->GetReaction()->GetRight();
+  unsigned long rsize = static_cast<unsigned long>(rlist->Size());
+  if (m >= rsize) {
+    reportReactionSubIndexProblem(m, rsize, n, moduleName, reaction, reactant);
+    return NULL;
+  }
+  const Variable* stoichvar = rlist->GetNthStoichiometryVar(m);
+  if (stoichvar != NULL) {
+    return getCharStar(stoichvar->GetNameDelimitedBy(g_registry.GetCC()).c_str());
+  }
+  stringstream stoich;
+  stoich << rlist->GetStoichiometryFor(m);
+  return getCharStar(stoich.str().c_str());
+}
+
 double* getNthRxnOrIntReactantOrProductStoichiometries(const char* moduleName, unsigned long n, bool reaction, bool reactant)
 {
   if (!checkModule(moduleName)) return NULL;
@@ -1272,6 +1422,16 @@ LIB_EXTERN double getNthReactionMthReactantStoichiometries(const char* moduleNam
 LIB_EXTERN double getNthReactionMthProductStoichiometries(const char* moduleName, unsigned long rxn, unsigned long reactant)
 {
   return getNthRxnOrIntMthReactantOrProductStoichiometries(moduleName, rxn, reactant, true, false);
+}
+
+LIB_EXTERN char* getNthReactionMthReactantStoichiometryString(const char* moduleName, unsigned long rxn, unsigned long reactant)
+{
+  return getNthRxnOrIntMthReactantOrProductStoichiometryString(moduleName, rxn, reactant, true, true);
+}
+
+LIB_EXTERN char* getNthReactionMthProductStoichiometryString(const char* moduleName, unsigned long rxn, unsigned long product)
+{
+  return getNthRxnOrIntMthReactantOrProductStoichiometryString(moduleName, rxn, product, true, false);
 }
 
 LIB_EXTERN double** getProductStoichiometries(const char* moduleName)
@@ -1397,7 +1557,11 @@ LIB_EXTERN unsigned long getNumAssignmentsForEvent(const char* moduleName, unsig
 {
   if (!checkModule(moduleName)) return 0;
   const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(allEvents, eventno, false);
-  if (var==NULL) return 0;
+  if (var==NULL) {
+    unsigned long numvars = static_cast<unsigned long>(g_registry.GetModule(moduleName)->GetNumVariablesOfType(allEvents, false));
+    reportVariableTypeIndexProblem(eventno, allEvents, numvars, moduleName);
+    return 0;
+  }
   return static_cast<unsigned long>(var->GetEvent()->GetNumAssignments());
 }
 
@@ -1405,7 +1569,11 @@ LIB_EXTERN char* getTriggerForEvent(const char* moduleName, unsigned long eventn
 {
   if (!checkModule(moduleName)) return NULL;
   const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(allEvents, eventno, false);
-  if (var==NULL) return NULL;
+  if (var==NULL) {
+    unsigned long numvars = static_cast<unsigned long>(g_registry.GetModule(moduleName)->GetNumVariablesOfType(allEvents, false));
+    reportVariableTypeIndexProblem(eventno, allEvents, numvars, moduleName);
+    return NULL;
+  }
   string trig = var->GetEvent()->GetTrigger()->ToDelimitedStringWithEllipses(g_registry.GetCC());
   return getCharStar(trig.c_str());
 }
@@ -1414,7 +1582,11 @@ LIB_EXTERN char* getDelayForEvent(const char* moduleName, unsigned long eventno)
 {
   if (!checkModule(moduleName)) return NULL;
   const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(allEvents, eventno, false);
-  if (var==NULL) return NULL;
+  if (var==NULL) {
+    unsigned long numvars = static_cast<unsigned long>(g_registry.GetModule(moduleName)->GetNumVariablesOfType(allEvents, false));
+    reportVariableTypeIndexProblem(eventno, allEvents, numvars, moduleName);
+    return NULL;
+  }
   string trig = var->GetEvent()->GetDelay()->ToDelimitedStringWithEllipses(g_registry.GetCC());
   return getCharStar(trig.c_str());
 }
@@ -1423,7 +1595,11 @@ LIB_EXTERN bool getEventHasDelay(const char* moduleName, unsigned long eventno)
 {
   if (!checkModule(moduleName)) return false;
   const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(allEvents, eventno, false);
-  if (var==NULL) return false;
+  if (var==NULL) {
+    unsigned long numvars = static_cast<unsigned long>(g_registry.GetModule(moduleName)->GetNumVariablesOfType(allEvents, false));
+    reportVariableTypeIndexProblem(eventno, allEvents, numvars, moduleName);
+    return false;
+  }
   return (!var->GetEvent()->GetDelay()->IsEmpty());
 }
 
@@ -1431,7 +1607,11 @@ LIB_EXTERN char*   getPriorityForEvent(const char* moduleName, unsigned long eve
 {
   if (!checkModule(moduleName)) return NULL;
   const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(allEvents, eventno, false);
-  if (var==NULL) return NULL;
+  if (var==NULL) {
+    unsigned long numvars = static_cast<unsigned long>(g_registry.GetModule(moduleName)->GetNumVariablesOfType(allEvents, false));
+    reportVariableTypeIndexProblem(eventno, allEvents, numvars, moduleName);
+    return NULL;
+  }
   string trig = var->GetEvent()->GetPriority()->ToDelimitedStringWithEllipses(g_registry.GetCC());
   return getCharStar(trig.c_str());
 }
@@ -1440,7 +1620,11 @@ LIB_EXTERN bool    getEventHasPriority(const char* moduleName, unsigned long eve
 {
   if (!checkModule(moduleName)) return false;
   const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(allEvents, eventno, false);
-  if (var==NULL) return false;
+  if (var==NULL) {
+    unsigned long numvars = static_cast<unsigned long>(g_registry.GetModule(moduleName)->GetNumVariablesOfType(allEvents, false));
+    reportVariableTypeIndexProblem(eventno, allEvents, numvars, moduleName);
+    return false;
+  }
   return (!var->GetEvent()->GetPriority()->IsEmpty());
 }
 
@@ -1448,7 +1632,11 @@ LIB_EXTERN bool   getPersistenceForEvent(const char* moduleName, unsigned long e
 {
   if (!checkModule(moduleName)) return false;
   const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(allEvents, eventno, false);
-  if (var==NULL) return false;
+  if (var==NULL) {
+    unsigned long numvars = static_cast<unsigned long>(g_registry.GetModule(moduleName)->GetNumVariablesOfType(allEvents, false));
+    reportVariableTypeIndexProblem(eventno, allEvents, numvars, moduleName);
+    return false;
+  }
   return var->GetEvent()->GetPersistent();
 }
 
@@ -1456,7 +1644,11 @@ LIB_EXTERN bool   getT0ForEvent(const char* moduleName, unsigned long eventno)
 {
   if (!checkModule(moduleName)) return false;
   const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(allEvents, eventno, false);
-  if (var==NULL) return false;
+  if (var==NULL) {
+    unsigned long numvars = static_cast<unsigned long>(g_registry.GetModule(moduleName)->GetNumVariablesOfType(allEvents, false));
+    reportVariableTypeIndexProblem(eventno, allEvents, numvars, moduleName);
+    return false;
+  }
   return var->GetEvent()->GetInitialValue();
 }
 
@@ -1464,7 +1656,11 @@ LIB_EXTERN bool   getFromTriggerForEvent(const char* moduleName, unsigned long e
 {
   if (!checkModule(moduleName)) return false;
   const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(allEvents, eventno, false);
-  if (var==NULL) return false;
+  if (var==NULL) {
+    unsigned long numvars = static_cast<unsigned long>(g_registry.GetModule(moduleName)->GetNumVariablesOfType(allEvents, false));
+    reportVariableTypeIndexProblem(eventno, allEvents, numvars, moduleName);
+    return false;
+  }
   return var->GetEvent()->GetUseValuesFromTriggerTime();
 }
 
@@ -1472,7 +1668,11 @@ LIB_EXTERN char* getNthAssignmentVariableForEvent(const char* moduleName, unsign
 {
   if (!checkModule(moduleName)) return NULL;
   const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(allEvents, eventno, false);
-  if (var==NULL) return NULL;
+  if (var==NULL) {
+    unsigned long numvars = static_cast<unsigned long>(g_registry.GetModule(moduleName)->GetNumVariablesOfType(allEvents, false));
+    reportVariableTypeIndexProblem(eventno, allEvents, numvars, moduleName);
+    return NULL;
+  }
   string asnt = var->GetEvent()->GetNthAssignmentVariableName(n, g_registry.GetCC());
   if (asnt=="") return NULL;
   return getCharStar(asnt.c_str());
@@ -1482,7 +1682,11 @@ LIB_EXTERN char* getNthAssignmentEquationForEvent(const char* moduleName, unsign
 {
   if (!checkModule(moduleName)) return NULL;
   const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(allEvents, eventno, false);
-  if (var==NULL) return NULL;
+  if (var==NULL) {
+    unsigned long numvars = static_cast<unsigned long>(g_registry.GetModule(moduleName)->GetNumVariablesOfType(allEvents, false));
+    reportVariableTypeIndexProblem(eventno, allEvents, numvars, moduleName);
+    return NULL;
+  }
   string formula = var->GetEvent()->GetNthAssignmentFormulaString(n, g_registry.GetCC(), false);
   if (formula=="") return NULL;
   return getCharStar(formula.c_str());
@@ -1581,6 +1785,27 @@ LIB_EXTERN char** getNthDNAStrand(const char* moduleName, unsigned long n)
 
 LIB_EXTERN bool getIsNthDNAStrandOpen(const char* moduleName, unsigned long n, bool upstream)
 {
+  if (!checkModule(moduleName)) return false;
+  unsigned long actualsize = getNumDNAStrands(moduleName);
+  if (actualsize <= n) {
+    string error = "There is no DNA strand with index " + SizeTToString(n);
+    error += " in module ";
+    error += moduleName;
+    error += ".";
+    if (actualsize == 0) {
+      error += "  In fact, there are no DNA strands at all in that module.";
+    }
+    else if (actualsize == 1) {
+      error += "  There is a single DNA strand with index 0.";
+    }
+    else if (actualsize > 1) {
+      error += "  Valid DNA strand index values are 0 through ";
+      error += SizeTToString(actualsize-1);
+      error += ".";
+    }
+    g_registry.SetError(error);
+    return false;
+  }
   const DNAStrand* strand = g_registry.GetModule(moduleName)->GetNthVariableOfType(expandedStrands, n, false)->GetDNAStrand();
   if (upstream) {
     return strand->GetUpstreamOpen();
@@ -1685,6 +1910,27 @@ LIB_EXTERN char** getNthModularDNAStrand(const char* moduleName, unsigned long n
 
 LIB_EXTERN bool getIsNthModularDNAStrandOpen(const char* moduleName, unsigned long n, bool upstream)
 {
+  if (!checkModule(moduleName)) return false;
+  unsigned long actualsize = getNumModularDNAStrands(moduleName);
+  if (actualsize <= n) {
+    string error = "There is no Modular DNA strand with index " + SizeTToString(n);
+    error += " in module ";
+    error += moduleName;
+    error += ".";
+    if (actualsize == 0) {
+      error += "  In fact, there are no Modular DNA strands at all in that module.";
+    }
+    else if (actualsize == 1) {
+      error += "  There is a single Modular DNA strand with index 0.";
+    }
+    else if (actualsize > 1) {
+      error += "  Valid Modular DNA strand index values are 0 through ";
+      error += SizeTToString(actualsize-1);
+      error += ".";
+    }
+    g_registry.SetError(error);
+    return false;
+  }
   const DNAStrand* strand = g_registry.GetModule(moduleName)->GetNthVariableOfType(modularStrands, n, false)->GetDNAStrand();
   if (upstream) {
     return strand->GetUpstreamOpen();
@@ -1700,6 +1946,10 @@ LIB_EXTERN return_type getTypeOfSymbol(const char* moduleName, const char* symbo
   if (!checkModule(moduleName)) return allUnknown;
   const Variable* var = g_registry.GetModule(moduleName)->GetVariableFromSymbol(symbolName);
   if (var == NULL) {
+    string error = "No such variable: '";
+    error += symbolName;
+    error += "'.";
+    g_registry.SetError(error);
     return allUnknown;
   }
   var_type vtype = var->GetType();
@@ -1729,11 +1979,14 @@ LIB_EXTERN return_type getTypeOfSymbol(const char* moduleName, const char* symbo
   case varSpeciesCharge:
   case varSpeciesChemicalFormula:
     return allSpeciesFbcInfo;
+  case varSpeciesConversionFactor:
+    return allSpeciesConversionFactors;
   case varUndefined:
   case varSboTermWrapper:
   case varUncertWrapper:
   case varLayoutWrapper:
   case varLayoutColorEtc:
+  case varKineticLawWrapper:
       return allUnknown;
   case varModule:
     return subModules;
@@ -1766,7 +2019,7 @@ LIB_EXTERN formula_type getTypeOfEquationForSymbol(const char* moduleName, const
   const Variable* var = g_registry.GetModule(moduleName)->GetVariableFromSymbol(symbolName);
   if (var == NULL) {
     string error = "No such variable: '";
-    error += *symbolName;
+    error += symbolName;
     error += "'.";
     g_registry.SetError(error);
     return formulaINITIAL;
@@ -1778,7 +2031,13 @@ LIB_EXTERN char* getCompartmentForSymbol(const char* moduleName, const char* sym
 {
   if (!checkModule(moduleName)) return NULL;
   const Variable* var = g_registry.GetModule(moduleName)->GetVariableFromSymbol(symbolName);
-  if (var == NULL) return NULL;
+  if (var == NULL) {
+    string error = "No such variable: '";
+    error += symbolName;
+    error += "'.";
+    g_registry.SetError(error);
+    return NULL;
+  }
   const Variable* varcomp = var->GetCompartment();
   string retval;
   if (varcomp == NULL) {
@@ -1788,6 +2047,34 @@ LIB_EXTERN char* getCompartmentForSymbol(const char* moduleName, const char* sym
     retval = varcomp->GetNameDelimitedBy(g_registry.GetCC());
   }
   return getCharStar(retval.c_str());
+}
+
+LIB_EXTERN bool getSymbolSubstanceOnly(const char* moduleName, const char* symbolName)
+{
+  if (!checkModule(moduleName)) return false;
+  const Variable* var = g_registry.GetModule(moduleName)->GetVariableFromSymbol(symbolName);
+  if (var == NULL) {
+    string error = "No such variable: '";
+    error += symbolName;
+    error += "'.";
+    g_registry.SetError(error);
+    return false;
+  }
+  return var->GetSubstOnly();
+}
+
+LIB_EXTERN bool getSymbolHasValue(const char* moduleName, const char* symbolName)
+{
+  if (!checkModule(moduleName)) return false;
+  const Variable* var = g_registry.GetModule(moduleName)->GetVariableFromSymbol(symbolName);
+  if (var == NULL) {
+    string error = "No such variable: '";
+    error += symbolName;
+    error += "'.";
+    g_registry.SetError(error);
+    return false;
+  }
+  return !var->GetFormula()->IsEmpty();
 }
 
 LIB_EXTERN int writeAntimonyFile(const char* filename, const char* moduleName)

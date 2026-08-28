@@ -1,0 +1,108 @@
+// Created by libAntimony v3.2.0
+model *Fuentes2005_ZymogenActivation()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species z in compartment_, e in compartment_, w in compartment_, ez in compartment_;
+
+  // Reactions:
+  v1: z -> w + e; compartment_*v1_k1*z;
+  v2: z + e -> ez; compartment_*(v2_k21*e*z - v2_k22*ez);
+  v3: ez -> w + 2 e; compartment_*v3_k3*ez;
+
+  // Species initializations:
+  z = 2.4e-05;
+  e = 0;
+  w = 0;
+  ez = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  v1_k1 = 0.004;
+  v1_k1 has sec_inv;
+  v2_k21 = 1000;
+  v2_k21 has M_inv_sec_inv;
+  v2_k22 = 0.00021;
+  v2_k22 has sec_inv;
+  v3_k3 = 0.00054;
+  v3_k3 has sec_inv;
+
+  // Other declarations:
+  const compartment_;
+
+  // Unit definitions:
+  unit M_inv_sec_inv = litre / (mole * second);
+  unit sec_inv = 1 / second;
+
+  // Display Names:
+  compartment_ is "compartment";
+  z is "Zymogen";
+  e is "Enzyme";
+  w is "Peptide";
+  ez is "Enzyme-Substrate complex";
+  v1 is "Intramolecular autoactivation";
+  v2 is "Intermolecular autoactivation-Complex formation";
+  v3 is "Intermolecular autoactivation-Enzyme release";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/go/GO:0005623"
+  z isPartOf "http://identifiers.org/go/GO:0042588"
+  ez isVersionOf "http://identifiers.org/go/GO:0043234"
+  v1 isVersionOf "http://identifiers.org/go/GO:0043085"
+  v2 isVersionOf "http://identifiers.org/go/GO:0019899"
+  v3 isVersionOf "http://identifiers.org/go/GO:0043085"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL6623597435"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000092"
+  model publication "http://identifiers.org/pubmed/15634334"
+  model origin "http://identifiers.org/pubmed/7558"
+  model identity "http://identifiers.org/go/GO:0031638"
+  model hasTaxon "http://identifiers.org/taxonomy/131567"
+  model created "2007-03-05T16:37:52Z"
+  model modified "2014-02-13T15:45:09Z"
+  model creator1.givenName "Jacky L"
+  model creator1.familyName "Snoep"
+  model creator1.organization "Stellenbosh University"
+  model creator1.email "jls@sun.ac.za"
+  model creator2.givenName "Harish"
+  model creator2.familyName "Dharuri"
+  model creator2.organization "California Institute of Technology"
+  model creator2.email "hdharuri@cds.caltech.edu"
+
+  // Notes:
+  model notes ```
+. 
+.
+ 
+.
+ 
+
+** [SBML](http://www.sbml.org/) level 2 code generated for the JWS Online project by Jacky Snoep using [PySCeS](http://pysces.sourceforge.net/) 
+Run this model online at [http://jjj.biochem.sun.ac.za](http://jjj.biochem.sun.ac.za/) 
+To cite JWS Online please refer to: Olivier, B.G. and Snoep, J.L. (2004)
+[Web-based modelling using JWS Online](http://bioinformatics.oupjournals.org/cgi/content/abstract/20/13/2143) , Bioinformatics, 20:2143-2144 **
+
+.
+ 
+.
+ 
+.
+ 
+.
+ 
+.
+ 
+.
+ 
+
+The model reproduces Fig 1A of the paper. The model was successfully tested on MathSBML.
+
+This model originates from BioModels Database: A Database of Annotated Published
+Models. It is copyright (c) 2005-2006 The BioModels Team. 
+For more information see the [terms of use](http://www.ebi.ac.uk/biomodels/legal.html) .
+```
+end
+
+Fuentes2005_ZymogenActivation is "Fuentes2005_ZymogenActivation"

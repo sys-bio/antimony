@@ -1,0 +1,22 @@
+// Created by libAntimony v3.2.0
+model ExtMod1()
+  S = 1;
+  D = 1;
+end
+
+model simple()
+  S = 5;
+  D = 10;
+end
+
+model *case01165()
+  A: ExtMod1();
+  B: simple();
+  A.S is S;
+  B.S is S;
+  A.D is D;
+  B.D is D;
+
+  S = 5;
+  D = 10;
+end

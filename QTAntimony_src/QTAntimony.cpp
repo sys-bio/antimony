@@ -10,6 +10,19 @@
 #include <QDesktopWidget>
 #include <QDesktopServices>
 #include <QVariant>
+#include <QIcon>
+#include <QGuiApplication>
+#include <QScreen>
+
+#ifdef Q_OS_WIN
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <windows.h>
+#endif
 
 QTAntimony::QTAntimony(int& argc, char**& argv)
         : QApplication(argc, argv),
@@ -18,6 +31,9 @@ QTAntimony::QTAntimony(int& argc, char**& argv)
         m_currentdir(""), //will set this below.
         m_basewindow(NULL)
 {
+	// Set the app-level icon once, from the embedded multi-resolution .ico
+	setWindowIcon(QIcon(":/antimony.ico"));
+
 	QSettings qset(ORG, APP);
 	qset.sync();
 	m_currentdir = qset.value("currentdir", QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)).toString();
@@ -93,7 +109,7 @@ void QTAntimony::DisplayWindow(QMainWindow* t) {
     }
     QRect desk = desktop()->availableGeometry(focus);
     if (focus==NULL) {
-        desk = desktop()->availableGeometry(desktop()->primaryScreen());
+        desk = QGuiApplication::primaryScreen()->availableGeometry();
         QRect window;
         window.setTop(desk.height()/8);
         window.setBottom(desk.height()*7/8);
@@ -124,12 +140,30 @@ void QTAntimony::DisplayWindow(QMainWindow* t) {
         }
         t->setGeometry(window);
     }
-	std::string file = "C:/Program Files (x86)/Antimony/antimony_ico.png";
-	QFile iconfile(file.c_str());
-	if (!iconfile.exists()) {
-		file = ":/antimony_ico.png";
-	}
-	t->setWindowIcon(QIcon(file.c_str()));
+    ApplyWindowIcon(t);
     t->show();
+
     m_basewindow = t;
+}
+
+// Applies the app icon to any top-level widget.
+void QTAntimony::ApplyWindowIcon(QWidget* w)
+{
+    if (w == NULL) return;
+    w->setWindowIcon(QIcon(":/antimony.ico"));
+
+#ifdef Q_OS_WIN
+    // Fix Windows 11 bug: only use large icon for taskbar.
+    HICON hIconLarge = static_cast<HICON>(LoadImageW(
+        GetModuleHandleW(NULL), MAKEINTRESOURCEW(ANT_ICON1),
+        IMAGE_ICON, 256, 256, LR_DEFAULTCOLOR));
+    if (hIconLarge) {
+        HWND hwnd = reinterpret_cast<HWND>(w->winId());
+        SendMessage(hwnd, WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(hIconLarge));
+        SendMessage(hwnd, WM_SETICON, ICON_SMALL, reinterpret_cast<LPARAM>(hIconLarge));
+        // Intentionally not destroyed: the icon needs to live as long as
+        // the window does, and LoadImage-ed resource icons are cheap and
+        // reclaimed by Windows on process exit.
+    }
+#endif
 }

@@ -1,0 +1,103 @@
+// Created by libAntimony v3.2.0
+model *Alharbi2019___Tumor_normal_model__TNM__of_the_development_of_tumor_cells_and_their_impact_on_normal_cell_dynamics()
+
+  // Compartments and Species:
+  compartment Whole_organism;
+  species Normal_cells in Whole_organism, Tumor_cells in Whole_organism;
+
+  // Reactions:
+  Normal_cell_growth:  => Normal_cells; Whole_organism*(r*Normal_cells*(1 - beta1*Normal_cells));
+  Normal_cell_death_inhibition: Normal_cells => ; Whole_organism*(gamma_*Normal_cells*Tumor_cells);
+  Tumor_cell_growth:  => Tumor_cells; Whole_organism*(alpha1*Tumor_cells*(1 - alpha2*Tumor_cells) + beta2*Normal_cells*Tumor_cells);
+
+  // Species initializations:
+  Normal_cells = 1;
+  Tumor_cells = 1;
+
+  // Compartment initializations:
+  Whole_organism = 1;
+
+  // Variable initializations:
+  r = 0.4312;
+  beta1 = 2.99e-06;
+  gamma_ = 0.9314;
+  alpha1 = 0.4426;
+  alpha2 = 0.4;
+  beta2 = 1.1891;
+
+  // Other declarations:
+  const Whole_organism, r, beta1, gamma_, alpha1, alpha2, beta2;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = litre;
+  unit time_unit = 86400 second;
+  unit substance = mole;
+
+  // Display Names:
+  time_unit is "time";
+  gamma_ is "gamma";
+  Normal_cell_death_inhibition is "Normal_cell_death/inhibition";
+
+  // CV terms:
+  Whole_organism isVersionOf "http://identifiers.org/ncit/C13413"
+  Whole_organism hasProperty "http://identifiers.org/pato/PATO:0001993"
+  Normal_cells isVersionOf "http://identifiers.org/cl/CL:0000000"
+  Normal_cells hasProperty "http://identifiers.org/hp/HP:0032322"
+  Tumor_cells isVersionOf "http://identifiers.org/cl/CL:0001063"
+  Normal_cell_growth isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  Normal_cell_growth isVersionOf "http://identifiers.org/go/GO:0008283"
+  Normal_cell_death_inhibition isVersionOf "http://identifiers.org/sbo/SBO:0000394"
+  Normal_cell_death_inhibition isVersionOf "http://identifiers.org/sbo/SBO:0000169"
+  Normal_cell_death_inhibition isVersionOf "http://identifiers.org/go/GO:0008219"
+  Tumor_cell_growth isVersionOf "http://identifiers.org/go/GO:0008283"
+  Tumor_cell_growth isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL2108260002",
+                     "http://identifiers.org/biomodels.db/BIOMD0000001037"
+  model isPropertyOf "http://identifiers.org/go/GO:0002347"
+  model isPropertyOf "http://identifiers.org/doid/DOID:162"
+  model isPropertyOf "http://identifiers.org/ncit/C18670"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model isDescribedBy "http://identifiers.org/doi/10.1109/ACCESS.2019.2940060"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2021-08-25T13:35:02Z"
+  model modified "2021-08-25T13:35:02Z"
+  model creator1.givenName "Emilia"
+  model creator1.familyName "Chen"
+  model creator1.organization "University of Cambridge"
+  model creator1.email "eblc2@cam.ac.uk"
+
+  // Notes:
+  model notes ```
+This ordinary differential equation model of the interactions between tumor and 
+normal cells is based on the publication:S. A. Alharbi and A. S. Rambely, "Dynamic 
+Simulation for Analyzing the Effects of the Intervention of Vitamins on Delaying 
+the Growth of Tumor Cells," in IEEE Access, vol. 7, pp. 128816-128827, 2019doi: 
+10.1109/ACCESS.2019.2940060.Comment:This TNM model is described by the system of 
+equations presented in (2), in the publication manuscript.Abstract:The natural sources 
+of the vitamins, which come from a balanced diet (as recommended by the World Cancer 
+Research Fund and the American Institute for Cancer Research) contribute to protecting 
+the body from advancing progressive of cancer stages. Thus, in this study, we analyze 
+the effect of the intervention of vitamins on delaying the growth of cancer cells 
+based on the dynamics of a normal cell cycle when the tumor cells appear in a tissue 
+as a resulting for progressing abnormal cells due to the weak response of the immune 
+system. We developed a mathematical model, called tumor-normal-vitamins model (TNVM), 
+which is governed by a system of ordinary differential equations and refers to two 
+main populations normal cells and tumor cells. This model considers the intervention 
+of vitamins as a moderating factor within thirty days. The models are discussed analytically 
+and numerically by utilizing the Runge-Kutta method to simulate them. The results 
+of the analysis and simulation of free model illustrate that the model will be stable 
+if the tumor cells succeed in eliminating normal cells in the tissue. Whereas, the 
+analysis and simulation of the TNVM showed a case of coexistence between normal cells 
+and tumor cells occur if an individual consumes a regular rate of vitamins that have 
+been simulated to be 87% per day from a natural food source. Even though the response 
+of the immune system is weak, the daily consumption of enough vitamins can play an 
+essential role in delaying the development of an early stage of cancer. This study 
+contributes to the increasing awareness regarding a healthy diet to reduce the risk 
+of some deadly diseases, especially cancer.
+```
+end
+
+Alharbi2019___Tumor_normal_model__TNM__of_the_development_of_tumor_cells_and_their_impact_on_normal_cell_dynamics is "Alharbi2019 - Tumor-normal model (TNM) of the development of tumor cells and their impact on normal cell dynamics"

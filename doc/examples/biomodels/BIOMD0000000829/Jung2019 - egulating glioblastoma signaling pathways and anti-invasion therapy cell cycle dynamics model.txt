@@ -1,0 +1,261 @@
+// Created by libAntimony v3.2.0
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species Glucose_G in compartment_, Drug_D in compartment_, miR_451_M in compartment_;
+  species AMPK_A in compartment_, mTOR_R in compartment_, $deltaD in compartment_;
+  species Cdh1 in compartment_, CycB in compartment_, p55cdc_T in compartment_;
+  species mass in compartment_, $mass_s in compartment_, p55cdc_A in compartment_;
+  species Plk1 in compartment_;
+
+  // Assignment Rules:
+  deltaD := exp(-Drug_D);
+  mass_s := mass + zeta_1*(1/mTOR_R)^n_1/(K_m^n_1 + (1/mTOR_R)^n_1);
+  HIF := zeta_2/(K^n_2*(K_H^n_2 + (1/K)^n_2));
+  myu_0 := myu + epsilon*myu_hat;
+
+  // Reactions:
+  Dose_for_Glucose:  => Glucose_G; compartment_*u_1;
+  Dose_for_Drug:  => Drug_D; compartment_*u_2;
+  Consumption_of_Glucose: Glucose_G => ; compartment_*(myu_G*Glucose_G);
+  Decay_of_Drug: Drug_D => ; compartment_*(myu_D*Drug_D);
+  Production_of_miR_451:  => miR_451_M; compartment_*(Glucose_G + l_1*l_2^2/(l_2^2 + alpha*AMPK_A^2));
+  loss_of_miR_451: miR_451_M => ; compartment_*miR_451_M;
+  signal_source_of_AMPK:  => AMPK_A; compartment_*(S_1/epsilon_1);
+  Production_of_AMPK:  => AMPK_A; compartment_*(l_3*l_4^2/(epsilon_1*(l_4^2 + beta*miR_451_M^2)));
+  loss_of_AMPK: AMPK_A => ; compartment_*(AMPK_A/epsilon_1);
+  signal_source_of_mTOR:  => mTOR_R; compartment_*(S_2/epsilon_2);
+  Production_of_mTOR:  => mTOR_R; compartment_*(l_5*l_6^2/(epsilon_2*(l_6^2 + deltaD*gamma_*AMPK_A^2)));
+  loss_of_mTOR: mTOR_R => ; compartment_*(mTOR_R/epsilon_2);
+  Activation_of_Cdh1:  => Cdh1; compartment_*(k_3*(1 - Cdh1)/(J_3 + 1 - Cdh1));
+  Activation_of_Cdh1_by_p55cdc_A:  => Cdh1; compartment_*(k_3_*p55cdc_A*(1 - Cdh1)/(J_3 + 1 - Cdh1));
+  Degradation_of_CycB: CycB => ; compartment_*(k_2*CycB);
+  Degradation_of_CycB_by_Cdh1: CycB => ; compartment_*(k_2_*Cdh1*CycB);
+  Degradation_of_p55cdc_T: p55cdc_T => ; compartment_*(k_6*p55cdc_T);
+  Inactivation_of_Cdh1_by_CycB: Cdh1 => ; compartment_*(k_4*mass_s*CycB*Cdh1/(J_4 + Cdh1));
+  inhibitory_effect_of_p21_or_p27_genes: CycB => ; compartment_*(p27_p21*HIF*CycB);
+  Production_of_CycB:  => CycB; compartment_*k_1;
+  production_of_p55cdc_T:  => p55cdc_T; compartment_*k_5;
+  transcription_of_p55cdc_T_by_CycB:  => p55cdc_T; compartment_*(k_5_*(CycB*mass_s)^n/(J_5^n + (CycB*mass_s)^n));
+  Activation_of_p55cdc_A_by_Plk1:  => p55cdc_A; compartment_*(k_7*Plk1*(p55cdc_T - p55cdc_A)/(J_7 + p55cdc_T - p55cdc_A));
+  Inactivation_of_p55cdc_A: p55cdc_A => ; compartment_*(k_8*Mad*p55cdc_A/(J_8 + p55cdc_A));
+  Degradation_of_p55cdc_A: p55cdc_A => ; compartment_*(k_6*p55cdc_A);
+  Activation_of_Plk1_by_CycB:  => Plk1; compartment_*(k_9*mass_s*CycB*(1 - Plk1));
+  Degradation_of_Plk1: Plk1 => ; compartment_*(k_10*Plk1);
+  grow_of_mass:  => mass; compartment_*(myu_0*mass*(1 - mass/m));
+
+  // Events:
+  event_: at (time%12) == 0: u_1 = u_1 + 1, u_2 = u_2 + 1;
+  event_2: at (((((((((((((time == 3) || (time == 15)) || (time == 27)) || (time == 39)) || (time == 51)) || (time == 63)) || (time == 75)) || (time == 87)) || (time == 99)) || (time == 111)) || (time == 123)) || (time == 135)) || (time == 147)) || (time == 159): u_1 = u_1 - 1, u_2 = u_2 - 1;
+
+  // Species initializations:
+  Glucose_G = 6.64215616170866e-22;
+  Drug_D = 0;
+  miR_451_M = 3.05539183438598e-21;
+  AMPK_A = 2.07567380053396e-21;
+  mTOR_R = 4.58308775157897e-21;
+  Cdh1 = 1;
+  CycB = 0.1;
+  p55cdc_T = 1;
+  mass = 0.45;
+  p55cdc_A = 0.85;
+  Plk1 = 0.6;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  zeta_1 = 2.5;
+  n_1 = 10;
+  K_m = 0.5;
+  u_1 = 0;
+  u_2 = 0;
+  myu_G = 0.5;
+  l_1 = 4;
+  l_2 = 1;
+  alpha = 1.6;
+  l_3 = 4;
+  l_4 = 1;
+  beta = 1;
+  S_1 = 0.2;
+  epsilon_1 = 0.02;
+  l_5 = 4;
+  l_6 = 1;
+  gamma_ = 1;
+  S_2 = 1.2;
+  epsilon_2 = 0.02;
+  myu_D = 1.316;
+  k_1 = 0.12;
+  k_2 = 0.12;
+  k_2_ = 4.5;
+  p27_p21 = 1.05;
+  zeta_2 = 1;
+  K = 0.01;
+  n_2 = 10;
+  K_H = 10;
+  k_3 = 3;
+  k_3_ = 30;
+  k_4 = 105;
+  J_3 = 0.04;
+  J_4 = 0.04;
+  k_5 = 0.015;
+  k_5_ = 0.6;
+  k_6 = 0.3;
+  n = 4;
+  J_5 = 0.3;
+  k_7 = 3;
+  J_7 = 0.001;
+  k_8 = 1.5;
+  J_8 = 0.001;
+  Mad = 1;
+  k_9 = 0.3;
+  k_10 = 0.06;
+  myu = 0.03;
+  epsilon = 0.006;
+  myu_hat = 0.5;
+  m = 10;
+
+  // Other declarations:
+  var u_1, u_2, HIF, myu_0;
+  const compartment_, zeta_1, n_1, K_m, myu_G, l_1, l_2, alpha, l_3, l_4;
+  const beta, S_1, epsilon_1, l_5, l_6, gamma_, S_2, epsilon_2, myu_D, k_1;
+  const k_2, k_2_, p27_p21, zeta_2, K, n_2, K_H, k_3, k_3_, k_4, J_3, J_4;
+  const k_5, k_5_, k_6, n, J_5, k_7, J_7, k_8, J_8, Mad, k_9, k_10, myu, epsilon;
+  const myu_hat, m;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  Glucose_G is "Glucose G";
+  Drug_D is "Drug D";
+  miR_451_M is "miR-451 M";
+  AMPK_A is "AMPK A";
+  mTOR_R is "mTOR R";
+  event_ is "event";
+  event_2 is "event 2";
+  gamma_ is "gamma";
+  k_2 is "k_2'";
+  k_2_ is "k_2''";
+  p27_p21 is "p27/p21";
+  k_3 is "k_3'";
+  k_3_ is "k_3''";
+  k_5 is "k_5'";
+  k_5_ is "k_5''";
+  myu is "myu+";
+  myu_0 is "myu";
+  m is "m*";
+  Dose_for_Glucose is "Dose for Glucose";
+  Dose_for_Drug is "Dose for Drug";
+  Consumption_of_Glucose is "Consumption of Glucose";
+  Decay_of_Drug is "Decay of Drug";
+  Production_of_miR_451 is "Production of miR-451";
+  loss_of_miR_451 is "loss of miR-451";
+  signal_source_of_AMPK is "signal source of AMPK";
+  Production_of_AMPK is "Production of AMPK";
+  loss_of_AMPK is "loss of AMPK";
+  signal_source_of_mTOR is "signal source of mTOR";
+  Production_of_mTOR is "Production of mTOR";
+  loss_of_mTOR is "loss of mTOR";
+  Activation_of_Cdh1 is "Activation of Cdh1";
+  Activation_of_Cdh1_by_p55cdc_A is "Activation of Cdh1 by p55cdc_A";
+  Degradation_of_CycB is "Degradation of CycB";
+  Degradation_of_CycB_by_Cdh1 is "Degradation of CycB by Cdh1";
+  Degradation_of_p55cdc_T is "Degradation of p55cdc_T";
+  Inactivation_of_Cdh1_by_CycB is "Inactivation of Cdh1 by CycB";
+  inhibitory_effect_of_p21_or_p27_genes is "inhibitory effect of p21 or p27 genes";
+  Production_of_CycB is "Production of CycB";
+  production_of_p55cdc_T is "production of p55cdc_T";
+  transcription_of_p55cdc_T_by_CycB is "transcription of p55cdc_T by CycB";
+  Activation_of_p55cdc_A_by_Plk1 is "Activation of p55cdc_A by Plk1";
+  Inactivation_of_p55cdc_A is "Inactivation of p55cdc_A";
+  Degradation_of_p55cdc_A is "Degradation of p55cdc_A";
+  Activation_of_Plk1_by_CycB is "Activation of Plk1 by CycB";
+  Degradation_of_Plk1 is "Degradation of Plk1";
+  grow_of_mass is "grow of mass";
+
+  // CV terms:
+  compartment_ isVersionOf "http://identifiers.org/ncit/C13413"
+  Glucose_G isVersionOf "http://identifiers.org/chebi/CHEBI:17234"
+  Drug_D isVersionOf "http://identifiers.org/chebi/CHEBI:23888"
+  miR_451_M isVersionOf "http://identifiers.org/uniprot/P56211"
+  miR_451_M isVersionOf "http://identifiers.org/ncit/C82834"
+  AMPK_A isVersionOf "http://identifiers.org/uniprot/P54646"
+  AMPK_A isVersionOf "http://identifiers.org/ncit/C94701"
+  mTOR_R isVersionOf "http://identifiers.org/cco/CCO:2475"
+  mTOR_R isVersionOf "http://identifiers.org/uniprot/P42345"
+  mTOR_R isVersionOf "http://identifiers.org/ncit/C38928"
+  Cdh1 isVersionOf "http://identifiers.org/uniprot/Q9UM11"
+  CycB isVersionOf "http://identifiers.org/uniprot/Q8WWL7"
+  p55cdc_T isVersionOf "http://identifiers.org/uniprot/Q12834"
+  mass isVersionOf "http://identifiers.org/ncit/C43246"
+  mass_s isVersionOf "http://identifiers.org/ncit/C43246"
+  p55cdc_A isVersionOf "http://identifiers.org/uniprot/Q12834"
+  Plk1 isVersionOf "http://identifiers.org/uniprot/P53350"
+  Dose_for_Glucose isVersionOf "http://identifiers.org/go/GO:0035737"
+  Dose_for_Drug isVersionOf "http://identifiers.org/go/GO:0035737"
+  Consumption_of_Glucose isVersionOf "http://identifiers.org/sbo/SBO:0000394"
+  Decay_of_Drug isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  Production_of_miR_451 isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  loss_of_miR_451 isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  signal_source_of_AMPK isVersionOf "http://identifiers.org/go/GO:0023052"
+  Production_of_AMPK isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  loss_of_AMPK isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  signal_source_of_mTOR isVersionOf "http://identifiers.org/go/GO:0023052"
+  Production_of_mTOR isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  loss_of_mTOR isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  Activation_of_Cdh1 isVersionOf "http://identifiers.org/sbo/SBO:0000656"
+  Activation_of_Cdh1_by_p55cdc_A isVersionOf "http://identifiers.org/sbo/SBO:0000656"
+  Degradation_of_CycB isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  Degradation_of_CycB_by_Cdh1 isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  Degradation_of_p55cdc_T isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  Inactivation_of_Cdh1_by_CycB isPropertyOf "http://identifiers.org/sbo/SBO:0000349"
+  inhibitory_effect_of_p21_or_p27_genes isVersionOf "http://identifiers.org/sbo/SBO:0000261"
+  Production_of_CycB isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  production_of_p55cdc_T isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+  transcription_of_p55cdc_T_by_CycB isVersionOf "http://identifiers.org/sbo/SBO:0000183"
+  Activation_of_p55cdc_A_by_Plk1 isVersionOf "http://identifiers.org/sbo/SBO:0000656"
+  Inactivation_of_p55cdc_A isPropertyOf "http://identifiers.org/sbo/SBO:0000349"
+  Degradation_of_p55cdc_A isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  Activation_of_Plk1_by_CycB isVersionOf "http://identifiers.org/sbo/SBO:0000656"
+  Degradation_of_Plk1 isVersionOf "http://identifiers.org/sbo/SBO:0000179"
+  grow_of_mass isVersionOf "http://identifiers.org/sbo/SBO:0000393"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1910020001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000829"
+  model hasProperty "http://identifiers.org/go/GO:0023052"
+  model hasProperty "http://identifiers.org/efo/0000311"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000046"
+  model hasProperty "http://identifiers.org/ncit/C3058"
+  model hasProperty "http://identifiers.org/ncit/C17132"
+  model isDescribedBy "http://identifiers.org/pubmed/31009513"
+  model created "2019-09-30T14:23:53Z"
+  model modified "2019-09-30T14:23:53Z"
+  model creator1.givenName "Szeyi"
+  model creator1.familyName "Ng"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "muffet0307@gmail.com"
+
+  // Notes:
+  model notes ```
+This model is based on paper, based on its cell cycle dynamics model:Strategies in
+regulating glioblastoma signaling pathways and anti-invasion therapyAbstract:Glioblastoma
+multiforme is one of the most invasive type of glial tumors, which rapidly grows
+and commonly spreads into nearby brain tissue. It is a devastating brain cancer that
+often results in death within approximately 12 to 15 months after diagnosis. In this
+work, optimal control theory was applied to regulate intracellular signaling pathways
+of miR-451–AMPK–mTOR–cell cycle dynamics via glucose and drug intravenous administration
+infusions. Glucose level is controlled to activate miR-451 in the up-stream pathway
+of the model. A potential drug blocking the inhibitory pathway of mTOR by AMPK complex
+is incorporated to explore regulation of the down-stream pathway to the cell cycle.
+Both miR-451 and mTOR levels are up-regulated inducing cell proliferation and reducing
+invasion in the neighboring tissues. Concomitant and alternating glucose and drug
+infusions are explored under various circumstances to predict best clinical outcomes
+with least administration costs.
+```
+end
+
+New_Model is "Jung2019 - egulating glioblastoma signaling pathways and anti-invasion therapy cell cycle dynamics model"

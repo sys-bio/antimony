@@ -1,0 +1,145 @@
+// Created by libAntimony v3.2.0
+model *MODEL1407300000()
+
+  // Compartments and Species:
+  compartment cell;
+  species $X in cell, $Xm in cell, $Vm in cell, $Lambda in cell;
+
+  // Assignment Rules:
+  X := Xm/(1 + exp(2 + (4*Vm/Xm)*(Lambda - time)));
+  Xm := xm*(1 - kx*(1 - exp(-ln(2)*(C/mx)^ax)));
+  Vm := vm*(1 - kv*(1 - exp(-ln(2)*(C/mv)^av)));
+  Lambda := lambda*(1 + klambda*(1 - exp(-ln(2)*(C/mlambda)^alambda)));
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  xm = 1;
+  kx = 1;
+  C = 1;
+  mx = 5;
+  ax = 2;
+  vm = 0.25;
+  kv = 1;
+  mv = 4;
+  av = 2;
+  lambda = 3;
+  klambda = 1;
+  mlambda = 2;
+  alambda = 2;
+
+  // Other declarations:
+  const cell, xm, kx, C, mx, ax, vm, kv, mv, av, lambda, klambda, mlambda;
+  const alambda;
+
+  // Unit definitions:
+  unit time_unit = 3600 second;
+
+  // Display Names:
+  time_unit is "time";
+
+  // CV terms:
+  cell identity "http://identifiers.org/bto/BTO:0000142"
+  X isVersionOf "http://identifiers.org/bto/BTO:0002774"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1407300000"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000532"
+  model publication "http://identifiers.org/pubmed/24572069"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model isVersionOf "http://identifiers.org/go/GO:1990000",
+                    "http://identifiers.org/go/GO:0070841"
+  model hasProperty "http://identifiers.org/doid/DOID:10652"
+  model created "2014-07-30T13:46:49Z"
+  model modified "2014-09-08T13:27:02Z"
+  model creator1.givenName "Audald"
+  model creator1.familyName "Lloret i Villas"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "lloret@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Vazquez2014 - Chemical inhibition fromamyloid protein aggregation kinetics 
+
+
+This model is described in the article:
+
+
+[Modeling of chemical inhibition from amyloid protein aggregation kinetics.](http://identifiers.org/pubmed/24572069 "Access to this publication") 
+
+
+Vázquez JA. 
+
+BMC Pharmacol Toxicol 2014; 15(1): 9 
+Abstract:
+
+
+BACKGROUNDS: The process of amyloid proteins aggregation causes several human
+neuropathologies. In some cases, e.g. fibrillar deposits of insulin, the problems
+are generated in the processes of production and purification of protein and in
+the pump devices or injectable preparations for diabetics. Experimental kinetics
+and adequate modelling of chemical inhibition from amyloid aggregation are of
+practical importance in order to study the viable processing, formulation and
+storage as well as to predict and optimize the best conditions to reduce the
+effect of protein nucleation. RESULTS: In this manuscript, experimental data of
+insulin, A?42 amyloid protein and apomyoglobin fibrillation from recent bibliography
+were selected to evaluate the capability of a bivariate sigmoid equation to
+model them. The mathematical functions (logistic combined with Weibull equation)
+were used in reparameterized form and the effect of inhibitor concentrations on
+kinetic parameters from logistic equation were perfectly defined and explained.
+The surfaces of data were accurately described by proposed model and the presented
+analysis characterized the inhibitory influence on the protein aggregation by
+several chemicals. Discrimination between true and apparent inhibitors was
+also confirmed by the bivariate equation. EGCG for insulin (working at pH?=?7.4/T?=?37°C)
+and taiwaniaflavone for A?42 were the compounds studied that shown the greatest
+inhibition capacity. CONCLUSIONS: An accurate, simple and effective model to
+investigate the inhibition of chemicals on amyloid protein aggregation has been
+developed. The equation could be useful for the clear quantification of inhibitor
+potential of chemicals and rigorous comparison among them.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000532](http://identifiers.org/biomodels.db/BIOMD0000000532).
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication").
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+  X notes ```
+Amyloid aggregation growth measured as absorbance at 600 nm, relative ThT fluorescence 
+intensity (%) and ThT fluorescence intensity at 482 nm or 490 nm. Units: absorbance 
+units (AU) or (%).
+```
+  Xm notes "Maximum aggregation growth. Units: Au or %"
+  Vm notes "Maximum aggregation rate. Units: AU h-1, Au d-1 or % h-1"
+  Lambda notes "Lag phase. Units: h or d"
+  xm notes "Maximum insulin aggregation affected by chemical agent. Units: AU or %"
+  kx notes "Maximum response affecting on Xm. Dimensionless"
+  C notes "Concentration of chemical agent. Units: mM or µM"
+  mx notes ```
+Concentration corresponding to the semi-maximum response affecting on Xm. Units: 
+mM or µM
+```
+  ax notes "Shape parameter affecting on Xm. Dimensionless"
+  vm notes ```
+Maximum insulin aggregation rate affected by chemical agent. Units: AU h-1, Au 
+d-1 or % h-1.
+```
+  kv notes "Maximum response affecting on vm."
+  mv notes ```
+Concentration corresponding to the semi-maximum response affecting on vm. Units: 
+mM or µM
+```
+  av notes "Shape parameter affecting on vm. Dimensionless"
+  lambda notes "Lag phase affected by chemical agent. Units: h or d"
+  klambda notes "Maximum response affecting on lambda. Dimensionless"
+  mlambda notes ```
+Concentration corresponding to the semi-maximum response afecting on lambda. Units: 
+mM or µM
+```
+  alambda notes "Shape parameter affecting on lambda. Dimensionless"
+end
+
+MODEL1407300000 is "Vazquez2014 - Chemical inhibition from amyloid protein aggregation kinetics"

@@ -1,0 +1,160 @@
+// Created by libAntimony v3.2.0
+model *Model_1()
+
+  // Compartments and Species:
+  compartment compartment_1;
+  species species_1 in compartment_1, species_7 in compartment_1, species_8 in compartment_1;
+  species species_9 in compartment_1, species_10 in compartment_1, species_11 in compartment_1;
+  species species_12 in compartment_1, species_13 in compartment_1, species_14 in compartment_1;
+  species species_15 in compartment_1;
+
+  // Assignment Rules:
+  parameter_9 := 0.135*parameter_8;
+
+  // Reactions:
+  reaction_1: species_1 => 0.574 species_7 + 0.144 species_8 + 0.05 species_9 + 0.012 species_10 + 0.162 species_11 + 0.04 species_12 + 0.014 species_13 + 0.004 species_14; compartment_1*(parameter_2*species_1/(parameter_1 + species_1));
+  reaction_2: species_1 => 0.751 species_7 + 0.023 species_8 + 0.025 species_9 + 0.015 species_10 + 0.127 species_11 + 0.026 species_12 + 0.018 species_13 + 0.016 species_14; compartment_1*(parameter_4*species_1/(parameter_3 + species_1));
+  reaction_3: species_1 => 0.068 species_7 + 0.059 species_8 + 0.136 species_9 + 0.107 species_10 + 0.218 species_11 + 0.218 species_12 + 0.098 species_13 + 0.097 species_14; compartment_1*(parameter_6*species_1/(parameter_5 + species_1));
+  reaction_4: species_7 => species_15; compartment_1*(parameter_8*species_7/(parameter_7 + species_7));
+  reaction_5: species_8 => species_15; compartment_1*(parameter_9*species_8/(parameter_7 + species_8));
+
+  // Species initializations:
+  species_1 = 6.69999967735732e-05;
+  species_7 = 0;
+  species_8 = 0;
+  species_9 = 0;
+  species_10 = 0;
+  species_11 = 0;
+  species_12 = 0;
+  species_13 = 0;
+  species_14 = 0;
+  species_15 = 0;
+
+  // Compartment initializations:
+  compartment_1 = 1000;
+
+  // Variable initializations:
+  parameter_1 = 0.49;
+  parameter_2 = 0.00825;
+  parameter_3 = 0.49;
+  parameter_4 = 0.039;
+  parameter_5 = 0.49;
+  parameter_6 = 0.00255;
+  parameter_7 = 0.05;
+  parameter_8 = 0.285;
+
+  // Other declarations:
+  var parameter_9;
+  const compartment_1, parameter_1, parameter_2, parameter_3, parameter_4;
+  const parameter_5, parameter_6, parameter_7, parameter_8;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 60 second;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_1 is "compartment";
+  species_1 is "LA";
+  species_7 is "13HOD-S(Z,E)";
+  species_8 is "13HOD-R(Z,E)";
+  species_9 is "13HOD-S(E,E)";
+  species_10 is "13HOD-R(E,E)";
+  species_11 is "9HOD-S(Z,E)";
+  species_12 is "9HOD-R(Z,E)";
+  species_13 is "9HOD-S(E,E)";
+  species_14 is "9HOD-R(E,E)";
+  species_15 is "nHexanal";
+  parameter_1 is "Km(L1)";
+  parameter_2 is "Vm(L1)";
+  parameter_3 is "Km(L2)";
+  parameter_4 is "Vm(L2)";
+  parameter_5 is "Km(L3)";
+  parameter_6 is "Vm(L3)";
+  parameter_7 is "Km(HPL)";
+  parameter_8 is "Vm(HPL-SZE)";
+  parameter_9 is "Vm(HPL-RZE)";
+  reaction_1 is "LOX1";
+  reaction_2 is "LOX2";
+  reaction_3 is "LOX3";
+  reaction_4 is "HPL";
+  reaction_5 is "HPL(RZE)";
+
+  // SBO terms:
+  compartment_1.sboTerm = 290
+  species_1.sboTerm = 247
+  species_7.sboTerm = 247
+  species_8.sboTerm = 247
+  species_9.sboTerm = 247
+  species_10.sboTerm = 247
+  species_11.sboTerm = 247
+  species_12.sboTerm = 247
+  species_13.sboTerm = 247
+  species_14.sboTerm = 247
+  species_15.sboTerm = 247
+
+  // CV terms:
+  compartment_1 isVersionOf "http://identifiers.org/go/GO:0005623"
+  species_1 isVersionOf "http://identifiers.org/chebi/CHEBI:17351"
+  species_7 hasVersion "http://identifiers.org/chebi/CHEBI:35923"
+  species_8 hasVersion "http://identifiers.org/chebi/CHEBI:35923"
+  species_9 hasVersion "http://identifiers.org/chebi/CHEBI:35923"
+  species_10 hasVersion "http://identifiers.org/chebi/CHEBI:35923"
+  species_11 hasVersion "http://identifiers.org/chebi/CHEBI:35923"
+  species_12 hasVersion "http://identifiers.org/chebi/CHEBI:35923"
+  species_13 hasVersion "http://identifiers.org/chebi/CHEBI:35923"
+  species_14 hasVersion "http://identifiers.org/chebi/CHEBI:35923"
+  species_15 isVersionOf "http://identifiers.org/pubchem.compound/6184"
+  reaction_1 isVersionOf "http://identifiers.org/go/GO:0050665"
+  reaction_2 isVersionOf "http://identifiers.org/go/GO:0050665"
+  reaction_3 isVersionOf "http://identifiers.org/go/GO:0050665"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1203230000"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000415"
+  model publication "http://identifiers.org/pubmed/21535565"
+  model isVersionOf "http://identifiers.org/go/GO:0019372"
+  model hasTaxon "http://identifiers.org/taxonomy/3847"
+  model created "2012-04-10T13:24:24Z"
+  model modified "2014-05-22T19:03:16Z"
+  model creator1.givenName "Vijayalakshmi"
+  model creator1.familyName "Chelliah"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "viji@ebi.ac.uk"
+  model creator2.givenName "Nathan"
+  model creator2.familyName "Mellor"
+  model creator2.organization "CPIB, The University of Nottingham"
+  model creator2.email "sbxnm2@nottingham.ac.uk"
+
+  // Notes:
+  model notes ```
+This model is from the article: 
+** Reduction of off-flavor generation in soybean homogenates: a mathematical
+model. ** 
+Mellor N, Bligh F, Chandler I, Hodgman C *	J. Food Sci.*2010 Sep; 75(7):
+R131-8; PMID: [2153556](http://www.ncbi.nlm.nih.gov/pubmed/2153556), 
+**Abstract:** 
+The generation of off-flavors in soybean homogenates such as n-hexanal via the lipoxygenase
+(LOX) pathway can be a problem in the processed food industry. Previous studies have
+examined the effect of using soybean varieties missing one or more of the 3 LOX isozymes
+on n-hexanal generation. A dynamic mathematical model of the soybean LOX pathway
+using ordinary differential equations was constructed using parameters estimated
+from existing data with the aim of predicting how n-hexanal generation could be reduced.
+Time-course simulations of LOX-null beans were run and compared with experimental
+results. Model L(2), L(3), and L(12) beans were within the range relative to the
+wild type found experimentally, with L(13) and L(23) beans close to the experimental
+range. Model L(1) beans produced much more n-hexanal relative to the wild type than
+those in experiments. Sensitivity analysis indicates that reducing the estimated
+K(m) parameter for LOX isozyme 3 (L-3) would improve the fit between model predictions
+and experimental results found in the literature. The model also predicts that increasing
+L-3 or reducing L-2 levels within beans may reduce n-hexanal generation. PRACTICAL
+APPLICATION: This work describes the use of mathematics to attempt to quantify the
+enzyme-catalyzed conversions of compounds in soybean homogenates into undesirable
+flavors, primarily from the compound n-hexanal. The effect of different soybean genotypes
+and enzyme kinetic constants was also studied, leading to recommendations on which
+combinations might minimize off-flavor levels and what further work might be carried
+out to substantiate these conclusions.
+```
+end
+
+Model_1 is "Mellor2012_LipooxygenasePathway"

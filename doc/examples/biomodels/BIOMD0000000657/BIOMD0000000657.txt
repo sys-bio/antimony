@@ -1,0 +1,148 @@
+// Created by libAntimony v3.2.0
+model *MODEL1710040001()
+
+  // Compartments and Species:
+  compartment Cell;
+  species Cdk1CycB in Cell, APC in Cell, CycB in Cell;
+
+  // Reactions:
+  R1:  -> Cdk1CycB; Cell*((Ks - Adeg*Cdk1CycB - Bdeg*APC^n_apc*Cdk1CycB/(EC50apc^n_apc + APC^n_apc)) + (Acdc + Bcdc*Cdk1CycB^n_cdc/(EC50cdc^n_cdc + Cdk1CycB^n_cdc))*(CycB - Cdk1CycB) - (Awee + Bwee*EC50wee^n_wee/(EC50wee^n_wee + Cdk1CycB^n_wee))*Cdk1CycB);
+  R2:  -> CycB; Cell*(Ks - Adeg*CycB - Bdeg*APC^n_apc*CycB/(EC50apc^n_apc + APC^n_apc));
+  R3:  -> APC; Cell*((AK + BK*(Cdk1CycB/200)^n_K/((Cdk1CycB/200)^n_K + EC50K^n_K))*(1 - APC) - (AP + BP*EC50P^n_P/(APC^n_P + EC50P^n_P))*APC);
+
+  // Species initializations:
+  Cdk1CycB = 20;
+  APC = 0;
+  CycB = 59.9999999999999;
+
+  // Compartment initializations:
+  Cell = 1;
+
+  // Variable initializations:
+  Ks = 0.1;
+  Adeg = 0.001;
+  Bdeg = 0.02;
+  Acdc = 0.5;
+  Bcdc = 1.5;
+  EC50cdc = 30;
+  n_cdc = 10;
+  Awee = 0.5;
+  Bwee = 1;
+  EC50wee = 30;
+  n_wee = 10;
+  EC50apc = 0.5;
+  n_apc = 10;
+  AK = 0;
+  BK = 0.25;
+  EC50K = 0.18;
+  n_K = 5;
+  AP = 0.025;
+  BP = 0.5;
+  EC50P = 0.18;
+  n_P = 5;
+
+  // Other declarations:
+  const Cell, Ks, Adeg, Bdeg, Acdc, Bcdc, EC50cdc, n_cdc, Awee, Bwee, EC50wee;
+  const n_wee, EC50apc, n_apc, AK, BK, EC50K, n_K, AP, BP, EC50P, n_P;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 60 second;
+  unit substance = 1e-9 mole;
+
+  // Display Names:
+  time_unit is "time";
+
+  // SBO terms:
+  EC50cdc.sboTerm = 287
+  n_cdc.sboTerm = 191
+  EC50wee.sboTerm = 287
+  n_wee.sboTerm = 191
+  EC50apc.sboTerm = 287
+  n_apc.sboTerm = 191
+  EC50K.sboTerm = 287
+  n_K.sboTerm = 191
+  EC50P.sboTerm = 287
+  n_P.sboTerm = 191
+
+  // CV terms:
+  Cdk1CycB hasPart "http://identifiers.org/uniprot/P06493"
+  Cdk1CycB isVersionOf "http://identifiers.org/go/GO:0097125"
+  Cdk1CycB hasPart "http://identifiers.org/uniprot/P14635"
+  APC isVersionOf "http://identifiers.org/uniprot/P25054"
+  CycB isVersionOf "http://identifiers.org/uniprot/P14635"
+  EC50cdc identity "urn:miriam:sbo:SBO%3A0000287"
+  n_cdc identity "urn:miriam:sbo:SBO%3A0000191"
+  EC50wee identity "urn:miriam:sbo:SBO%3A0000287"
+  n_wee identity "urn:miriam:sbo:SBO%3A0000191"
+  EC50apc identity "urn:miriam:sbo:SBO%3A0000287"
+  n_apc identity "urn:miriam:sbo:SBO%3A0000191"
+  EC50K identity "urn:miriam:sbo:SBO%3A0000287"
+  n_K identity "urn:miriam:sbo:SBO%3A0000191"
+  EC50P identity "urn:miriam:sbo:SBO%3A0000287"
+  n_P identity "urn:miriam:sbo:SBO%3A0000191"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1710040001"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000657"
+  model publication "http://identifiers.org/pubmed/27768873"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000046"
+  model hasPart "http://identifiers.org/pw/PW:0000092"
+  model hasProperty "http://identifiers.org/biomodels.teddy/TEDDY_0000035"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model isDescribedBy "http://identifiers.org/pubmed/27768873"
+  model created "2017-07-19T14:13:53Z"
+  model modified "2017-10-04T14:41:20Z"
+  model creator1.givenName "Rahuman"
+  model creator1.familyName "Sheriff"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "sheriff@ebi.ac.uk"
+  model creator2.givenName "Lendert"
+  model creator2.familyName "Gelens"
+  model creator2.organization "University of Leuven"
+  model creator2.email "lendert.gelens@kuleuven.be"
+
+  // Notes:
+  model notes ```
+Araujo2016 - Positive feedback in Cdk1signalling keeps mitotic duration short and
+constant 
+
+
+This model is described in the article:
+
+
+[Positive Feedback Keeps Duration of Mitosis Temporally Insulated from Upstream Cell-Cycle Events.](http://identifiers.org/pubmed/27768873 "Access to this publication") 
+
+
+Araujo AR, Gelens L, Sheriff RS, Santos SD. 
+
+Mol. Cell 2016 Oct; 64(2): 362-375 
+Abstract:
+
+
+Cell division is characterized by a sequence of events by which a cell gives rise
+to two daughter cells. Quantitative measurements of cell-cycle dynamics in single
+cells showed that despite variability in G1-, S-, and G2 phases, duration of 
+mitosis is short and remarkably constant. Surprisingly, there is no correlation
+between cell-cycle length and mitotic duration, suggesting that mitosis is temporally
+insulated from variability in earlier cell-cycle phases. By combining live 
+cell imaging and computational modeling, we showed that positive feedback is the
+molecular mechanism underlying the temporal insulation of mitosis. Perturbing
+positive feedback gave rise to a sluggish, variable entry and progression through
+mitosis and uncoupled duration of mitosis from variability in cell cycle length.
+We show that positive feedback is important to keep mitosis short, constant, and
+temporally insulated and anticipate it might be a commonly used regulatory strategy
+to create modularity in other biological systems.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000657](http://identifiers.org/biomodels.db/BIOMD0000000657).
+
+To cite BioModels Database, please use: [Chelliah V et al. BioModels: ten-year anniversary. Nucl. Acids Res. 2015, 43(Database issue):D542-8](http://identifiers.org/pubmed/25414348).
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+end
+
+MODEL1710040001 is "Araujo2016 - Positive feedback in Cdk1 signalling keeps mitotic duration short and constant"

@@ -10,505 +10,362 @@
 #include "stringx.h"
 
 #include <string>
-#include <check.h>
+#include "gtest/gtest.h"
 
 using namespace std;
 
-BEGIN_C_DECLS
+extern string TestDataDirectory;
 
-extern char *TestDataDirectory;
+#include "TestAntimonyUtil.h"
 
-extern void compareFileTranslation(const string& base);
-extern void compareFileTranslationWithRenaming(const string& base);
-extern void compareStringTranslation(const string& antimony, const string& sbml);
-
-START_TEST (test_identity)
+TEST(AntimonyCVTerms, test_identity)
 {
   compareFileTranslation("identity");
 }
-END_TEST
 
-START_TEST (test_identity_txt)
+TEST(AntimonyCVTerms, test_identity_txt)
 {
   compareStringTranslation("a=3; a identity \"BQB_thing\"", "identity.xml");
 }
-END_TEST
 
-START_TEST (test_identity_txt2)
+TEST(AntimonyCVTerms, test_identity_txt2)
 {
   compareStringTranslation("a=3; a biological_entity_is \"BQB_thing\"", "identity.xml");
 }
-END_TEST
 
-
-START_TEST (test_hasPart)
+TEST(AntimonyCVTerms, test_hasPart)
 {
   compareFileTranslation("hasPart");
 }
-END_TEST
 
-START_TEST (test_hasPart_txt)
+TEST(AntimonyCVTerms, test_hasPart_txt)
 {
   compareStringTranslation("a=3; a hasPart \"BQB_thing\"", "hasPart.xml");
 }
-END_TEST
 
-
-START_TEST (test_hasPart_txt2)
+TEST(AntimonyCVTerms, test_hasPart_txt2)
 {
   compareStringTranslation("a=3; a part \"BQB_thing\"", "hasPart.xml");
 }
-END_TEST
 
-START_TEST (test_isPartOf)
+TEST(AntimonyCVTerms, test_hasPart_multiple)
+{
+  // https://github.com/sys-bio/antimony/issues/52 : multiple 'part'
+  // statements on the same element must round-trip as separate CV terms
+  // (separate RDF bags), not get merged into one.
+  compareFileTranslation("hasPart_multiple");
+}
+
+TEST(AntimonyCVTerms, test_isPartOf)
 {
   compareFileTranslation("isPartOf");
 }
-END_TEST
 
-START_TEST (test_isPartOf_txt)
+TEST(AntimonyCVTerms, test_isPartOf_txt)
 {
   compareStringTranslation("a=3; a isPartOf \"BQB_thing\"", "isPartOf.xml");
 }
-END_TEST
 
-
-START_TEST (test_isPartOf_txt2)
+TEST(AntimonyCVTerms, test_isPartOf_txt2)
 {
   compareStringTranslation("a=3; a parthood \"BQB_thing\"", "isPartOf.xml");
 }
-END_TEST
 
-START_TEST (test_isVersionOf)
+TEST(AntimonyCVTerms, test_isVersionOf)
 {
   compareFileTranslation("isVersionOf");
 }
-END_TEST
 
-START_TEST (test_isVersionOf_txt)
+TEST(AntimonyCVTerms, test_isVersionOf_txt)
 {
   compareStringTranslation("a=3; a isVersionOf \"BQB_thing\"", "isVersionOf.xml");
 }
-END_TEST
 
-
-START_TEST (test_isVersionOf_txt2)
+TEST(AntimonyCVTerms, test_isVersionOf_txt2)
 {
   compareStringTranslation("a=3; a hypernym \"BQB_thing\"", "isVersionOf.xml");
 }
-END_TEST
 
-START_TEST (test_hasVersion)
+TEST(AntimonyCVTerms, test_hasVersion)
 {
   compareFileTranslation("hasVersion");
 }
-END_TEST
 
-START_TEST (test_hasVersion_txt)
+TEST(AntimonyCVTerms, test_hasVersion_txt)
 {
   compareStringTranslation("a=3; a hasVersion \"BQB_thing\"", "hasVersion.xml");
 }
-END_TEST
 
-
-START_TEST (test_hasVersion_txt2)
+TEST(AntimonyCVTerms, test_hasVersion_txt2)
 {
   compareStringTranslation("a=3; a version \"BQB_thing\"", "hasVersion.xml");
 }
-END_TEST
 
-START_TEST (test_isHomologTo)
+TEST(AntimonyCVTerms, test_isHomologTo)
 {
   compareFileTranslation("isHomologTo");
 }
-END_TEST
 
-START_TEST (test_isHomologTo_txt)
+TEST(AntimonyCVTerms, test_isHomologTo_txt)
 {
   compareStringTranslation("a=3; a isHomologTo \"BQB_thing\"", "isHomologTo.xml");
 }
-END_TEST
 
-
-START_TEST (test_isHomologTo_txt2)
+TEST(AntimonyCVTerms, test_isHomologTo_txt2)
 {
   compareStringTranslation("a=3; a homolog \"BQB_thing\"", "isHomologTo.xml");
 }
-END_TEST
 
-START_TEST (test_isDescribedBy)
+TEST(AntimonyCVTerms, test_isDescribedBy)
 {
   compareFileTranslation("isDescribedBy");
 }
-END_TEST
 
-START_TEST (test_isDescribedBy_txt)
+TEST(AntimonyCVTerms, test_isDescribedBy_txt)
 {
   compareStringTranslation("a=3; a isDescribedBy \"BQB_thing\"", "isDescribedBy.xml");
 }
-END_TEST
 
-
-START_TEST (test_isDescribedBy_txt2)
+TEST(AntimonyCVTerms, test_isDescribedBy_txt2)
 {
   compareStringTranslation("a=3; a description \"BQB_thing\"", "isDescribedBy.xml");
 }
-END_TEST
 
-START_TEST (test_isEncodedBy)
+TEST(AntimonyCVTerms, test_isEncodedBy)
 {
   compareFileTranslation("isEncodedBy");
 }
-END_TEST
 
-START_TEST (test_isEncodedBy_txt)
+TEST(AntimonyCVTerms, test_isEncodedBy_txt)
 {
   compareStringTranslation("a=3; a isEncodedBy \"BQB_thing\"", "isEncodedBy.xml");
 }
-END_TEST
 
-
-START_TEST (test_isEncodedBy_txt2)
+TEST(AntimonyCVTerms, test_isEncodedBy_txt2)
 {
   compareStringTranslation("a=3; a encoder \"BQB_thing\"", "isEncodedBy.xml");
 }
-END_TEST
 
-START_TEST (test_encodes)
+TEST(AntimonyCVTerms, test_encodes)
 {
   compareFileTranslation("encodes");
 }
-END_TEST
 
-START_TEST (test_encodes_txt)
+TEST(AntimonyCVTerms, test_encodes_txt)
 {
   compareStringTranslation("a=3; a encodes \"BQB_thing\"", "encodes.xml");
 }
-END_TEST
 
-
-START_TEST (test_encodes_txt2)
+TEST(AntimonyCVTerms, test_encodes_txt2)
 {
   compareStringTranslation("a=3; a encodement \"BQB_thing\"", "encodes.xml");
 }
-END_TEST
 
-START_TEST (test_occursIn)
+TEST(AntimonyCVTerms, test_occursIn)
 {
   compareFileTranslation("occursIn");
 }
-END_TEST
 
-START_TEST (test_occursIn_txt)
+TEST(AntimonyCVTerms, test_occursIn_txt)
 {
   compareStringTranslation("a=3; a occursIn \"BQB_thing\"", "occursIn.xml");
 }
-END_TEST
 
-
-START_TEST (test_occursIn_txt2)
+TEST(AntimonyCVTerms, test_occursIn_txt2)
 {
   compareStringTranslation("a=3; a container \"BQB_thing\"", "occursIn.xml");
 }
-END_TEST
 
-START_TEST (test_hasProperty)
+TEST(AntimonyCVTerms, test_hasProperty)
 {
   compareFileTranslation("hasProperty");
 }
-END_TEST
 
-START_TEST (test_hasProperty_txt)
+TEST(AntimonyCVTerms, test_hasProperty_txt)
 {
   compareStringTranslation("a=3; a hasProperty \"BQB_thing\"", "hasProperty.xml");
 }
-END_TEST
 
-
-START_TEST (test_hasProperty_txt2)
+TEST(AntimonyCVTerms, test_hasProperty_txt2)
 {
   compareStringTranslation("a=3; a property \"BQB_thing\"", "hasProperty.xml");
 }
-END_TEST
 
-START_TEST (test_isPropertyOf)
+TEST(AntimonyCVTerms, test_isPropertyOf)
 {
   compareFileTranslation("isPropertyOf");
 }
-END_TEST
 
-START_TEST (test_isPropertyOf_txt)
+TEST(AntimonyCVTerms, test_isPropertyOf_txt)
 {
   compareStringTranslation("a=3; a isPropertyOf \"BQB_thing\"", "isPropertyOf.xml");
 }
-END_TEST
 
-
-START_TEST (test_isPropertyOf_txt2)
+TEST(AntimonyCVTerms, test_isPropertyOf_txt2)
 {
   compareStringTranslation("a=3; a propertyBearer \"BQB_thing\"", "isPropertyOf.xml");
 }
-END_TEST
 
-START_TEST (test_hasTaxon)
+TEST(AntimonyCVTerms, test_hasTaxon)
 {
   compareFileTranslation("hasTaxon");
 }
-END_TEST
 
-START_TEST (test_hasTaxon_txt)
+TEST(AntimonyCVTerms, test_hasTaxon_txt)
 {
   compareStringTranslation("a=3; a hasTaxon \"BQB_thing\"", "hasTaxon.xml");
 }
-END_TEST
 
-
-START_TEST (test_hasTaxon_txt2)
+TEST(AntimonyCVTerms, test_hasTaxon_txt2)
 {
   compareStringTranslation("a=3; a taxon \"BQB_thing\"", "hasTaxon.xml");
 }
-END_TEST
 
-START_TEST(test_created_model)
+TEST(AntimonyCVTerms, test_created_model)
 {
     compareFileTranslation("created_model");
     compareStringTranslation("model foo(); a=3; end; foo created \"2019-07-29T10:53:09Z\"", "created_model.xml");
 }
-END_TEST
 
-START_TEST(test_created_model_parts)
+TEST(AntimonyCVTerms, test_created_model_parts)
 {
     compareFileTranslation("created_model_parts");
     compareStringTranslation("model foo(); a=3; end; foo created.year 2019; foo created.month 07; foo created.day 29; foo created.hour 10; foo created.minute 53; foo created.second 09", "created_model_parts.xml");
 }
-END_TEST
 
-START_TEST(test_created_model_internal)
+TEST(AntimonyCVTerms, test_created_model_internal)
 {
     compareStringTranslation("model foo(); a=3; model created \"2019-07-29T10:53:09Z\"; end", "created_model.xml");
 }
-END_TEST
 
-START_TEST(test_created_model_internal_parts)
+TEST(AntimonyCVTerms, test_created_model_internal_parts)
 {
     compareStringTranslation("model foo(); a=3; model created.year 2019; model created.month 07; model created.day 29; model created.hour 10; model created.minute 53; model created.second 09; end", "created_model.xml");
 }
-END_TEST
 
-START_TEST(test_created_element)
+TEST(AntimonyCVTerms, test_created_element)
 {
     compareFileTranslation("created_element");
     compareStringTranslation("a=3; a created \"2019-07-29T10:53:09Z\"", "created_element.xml");
 }
-END_TEST
 
-START_TEST(test_notes_model_noxml)
+TEST(AntimonyCVTerms, test_notes_model_noxml)
 {
     compareFileTranslation("notes_model_noxml");
     compareStringTranslation("model foo(); a=3; end; foo notes \"Just text, no XML\"", "notes_model_noxml.xml");
 }
-END_TEST
 
-START_TEST(test_notes_model_noxml_internal)
+TEST(AntimonyCVTerms, test_notes_model_noxml_internal)
 {
     compareStringTranslation("model foo(); a=3; model notes \"Just text, no XML\"; end", "notes_model_noxml.xml");
 }
-END_TEST
 
-START_TEST(test_notes_element_noxml)
+TEST(AntimonyCVTerms, test_notes_element_noxml)
 {
     compareFileTranslation("notes_element_noxml");
     compareStringTranslation("a notes \"Just text, no XML\"", "notes_element_noxml.xml");
 }
-END_TEST
 
-START_TEST(test_notes_model_xml)
+TEST(AntimonyCVTerms, test_notes_model_xml)
 {
     compareFileTranslation("notes_model_xml");
 }
-END_TEST
 
-START_TEST(test_notes_model_xml_internal)
+TEST(AntimonyCVTerms, test_notes_model_xml_internal)
 {
     compareFileTranslation("notes_model_xml_internal");
 }
-END_TEST
 
-START_TEST(test_notes_element_xml)
+TEST(AntimonyCVTerms, test_notes_element_xml)
 {
     compareFileTranslation("notes_element_xml");
 }
-END_TEST
 
-START_TEST(test_notes_model_markdown)
+TEST(AntimonyCVTerms, test_notes_model_markdown)
 {
     compareFileTranslation("notes_model_markdown");
     compareStringTranslation("model foo(); a=3; end; foo notes ```# Header\n\nHere is a list:\n\n- First\n- Second```", "notes_model_markdown.xml");
 }
-END_TEST
 
-START_TEST(test_notes_model_markdown_link)
+TEST(AntimonyCVTerms, test_notes_model_markdown_link)
 {
     compareFileTranslation("notes_model_markdown_link");
     compareStringTranslation("model foo(); a=3; end; foo notes ```Please refer to [CC0  Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ \"Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication\") for more information.```", "notes_model_markdown_link.xml");
 }
-END_TEST
 
-START_TEST(test_modified_model)
+TEST(AntimonyCVTerms, test_modified_model)
 {
     compareFileTranslation("modified_model");
     compareStringTranslation("model foo(); a=3; end; foo modified \"2019-07-29T10:53:09Z\"", "modified_model.xml");
 }
-END_TEST
 
-START_TEST(test_modified_model_parts)
+TEST(AntimonyCVTerms, test_modified_model_parts)
 {
     compareFileTranslation("modified_model_parts");
     compareStringTranslation("model foo(); a=3; end; foo modified.year 2019; foo modified.month 07; foo modified.day 29; foo modified.hour 10; foo modified.minute 53; foo modified.second 09", "modified_model_parts.xml");
 }
-END_TEST
 
-START_TEST(test_modified_model_internal)
+TEST(AntimonyCVTerms, test_modified_model_internal)
 {
     compareStringTranslation("model foo(); a=3; model modified \"2019-07-29T10:53:09Z\"; end", "modified_model.xml");
 }
-END_TEST
 
-START_TEST(test_modified_model_internal_parts)
+TEST(AntimonyCVTerms, test_modified_model_internal_parts)
 {
     compareStringTranslation("model foo(); a=3; model modified.year 2019; model modified.month 07; model modified.day 29; model modified.hour 10; model modified.minute 53; model modified.second 09; end", "modified_model.xml");
 }
-END_TEST
 
-START_TEST(test_modified_element)
+TEST(AntimonyCVTerms, test_modified_element)
 {
     compareFileTranslation("modified_element");
     compareStringTranslation("a=3; a modified \"2019-07-29T10:53:09Z\"", "modified_element.xml");
 }
-END_TEST
 
-START_TEST(test_creator_one_model)
+TEST(AntimonyCVTerms, test_creator_one_model)
 {
     compareFileTranslation("creator_one_model");
     compareStringTranslation("model foo(); a=3; end; foo creator1.givenName \"Lucian\"; foo creator1.familyName \"Smith\"; foo creator1.organization \"UW\"; foo creator1.email \"lpsmith@uw.edu\"", "creator_one_model.xml");
 }
-END_TEST
 
-START_TEST(test_creator_one_model_internal)
+TEST(AntimonyCVTerms, test_creator_one_model_internal)
 {
     compareStringTranslation("model foo(); a=3; model creator1.givenName \"Lucian\"; model creator1.familyName \"Smith\"; model creator1.organization \"UW\"; model creator1.email \"lpsmith@uw.edu\"; end", "creator_one_model.xml");
 }
-END_TEST
 
-START_TEST(test_creator_one_element)
+TEST(AntimonyCVTerms, test_creator_one_element)
 {
     compareFileTranslation("creator_one_element");
     compareStringTranslation("a=3; a creator1.givenName \"Lucian\"; a creator1.familyName \"Smith\"; a creator1.organization \"UW\"; a creator1.email \"lpsmith@uw.edu\"", "creator_one_element.xml");
 }
-END_TEST
 
-START_TEST(test_creator_blank_model)
+TEST(AntimonyCVTerms, test_creator_blank_model)
 {
     compareFileTranslation("creator_blank_model");
     compareStringTranslation("model foo(); a=3; end; foo creator.givenName \"Lucian\"; foo creator.familyName \"Smith\"; foo creator.organization \"UW\"; foo creator.email \"lpsmith@uw.edu\"", "creator_blank_model.xml");
 }
-END_TEST
 
-START_TEST(test_creator_blank_model_internal)
+TEST(AntimonyCVTerms, test_creator_blank_model_internal)
 {
     compareStringTranslation("model foo(); a=3; model creator.givenName \"Lucian\"; model creator.familyName \"Smith\"; model creator.organization \"UW\"; model creator.email \"lpsmith@uw.edu\"; end", "creator_blank_model.xml");
 }
-END_TEST
 
-START_TEST(test_creator_two_model)
+TEST(AntimonyCVTerms, test_creator_two_model)
 {
     compareFileTranslation("creator_two_model");
     compareStringTranslation("model foo(); a=3; end; foo creator.givenName \"Lucian\"; foo creator.familyName \"Smith\"; foo creator.organization \"UW\"; foo creator.email \"lpsmith@uw.edu\";foo creator2.name \"George Holtzour\"; foo creator2.organization \"Family lore\"; foo creator2.email \"george@theholtz.net\"", "creator_two_model.xml");
 }
-END_TEST
 
-START_TEST(test_creator_two_model_internal)
+TEST(AntimonyCVTerms, test_creator_two_model_internal)
 {
     compareStringTranslation("model foo(); a=3; model creator.givenName \"Lucian\"; model creator.familyName \"Smith\"; model creator.organization \"UW\"; model creator.email \"lpsmith@uw.edu\";model creator2.name \"George Holtzour\"; model creator2.organization \"Family lore\"; model creator2.email \"george@theholtz.net\"; end", "creator_two_model.xml");
 }
-END_TEST
 
-
-
-
-Suite *
-create_suite_CVTerms (void)
+TEST(AntimonyCVTerms, test_kineticLaw_hasVersion_txt)
 {
-  Suite *suite = suite_create("Antimony CV Terms");
-  TCase *tcase = tcase_create("Antimony CV Terms");
-
-  tcase_add_test(tcase, test_created_model);
-  tcase_add_test(tcase, test_created_model_parts);
-  tcase_add_test(tcase, test_created_model_internal);
-  tcase_add_test(tcase, test_created_model_internal_parts);
-  tcase_add_test(tcase, test_created_element);
-  tcase_add_test(tcase, test_notes_model_noxml);
-  tcase_add_test(tcase, test_notes_model_noxml_internal);
-  tcase_add_test(tcase, test_notes_element_noxml);
-  tcase_add_test(tcase, test_notes_model_xml);
-  tcase_add_test(tcase, test_notes_model_xml_internal);
-  tcase_add_test(tcase, test_notes_element_xml);
-  tcase_add_test(tcase, test_notes_model_markdown);
-  tcase_add_test(tcase, test_notes_model_markdown_link);
-  tcase_add_test(tcase, test_modified_model);
-  tcase_add_test(tcase, test_modified_model_parts);
-  tcase_add_test(tcase, test_modified_model_internal);
-  tcase_add_test(tcase, test_modified_model_internal_parts);
-  tcase_add_test(tcase, test_modified_element);
-  tcase_add_test(tcase, test_creator_one_model);
-  tcase_add_test(tcase, test_creator_one_model_internal);
-  tcase_add_test(tcase, test_creator_one_element);
-
-  tcase_add_test(tcase, test_identity);
-  tcase_add_test( tcase, test_identity_txt);
-  tcase_add_test( tcase, test_identity_txt2);
-  tcase_add_test( tcase, test_hasPart);
-  tcase_add_test( tcase, test_hasPart_txt);
-  tcase_add_test( tcase, test_hasPart_txt2);
-  tcase_add_test( tcase, test_isPartOf);
-  tcase_add_test( tcase, test_isPartOf_txt);
-  tcase_add_test( tcase, test_isPartOf_txt2);
-  tcase_add_test( tcase, test_isVersionOf);
-  tcase_add_test( tcase, test_isVersionOf_txt);
-  tcase_add_test( tcase, test_isVersionOf_txt2);
-  tcase_add_test( tcase, test_hasVersion);
-  tcase_add_test( tcase, test_hasVersion_txt);
-  tcase_add_test( tcase, test_hasVersion_txt2);
-  tcase_add_test( tcase, test_isHomologTo);
-  tcase_add_test( tcase, test_isHomologTo_txt);
-  tcase_add_test( tcase, test_isHomologTo_txt2);
-  tcase_add_test( tcase, test_isDescribedBy);
-  tcase_add_test( tcase, test_isDescribedBy_txt);
-  tcase_add_test( tcase, test_isDescribedBy_txt2);
-  tcase_add_test( tcase, test_isEncodedBy);
-  tcase_add_test( tcase, test_isEncodedBy_txt);
-  tcase_add_test( tcase, test_isEncodedBy_txt2);
-  tcase_add_test( tcase, test_encodes);
-  tcase_add_test( tcase, test_encodes_txt);
-  tcase_add_test( tcase, test_encodes_txt2);
-  tcase_add_test( tcase, test_occursIn);
-  tcase_add_test( tcase, test_occursIn_txt);
-  tcase_add_test( tcase, test_occursIn_txt2);
-  tcase_add_test( tcase, test_hasProperty);
-  tcase_add_test( tcase, test_hasProperty_txt);
-  tcase_add_test( tcase, test_hasProperty_txt2);
-  tcase_add_test( tcase, test_isPropertyOf);
-  tcase_add_test( tcase, test_isPropertyOf_txt);
-  tcase_add_test( tcase, test_isPropertyOf_txt2);
-  tcase_add_test( tcase, test_hasTaxon);
-  tcase_add_test( tcase, test_hasTaxon_txt);
-  tcase_add_test( tcase, test_hasTaxon_txt2);
-
-  suite_add_tcase(suite, tcase);
-
-  return suite;
+  compareStringTranslation("J0.kineticLaw hasVersion \"BQB_thing\";J0: ->A;;", "kl_hasVersion.xml");
 }
 
-END_C_DECLS
-
-
+TEST(AntimonyCVTerms, test_kineticLaw_hasVersion)
+{
+  compareFileTranslation("kl_hasVersion");
+}

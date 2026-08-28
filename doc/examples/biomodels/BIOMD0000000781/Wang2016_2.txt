@@ -1,0 +1,157 @@
+// Created by libAntimony v3.2.0
+model *Wang2016_2___oncolytic_efficacy_of_M1_virus_SNT_model()
+
+  // Compartments and Species:
+  compartment tme;
+  species S in tme, N in tme, T in tme;
+
+  // Assignment Rules:
+  Q1 := a*r1*u1/(d*(d + e1));
+  Q2 := a*r2*u2/(d*(d + e2));
+
+  // Reactions:
+  nutrient_supply:  => S; tme*a;
+  nutrient_decay: S => ; tme*d*S;
+  nutrient_consumption_N: S => ; tme*(u1*S*N);
+  nutrient_consumption_T: S => ; tme*(u2*S*T);
+  normal_cell_growth:  => N; tme*(r1*u1*S*N);
+  normal_cell_death: N => ; tme*((d + e1)*N);
+  tumor_growth:  => T; tme*(r2*u2*S*T);
+  tumor_death: T => ; tme*((d + e2)*T);
+
+  // Species initializations:
+  S = 0.1;
+  S has substance_per_volume;
+  N = 0.2;
+  N has substance_per_volume;
+  T = 0.1;
+  T has substance_per_volume;
+
+  // Compartment initializations:
+  tme = 1;
+  tme has volume;
+
+  // Variable initializations:
+  a = 0.02;
+  a has unit_0;
+  d = 0.02;
+  d has unit_0;
+  u1 = 0.2;
+  u1 has unit_0;
+  u2 = 0.5;
+  u2 has unit_0;
+  r1 = 0.8;
+  r1 has unit_0;
+  e1 = 0.01;
+  e1 has unit_0;
+  r2 = 0.8;
+  r2 has unit_0;
+  e2 = 0.008;
+  e2 has unit_0;
+  Q1 has unit_0;
+  Q2 has unit_0;
+
+  // Other declarations:
+  var Q1, Q2;
+  const tme, a, d, u1, u2, r1, e1, r2, e2;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-3 litre;
+  unit time_unit = second;
+  unit substance = 1e-3 mole;
+  unit unit_0 = 1 / dimensionless^-0;
+  unit extent = substance;
+  unit substance_per_volume = 1e-3 mole / 1e-3 litre;
+
+  // Display Names:
+  time_unit is "time";
+  unit_0 is "1";
+  nutrient_supply is "nutrient supply";
+  nutrient_decay is "nutrient decay";
+  nutrient_consumption_N is "nutrient consumption N";
+  nutrient_consumption_T is "nutrient consumption T";
+  normal_cell_growth is "normal cell growth";
+  normal_cell_death is "normal cell death";
+  tumor_growth is "tumor growth";
+  tumor_death is "tumor death";
+
+  // CV terms:
+  tme isVersionOf "http://identifiers.org/ncit/C94498"
+  S isVersionOf "http://identifiers.org/ncit/C1814"
+  N isVersionOf "http://identifiers.org/cl/CL:0000000"
+  T isVersionOf "http://identifiers.org/cl/CL:0001064"
+  a isVersionOf "http://identifiers.org/ncit/C25636"
+  d isVersionOf "http://identifiers.org/ncit/C25636"
+  u1 isVersionOf "http://identifiers.org/sbo/SBO:0000610"
+  u2 isVersionOf "http://identifiers.org/sbo/SBO:0000610"
+  r1 isVersionOf "http://identifiers.org/ncit/C84380"
+  e1 isVersionOf "http://identifiers.org/ncit/C25636"
+  r2 isVersionOf "http://identifiers.org/ncit/C84380"
+  e2 isPropertyOf "http://identifiers.org/ncit/C25636"
+  Q1 isVersionOf "http://identifiers.org/ncit/C84380"
+  Q2 isVersionOf "http://identifiers.org/ncit/C84380"
+
+  model origin "http://identifiers.org/go/GO:0002418",
+               "http://identifiers.org/mamo/MAMO_0000046",
+               "http://identifiers.org/ncit/C62713",
+               "http://identifiers.org/taxonomy/9606",
+               "http://identifiers.org/biomodels.db/BIOMD0000000780"
+  model origin "http://identifiers.org/biomodels.db/MODEL1908060001"
+  model publication "http://identifiers.org/biomodels.db/BIOMD0000000780",
+                    "http://identifiers.org/biomodels.db/MODEL1908060001",
+                    "http://identifiers.org/pubmed/26976483"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1908060002",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000781"
+  model hasProperty "http://identifiers.org/go/GO:0002418"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000046"
+  model hasProperty "http://identifiers.org/ncit/C62713"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model created "2019-08-06T13:03:29Z"
+  model modified "2019-08-06T13:03:29Z"
+  model creator1.givenName "Jinghao"
+  model creator1.familyName "Men"
+  model creator1.organization "University of Cambridge"
+  model creator1.email "jm2187@cam.ac.uk"
+
+  // Notes:
+  model notes ```
+The paper describes a model of oncolytic virotherapy. Created by COPASI 4.25 (Build
+207) This model is described in the article: A mathematical model verifying potent
+oncolytic efficacy of M1 virusZizi Wang, Zhiming Guo, Huaqin Peng Mathematical Biosciences
+276 (2016) 19–27Abstract: Motivated by the latest findings in a recent medical
+experiment [19] which identify a naturally occurring alphavirus (M1) as a novel selective
+killer targeting zinc-finger antiviral protein (ZAP)-deficient cancer cells, we propose
+a mathematical model to illustrate the growth of normal cells, tumor cells and the
+M1 virus with limited nutrient. In order to better understand biological mechanisms,
+we discuss two cases of the model: without competition and with competition. In the
+first part, the explicit threshold condi- tions for the persistence of normal cells
+(or tumor cells) is obtained accompanying with the biological explanations. The second
+part indicates that when competing with tumor cells, the normal cells will ex- tinct
+if M1 virus is ignored; Whereas, when M1 virus is considered, the growth trend of
+normal cells is similar to the one without competition. And by using uniformly strong
+repeller theorem, the minimum effective dosage of medication is explicitly found
+which is not reported in [19]. Furthermore, numerical simulations and corresponding
+biological interpretations are given to support our results.To cite BioModels Database,
+please use: BioModels Database: An enhanced, curated and annotated resource for published
+quantitative kinetic models . To the extent possible under law, all copyright and
+related or neighbouring rights to this encoded model have been dedicated to the public
+domain worldwide. Please refer to CC0 Public Domain Dedication for more information.
+```
+  S notes "nutrient"
+  N notes "normal cell"
+  T notes "tumor"
+  a notes "recruitment rate of nutrient"
+  d notes "washout rate of nutrient and bacteri"
+  u1 notes "growth rate of normal cell"
+  u2 notes "growth rate of tumor"
+  r1 notes "yield constant of nutrient to biomass of normal cell"
+  e1 notes "death rate of normal cell"
+  r2 notes "yield constant of nutrient to biomass of tumor"
+  e2 notes "death rate of tumor"
+  Q1 notes "absorbing number"
+  Q2 notes "absorbing number"
+end
+
+Wang2016_2___oncolytic_efficacy_of_M1_virus_SNT_model is "Wang2016/2 - oncolytic efficacy of M1 virus-SNT model"

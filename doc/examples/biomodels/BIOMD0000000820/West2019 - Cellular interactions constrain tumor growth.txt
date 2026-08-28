@@ -1,0 +1,141 @@
+// Created by libAntimony v3.2.0
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species tumor_at_Exp_Lin_growth in compartment_, tumor_at_Gen__logistic_growth in compartment_;
+  species tumor_at_Gomp__growth in compartment_, tumor_at_Power_growth in compartment_;
+  species tumor_at_Von_Bert__growth in compartment_, tumor_at_Exp_growth in compartment_;
+  species tumor_at_Logistic_growth in compartment_;
+
+  // Assignment Rules:
+  gamma_ := 2/3;
+
+  // Reactions:
+  exponential_linear_growth:  => tumor_at_Exp_Lin_growth; compartment_*(alpha_0_variable*tumor_at_Exp_Lin_growth + alpha_1_variable);
+  generalized_logistic_growth:  => tumor_at_Gen__logistic_growth; compartment_*(alpha*tumor_at_Gen__logistic_growth*(1 - (tumor_at_Gen__logistic_growth/K)^nu));
+  Gompertz_growth:  => tumor_at_Gomp__growth; compartment_*(alpha*tumor_at_Gomp__growth*ln(K) - alpha*tumor_at_Gomp__growth*ln(tumor_at_Gomp__growth));
+  power_law_model:  => tumor_at_Power_growth; compartment_*(a*tumor_at_Power_growth^gamma_);
+  Von_Bertalanffy_equation:  => tumor_at_Von_Bert__growth; compartment_*(a*tumor_at_Von_Bert__growth^gamma_ - b*tumor_at_Von_Bert__growth);
+  exponential_growth:  => tumor_at_Exp_growth; compartment_*(alpha_0*tumor_at_Exp_growth);
+  logistic_growth:  => tumor_at_Logistic_growth; compartment_*(alpha*tumor_at_Logistic_growth*(1 - tumor_at_Logistic_growth/K));
+
+  // Events:
+  exponential_model_switch: at time > tau: alpha_1_variable = alpha_1_variable + alpha_1, alpha_0_variable = alpha_0_variable - alpha_0;
+
+  // Species initializations:
+  tumor_at_Exp_Lin_growth = 1;
+  tumor_at_Gen__logistic_growth = 1;
+  tumor_at_Gomp__growth = 1;
+  tumor_at_Power_growth = 1;
+  tumor_at_Von_Bert__growth = 1;
+  tumor_at_Exp_growth = 1;
+  tumor_at_Logistic_growth = 1;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  tau = 10;
+  alpha_1_variable = 0;
+  alpha_1 = 10000;
+  alpha_0_variable = 1;
+  alpha_0 = 1;
+  alpha = 1;
+  K = 100;
+  nu = 0.3;
+  a = 4;
+  b = 0.2;
+
+  // Other declarations:
+  var alpha_1_variable, alpha_0_variable, gamma_;
+  const compartment_, tau, alpha_1, alpha_0, alpha, K, nu, a, b;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  tumor_at_Exp_Lin_growth is "tumor at Exp-Lin growth";
+  tumor_at_Gen__logistic_growth is "tumor at Gen. logistic growth";
+  tumor_at_Gomp__growth is "tumor at Gomp. growth";
+  tumor_at_Power_growth is "tumor at Power growth";
+  tumor_at_Von_Bert__growth is "tumor at Von Bert. growth";
+  tumor_at_Exp_growth is "tumor at Exp growth";
+  tumor_at_Logistic_growth is "tumor at Logistic growth";
+  exponential_model_switch is "exponential model switch";
+  alpha_1_variable is "alpha_1 variable";
+  alpha_0_variable is "alpha_0 variable";
+  gamma_ is "gamma";
+  exponential_linear_growth is "exponential-linear growth";
+  generalized_logistic_growth is "generalized logistic growth";
+  Gompertz_growth is "Gompertz growth";
+  power_law_model is "power law model";
+  Von_Bertalanffy_equation is "Von Bertalanffy equation";
+  exponential_growth is "exponential growth";
+  logistic_growth is "logistic growth";
+
+  // CV terms:
+  compartment_ isVersionOf "http://identifiers.org/ncit/C13413"
+  tumor_at_Exp_Lin_growth isVersionOf "http://identifiers.org/ncit/C120284"
+  tumor_at_Gen__logistic_growth isVersionOf "http://identifiers.org/ncit/C120284"
+  tumor_at_Gomp__growth isVersionOf "http://identifiers.org/ncit/C120284"
+  tumor_at_Power_growth isVersionOf "http://identifiers.org/ncit/C120284"
+  tumor_at_Power_growth isPropertyOf "http://identifiers.org/sbo/SBO:0000531"
+  tumor_at_Von_Bert__growth isVersionOf "http://identifiers.org/ncit/C120284"
+  tumor_at_Exp_growth isVersionOf "http://identifiers.org/ncit/C120284"
+  tumor_at_Logistic_growth isVersionOf "http://identifiers.org/ncit/C120284"
+  alpha_0 isVersionOf "http://identifiers.org/sbo/SBO:0000382"
+  exponential_linear_growth isVersionOf "http://identifiers.org/go/GO:0040007"
+  generalized_logistic_growth isVersionOf "http://identifiers.org/go/GO:0040007"
+  Gompertz_growth isVersionOf "http://identifiers.org/go/GO:0040007"
+  power_law_model isVersionOf "http://identifiers.org/go/GO:0040007"
+  power_law_model isPropertyOf "http://identifiers.org/sbo/SBO:0000531"
+  Von_Bertalanffy_equation isVersionOf "http://identifiers.org/go/GO:0040007"
+  exponential_growth isVersionOf "http://identifiers.org/go/GO:0040007"
+  logistic_growth isVersionOf "http://identifiers.org/go/GO:0040007"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1909240001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000820"
+  model hasProperty "http://identifiers.org/efo/0000311"
+  model hasProperty "http://identifiers.org/ncit/C28359"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000046"
+  model hasProperty "http://identifiers.org/ncit/C19388"
+  model hasProperty "http://identifiers.org/sbo/SBO:0000001"
+  model isDescribedBy "http://identifiers.org/pubmed/30674661"
+  model created "2019-09-23T17:03:21Z"
+  model modified "2019-09-23T17:03:21Z"
+  model creator1.givenName "Szeyi"
+  model creator1.familyName "Ng"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "muffet0307@gmail.com"
+
+  // Notes:
+  model notes ```
+These selections of models are described in the paper:Cellular interactions constrain
+tumor growthby Jeffrey West and Paul K. NewtonSignificance:A mathematical model relating
+tumor heterogeneity at the cellular level to tumor growth at the macroscopic level
+is described based on a statistical mechanics framework. The model takes into account
+the number of accessible states available to each cell as well as their long-range
+coupling (population cooperation) to other cells. We show that the degree to which
+cell populations cooperate determines the number of independent cell states, which
+in turn dictates the macroscopic (volumetric) growth law. It follows that targeting
+cell-to-cell interactions or functional coupling among cell populations could be
+a way of mitigating and controlling tumor growth.Abstract:A tumor is made up of a
+heterogeneous collection of cell types, all competing on a fitness landscape mediated
+by microenvironmental conditions that dictate their interactions. Despite the fact
+that much is known about cell signaling, cellular cooperation, and the functional
+constraints that affect cellular behavior, the specifics of how these constraints
+(and the range over which they act) affect the macroscopic tumor growth laws that
+govern total volume, mass, and carrying capacity remain poorly understood. We develop
+a statistical mechanics approach that focuses on the total number of possible states
+each cell can occupy and show how different assumptions on correlations of these
+states give rise to the many different macroscopic tumor growth laws used in the
+literature. Although it is widely understood that molecular and cellular heterogeneity
+within a tumor is a driver of growth, here we emphasize that focusing on the functional
+coupling of states at the cellular level is what determines macroscopic growth characteristics.
+```
+end
+
+New_Model is "West2019 - Cellular interactions constrain tumor growth"

@@ -1,0 +1,217 @@
+// Created by libAntimony v3.2.0
+model *Mears1997_CRAC_PancreaticBetaCells()
+
+  // Compartments and Species:
+  compartment COMpartment;
+  species V_membrane in COMpartment, n in COMpartment, jm in COMpartment;
+  species Ca_er_Ca_equations in COMpartment, Ca_i in COMpartment;
+
+  // Assignment Rules:
+  i_Ca := i_Ca_f + i_Ca_s;
+  i_K := g_K*n*(V_membrane - V_K);
+  i_K_ATP := g_K_ATP*(V_membrane - V_K);
+  i_K_Ca := (g_K_Ca*Ca_i^5/(Ca_i^5 + kdkca^5))*(V_membrane - V_K);
+  i_CRAC := g_CRAC*r_infinity*(V_membrane - V_CRAC);
+  i_leak := g_leak*(V_membrane - V_CRAC);
+  n_infinity := 1/(1 + exp((-15 - V_membrane)/6));
+  tau_n := 9.09/(1 + exp((V_membrane + 15)/6));
+  jm_infinity := 1 - 1/(1 + exp((V_membrane + 53)/2));
+  tau_j := 50000/(exp((V_membrane + 53)/4) + exp((-53 - V_membrane)/4)) + 1500;
+  J_er_tot := J_er_leak + J_er_IP3 - J_er_p;
+  J_mem_tot := -f*(gamma_*i_Ca + Jmp);
+  g_K_ATP := piecewise(2000, (time > 60000) && (time < 660000), 150);
+  i_Ca_f := g_Ca_f*m_f_infinity*(V_membrane - V_Ca);
+  m_f_infinity := 1/(1 + exp((-20 - V_membrane)/7.5));
+  i_Ca_s := g_Ca_s*m_s_infinity*(1 - jm)*(V_membrane - V_Ca);
+  m_s_infinity := 1/(1 + exp((-16 - V_membrane)/10));
+  r_infinity := 1/(1 + exp((Ca_er_Ca_equations - Ca_er_bar)/sloper));
+  J_er_p := verp*Ca_i^2/(Ca_i^2 + kerp^2);
+  a_infinity := 1/(1 + dact/Ca_i);
+  b_infinity := IP3/(IP3 + dip3);
+  h_infinity := 1/(1 + Ca_i/dinh);
+  O := a_infinity^3*b_infinity^3*h_infinity^3*1;
+  J_er_leak := perl*(Ca_er_Ca_equations - Ca_i);
+  J_er_IP3 := O*(Ca_er_Ca_equations - Ca_i);
+  Jmp := vmp*Ca_i^2/(Ca_i^2 + kmp^2);
+
+  // Rate Rules:
+  V_membrane' = -(i_Ca + i_K + i_K_ATP + i_K_Ca + i_CRAC + i_leak)/Cm;
+  n' = lambda_n*(n_infinity - n)/tau_n;
+  jm' = (jm_infinity - jm)/tau_j;
+  Ca_er_Ca_equations' = -J_er_tot/(lambda_er*sigma_er);
+  Ca_i' = J_er_tot/lambda_er + J_mem_tot;
+
+  // Species initializations:
+  V_membrane = -61/COMpartment;
+  n = 0.0005/COMpartment;
+  jm = 0.12/COMpartment;
+  Ca_er_Ca_equations = 60/COMpartment;
+  Ca_i = 0.11/COMpartment;
+
+  // Compartment initializations:
+  COMpartment = 1;
+
+  // Variable initializations:
+  Cm = 6158;
+  lambda_n = 1.85;
+  lambda_er = 250;
+  sigma_er = 1;
+  g_K = 3900;
+  V_K = -70;
+  Vn = -15;
+  Sn = 6;
+  g_Ca_f = 810;
+  V_Ca = 100;
+  Vm_f = -20;
+  Sm_f = 7.5;
+  g_Ca_s = 510;
+  Vm_s = -16;
+  Sm_s = 10;
+  Vj = -53;
+  Sj = 2;
+  g_K_Ca = 1200;
+  kdkca = 0.55;
+  g_CRAC = 75;
+  V_CRAC = 0;
+  Ca_er_bar = 40;
+  sloper = 3;
+  g_leak = 0;
+  verp = 0.24;
+  kerp = 0.09;
+  IP3 = 0;
+  dact = 0.35;
+  dinh = 0.4;
+  dip3 = 0.2;
+  perl = 0.003;
+  kmp = 0.35;
+  vmp = 0.08;
+  gamma_ = 3.607e-06;
+  f = 0.01;
+
+  // Other declarations:
+  var i_Ca, i_K, i_K_ATP, i_K_Ca, i_CRAC, i_leak, n_infinity, tau_n, jm_infinity;
+  var tau_j, J_er_tot, J_mem_tot, g_K_ATP, i_Ca_f, m_f_infinity, i_Ca_s, m_s_infinity;
+  var r_infinity, J_er_p, a_infinity, b_infinity, h_infinity, O, J_er_leak;
+  var J_er_IP3, Jmp;
+  const COMpartment, Cm, lambda_n, lambda_er, sigma_er, g_K, V_K, Vn, Sn;
+  const g_Ca_f, V_Ca, Vm_f, Sm_f, g_Ca_s, Vm_s, Sm_s, Vj, Sj, g_K_Ca, kdkca;
+  const g_CRAC, V_CRAC, Ca_er_bar, sloper, g_leak, verp, kerp, IP3, dact;
+  const dinh, dip3, perl, kmp, vmp, gamma_, f;
+
+  // Display Names:
+  gamma_ is "gamma";
+
+  // SBO terms:
+  V_membrane.sboTerm = 259
+  Cm.sboTerm = 258
+  lambda_n.sboTerm = 9
+  jm.sboTerm = 412
+  lambda_er.sboTerm = 9
+  sigma_er.sboTerm = 9
+  g_K.sboTerm = 9
+  V_K.sboTerm = 9
+  Vn.sboTerm = 9
+  Sn.sboTerm = 9
+  g_Ca_f.sboTerm = 9
+  V_Ca.sboTerm = 9
+  Vm_f.sboTerm = 9
+  Sm_f.sboTerm = 9
+  g_Ca_s.sboTerm = 9
+  Vm_s.sboTerm = 9
+  Sm_s.sboTerm = 9
+  Vj.sboTerm = 9
+  Sj.sboTerm = 9
+  g_K_Ca.sboTerm = 9
+  kdkca.sboTerm = 9
+  g_CRAC.sboTerm = 9
+  V_CRAC.sboTerm = 9
+  Ca_er_bar.sboTerm = 9
+  sloper.sboTerm = 9
+  g_leak.sboTerm = 9
+  verp.sboTerm = 9
+  kerp.sboTerm = 9
+  IP3.sboTerm = 196
+  dact.sboTerm = 9
+  dinh.sboTerm = 9
+  dip3.sboTerm = 9
+  perl.sboTerm = 9
+  kmp.sboTerm = 9
+  vmp.sboTerm = 9
+  gamma_.sboTerm = 9
+  f.sboTerm = 9
+
+  // CV terms:
+  V_membrane identity "http://identifiers.org/pato/PATO:0001462"
+  n identity "http://identifiers.org/go/GO:0005251"
+  Ca_er_Ca_equations identity "http://identifiers.org/chebi/CHEBI:29108"
+  Ca_i identity "http://identifiers.org/chebi/CHEBI:29108"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1006230074"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000375"
+  model publication "http://identifiers.org/pubmed/9002424"
+  model origin "http://identifiers.org/biomodels.db/BIOMD0000000374"
+  model occursIn "http://identifiers.org/bto/BTO:0000783"
+  model isVersionOf "http://identifiers.org/go/GO:0061469",
+                    "http://identifiers.org/go/GO:0044342",
+                    "http://identifiers.org/go/GO:0015278"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model created "2011-09-29T22:10:36Z"
+  model modified "2016-04-08T17:07:49Z"
+  model creator1.givenName "Ishan"
+  model creator1.familyName "Ajmera"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "ajmera@ebi.ac.uk"
+  model creator2.givenName "Catherine"
+  model creator2.familyName "Lloyd"
+  model creator2.organization "The University of Auckland,The Bioengineering Institute"
+  model creator2.email "c.lloyd@aukland.ac.nz"
+
+  // Notes:
+  model notes ```
+This a model from the article: 
+** Evidence that calcium release-activated current mediates the biphasic electricalactivity
+of mouse pancreatic beta-cells.** 
+Mears D, Sheppard NF Jr, Atwater I, Rojas E, Bertram R, Sherman A. *J Membr
+Biol*1997 Jan 1;155(1):47-59 [9002424](http://www.ncbi.nlm.nih.gov/pubmed/9002424), 
+**Abstract:** 
+The electrical response of pancreatic beta-cells to step increases in glucoseconcentration
+is biphasic, consisting of a prolonged depolarization with actionpotentials (Phase
+1) followed by membrane potential oscillations known asbursts. We have proposed that
+the Phase 1 response results from the combineddepolarizing influences of potassium
+channel closure and an inward, nonselectivecation current (ICRAN) that activates
+as intracellular calcium stores emptyduring exposure to basal glucose (Bertram et
+al., 1995). The stores refillduring Phase 1, deactivating ICRAN and allowing steady-state
+bursting tocommence. We support this hypothesis with additional simulations andexperimental
+results indicating that Phase 1 duration is sensitive to thefilling state of intracellular
+calcium stores. First, the duration of the Phase1 transient increases with duration
+of prior exposure to basal (2.8 mM) glucose,reflecting the increased time required
+to fill calcium stores that have beenemptying for longer periods. Second, Phase 1
+duration is reduced when islets areexposed to elevated K+ to refill calcium stores
+in the presence of basalglucose. Third, when extracellular calcium is removed during
+the basal glucoseexposure to reduce calcium influx into the stores, Phase 1 duration
+increases.Finally, no Phase 1 is observed following hyperpolarization of the beta-cellmembrane
+with diazoxide in the continued presence of 11 mm glucose, a conditionin which intracellular
+calcium stores remain full. Application of carbachol toempty calcium stores during
+basal glucose exposure did not increase Phase 1duration as the model predicts. Despite
+this discrepancy, the good agreementbetween most of the experimental results and
+the model predictions providesevidence that a calcium release-activated current mediates
+the Phase 1electrical response of the pancreatic beta-cell. 
+
+This model was taken from the [CellML repository](http://www.cellml.org/models) and automatically converted to SBML. 
+The original model was:[ **Mears D, Sheppard NF Jr, Atwater I, Rojas E, Bertram
+R, Sherman A. (1997) - version=1.0** ](http://models.cellml.org/exposure/5e0804f38832d0ecedf04f7403c565b5) 
+The original CellML model was created by: 
+**Tessa Paris** 
+tpar054@aucklanduni.ac.uk 
+The University of Auckland 
+
+
+This model originates from BioModels Database: A Database of Annotated Published
+Models (http://www.ebi.ac.uk/biomodels/). It is copyright (c) 2005-2011 The BioModels.net
+Team. 
+For more information see the [terms of use](http://www.ebi.ac.uk/biomodels/legal.html). 
+To cite BioModels Database, please use: [Li C, Donizelli M, Rodriguez N, Dharuri H, Endler L, Chelliah V, Li L, He E, Henry A, Stefan MI, Snoep JL, Hucka M, Le Novère N, Laibe C (2010) BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models. BMC Syst Biol., 4:92.](http://www.ncbi.nlm.nih.gov/pubmed/20587024)
+```
+end
+
+Mears1997_CRAC_PancreaticBetaCells is "Mears1997_CRAC_PancreaticBetaCells"

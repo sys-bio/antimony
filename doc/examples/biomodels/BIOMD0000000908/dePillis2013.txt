@@ -1,0 +1,182 @@
+// Created by libAntimony v3.2.0
+model *dePillis2013___Mathematical_modeling_of_regulatory_T_cell_effects_on_renal_cell_carcinoma_treatment()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species T in compartment_, N in compartment_, L in compartment_, R in compartment_;
+  species C in compartment_, I in compartment_, S in compartment_;
+
+  // Assignment Rules:
+  D := ModelValue_1*((Metabolite_2/Metabolite_0)^ModelValue_2/(ModelValue_3 + (Metabolite_2/Metabolite_0)^ModelValue_2));
+
+  // Reactions:
+  Increase_in_total_tumor_cell_population_in_number_of_cells:  => T; compartment_*(a*T*(1 - b*T));
+  Removal_of_tumor_cell_from_the_system_by_immune_cells: T => ; compartment_*(c*exp(-delta_T*R)*N*T + D*T);
+  Increase_in_number_of_Natural_killer_cell_per_litre_of_blood:  => N; compartment_*(f*(e_f*C - N) + p_N*N*I/(g_N + I));
+  Removal_of_natural_killer_cell_from_the_system: N => ; compartment_*(p*N*T);
+  Increase_in_the_number_of_CD8__T_cell_per_litre_of_blood:  => L; compartment_*((r_1*N + r_2*C)*T + p_I*L*I/(g_I + I) + j*(T/(k + T))*L);
+  Decrease_in_the_number_of_CD8__T_cell: L => ; compartment_*(m*L + q*L*T + z*L*L*R*I/(kappa + I));
+  Increase_in_the_number_of_Treg_cells_per_litre_of_blood:  => R; compartment_*(u*(w_u*C - R) + p_R*R*I/(g_R + I));
+  Decrease_in_the_number_of_Treg_cells: R => ; compartment_*(H_R*(1 - exp(-delta_R*S))*R);
+  Increase_in_the_concentration_of_lymphocyte_per_litre_of_blood_not_including_NK_cells__CD8__T_cells_and_regulatory_T_cells:  => C; compartment_*(beta*(alpha_beta - C));
+  Increase_in_the_concentration_of_IL_2_per_litre_of_blood:  => I; compartment_*(phi*C + w*L*I/(zeta + I));
+  Decrease_in_the_concentration_of_IL_2_per_lite_of_blood: I => ; compartment_*(mu_I*I);
+  Injecting_the_concentration_of_sunitinib_per_litre_of_body_volume:  => S; compartment_*vs;
+  Sunitinib_not_working_per_day_per_litre_of_body_volume: S => ; compartment_*(-n*S);
+
+  // Species initializations:
+  T = 4662000000;
+  N = 250000000;
+  L = 526800;
+  R = 352000000;
+  C = 2140000000;
+  I = 1173;
+  S = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  ModelValue_1 = d;
+  Metabolite_2 = L;
+  Metabolite_0 = T;
+  ModelValue_2 = l;
+  ModelValue_3 = s;
+  d = 1.7;
+  l = 1.7;
+  s = 0.035;
+  a = 0.2065;
+  b = 2.145e-10;
+  c = 8.68e-10;
+  delta_T = 1.59e-09;
+  e_f = 0.1168;
+  f = 0.0125;
+  p = 6.682e-14;
+  p_N = 0.0668;
+  C_0 = 2140000000;
+  g_N = 250360;
+  m = 0.009;
+  q = 3.422e-10;
+  r_1 = 6.682e-12;
+  r_2 = 1e-15;
+  p_I = 1.111;
+  g_I = 2503.6;
+  z = 2.3085e-13;
+  kappa = 2503.6;
+  j = 0.1245;
+  k = 20190000;
+  w_u = 0.0122;
+  u = 0.03851;
+  p_R = 0.03598;
+  g_R = 11.027;
+  H_R = 0.227;
+  delta_R = 50.02;
+  alpha_beta = 2140000000;
+  beta = 0.0063;
+  mu_I = 11.7427;
+  w = 0.05314;
+  phi = 3.594e-07;
+  zeta = 2503.6;
+  n = 0.277;
+  vs = 0;
+
+  // Other declarations:
+  var D;
+  const compartment_, ModelValue_1, Metabolite_2, Metabolite_0, ModelValue_2;
+  const ModelValue_3, d, l, s, a, b, c, delta_T, e_f, f, p, p_N, C_0, g_N;
+  const m, q, r_1, r_2, p_I, g_I, z, kappa, j, k, w_u, u, p_R, g_R, H_R, delta_R;
+  const alpha_beta, beta, mu_I, w, phi, zeta, n, vs;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  ModelValue_1 is "Initial for d";
+  Metabolite_2 is "Initial for L";
+  Metabolite_0 is "Initial for T";
+  ModelValue_2 is "Initial for l";
+  ModelValue_3 is "Initial for s";
+  C_0 is "C";
+  Increase_in_total_tumor_cell_population_in_number_of_cells is "Increase in total tumor cell population in number of cells";
+  Removal_of_tumor_cell_from_the_system_by_immune_cells is "Removal of tumor cell from the system by immune cells";
+  Increase_in_number_of_Natural_killer_cell_per_litre_of_blood is "Increase in number of Natural killer cell per litre of blood";
+  Removal_of_natural_killer_cell_from_the_system is "Removal of natural killer cell from the system";
+  Increase_in_the_number_of_CD8__T_cell_per_litre_of_blood is "Increase in the number of CD8+ T cell per litre of blood";
+  Decrease_in_the_number_of_CD8__T_cell is "Decrease in the number of CD8+ T cell";
+  Increase_in_the_number_of_Treg_cells_per_litre_of_blood is "Increase in the number of Treg cells per litre of blood";
+  Decrease_in_the_number_of_Treg_cells is "Decrease in the number of Treg cells";
+  Increase_in_the_concentration_of_lymphocyte_per_litre_of_blood_not_including_NK_cells__CD8__T_cells_and_regulatory_T_cells is "Increase in the concentration of lymphocyte per litre of blood not including NK cells, CD8+ T cells and regulatory T cells";
+  Increase_in_the_concentration_of_IL_2_per_litre_of_blood is "Increase in the concentration of IL-2 per litre of blood";
+  Decrease_in_the_concentration_of_IL_2_per_lite_of_blood is "Decrease in the concentration of IL-2 per lite of blood";
+  Injecting_the_concentration_of_sunitinib_per_litre_of_body_volume is "Injecting the concentration of sunitinib per litre of body volume";
+  Sunitinib_not_working_per_day_per_litre_of_body_volume is "Sunitinib not working per day per litre of body volume";
+
+  // CV terms:
+  T hasInstance "http://identifiers.org/ncit/C12922"
+  N hasInstance "http://identifiers.org/bto/BTO:0000914"
+  L hasInstance "http://identifiers.org/ncit/C12543"
+  R hasInstance "http://identifiers.org/ncit/C78829"
+  C hasInstance "http://identifiers.org/ncit/C12922"
+  I hasInstance "http://identifiers.org/ncit/C20507"
+  S hasInstance "http://identifiers.org/ncit/C71622"
+  Increase_in_total_tumor_cell_population_in_number_of_cells hasInstance "http://identifiers.org/ncit/C25533"
+  Removal_of_tumor_cell_from_the_system_by_immune_cells hasInstance "http://identifiers.org/ncit/C64914"
+  Increase_in_number_of_Natural_killer_cell_per_litre_of_blood hasInstance "http://identifiers.org/ncit/C25533"
+  Removal_of_natural_killer_cell_from_the_system hasInstance "http://identifiers.org/ncit/C64914"
+  Increase_in_the_number_of_CD8__T_cell_per_litre_of_blood hasInstance "http://identifiers.org/ncit/C25533"
+  Decrease_in_the_number_of_CD8__T_cell hasInstance "http://identifiers.org/ncit/C64914"
+  Increase_in_the_number_of_Treg_cells_per_litre_of_blood hasInstance "http://identifiers.org/ncit/C25533"
+  Decrease_in_the_number_of_Treg_cells hasInstance "http://identifiers.org/ncit/C64914"
+  Increase_in_the_concentration_of_lymphocyte_per_litre_of_blood_not_including_NK_cells__CD8__T_cells_and_regulatory_T_cells hasInstance "http://identifiers.org/ncit/C25533"
+  Increase_in_the_concentration_of_IL_2_per_litre_of_blood hasInstance "http://identifiers.org/ncit/C25533"
+  Decrease_in_the_concentration_of_IL_2_per_lite_of_blood hasInstance "http://identifiers.org/ncit/C64914"
+  Injecting_the_concentration_of_sunitinib_per_litre_of_body_volume hasInstance "http://identifiers.org/ncit/C25533"
+  Sunitinib_not_working_per_day_per_litre_of_body_volume hasInstance "http://identifiers.org/ncit/C25533"
+
+  model hasInstance "http://identifiers.org/mamo/MAMO_0000046",
+                    "http://identifiers.org/taxonomy/9606",
+                    "http://identifiers.org/ncit/C17837"
+  model publication "http://identifiers.org/ncit/C17837",
+                    "http://identifiers.org/doi/10.3934/dcdsb.2013.18.915"
+  model publication "http://identifiers.org/doi/10.1080/17486700802216301"
+  model model_source "http://identifiers.org/biomodels.db/MODEL2001060001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000908"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000046"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model created "2020-01-06T10:14:16Z"
+  model modified "2020-01-06T10:14:16Z"
+  model creator1.givenName "Mohammad Umer"
+  model creator1.familyName "Sharif Shohan"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "msharifshohan@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Mathematical modeling of regulatory T cell effects on renal cell carcinoma treatmentLisette 
+dePillis 1,, Trevor Caldwell 2,, Elizabeth Sarapata 2, and Heather Williams 2,1. 
+	Department of Mathematics, Harvey Mudd College, Claremont, CA 917112. 	Harvey Mudd 
+College, Claremont, CA 91711, United States, United States, United States AbstractWe 
+present a mathematical model to study the effects of the regulatory T cells (Treg) 
+on Renal Cell Carcinoma (RCC) treatment with sunitinib. The drug sunitinib inhibits 
+the natural self-regulation of the immune system, allowing the effector components 
+of the immune system to function for longer periods of time. This mathematical model 
+builds upon our non-linear ODE model by de Pillis et al. (2009) [13] to incorporate 
+sunitinib treatment, regulatory T cell dynamics, and RCC-specific parameters. The 
+model also elucidates the roles of certain RCC-specific parameters in determining 
+key differences between in silico patients whose immune profiles allowed them to 
+respond well to sunitinib treatment, and those whose profiles did not. Simulations 
+from our model are able to produce results that reflect clinical outcomes to sunitinib 
+treatment such as: (1) sunitinib treatments following standard protocols led to improved 
+tumor control (over no treatment) in about 40% of patients; (2) sunitinib treatments 
+at double the standard dose led to a greater response rate in about 15% the patient 
+population; (3) simulations of patient response indicated improved responses to sunitinib 
+treatment when the patient&apos;s immune strength scaling and the immune system strength 
+coefficients parameters were low, allowing for a slightly stronger natural immune 
+response.Keywords: Renal cell carcinoma, mathematical modeling., sunitinib, immune 
+system, regulatory T cells.
+```
+end
+
+dePillis2013___Mathematical_modeling_of_regulatory_T_cell_effects_on_renal_cell_carcinoma_treatment is "dePillis2013 - Mathematical modeling of regulatory T cell effects on renal cell carcinoma treatment"

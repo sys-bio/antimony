@@ -1,0 +1,98 @@
+// Created by libAntimony v3.2.0
+model *Kosiuk2015_Geometric_analysis_of_the_Goldbeter_minimal_model_for_the_embryonic_cell_cycle()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species C in compartment_, M in compartment_, X in compartment_;
+
+  // Assignment Rules:
+  V1C := VM1*C/(Kc + C);
+  V3M := VM3*M;
+
+  // Reactions:
+  Production_of_Cyclin:  => C; compartment_*((1/4)*(1 - X - C));
+  Cdc2_kinase_activation:  => M; compartment_*((6*C/(1 + 2*C))*((1 - M)/(epislon + 1 - M)) - (3/2)*(M/(epislon + M)));
+  activation_of_cyclin_protease:  => X; compartment_*(M*((1 - X)/(epislon + 1 - X)) - (7/10)*(X/(epislon + X)));
+
+  // Species initializations:
+  C = 0.3;
+  M = 0;
+  X = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  kd = 0.25;
+  vi = 0.25;
+  Kc = 0.5;
+  Kd = 0;
+  VM1 = 3;
+  V2 = 1.5;
+  VM3 = 1;
+  V4 = 0.7;
+  vd = 0.25;
+  kj = 0.001;
+  j = 1;
+  epislon = 0.001;
+
+  // Other declarations:
+  var V1C, V3M;
+  const compartment_, kd, vi, Kc, Kd, VM1, V2, VM3, V4, vd, kj, j, epislon;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  // Display Names:
+  compartment_ is "compartment";
+  Production_of_Cyclin is "Production of Cyclin";
+  Cdc2_kinase_activation is "Cdc2 kinase activation";
+  activation_of_cyclin_protease is "activation of cyclin protease";
+
+  // CV terms:
+  C hasProperty "http://identifiers.org/ncit/C17349"
+  M hasProperty "http://identifiers.org/omit/0016746"
+  X hasProperty "http://identifiers.org/bao/0000652"
+  Production_of_Cyclin hasProperty "http://identifiers.org/ncit/C61408"
+  Cdc2_kinase_activation hasProperty "http://identifiers.org/go/GO:0072376"
+  activation_of_cyclin_protease hasProperty "http://identifiers.org/go/GO:0072376"
+
+  model origin "urn:miriam:pubmed:1833774"
+  model publication "http://identifiers.org/pubmed/26100376"
+  model model_source "http://identifiers.org/biomodels.db/MODEL2004240001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000933"
+  model occursIn "http://identifiers.org/bto/BTO:0000379"
+  model hasTaxon "http://identifiers.org/taxonomy/42452"
+  model hasProperty "http://identifiers.org/ncit/C20626",
+                    "http://identifiers.org/ncit/C16864",
+                    "http://identifiers.org/go/GO:0007049",
+                    "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2020-04-21T09:41:23Z"
+  model modified "2020-04-21T14:23:15Z"
+  model creator1.givenName "Ahmad"
+  model creator1.familyName "Zyoud"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "ahmad.azd@hotmail.com"
+
+  // Notes:
+  model notes ```
+A minimal model describing the embryonic cell division cycle at the molecular 
+level in eukaryotes is analyzed mathematically. It is known from numerical simulations 
+that the corresponding three-dimensional system of ODEs has periodic solutions in 
+certain parameter regimes. We prove the existence of a stable limit cycle and provide 
+a detailed description on how the limit cycle is generated. The limit cycle corresponds 
+to a relaxation oscillation of an auxiliary system, which is singularly perturbed 
+and has the same orbits as the original model. The singular perturbation character 
+of the auxiliary problem is caused by the occurrence of small Michaelis constants 
+in the model. Essential pieces of the limit cycle of the auxiliary problem consist 
+of segments of slow motion close to several branches of a two dimensional critical 
+manifold which are connected by fast jumps. In addition, a new phenomenon of exchange 
+of stability occurs at lines, where the branches of the two-dimensional critical 
+manifold intersect. This novel type of relaxation oscillations is studied by combining 
+standard results from geometric singular perturbation with several suitable blow-up 
+transformations.
+```
+end
+
+Kosiuk2015_Geometric_analysis_of_the_Goldbeter_minimal_model_for_the_embryonic_cell_cycle is "Kosiuk2015-Geometric analysis of the Goldbeter minimal model for the embryonic cell cycle"

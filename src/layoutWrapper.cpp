@@ -434,14 +434,23 @@ bool LayoutWrapper::TransferLayoutInformationTo(SBMLDocument* sbml)
       int speciesIndex = LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReferenceIndexAssociatedWithSpecies(sbml, lw->m_speciesId, sid, lw->m_aliasNum, lw->m_speciesIndex);
       switch (m_layout_type) {
       case lt_linecolor:
-        return LIBSBMLNETWORK_CPP_NAMESPACE::setStrokeColor(sbml, LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReference(sbml, sid, 0, speciesIndex), formstring) == -1;
+      {
+        bool linecolorRet = LIBSBMLNETWORK_CPP_NAMESPACE::setStrokeColor(sbml, LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReference(sbml, sid, 0, speciesIndex), formstring) == -1;
+        delete astn;
+        return linecolorRet;
+      }
       case lt_linewidth:
-        return LIBSBMLNETWORK_CPP_NAMESPACE::setStrokeWidth(sbml, LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReference(sbml, sid, 0, speciesIndex), astn->getValue()) == -1;
+      {
+        bool linewidthRet = LIBSBMLNETWORK_CPP_NAMESPACE::setStrokeWidth(sbml, LIBSBMLNETWORK_CPP_NAMESPACE::getSpeciesReference(sbml, sid, 0, speciesIndex), astn->getValue()) == -1;
+        delete astn;
+        return linewidthRet;
+      }
       case lt_position:
       default:
         stringstream err;
         err << "Cannot set the " << LayoutTypeToString(m_layout_type) << " for a reaction arc.  The only options are the line color ('linecolor') and width ('linewidth').";
         g_registry.AddWarning(err.str());
+        delete astn;
         return true;
       }
     }

@@ -1,0 +1,196 @@
+// Created by libAntimony v3.2.0
+model *Jarrah2014___mathematical_model_of_the_immune_response_in_muscle_degeneration_and_subsequent_regeneration_in_Duchenne_muscular_dystrophy_in_mdx_mice()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species H in compartment_, D in compartment_, M in compartment_, C in compartment_;
+  species N in compartment_, R in compartment_;
+
+  // Assignment Rules:
+  bH := dH*H0;
+  bC := dC*C0;
+  bM := dM*M0;
+  alpha := (h/((time + 1e-11)*sigma*(2*pi)^0.5))*exp(-(ln(time + 1e-11) - m)^2/(2*sigma^2));
+
+  // Reactions:
+  reaction_:  => H; compartment_*(bH + k1*D*M);
+  reaction_1: H => ; compartment_*dH*H;
+  reaction_2:  => C; compartment_*(bC + k2*D*H);
+  reaction_3: C => ; compartment_*dC*C;
+  reaction_4:  => M; compartment_*(bM + k3*D*M);
+  reaction_5: M => ; compartment_*dM*M;
+  reaction_6: N => D; compartment_*(k5*C*N + alpha*N);
+  reaction_7: D => R; compartment_*(k6*M*D + dD*D);
+  reaction_8: R => N; compartment_*k4*R;
+
+  // Species initializations:
+  H = 0;
+  H has substance_per_volume;
+  D = 0;
+  D has substance_per_volume;
+  M = 400;
+  M has substance_per_volume;
+  C = 4;
+  C has substance_per_volume;
+  N = 100;
+  N has substance_per_volume;
+  R = 0;
+  R has substance_per_volume;
+
+  // Compartment initializations:
+  compartment_ = 1;
+  compartment_ has volume;
+
+  // Variable initializations:
+  k1 = 0.0341;
+  k2 = 0.115375;
+  k3 = 0.766576;
+  k4 = 0.123848;
+  k5 = 0.00409948;
+  k6 = 0.000323097;
+  dH = 1;
+  H0 = 0;
+  dC = 1.61511;
+  C0 = 4;
+  dM = 0.781155;
+  M0 = 400;
+  dD = 1.34671;
+  sigma = 2.2;
+  m = 4.22686;
+  h = 0.511657;
+
+  // Other declarations:
+  var bH, bC, bM, alpha;
+  const compartment_, k1, k2, k3, k4, k5, k6, dH, H0, dC, C0, dM, M0, dD;
+  const sigma, m, h;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = litre;
+  unit time_unit = 604800 second;
+  unit substance = mole;
+  unit extent = substance;
+  unit substance_per_volume = mole / litre;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "Skeletal_muscle";
+  H is "CD4+_T_Helper_cells_(H)";
+  D is "Damaged_fibres_(D)";
+  M is "Macrophages_(M)";
+  C is "CD8+_cytotoxic_T_lymphocytes_(C)";
+  N is "Normal_fibres_(N)";
+  R is "Regenerative_fibres_(R)";
+  reaction_ is "T_helper_cells_creation";
+  reaction_1 is "T_helper_cells_degradation";
+  reaction_2 is "T_lymphocytes_creation";
+  reaction_3 is "T_lymphocytes_degradation";
+  reaction_4 is "Macrophage_creation";
+  reaction_5 is "Macrophage_degradation";
+  reaction_6 is "Fibre_damage";
+  reaction_7 is "Fibre_regeneration";
+  reaction_8 is "Fibre_normalisation";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/ncit/C13050"
+  H identity "http://identifiers.org/cl/CL:0000492"
+  D identity "http://identifiers.org/bto/BTO:0000888"
+  D hasProperty "http://identifiers.org/ncit/C61555"
+  M identity "http://identifiers.org/omit/0009339"
+  C identity "http://identifiers.org/cl/CL:0000794"
+  N identity "http://identifiers.org/bto/BTO:0000888"
+  R identity "http://identifiers.org/bto/BTO:0000888"
+  R hasProperty "http://identifiers.org/ncit/C17083"
+  reaction_ identity "http://identifiers.org/cl/CL:0000492"
+  reaction_ hasProperty "http://identifiers.org/ncit/C42620"
+  reaction_1 identity "http://identifiers.org/cl/CL:0000492"
+  reaction_1 hasProperty "http://identifiers.org/ncit/C61559"
+  reaction_2 identity "http://identifiers.org/cl/CL:0000794"
+  reaction_2 hasProperty "http://identifiers.org/ncit/C42620"
+  reaction_3 identity "http://identifiers.org/cl/CL:0000794"
+  reaction_3 hasProperty "http://identifiers.org/ncit/C61559"
+  reaction_4 identity "http://identifiers.org/omit/0009339"
+  reaction_4 hasProperty "http://identifiers.org/ncit/C42620"
+  reaction_5 identity "http://identifiers.org/omit/0009339"
+  reaction_5 hasProperty "http://identifiers.org/ncit/C61559"
+  reaction_6 identity "http://identifiers.org/bto/BTO:0000888"
+  reaction_6 hasProperty "http://identifiers.org/ncit/C61555"
+  reaction_7 identity "http://identifiers.org/bto/BTO:0000888"
+  reaction_7 hasProperty "http://identifiers.org/ncit/C17083"
+  reaction_8 identity "http://identifiers.org/bto/BTO:0000888"
+
+  model publication "http://identifiers.org/pubmed/25013809"
+  model model_source "http://identifiers.org/biomodels.db/MODEL2107200002",
+                     "http://identifiers.org/biomodels.db/BIOMD0000001015"
+  model hasVersion "http://identifiers.org/omit/0018341"
+  model identity "http://identifiers.org/mamo/MAMO_0000046"
+  model identity "http://identifiers.org/ncit/C17930"
+  model occursIn "http://identifiers.org/ncit/C33558"
+  model hasTaxon "http://identifiers.org/taxonomy/10090"
+  model hasProperty "http://identifiers.org/ncit/C75482",
+                    "http://identifiers.org/ncit/C120876",
+                    "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2021-07-01T12:32:14Z"
+  model modified "2021-07-01T12:32:14Z"
+  model creator1.givenName "Rahuman"
+  model creator1.familyName "Sheriff"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "sheriff@ebi.ac.uk"
+  model creator2.givenName "Maria"
+  model creator2.familyName "Gomez"
+  model creator2.organization "Universidad de Sevilla"
+  model creator2.email "magomez-ibis@us.es"
+  model creator3.givenName "Krishna"
+  model creator3.familyName "Tiwari"
+  model creator3.organization "EMBL-EBI"
+  model creator3.email "ktiwari@ebi.ac.uk"
+  model creator4.givenName "Ramachandran"
+  model creator4.familyName "Kausthubh"
+  model creator4.organization "EMBL-EBI"
+  model creator4.email "kramachandran@ebi.ac.uk"
+  model creator5.givenName "Martin"
+  model creator5.familyName "Proks"
+  model creator5.organization "University of Copenhagen"
+  model creator5.email "martin.proks@sund.ku.dk"
+  model creator6.givenName "Erin"
+  model creator6.familyName "M Lloyd"
+  model creator6.organization "University of Western Australia, Perth"
+  model creator6.email "erin.lloyd@reseearch.uwa.edu.au"
+  model creator7.givenName "Emilia"
+  model creator7.familyName "Chen"
+  model creator7.organization "University of Cambridge"
+  model creator7.email "emiliachen1@gmail.com"
+  model creator8.givenName "Yibo"
+  model creator8.familyName "Zhao"
+  model creator8.organization "University College London"
+  model creator8.email "yibo.zhao.18@ucl.ac.uk"
+  model creator9.givenName "Hina"
+  model creator9.familyName "Hazrat Khan"
+  model creator9.organization "University of Karachi"
+  model creator9.email "hina.hrk@outlook.com"
+  model creator10.givenName "Lea"
+  model creator10.familyName "Le Poder"
+  model creator10.organization "Aix-Marseille Université and CEA institute"
+  model creator10.email "lea.lepoder@gmail.com"
+
+  // Notes:
+  model notes ```
+Duchenne muscular dystrophy (DMD) is a genetic disease that results in the death
+of affected boys by early adulthood.The genetic defect responsible for DMD has been
+known for over 25 years, yet at present there is neither cure nor effective treatment
+for DMD. During early disease onset, the mdx mouse has been validated as an animal
+model for DMD and use of this model has led to valuable but incomplete insights into
+the disease process. For example, immune cells are thought to be responsible for
+a significant portion of muscle cell death in the mdx mouse; however, the role and
+time course of the immune response in the dystrophic process have not been well described.
+In this paper we constructed a simple mathematical model to investigate the role
+of the immune response in muscle degeneration and subsequent regeneration in the
+mdx mouse model of Duchenne muscular dystrophy. Our model suggests that the immune
+response contributes substantially to the muscle degeneration and regeneration processes.
+Furthermore, the analysis of the model predicts that the immune system response oscillates
+throughout the life of the mice, and the damaged fibers are never completely cleared.
+```
+end
+
+Jarrah2014___mathematical_model_of_the_immune_response_in_muscle_degeneration_and_subsequent_regeneration_in_Duchenne_muscular_dystrophy_in_mdx_mice is "Jarrah2014 - mathematical model of the immune response in muscle degeneration and subsequent regeneration in Duchenne muscular dystrophy in mdx mice"

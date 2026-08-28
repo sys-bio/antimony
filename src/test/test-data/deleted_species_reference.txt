@@ -1,0 +1,31 @@
+// Created by libAntimony v3.2.0
+model rxn()
+
+  // Compartments and Species:
+  species A, B;
+
+  // Reactions:
+  J0: A -> B; k1;
+
+  // Species initializations:
+  A = ;
+  B = ;
+
+  // Variable initializations:
+  k1 = ;
+
+  // Other declarations:
+  const k1;
+end
+
+model *top()
+
+  // Sub-modules, and any changes to those submodules:
+  A: rxn();
+  A.J0 is A_J0;
+  A.k1 is A_k1;
+  A.B is A_B;
+
+  // Reactions:
+  A_J0:  -> A_B; A_k1;
+end

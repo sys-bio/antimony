@@ -1,0 +1,86 @@
+// Created by libAntimony v3.2.0
+model *New_Model()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species T in compartment_, I in compartment_, V in compartment_;
+
+  // Reactions:
+  Reaction_1:  => T; compartment_*(s*I);
+  Reaction_2:  => T; compartment_*(r_T_Tmax*T/(T + I));
+  Reaction_3: T => ; compartment_*(r_T_d*T);
+  Reaction_4: T + V => I; compartment_*beta*T*V;
+  Reaction_5:  => I; compartment_*((1/(1 + R))*(r_T_Tmax*I/(T + I)));
+  Reaction_6: I => ; compartment_*((1/(1 + R))*r_T_d*I);
+  Reaction_7: I => ; compartment_*(D*r_T_d*I);
+  Reaction_8:  => V; compartment_*(pstar*I);
+  Reaction_9: V => ; compartment_*c*V;
+
+  // Species initializations:
+  T = 3.3246;
+  I = 417520;
+  V = 4450000;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  s = 0.1178;
+  r_T_Tmax = 10645;
+  r_T_d = 0.0019927;
+  R = 30.078;
+  D = 58.954;
+  beta = 8.3376e-09;
+  pstar = 203.96;
+  c = 17.908;
+
+  // Other declarations:
+  const compartment_, s, r_T_Tmax, r_T_d, R, D, beta, pstar, c;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+
+  // Display Names:
+  time_unit is "time";
+  compartment_ is "Liver";
+  T is "Healthy Hepatocytes (T)";
+  I is "Infected Hepatocytes (I)";
+  V is "Viral Load (V)";
+  beta is "beta*";
+  Reaction_1 is "Proliferation of hepatocytes from liver stem cells";
+  Reaction_2 is "Proliferation of hepatocytes through cell division";
+  Reaction_3 is "Death of healthy hepatocytes";
+  Reaction_4 is "Infection of healthy hepatocytes";
+  Reaction_5 is "Proliferation of infected hepatocytes";
+  Reaction_6 is "Death of infected hepatocytes (1st term)";
+  Reaction_7 is "Death of Infected Hepatocytes (2nd term)";
+  Reaction_8 is "Release of the virus";
+  Reaction_9 is "Degradation of the virus";
+
+  // CV terms:
+  compartment_ identity "http://identifiers.org/bto/BTO:0000759"
+  T isVersionOf "http://identifiers.org/bto/BTO:0000575"
+  I identity "http://identifiers.org/bto/BTO:0000152"
+  I isVersionOf "http://identifiers.org/bto/BTO:0000575"
+  V hasTaxon "http://identifiers.org/taxonomy/11103"
+  Reaction_4 isVersionOf "http://identifiers.org/ncit/C128320"
+  Reaction_8 isVersionOf "http://identifiers.org/go/GO:0019076"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1808280002",
+                     "http://identifiers.org/biomodels.db/BIOMD0000000713"
+  model identity "http://identifiers.org/biomodels.db/MODEL1808280002"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000046"
+  model hasProperty "http://identifiers.org/efo/0003047"
+  model hasTaxon "http://identifiers.org/taxonomy/11103"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model isDescribedBy "http://identifiers.org/pubmed/29652855"
+  model created "2018-07-05T15:42:50Z"
+  model modified "2018-07-05T15:42:50Z"
+  model creator1.givenName "Sarubini"
+  model creator1.familyName "Kananathan"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "sarubini.kananathan@hotmail.co.uk"
+end
+
+New_Model is "Aston2018 - Dynamics of Hepatitis C Infection"

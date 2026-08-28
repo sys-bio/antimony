@@ -1,0 +1,696 @@
+// Created by libAntimony v3.2.0
+model *Celli_re2011___Plasticity_of_TGF___Signalling()
+
+  // Compartments and Species:
+  compartment c, n, extracellular;
+  species TGFbR in c, TGFb_TGFbR in c, TGFb_TGFbR_P in c, I_Smad_TGFb_TGFbR_P in c;
+  species Smad in c, Smad_P in c, CoSmad in c, Smad_P_Smad_P in c, Smad_P_CoSmad in c;
+  species I_Smad_mRNA2 in c, I_Smad in c, Smad_N in n, Smad_P_Smad_P_N in n;
+  species Smad_P_N in n, Smad_P_CoSmad_N in n, CoSmad_N in n, I_Smad_mRNA1 in n;
+  species $TGFb in extracellular;
+
+  // Reactions:
+  r1: TGFb_TGFbR => TGFbR; c*k1*TGFb_TGFbR;
+  r2: TGFbR + $TGFb => TGFb_TGFbR; k2*TGFbR*TGFb;
+  r3: TGFb_TGFbR => TGFb_TGFbR_P; c*k3*TGFb_TGFbR;
+  r4: TGFb_TGFbR_P => TGFb_TGFbR; c*k4*TGFb_TGFbR_P;
+  r5: TGFb_TGFbR_P + I_Smad => I_Smad_TGFb_TGFbR_P; c*k5*TGFb_TGFbR_P*I_Smad;
+  r6: I_Smad_TGFb_TGFbR_P => TGFb_TGFbR + I_Smad; c*k6*I_Smad_TGFb_TGFbR_P;
+  r7: Smad => Smad_P; c*(k7*Smad*TGFb_TGFbR_P);
+  r8: Smad => Smad_N; k8*Smad;
+  r9: Smad_N => Smad; k9*Smad_N;
+  r10: 2 Smad_P => Smad_P_Smad_P; c*k10*Smad_P^2;
+  r11: Smad_P_Smad_P => 2 Smad_P; c*k11*Smad_P_Smad_P;
+  r12: Smad_P + CoSmad => Smad_P_CoSmad; c*k10*Smad_P*CoSmad;
+  r13: Smad_P_CoSmad => Smad_P + CoSmad; c*k11*Smad_P_CoSmad;
+  r14: CoSmad => CoSmad_N; k8*CoSmad;
+  r15: CoSmad_N => CoSmad; k9*CoSmad_N;
+  r16: Smad_P_Smad_P => Smad_P_Smad_P_N; k12*k8*Smad_P_Smad_P;
+  r17: Smad_P => Smad_P_N; k8*Smad_P;
+  r18: Smad_P_N => Smad_P; k9*Smad_P_N;
+  r19: Smad_P_CoSmad => Smad_P_CoSmad_N; k12*k8*Smad_P_CoSmad;
+  r20: Smad_P_N => Smad_N; n*k13*Smad_P_N;
+  r21: 2 Smad_P_N => Smad_P_Smad_P_N; n*k10*Smad_P_N^2;
+  r22: Smad_P_Smad_P_N => 2 Smad_P_N; n*k11*Smad_P_Smad_P_N;
+  r23: Smad_P_N + CoSmad_N => Smad_P_CoSmad_N; n*k10*Smad_P_N*CoSmad_N;
+  r24: Smad_P_CoSmad_N => Smad_P_N + CoSmad_N; n*k11*Smad_P_CoSmad_N;
+  r25:  => I_Smad_mRNA1; n*(k14*Smad_P_CoSmad_N^h/(Smad_P_CoSmad_N^h + k15^h));
+  r26: I_Smad_mRNA1 => I_Smad_mRNA2; k16*I_Smad_mRNA1;
+  r27: I_Smad_mRNA2 => ; c*k17*I_Smad_mRNA2;
+  r28:  => I_Smad; c*(k18*I_Smad_mRNA2);
+  r29: I_Smad => ; c*k19*I_Smad;
+
+  // Species initializations:
+  TGFbR = 1010;
+  TGFb_TGFbR = 0;
+  TGFb_TGFbR_P = 0;
+  I_Smad_TGFb_TGFbR_P = 0;
+  Smad = 7000;
+  Smad_P = 0;
+  CoSmad = 12000;
+  Smad_P_Smad_P = 0;
+  Smad_P_CoSmad = 0;
+  I_Smad_mRNA2 = 0;
+  I_Smad = 0;
+  Smad_N = 82000;
+  Smad_P_Smad_P_N = 0;
+  Smad_P_N = 0;
+  Smad_P_CoSmad_N = 0;
+  CoSmad_N = 135000;
+  I_Smad_mRNA1 = 0;
+  TGFb = 460;
+
+  // Compartment initializations:
+  c = 2.3;
+  n = 1;
+  extracellular = 1;
+
+  // Variable initializations:
+  h = 2.06;
+  k1 = 0.00446;
+  k2 = 4.39e-06;
+  k3 = 0.324;
+  k4 = 0.00192;
+  k7 = 9.35e-06;
+  k8 = 0.0104;
+  k9 = 0.00075;
+  k10 = 5.12e-08;
+  k11 = 0.00923;
+  k12 = 0.0513;
+  k13 = 0.00164;
+  k5 = 0.000549;
+  k6 = 1.29e-05;
+  k14 = 0.038;
+  k15 = 28.52;
+  k16 = 0.0214;
+  k17 = 8.05e-05;
+  k18 = 0.0434;
+  k19 = 0.000412;
+
+  // Other declarations:
+  const c, n, extracellular, h, k1, k2, k3, k4, k7, k8, k9, k10, k11, k12;
+  const k13, k5, k6, k14, k15, k16, k17, k18, k19;
+
+  // Unit definitions:
+  unit substance = 1e-12 mole;
+
+  // Display Names:
+  c is "cytoplasm";
+  n is "nucleus";
+
+  // SBO terms:
+  TGFb_TGFbR_P.sboTerm = 216
+  I_Smad_TGFb_TGFbR_P.sboTerm = 216
+
+  // CV terms:
+  c identity "http://identifiers.org/go/GO:0005737"
+  n identity "http://identifiers.org/go/GO:0005634"
+  extracellular identity "http://identifiers.org/go/GO:0005576"
+  TGFbR isVersionOf "http://identifiers.org/interpro/IPR000333"
+  TGFb_TGFbR hasPart "http://identifiers.org/interpro/IPR000333",
+                     "http://identifiers.org/interpro/IPR016319"
+  TGFb_TGFbR_P hasPart "http://identifiers.org/interpro/IPR000333",
+                       "http://identifiers.org/interpro/IPR016319"
+  I_Smad_TGFb_TGFbR_P hasPart "http://identifiers.org/interpro/IPR017855",
+                              "http://identifiers.org/interpro/IPR016319",
+                              "http://identifiers.org/interpro/IPR000333"
+  Smad isVersionOf "http://identifiers.org/interpro/IPR008984"
+  Smad_P isVersionOf "http://identifiers.org/interpro/IPR008984"
+  CoSmad isVersionOf "http://identifiers.org/interpro/IPR008984"
+  Smad_P_Smad_P isVersionOf "http://identifiers.org/interpro/IPR008984"
+  Smad_P_CoSmad isVersionOf "http://identifiers.org/interpro/IPR008984"
+  Smad_P_CoSmad isVersionOf "http://identifiers.org/uniprot/Q13485"
+  I_Smad_mRNA2 isVersionOf "http://identifiers.org/interpro/IPR008984"
+  I_Smad isVersionOf "http://identifiers.org/interpro/IPR008984"
+  Smad_N isVersionOf "http://identifiers.org/interpro/IPR008984"
+  Smad_P_Smad_P_N isVersionOf "http://identifiers.org/interpro/IPR008984"
+  Smad_P_N isVersionOf "http://identifiers.org/interpro/IPR008984"
+  Smad_P_N isVersionOf "http://identifiers.org/uniprot/Q13485"
+  Smad_P_CoSmad_N isVersionOf "http://identifiers.org/interpro/IPR008984"
+  Smad_P_CoSmad_N isVersionOf "http://identifiers.org/uniprot/Q13485"
+  CoSmad_N isVersionOf "http://identifiers.org/interpro/IPR008984"
+  I_Smad_mRNA1 isVersionOf "http://identifiers.org/interpro/IPR008984"
+  TGFb isVersionOf "http://identifiers.org/uniprot/P36897"
+  k1 isDescribedBy "http://identifiers.org/pubmed/18706811"
+  k1 isDescribedBy "http://identifiers.org/pubmed/19254534"
+  k2 isDescribedBy "http://identifiers.org/pubmed/18706811"
+  k2 isDescribedBy "http://identifiers.org/pubmed/19254534"
+  k7 isDescribedBy "http://identifiers.org/pubmed/18443295"
+  k7 isDescribedBy "http://identifiers.org/pubmed/19254534"
+  k8 isDescribedBy "http://identifiers.org/pubmed/18443295"
+  k8 isDescribedBy "http://identifiers.org/pubmed/17186703"
+  k8 isDescribedBy "http://identifiers.org/pubmed/19254534"
+  k9 isDescribedBy "http://identifiers.org/pubmed/18443295"
+  k9 isDescribedBy "http://identifiers.org/pubmed/19254534"
+  k9 isDescribedBy "http://identifiers.org/pubmed/17186703"
+  k10 isDescribedBy "http://identifiers.org/pubmed/17186703"
+  k10 isDescribedBy "http://identifiers.org/pubmed/18443295"
+  k10 isDescribedBy "http://identifiers.org/pubmed/19254534"
+  k11 isDescribedBy "http://identifiers.org/pubmed/19254534"
+  k11 isDescribedBy "http://identifiers.org/pubmed/17186703"
+  k11 isDescribedBy "http://identifiers.org/pubmed/18443295"
+  k12 isDescribedBy "http://identifiers.org/pubmed/18443295"
+  k13 isDescribedBy "http://identifiers.org/pubmed/19254534"
+  k14 encodes "http://identifiers.org/interpro/IPR008984"
+  k14 hasPart "http://identifiers.org/go/GO:0071141"
+  k14 isVersionOf "http://identifiers.org/go/GO:0010468"
+  k14 isDescribedBy "http://identifiers.org/pubmed/18061509"
+  k15 hasPart "http://identifiers.org/go/GO:0071141"
+  k15 isPartOf "http://identifiers.org/interpro/IPR008984"
+  k15 isVersionOf "http://identifiers.org/go/GO:0010468"
+  k15 isDescribedBy "http://identifiers.org/pubmed/18061509"
+  k16 encodes "http://identifiers.org/interpro/IPR008984"
+  k16 isVersionOf "http://identifiers.org/go/GO:0051168"
+  k16 isDescribedBy "http://identifiers.org/doi/10.1101/1350705"
+  k17 encodes "http://identifiers.org/interpro/IPR008984"
+  k17 isVersionOf "http://identifiers.org/go/GO:0006402"
+  k17 isDescribedBy "http://identifiers.org/doi/10.1101/gad.1350705"
+  k18 encodes "http://identifiers.org/interpro/IPR008984"
+  k18 isVersionOf "http://identifiers.org/go/GO:0006412"
+  k18 isDescribedBy "http://identifiers.org/doi/10.1101/gad.1350705"
+  r1 hasPart "http://identifiers.org/interpro/IPR000333"
+  r1 hasPart "http://identifiers.org/interpro/IPR016319"
+  r1 identity "http://identifiers.org/go/GO:0043241"
+  r2 hasPart "http://identifiers.org/interpro/IPR016319"
+  r2 hasPart "http://identifiers.org/interpro/IPR000333"
+  r2 identity "http://identifiers.org/go/GO:0005160"
+  r2 isDescribedBy "http://identifiers.org/pubmed/12729750"
+  r3 hasPart "http://identifiers.org/interpro/IPR000333"
+  r3 hasPart "http://identifiers.org/interpro/IPR016319"
+  r3 isVersionOf "http://identifiers.org/go/GO:0004674"
+  r4 hasVersion "http://identifiers.org/interpro/IPR016319"
+  r4 hasVersion "http://identifiers.org/interpro/IPR000333"
+  r4 isVersionOf "http://identifiers.org/go/GO:0016311"
+  r5 hasPart "http://identifiers.org/interpro/IPR000333"
+  r5 hasPart "http://identifiers.org/interpro/IPR008984"
+  r5 hasPart "http://identifiers.org/interpro/IPR016319"
+  r5 hasVersion "http://identifiers.org/go/GO:0070411"
+  r5 hasVersion "http://identifiers.org/go/GO:0016311"
+  r5 hasVersion "http://identifiers.org/go/GO:0030617"
+  r6 hasPart "http://identifiers.org/interpro/IPR000333"
+  r6 hasPart "http://identifiers.org/interpro/IPR008984"
+  r6 hasPart "http://identifiers.org/interpro/IPR016319"
+  r6 isVersionOf "http://identifiers.org/go/GO:0043241"
+  r7 hasPart "http://identifiers.org/interpro/IPR000333"
+  r7 hasPart "http://identifiers.org/interpro/IPR008984"
+  r7 hasPart "http://identifiers.org/interpro/IPR016319"
+  r7 isVersionOf "http://identifiers.org/go/GO:0060389"
+  r8 hasPart "http://identifiers.org/interpro/IPR008984"
+  r8 isVersionOf "http://identifiers.org/go/GO:0007184"
+  r9 hasPart "http://identifiers.org/interpro/IPR008984"
+  r9 isVersionOf "http://identifiers.org/go/GO:0051168"
+  r10 hasPart "http://identifiers.org/interpro/IPR008984"
+  r10 identity "http://identifiers.org/go/GO:0042803"
+  r11 hasPart "http://identifiers.org/interpro/IPR008984"
+  r11 isPartOf "http://identifiers.org/go/GO:0043241"
+  r12 hasPart "http://identifiers.org/interpro/IPR008984"
+  r12 identity "http://identifiers.org/go/GO:0070410"
+  r12 identity "http://identifiers.org/go/GO:0070412"
+  r12 identity "http://identifiers.org/go/GO:0042803"
+  r13 hasPart "http://identifiers.org/interpro/IPR008984"
+  r13 identity "http://identifiers.org/go/GO:0043241"
+  r14 hasPart "http://identifiers.org/interpro/IPR008984"
+  r14 identity "http://identifiers.org/go/GO:0007184"
+  r15 hasPart "http://identifiers.org/interpro/IPR008984"
+  r15 identity "http://identifiers.org/go/GO:0051168"
+  r16 hasPart "http://identifiers.org/interpro/IPR008984"
+  r16 isVersionOf "http://identifiers.org/go/GO:0007184"
+  r16 isDescribedBy "http://identifiers.org/pubmed/12809600"
+  r16 isDescribedBy "http://identifiers.org/doi/10.1038/cr.2008.325"
+  r17 hasPart "http://identifiers.org/interpro/IPR008984"
+  r17 isVersionOf "http://identifiers.org/go/GO:0007184"
+  r17 isDescribedBy "http://identifiers.org/doi/10.1038/cr.2008.325"
+  r18 hasPart "http://identifiers.org/interpro/IPR008984"
+  r18 isVersionOf "http://identifiers.org/go/GO:0051168"
+  r18 isDescribedBy "http://identifiers.org/doi/10.1038/cr.2008.325"
+  r19 hasPart "http://identifiers.org/interpro/IPR008984"
+  r19 isVersionOf "http://identifiers.org/go/GO:0007184"
+  r19 isDescribedBy "http://identifiers.org/doi/10.1038/cr.2008.325"
+  r20 hasPart "http://identifiers.org/interpro/IPR008984"
+  r20 isVersionOf "http://identifiers.org/go/GO:0006470"
+  r20 isDescribedBy "http://identifiers.org/doi/10.1007/978-1-60761-738-9_7"
+  r21 hasPart "http://identifiers.org/interpro/IPR008984"
+  r21 isVersionOf "http://identifiers.org/go/GO:0007183"
+  r21 isDescribedBy "http://identifiers.org/doi/10.1016/j.bbrc.2008.08.143"
+  r22 hasPart "http://identifiers.org/go/GO:0010862"
+  r22 hasVersion "http://identifiers.org/interpro/IPR008984"
+  r22 isPartOf "http://identifiers.org/go/GO:0043241"
+  r23 hasVersion "http://identifiers.org/interpro/IPR008984"
+  r23 hasVersion "http://identifiers.org/uniprot/Q13485"
+  r23 identity "http://identifiers.org/go/GO:0070410"
+  r23 identity "http://identifiers.org/go/GO:0010862"
+  r23 identity "http://identifiers.org/go/GO:0070412"
+  r24 hasVersion "http://identifiers.org/uniprot/Q13485"
+  r24 hasVersion "http://identifiers.org/interpro/IPR008984"
+  r24 identity "http://identifiers.org/go/GO:0070410"
+  r24 identity "http://identifiers.org/go/GO:0010862"
+  r24 identity "http://identifiers.org/go/GO:0043241"
+  r25 encodes "http://identifiers.org/interpro/IPR008984"
+  r26 encodes "http://identifiers.org/interpro/IPR008984"
+  r26 identity "http://identifiers.org/go/GO:0051168"
+  r27 encodes "http://identifiers.org/interpro/IPR008984"
+  r27 identity "http://identifiers.org/go/GO:0006401"
+  r28 hasVersion "http://identifiers.org/interpro/IPR008984"
+  r29 hasPart "http://identifiers.org/interpro/IPR008984"
+  r29 isVersionOf "http://identifiers.org/go/GO:0030163"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1208280000"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000600"
+  model publication "http://identifiers.org/pubmed/22051045"
+  model isVersionOf "http://identifiers.org/go/GO:0007179"
+  model isDescribedBy "http://identifiers.org/pubmed/22051045"
+  model created "2016-04-18T12:54:50Z"
+  model modified "2016-04-18T14:56:39Z"
+  model creator1.givenName "Nick"
+  model creator1.familyName "Juty"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "juty@ebi.ac.uk"
+  model creator2.givenName "Georgios"
+  model creator2.familyName "Fengos"
+  model creator2.organization "Eidgenössische Technische Hochschule Zurich (ETHZ)"
+  model creator2.email "georgios.fengos@bsse.ethz.ch"
+  model creator3.givenName "Travis"
+  model creator3.familyName "Struck"
+  model creator3.organization "University of Arizona"
+  model creator3.email "tjstruck@email.arizona.edu"
+  model creator4.givenName "Dinah"
+  model creator4.familyName "Davison"
+  model creator4.organization "University of Arizona"
+  model creator4.email "dinahdavison@email.arizona.edu"
+  model creator5.givenName "Benjamin"
+  model creator5.familyName "Zaepfel"
+  model creator5.organization "University of Arizona"
+  model creator5.email "benzaepfel@email.arizona.edu"
+  model creator6.givenName "Rachel"
+  model creator6.familyName "Wellington"
+  model creator6.organization "University of Arizona"
+  model creator6.email "rwellington@email.arizona.edu"
+  model creator7.givenName "Ryan"
+  model creator7.familyName "Gutenkunst"
+  model creator7.organization "University of Arizona"
+  model creator7.email "rgutenk@email.arizona.edu"
+  model creator8.givenName "Vijayalakshmi"
+  model creator8.familyName "Chelliah"
+  model creator8.organization "EMBL-EBI"
+  model creator8.email "viji@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Cellière2011 - Plasticity of TGF-β Signalling 
+
+
+Transforming growth factor beta (TGF-β) signalling has been implicated as an important
+regulator of almost all major cell behaviours, including proliferation, differentiation,
+cell death, and motility. It remains unclear that how the TGF-β signalling pathway
+accomplishes the flexibility in its responses. What and how many parameters have
+to be altered for cells to respond differently to perform complex tasks? This canonical
+response has been explored in this model, by considering the core signalling architecture
+of TGF-β pathway.
+
+
+This model is described in the article:
+
+
+[Plasticity of TGF-β signaling](http://identifiers.org/pubmed/22051045 "Access to this publication") 
+
+
+Cellière G, Fengos G, Hervé M, Iber D. 
+
+BMC Syst Biol. 2011 Nov 3;5:184. 
+Abstract:
+
+
+The family of TGF-β ligands is large and its members are involved in many different
+signaling processes. These signaling processes strongly differ in type with TGF-β
+ligands eliciting both sustained or transient responses. Members of the TGF-β family
+can also act as morphogen and cellular responses would then be expected to provide
+a direct read-out of the extracellular ligand concentration. A number of different
+models have been proposed to reconcile these different behaviours. We were interested
+to define the set of minimal modifications that are required to change the type of
+signal processing in the TGF-β signaling network.		RESULTS:To define the key aspects
+for signaling plasticity we focused on the core of the TGF-β signaling network.
+With the help of a parameter screen we identified ranges of kinetic parameters and
+protein concentrations that give rise to transient, sustained, or oscillatory responses
+to constant stimuli, as well as those parameter ranges that enable a proportional
+response to time-varying ligand concentrations (as expected in the read-out of morphogens).
+A combination of a strong negative feedback and fast shuttling to the nucleus biases
+signaling to a transient rather than a sustained response, while oscillations were
+obtained if ligand binding to the receptor is weak and the turn-over of the I-Smad
+is fast. A proportional read-out required inefficient receptor activation in addition
+to a low affinity of receptor-ligand binding. We find that targeted modification
+of single parameters suffices to alter the response type. The intensity of a constant
+signal (i.e. the ligand concentration), on the other hand, affected only the strength
+but not the type of the response.CONCLUSIONS:The architecture of the TGF-β pathway
+enables the observed signaling plasticity. The observed range of signaling outputs
+to TGF-β ligand in different cell types and under different conditions can be explained
+with differences in cellular protein concentrations and with changes in effective
+rate constants due to cross-talk with other signaling pathways. It will be interesting
+to uncover the exact cellular differences as well as the details of the cross-talks
+in future work.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels) and identified by: [MODEL1208280000](http://www.ebi.ac.uk/biomodels/MODEL1208280000) . 
+
+To cite BioModels Database, please use: BioModels Database: An enhanced, curated
+and annotated resource for published quantitative kinetic models. [20587024](http://identifiers.org/pubmed/20587024) . 
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication>http://creativecommons.org/publicdomain/zero/1.0/]
+for more information.
+```
+  c notes "Defined by provided Gene Ontology annotation."
+  n notes ```
+Gene Ontology GO:0005634 encompasses the term information for the nucleus compartment 
+of the cell.
+```
+  extracellular notes "Defined by provided Gene Ontology annotation."
+  TGFbR notes "Authors specified the receptor in the model is TGF-Beta type 1 receptor."
+  TGFb_TGFbR notes ```
+A complex of a ligand withing the TGF-Beta family and TGF-Beta type 1 receptor.The 
+authors did not specify the exact ligand that they wanted in their model and only 
+refered to it as TGF-Beta. They do specify that the receptor is type 1.
+```
+  TGFb_TGFbR_P notes ```
+A complex of a ligand withing the TGF-Beta family and TGF-Beta type 1 receptor.Receptor 
+is phosphorylated.The authors did not specify the exact ligand that they wanted in 
+their model and only refered to it as TGF-Beta. They do specify that the receptor 
+is type 1.
+```
+  I_Smad_TGFb_TGFbR_P notes ```
+This complex consists of an inhibitory Smad with a SMAD domain, a TGF-beta ligand 
+and a phosphorylated TGF-beta receptor.
+```
+  Smad notes ```
+InterPro annotation gives details on and source information for general Smads 
+(including R-Smad). GeneOntology GO:0070412 reference outlines terms associated with 
+R-Smad binding, which is the major element associated with this reaction.Gene Ontology 
+GO:0010862 reference outlines terms associated with SMAD protein phosphorylation, 
+a critical element of setting up SMAD_P elements.Most annotations are generalized 
+as the model details general TGFb pathway dynamics across relevant species (i.e. 
+Homo sapiens, Drosophila, etc.)
+```
+  Smad_P notes ```
+InterPro annotation gives details on and source information for general Smads 
+(including R-Smad and Co-Smad, as utilized in this reaction). GeneOntology GO:0070412 
+reference outlines terms associated with R-Smad binding, which is the major element 
+associated with this reaction.Gene Ontology GO:0010862 reference outlines terms associated 
+with SMAD protein phosphorylation, a critical element of setting up SMAD_P elements.Most 
+annotations are generalized as the model details general TGFb pathway dynamics across 
+relevant species (i.e. Homo sapiens, Drosophila, etc.)
+```
+  CoSmad notes "Annotation provides information on the general Smad family."
+  Smad_P_Smad_P notes ```
+Phosphorylated version of Smad 2 or 3 complex (either homomer or heteromer).Localized 
+to the cytoplasm.The authors were interested in Smad 2 and 3, since they are involved 
+in the TGF-Beta pathway. So this any combination of the Smads binding to form a homodimer 
+(ex. Smad 2 dimerizing with anouther Smad 2 molecule) or a heterodimer of Smad 2 
+and Smad 3.
+```
+  Smad_P_CoSmad notes ```
+InterPro annotation gives details on and source information for general Smads 
+(including R-Smad and Co-Smad, as utilized in this reaction). GeneOntology GO:0070412 
+reference outlines terms associated with R-Smad binding, which is the major element 
+associated with this reaction.Gene Ontology GO:0010862 reference outlines terms associated 
+with SMAD protein phosphorylation, a critical element of setting up SMAD_P elements.Gene 
+Ontology GO:0070410 references outlines terms associated with Co-Smad binding, a 
+major element in this reaction.Uniprot Q13485 is a Homo sapien version of Smad4, 
+the Smad indicated as a Co-Smad used by the model authors.Most annotations are generalized 
+as the model details general TGFb pathway dynamics across relevant species (i.e. 
+Homo sapiens, Drosophila, etc.)
+```
+  I_Smad_mRNA2 notes ```
+Annotation provides information on the general Smad family.mRNA coding for I_Smad 
+localized to the cytoplasm.
+```
+  I_Smad notes "Annotation provides information on the general Smad family."
+  Smad_N notes ```
+InterPro annotation gives details on and source information for general Smads 
+(including R-Smad). GeneOntology GO:0070412 reference outlines terms associated with 
+R-Smad binding, which is the major element associated with this reaction.Gene Ontology 
+GO:0010862 reference outlines terms associated with SMAD protein phosphorylation, 
+a critical element of setting up SMAD_P elements.Most annotations are generalized 
+as the model details general TGFb pathway dynamics across relevant species (i.e. 
+Homo sapiens, Drosophila, etc.)
+```
+  Smad_P_Smad_P_N notes ```
+Phosphorylated version of Smad 2 or 3 complex (either homomer or heteromer).Localized 
+to the nucleus.The authors were interested in Smad 2 and 3, since they are involved 
+in the TGF-Beta pathway. So this any combination of the Smads binding to form a homodimer 
+(ex. Smad 2 dimerizing with anouther Smad 2 molecule) or a heterodimer of Smad 2 
+and Smad 3.
+```
+  Smad_P_N notes ```
+InterPro annotation gives details on and source information for general Smads 
+(including R-Smad and Co-Smad, as utilized in this reaction). GeneOntology GO:0070412 
+reference outlines terms associated with R-Smad binding, which is the major element 
+associated with this reaction.Gene Ontology GO:0010862 reference outlines terms associated 
+with SMAD protein phosphorylation, a critical element of setting up SMAD_P elements.Most 
+annotations are generalized as the model details general TGFb pathway dynamics across 
+relevant species (i.e. Homo sapiens, Drosophila, etc.)
+```
+  Smad_P_CoSmad_N notes ```
+InterPro annotation gives details on and source information for general Smads 
+(including R-Smad and Co-Smad, as utilized in this reaction). GeneOntology GO:0070412 
+reference outlines terms associated with R-Smad binding, which is the major element 
+associated with this reaction.Gene Ontology GO:0010862 reference outlines terms associated 
+with SMAD protein phosphorylation, a critical element of setting up SMAD_P elements.Gene 
+Ontology GO:0070410 references outlines terms associated with Co-Smad binding, a 
+major element in this reaction.Uniprot Q13485 is a Homo sapien version of Smad4, 
+the Smad indicated as the Co-Smad used by the model authors.Most annotations are 
+generalized as the model details general TGFb pathway dynamics across relevant species 
+(i.e. Homo sapiens, Drosophila, etc.)
+```
+  CoSmad_N notes ```
+Annotation provides information on the general Smad family.CoSmad localized to 
+the nucleus.
+```
+  I_Smad_mRNA1 notes ```
+Annotation provides information on the general Smad family.mRNA coding for I_Smad 
+localized to the nucleus.
+```
+  TGFb notes ```
+TGF-Beta ligand.Pulled from the paper Constraint-based modeling and kinetic analysis 
+of the Smad dependent TGF-beta signaling pathway.Deviated from published value.
+```
+  h notes ```
+Assigned the range 1 to 4 by the authors.No data from previous literature, values 
+were estimated.
+```
+  k1 notes "Assigned the range 10e-5 to 10e-2 by the authors.Data obtained from provided literature."
+  k2 notes ```
+k2 describes the rate of TGFb binding with TGFbR.Assigned the range of 10E-7 to 
+10E-3 by the model authors. This range encompasses the reported values from the annotated 
+references.
+```
+  k3 notes ```
+k3 describes the rate of phosphorylation of TGFb:TGFbR.Assigned the range of 10E-3 
+to 1 by the model authors as there were no previously reported parameter values.
+```
+  k4 notes ```
+k4 describes the rate of dephosphorylation of TGFb:TGFbR.Assigned the range of 
+10E-3 to 1 by the model authors as there were no previously reported parameter values.
+```
+  k7 notes "Assigned the range 10e-7 to 10e-5 by the authors.Data obtained from provided literature."
+  k8 notes ```
+Rate of nuclear import.Pulled from the paper Mathematical modeling identifies 
+Smad nucleocytoplasmic shuttling as a dynamic signal-interpreting system.Pulled from 
+the paper Quantitative modeling and analysis of the transforming growth factor beta 
+signaling pathway.Pulled from the paper Systems theory of Smad signalling.
+```
+  k9 notes ```
+Rate of nuclear export.Pulled from the paper Mathematical modeling identifies 
+Smad nucleocytoplasmic shuttling as a dynamic signal-interpreting system.Pulled from 
+the paper Quantitative modeling and analysis of the transforming growth factor beta 
+signaling pathway.Pulled from the paper Systems theory of Smad signalling.
+```
+  k10 notes "Assigned the range 10e-8 to 10e-4 by the authors.Data obtained from provided literature."
+  k11 notes "Assigned the range 10e-4 to 1 by the authors.Data obtained from provided literature."
+  k12 notes "Assigned the range 10e-2 to 10 by the authors.Data obtained from provided literature."
+  k13 notes "Assigned the range 10e-3 to 10e-1 by the authors.Data obtained from provided literature."
+  k5 notes ```
+k5 describes the rate at which TGFb:TGFbR_P associates into a TGFb:TGFbR:I-Smad 
+complex.Assigned the range of 10E-4 to 1 by the model authors as there were no previously 
+reported parameter values.
+```
+  k6 notes ```
+k6 describes the rate of TGFb:TGFbR dissociation from its complex with I-Smad.Assigned 
+the range of 10E-6 to 1 by the model authors as there were no previously reported 
+parameter values.
+```
+  k14 notes ```
+Nuclear Smad/Co-Smad complexes trigger transcription of I-Smad mRNA. The I-Smad 
+expression rate was varied over 5 orders of magnitude by the authors to determine 
+the appropriate value for the model. Annotations are for the regulation of gene expression, 
+the Smad complex which binds to chromatin and the SMAD domain, which the I-Smad mRNA 
+codes for.
+```
+  k15 notes ```
+k15 describes the phosphorylated Smad/Co-Smad complex binding to chromatin and 
+facilitating gene transcription, particularly the transcription of I-Smad. The I-Smad 
+expression rate was varied over 5 orders of magnitude by the authors to determine 
+the appropriate value for the model. Annotations are for the regulation of gene expression, 
+the Smad complex which binds to chromatin and the SMAD domain, which the I-Smad mRNA 
+codes for.
+```
+  k16 notes ```
+k16 describes the shuttling of inhibitory Smad mRNA from the nucleus to the cytoplasm. 
+Annotations are for nuclear export and for the SMAD domain, which is encoded by the 
+I-Smad mRNA.
+```
+  k17 notes ```
+k17 describes the degradation of inhibitory Smad mRNA. Annotations are for the 
+SMAD domain, which is encoded by the I-Smad mRNA, and for an mRNA catabolic process.
+```
+  k18 notes ```
+k18 describes the translation of inhibitory Smad mRNA, a component of the TGF-beta 
+signaling pathway. This is annotated with the SMAD domain.
+```
+  k19 notes ```
+k19 describes the rate of degradation of I-Smad in the cytoplasm.Assigned the 
+range of 10E-5 to 10E-1 by the model authors as there were no previously reported 
+parameter values.
+```
+  r1 notes ```
+This reaction represents dissociation of the ligand TGF-beta from the TGF-beta 
+receptor.
+```
+  r2 notes ```
+TGF-beta binds to the TGF-beta receptor. Annotations are for TGF-beta receptor 
+binding, the TGF-beta family and the TGF-beta receptor family.
+```
+  r3 notes ```
+Phosphorylation of TGF-Beta type 1 receptor bound to TGF-Beta by protein serine/threonine 
+kinase activity.
+```
+  r4 notes "Dephosphorylation of TGF-Beta type 1 receptor bound to TGF-Beta."
+  r5 notes "I-Smad sequestering and dephosphorylating TGF-Beta type 1 receptor."
+  r6 notes "I-Smad and TGF-Beta type 1 receptor dissociate from each other."
+  r7 notes "Phosphorylation of Smad 2 or Smad 3."
+  r8 notes "Unphosphorylated Smad 2 or Smad 3 import into the nucleus."
+  r9 notes "Unphosphorylated Smad 2 or Smad 3 export from the nucleus."
+  r10 notes ```
+Smad_P represents phosphorylated Smad.Smad_P_Smad_P represents a homodimer of 
+phosporylated Smads.This reaction represents homodimerization of phosphorylated Smads.
+```
+  r11 notes ```
+Smad_P represents phosphorylated Smad.Smad_P_Smad_P represents a homodimer of 
+phosporylated Smads.This reaction represents dissociation of the homodimer Smad_P_Smad_P 
+into two phosphorylated Smads.
+```
+  r12 notes ```
+Smad_P represents phosphorylated Smad.Smad_P_CoSmad represents the heterodimer 
+containing Smad_P and CoSmad.This reaction represents the binding of Smad_P and CoSmad 
+to form the heterodimer Smad_P_CoSmad.
+```
+  r13 notes ```
+Smad_P represents phosphorylated Smad.Smad_P_CoSmad represents the heterodimer 
+containing Smad_P and CoSmad.This reaction represents the dissociation of the Smad_P_CoSmad 
+heterodimer into Smad_P and CoSmad.
+```
+  r14 notes ```
+CoSmad_N represents CoSmad located in the nucleus.This reaction represents the 
+transport of CoSmad to the nucleus from the cytoplasm.
+```
+  r15 notes ```
+CoSmad_N represents CoSmad located in the nucleus.This reaction represents the 
+transport of CoSmad from the nucleus to the cytoplasm.
+```
+  r16 notes ```
+The phosphorylated Smad complex is shuttled into the nucleus. GO annotation corresponds 
+to Smad protein import into nucleus.
+```
+  r17 notes ```
+Phosphorylated Smad is shuttled into the nucleus. Annotations correspond to the 
+SMAD domain (contained within the phosphorylated Smad) and the activity of nuclear 
+shuttling.
+```
+  r18 notes ```
+Phosphorylated Smad is shuttled from the nucleus and the cytoplasm. Annotations 
+are for the SMAD domain present within the phosphorylated Smad and nuclear export.
+```
+  r19 notes ```
+The phosphorylated Smad/Co-Smad complex is shuttled into the nucleus. Annotations 
+are for the SMAD domain and for Smad protein import into the nucleus.
+```
+  r20 notes ```
+Nuclear Smad is dephosphorylated. Annotations are for the SMAD domain and for 
+protein dephosphorylation.
+```
+  r21 notes ```
+Phosphorylated nuclear Smads form a dimer. Annotations are for Smad protein complex 
+assembly and for the SMAD domain contained in both Smad proteins.
+```
+  r22 notes ```
+Nuclear phosphorylated Smad homodimer dissociated into nuclear phosphorylated 
+Smad monomers.InterPro annotation gives details on and source information for general 
+Smads (including R-Smad and Co-Smad, as utilized in this reaction). Gene Ontology 
+GO:0043241 reference outlines terms associated with protein complex disassembly.Gene 
+Ontology GO:0010862 reference outlines terms associated with SMAD protein phosphorylation, 
+a critical element of setting up SMAD_P elements.This reaction occurs in the nucleus.All 
+annotations are generalized as the model details general TGFb pathway dynamics across 
+relevant species (i.e. Homo sapiens, Drosophila, etc.)
+```
+  r23 notes ```
+Nuclear phosphorylated Smad and Co-Smad heterodimerize.InterPro annotation gives 
+details on and source information for general Smads (including R-Smad and Co-Smad, 
+as utilized in this reaction). GeneOntology GO:0070412 reference outlines terms associated 
+with R-Smad binding, which is the major element associated with this reaction.Gene 
+Ontology GO:0010862 reference outlines terms associated with SMAD protein phosphorylation, 
+a critical element of setting up SMAD_P elements.Gene Ontology GO:0070410 references 
+outlines terms associated with Co-Smad binding, a major element in this reaction.Uniprot 
+Q13485 is a Homo sapien version of Smad4, the Smad indicated as a Co-Smad by the 
+model authors.This reaction occurs in the nucleus.Most annotations are generalized 
+as the model details general TGFb pathway dynamics across relevant species (i.e. 
+Homo sapiens, Drosophila, etc.)
+```
+  r24 notes ```
+Nuclear phosphorylated Smad and Co-Smad disocciate into phosphorylated Smad and 
+Co-Smad monomers.InterPro annotation gives details on and source information for 
+general Smads (including R-Smad and Co-Smad, as utilized in this reaction). Gene 
+Ontology GO:0043241 reference outlines terms associated with protein complex disassembly.Gene 
+Ontology GO:0010862 reference outlines terms associated with SMAD protein phosphorylation, 
+a critical element of setting up SMAD_P elements.Gene Ontology GO:0070410 references 
+outlines terms associated with Co-Smad binding, a major element in this reaction 
+(though unbinding is focus of reaction).Uniprot Q13485 is a Homo sapien version of 
+Smad4, the Smad indicated as a Co-Smad by the model authors.This reaction occurs 
+in nucleus.All annotations are generalized as the model details general TGFb pathway 
+dynamics across relevant species (i.e. Homo sapiens, Drosophila, etc.).
+```
+  r25 notes ```
+I-Smad mRNA is created in the nucleus, a process which is inhibited by the nuclear 
+phosphorylated Smad and Co-Smad heterodimer.InterPro annotation gives details on 
+and source information for general Smads (including I-Smads, as encoded for by the 
+product of this reaction). This reaction occurs in the nucleus.All annotations are 
+generalized as the model details general TGFb pathway dynamics across relevant species 
+(i.e. Homo sapiens, Drosophila, etc.)
+```
+  r26 notes ```
+Nuclear I-Smad mRNA is shuttled to the cytoplasm.InterPro annotation gives details 
+on and source information for general Smads (including I-Smads, as encoded for by 
+the product of this reaction). Gene Ontology GO:0006913 gives terms associated with 
+nuclear export; this reaction involves, specifically, nucleus to cytoplasm transport.All 
+annotations are generalized as the model details general TGFb pathway dynamics across 
+relevant species (i.e. Homo sapiens, Drosophila, etc.)
+```
+  r27 notes ```
+Cytoplasmic I-Smad mRNA is degraded.InterPro annotation gives details on and source 
+information for general Smads (including I-Smads, as encoded for by the reactant 
+of this reaction if not degraded as shown). Gene Ontology GO:0006401 gives the terms 
+associated with RNA catabolic processes; this reaction specifically utilizes RNA 
+breakdown/decay/degradation in the cytoplasm.This reaction occurs in the cytoplasm.All 
+annotations are generalized as the model details general TGFb pathway dynamics across 
+relevant species (i.e. Homo sapiens, Drosophila, etc.)
+```
+  r28 notes ```
+I-Smad is generated, a process which is limited by cytoplasmi I-Smad mRNA.InterPro 
+annotation gives details on and source information for general Smads (including I-Smads, 
+which are given rise to in this reaction). This reaction occurs in the cytoplasm. 
+All annotations are generalized as the model details general TGFb pathway dynamics 
+across relevant species (i.e. Homo sapiens, Drosophila, etc.)
+```
+  r29 notes "Degradation of I-Smad."
+end
+
+Celli_re2011___Plasticity_of_TGF___Signalling is "Cellière2011 - Plasticity of TGF-β Signalling"

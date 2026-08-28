@@ -12,14 +12,12 @@
 #include <sbml/packages/comp/common/CompExtensionTypes.h>
 
 #include <string>
-#include <check.h>
+#include "gtest/gtest.h"
 
 using namespace std;
 using namespace libsbml;
 
-BEGIN_C_DECLS
-
-extern char *TestDataDirectory;
+extern string TestDataDirectory;
 
 void compareFileHierarchy(const string& base)
 {
@@ -29,18 +27,18 @@ void compareFileHierarchy(const string& base)
   string dir(TestDataDirectory);
   string filename = dir + base + ".txt";
   long ret = loadAntimonyFile(filename.c_str());
-  fail_unless(ret != -1);
+  EXPECT_TRUE(ret != -1);
   char* atosbml = getCompSBMLString(NULL);
-  fail_unless(atosbml != NULL);
+  EXPECT_TRUE(atosbml != NULL);
 
   string sbmlfile = dir + base + ".xml";
   SBMLDocument* doc = readSBMLFromFile(sbmlfile.c_str());
   string matching = writeSBMLToStdString(doc);
-  fail_unless(string(atosbml) == matching);
+  EXPECT_STREQ(atosbml, matching.c_str());
 
   //Now compare libAntimony's flattening with libSBML's flattening
   atosbml = getSBMLString(NULL);
-  fail_unless(atosbml != NULL);
+  EXPECT_TRUE(atosbml != NULL);
 
   ConversionProperties props;
   props.addOption("flatten comp");
@@ -49,422 +47,318 @@ void compareFileHierarchy(const string& base)
   converter->setDocument(doc);
   int result = converter->convert();
   // fail if conversion was not valid
-  fail_unless(result == LIBSBML_OPERATION_SUCCESS);
+  EXPECT_TRUE(result == LIBSBML_OPERATION_SUCCESS);
   elideMetaIds(doc);
   string sbmlFlat = writeSBMLToStdString(doc);
   string atosbml_nometa = elideMetaIdsFromSBMLstring(atosbml);
-  fail_unless(atosbml_nometa == sbmlFlat);
+  EXPECT_STREQ(atosbml_nometa.c_str(), sbmlFlat.c_str());
 
   ret = loadSBMLString(matching.c_str());
-  fail_unless(ret != -1);
+  EXPECT_TRUE(ret != -1);
   char* roundtrip = getAntimonyString(NULL);
-  fail_unless(roundtrip != NULL);
+  EXPECT_TRUE(roundtrip != NULL);
   string rtfilename = dir + base + "_rt.txt";
   ret = loadAntimonyFile(rtfilename.c_str());
-  fail_unless(ret != -1);
+  EXPECT_TRUE(ret != -1);
   matching = getAntimonyString(NULL);
-  fail_unless(string(roundtrip) == string(matching));
+  EXPECT_STREQ(roundtrip, matching.c_str());
 
   delete doc;
   delete converter;
   freeAll();
 }
 
-START_TEST (test_hierarchy)
+TEST(AntimonyHierarchy, test_deleted_rate_rule)
+{
+  compareFileHierarchy("deleted_rate_rule");
+}
+
+TEST(AntimonyHierarchy, test_hierarchy)
 {
   compareFileHierarchy("hierarchy");
 }
-END_TEST
 
-START_TEST (test_defaultSubCompartment)
+TEST(AntimonyHierarchy, test_defaultSubCompartment)
 {
   compareFileHierarchy("defaultSubCompartment");
 }
-END_TEST
 
-START_TEST (test_defaultSubSubCompartment)
+TEST(AntimonyHierarchy, test_defaultSubSubCompartment)
 {
   compareFileHierarchy("defaultSubSubCompartment");
 }
-END_TEST
 
-START_TEST (test_defaultOrNotCompartment)
+TEST(AntimonyHierarchy, test_defaultOrNotCompartment)
 {
   compareFileHierarchy("defaultOrNotCompartment");
 }
-END_TEST
 
-START_TEST (test_deletion)
+TEST(AntimonyHierarchy, test_deletion)
 {
   compareFileHierarchy("deletion");
 }
-END_TEST
 
-START_TEST (test_deletePriority)
+TEST(AntimonyHierarchy, test_deletePriority)
 {
   compareFileHierarchy("deletePriority");
 }
-END_TEST
 
-START_TEST (test_deletePriority2)
+TEST(AntimonyHierarchy, test_deletePriority2)
 {
   compareFileHierarchy("deletePriority2");
 }
-END_TEST
 
-START_TEST (test_deleteDelay)
+TEST(AntimonyHierarchy, test_deleteDelay)
 {
   compareFileHierarchy("deleteDelay");
 }
-END_TEST
 
-START_TEST (test_deleteDelay2)
+TEST(AntimonyHierarchy, test_deleteDelay2)
 {
   compareFileHierarchy("deleteDelay2");
 }
-END_TEST
 
-START_TEST (test_deleteEventAssignment)
+TEST(AntimonyHierarchy, test_deleteEventAndAssignment)
+{
+  compareFileHierarchy("deleteEventAndAssignment");
+}
+
+TEST(AntimonyHierarchy, test_deleteEventAssignment)
 {
   compareFileHierarchy("deleteEventAssignment");
 }
-END_TEST
 
-START_TEST (test_deleteEventAssignment2)
+TEST(AntimonyHierarchy, test_deleteEventAssignment2)
 {
   compareFileHierarchy("deleteEventAssignment2");
 }
-END_TEST
 
-START_TEST (test_deleteEventAssignment3)
+TEST(AntimonyHierarchy, test_deleteEventAssignment3)
 {
   compareFileHierarchy("deleteEventAssignment3");
 }
-END_TEST
 
-START_TEST (test_deleteEventAssignment4)
+TEST(AntimonyHierarchy, test_deleteEventAssignment4)
 {
   compareFileHierarchy("deleteEventAssignment4");
 }
-END_TEST
 
-START_TEST (test_deleteEventAssignment5)
+TEST(AntimonyHierarchy, test_deleteEventAssignment5)
 {
   compareFileHierarchy("deleteEventAssignment5");
 }
-END_TEST
 
-START_TEST (test_deleteTrigger)
+TEST(AntimonyHierarchy, test_deleteTrigger)
 {
   compareFileHierarchy("deleteTrigger");
 }
-END_TEST
 
-START_TEST (test_deleteReaction)
+TEST(AntimonyHierarchy, test_deleteReaction)
 {
   compareFileHierarchy("deleteReaction");
 }
-END_TEST
 
-START_TEST (test_deleteReactant)
+TEST(AntimonyHierarchy, test_deleteReactant)
 {
   compareFileHierarchy("deleteReactant");
 }
-END_TEST
 
-START_TEST (test_deleteProduct)
+TEST(AntimonyHierarchy, test_deleteProduct)
 {
   compareFileHierarchy("deleteProduct");
 }
-END_TEST
 
-START_TEST (test_deleteModifier)
+TEST(AntimonyHierarchy, test_deleteModifier)
 {
   compareFileHierarchy("deleteModifier");
 }
-END_TEST
 
-START_TEST (test_deleteKineticLaw)
+TEST(AntimonyHierarchy, test_deleteKineticLaw)
 {
   compareFileHierarchy("deleteKineticLaw");
 }
-END_TEST
 
-START_TEST (test_deleteModifierKineticLaw)
+TEST(AntimonyHierarchy, test_deleteModifierKineticLaw)
 {
   compareFileHierarchy("deleteModifierKineticLaw");
 }
-END_TEST
 
-START_TEST (test_deleteSpecies)
+TEST(AntimonyHierarchy, test_deleteSpecies)
 {
   compareFileHierarchy("deleteSpecies");
 }
-END_TEST
 
-START_TEST (test_deleteSpeciesInDefaultCompartment)
+TEST(AntimonyHierarchy, test_deleteSpeciesInDefaultCompartment)
 {
   compareFileHierarchy("deleteSpeciesInDefaultCompartment");
 }
-END_TEST
 
-START_TEST (test_deleteSpeciesInDefaultCompartment2)
+TEST(AntimonyHierarchy, test_deleteSpeciesInDefaultCompartment2)
 {
   compareFileHierarchy("deleteSpeciesInDefaultCompartment2");
 }
-END_TEST
 
-START_TEST (test_deleteSpeciesPort)
+TEST(AntimonyHierarchy, test_deleteSpeciesPort)
 {
   compareFileHierarchy("deleteSpeciesPort");
 }
-END_TEST
 
-START_TEST (test_deleteSpeciesPortDefaultCompartment)
+TEST(AntimonyHierarchy, test_deleteSpeciesPortDefaultCompartment)
 {
   compareFileHierarchy("deleteSpeciesPortDefaultCompartment");
 }
-END_TEST
 
-START_TEST (test_deleteRateRuleDirect)
+TEST(AntimonyHierarchy, test_deleteRateRuleDirect)
 {
   compareFileHierarchy("deleteRateRuleDirect");
 }
-END_TEST
 
-START_TEST (test_deleteRateRuleIndirect)
+TEST(AntimonyHierarchy, test_deleteRateRuleIndirect)
 {
   compareFileHierarchy("deleteRateRuleIndirect");
 }
-END_TEST
 
-START_TEST (test_deleteRateRuleOfAnother)
+TEST(AntimonyHierarchy, test_deleteRateRuleOfAnother)
 {
   compareFileHierarchy("deleteRateRuleOfAnother");
 }
-END_TEST
 
-START_TEST (test_deleteAssignmentRuleDirect)
+TEST(AntimonyHierarchy, test_deleteAssignmentRuleDirect)
 {
   compareFileHierarchy("deleteAssignmentRuleDirect");
 }
-END_TEST
 
-START_TEST (test_deleteAssignmentRuleIndirect)
+TEST(AntimonyHierarchy, test_deleteAssignmentRuleIndirect)
 {
   compareFileHierarchy("deleteAssignmentRuleIndirect");
 }
-END_TEST
 
-START_TEST (test_deleteAssignmentRuleOfAnother)
+TEST(AntimonyHierarchy, test_deleteAssignmentRuleOfAnother)
 {
   compareFileHierarchy("deleteAssignmentRuleOfAnother");
 }
-END_TEST
 
-START_TEST (test_deleteInitialAssignmentDirect)
+TEST(AntimonyHierarchy, test_deleteInitialAssignmentDirect)
 {
   compareFileHierarchy("deleteInitialAssignmentDirect");
 }
-END_TEST
 
-START_TEST (test_deleteInitialAssignmentIndirect)
+TEST(AntimonyHierarchy, test_deleteInitialAssignmentIndirect)
 {
   compareFileHierarchy("deleteInitialAssignmentIndirect");
 }
-END_TEST
 
-START_TEST (test_deleteInitialAssignmentOfAnother)
+TEST(AntimonyHierarchy, test_deleteInitialAssignmentOfAnother)
 {
   compareFileHierarchy("deleteInitialAssignmentOfAnother");
 }
-END_TEST
 
-START_TEST (test_replaceAssignmentRule)
+TEST(AntimonyHierarchy, test_replaceAssignmentRule)
 {
   compareFileHierarchy("replaceAssignmentRule");
 }
-END_TEST
 
-START_TEST (test_replaceRateRule)
+TEST(AntimonyHierarchy, test_replaceRateRule)
 {
   compareFileHierarchy("replaceRateRule");
 }
-END_TEST
 
-START_TEST (test_replaceInitialAssignment)
+TEST(AntimonyHierarchy, test_replaceInitialAssignment)
 {
   compareFileHierarchy("replaceInitialAssignment");
 }
-END_TEST
 
-START_TEST (test_replaceCompartment)
+TEST(AntimonyHierarchy, test_replaceCompartment)
 {
   compareFileHierarchy("replaceCompartment");
 }
-END_TEST
 
-START_TEST (test_replaceSpecies)
+TEST(AntimonyHierarchy, test_replaceSpecies)
 {
   compareFileHierarchy("replaceSpecies");
 }
-END_TEST
 
-START_TEST (test_replaceSpeciesDefaultCompartment)
+TEST(AntimonyHierarchy, test_replaceSpeciesDefaultCompartment)
 {
   compareFileHierarchy("replaceSpeciesDefaultCompartment");
 }
-END_TEST
 
-START_TEST (test_replaceParameter)
+TEST(AntimonyHierarchy, test_replaceParameter)
 {
   compareFileHierarchy("replaceParameter");
 }
-END_TEST
 
-START_TEST (test_replaceReactionOnly)
+TEST(AntimonyHierarchy, test_replaceReactionOnly)
 {
   compareFileHierarchy("replaceReactionOnly");
 }
-END_TEST
 
-START_TEST (test_replaceReactionOnly2)
+TEST(AntimonyHierarchy, test_replaceReactionOnly2)
 {
   compareFileHierarchy("replaceReactionOnly2");
 }
-END_TEST
 
-START_TEST (test_replaceReactionWithCompartments1)
+TEST(AntimonyHierarchy, test_replaceReactionWithCompartments1)
 {
   compareFileHierarchy("replaceReactionWithCompartments1");
 }
-END_TEST
 
-START_TEST (test_replaceReactionWithCompartments2)
+TEST(AntimonyHierarchy, test_replaceReactionWithCompartments2)
 {
   compareFileHierarchy("replaceReactionWithCompartments2");
 }
-END_TEST
 
-START_TEST (test_replaceReactionWithKineticLaw)
+TEST(AntimonyHierarchy, test_replaceReactionWithKineticLaw)
 {
   compareFileHierarchy("replaceReactionWithKineticLaw");
 }
-END_TEST
 
-START_TEST (test_replaceReactionWithKineticLawRxnRef)
+TEST(AntimonyHierarchy, test_replaceReactionWithKineticLawRxnRef)
 {
   compareFileHierarchy("replaceReactionWithKineticLawRxnRef");
 }
-END_TEST
 
-START_TEST (test_replaceInteraction)
+TEST(AntimonyHierarchy, test_replaceInteraction)
 {
   compareFileHierarchy("replaceInteraction");
 }
-END_TEST
 
-START_TEST (test_submodelInteraction)
+TEST(AntimonyHierarchy, test_submodelInteraction)
 {
   compareFileHierarchy("submodelInteraction");
 }
-END_TEST
 
-START_TEST (test_port)
+TEST(AntimonyHierarchy, test_port)
 {
   compareFileHierarchy("port");
 }
-END_TEST
 
-START_TEST (test_subport)
+TEST(AntimonyHierarchy, test_subport)
 {
   compareFileHierarchy("subport");
 }
-END_TEST
 
-START_TEST (test_subport2)
+TEST(AntimonyHierarchy, test_subport2)
 {
   compareFileHierarchy("subport2");
 }
-END_TEST
 
-START_TEST (test_subsubport)
+TEST(AntimonyHierarchy, test_subsubport)
 {
   compareFileHierarchy("subsubport");
 }
-END_TEST
 
-
-Suite *
-create_suite_Hierarchy(void)
+TEST(AntimonyHierarchy, test_conversionFactor)
 {
-  Suite *suite = suite_create("Antimony Hierarchy");
-  TCase *tcase = tcase_create("Antimony Hierarchy");
-
-  tcase_add_test( tcase, test_defaultSubSubCompartment);
-  //tcase_add_test( tcase, test_replace);
-  //tcase_add_test( tcase, test_replace);
-
-  tcase_add_test( tcase, test_hierarchy);
-  tcase_add_test( tcase, test_defaultSubCompartment);
-  tcase_add_test( tcase, test_defaultSubSubCompartment);
-  tcase_add_test( tcase, test_defaultOrNotCompartment);
-  tcase_add_test( tcase, test_deletion);
-  tcase_add_test( tcase, test_deletePriority);
-  tcase_add_test( tcase, test_deletePriority2);
-  tcase_add_test( tcase, test_deleteDelay);
-  tcase_add_test( tcase, test_deleteDelay2);
-  tcase_add_test( tcase, test_deleteEventAssignment);
-  tcase_add_test( tcase, test_deleteEventAssignment2);
-  tcase_add_test( tcase, test_deleteEventAssignment3);
-  tcase_add_test( tcase, test_deleteEventAssignment4);
-  tcase_add_test( tcase, test_deleteEventAssignment5);
-  tcase_add_test( tcase, test_deleteTrigger);
-  tcase_add_test( tcase, test_deleteReaction);
-  tcase_add_test( tcase, test_deleteReactant);
-  tcase_add_test( tcase, test_deleteProduct);
-  tcase_add_test( tcase, test_deleteModifier);
-  tcase_add_test( tcase, test_deleteKineticLaw);
-  tcase_add_test( tcase, test_deleteModifierKineticLaw);
-  tcase_add_test( tcase, test_deleteSpecies);
-  tcase_add_test( tcase, test_deleteSpeciesInDefaultCompartment);
-  tcase_add_test( tcase, test_deleteSpeciesInDefaultCompartment2);
-  tcase_add_test( tcase, test_deleteSpeciesPort);
-  tcase_add_test( tcase, test_deleteSpeciesPortDefaultCompartment);
-  tcase_add_test( tcase, test_deleteRateRuleDirect);
-  tcase_add_test( tcase, test_deleteRateRuleIndirect);
-  tcase_add_test( tcase, test_deleteRateRuleOfAnother);
-  tcase_add_test( tcase, test_deleteAssignmentRuleDirect);
-  tcase_add_test( tcase, test_deleteAssignmentRuleIndirect);
-  tcase_add_test( tcase, test_deleteAssignmentRuleOfAnother);
-  tcase_add_test( tcase, test_deleteInitialAssignmentDirect);
-  tcase_add_test( tcase, test_deleteInitialAssignmentIndirect);
-  tcase_add_test( tcase, test_deleteInitialAssignmentOfAnother);
-  tcase_add_test( tcase, test_replaceAssignmentRule);
-  tcase_add_test( tcase, test_replaceRateRule);
-  tcase_add_test( tcase, test_replaceInitialAssignment);
-  tcase_add_test( tcase, test_replaceCompartment);
-  tcase_add_test( tcase, test_replaceParameter);
-  tcase_add_test( tcase, test_replaceSpecies);
-  tcase_add_test( tcase, test_replaceSpeciesDefaultCompartment);
-  tcase_add_test( tcase, test_replaceReactionOnly);
-  tcase_add_test( tcase, test_replaceReactionOnly2);
-  tcase_add_test( tcase, test_replaceReactionWithCompartments1);
-  tcase_add_test( tcase, test_replaceReactionWithCompartments2);
-  tcase_add_test( tcase, test_replaceReactionWithKineticLaw);
-  tcase_add_test( tcase, test_replaceReactionWithKineticLawRxnRef);
-  tcase_add_test( tcase, test_replaceInteraction);
-  tcase_add_test( tcase, test_submodelInteraction);
-  tcase_add_test( tcase, test_port);
-  tcase_add_test( tcase, test_subport);
-  tcase_add_test( tcase, test_subport2);
-  tcase_add_test( tcase, test_subsubport);
-
-  suite_add_tcase(suite, tcase);
-
-  return suite;
+  compareFileHierarchy("paramconv_hierarchy");
 }
 
-END_C_DECLS
+TEST(AntimonyHierarchy, test_timeconv_raterule)
+{
+  compareFileHierarchy("timeconv_raterule");
+}
 
-
+TEST(AntimonyHierarchy, test_multi_init_overrides)
+{
+  compareFileHierarchy("multi_init_overrides");
+}

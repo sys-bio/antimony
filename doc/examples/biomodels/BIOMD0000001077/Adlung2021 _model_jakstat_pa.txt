@@ -1,0 +1,221 @@
+// Created by libAntimony v3.2.0
+model *Adlung2021___Cell_to_cell_variability_in_JAK2_STAT5_pathway()
+
+  // Compartments and Species:
+  compartment cyt, nuc;
+  species EpoRJAK2 in cyt, EpoRpJAK2 in cyt, p1EpoRpJAK2 in cyt, p2EpoRpJAK2 in cyt;
+  species p12EpoRpJAK2 in cyt, SHP1 in cyt, SHP1Act in cyt, STAT5 in cyt;
+  species pSTAT5 in cyt, npSTAT5 in nuc, CISnRNA1 in nuc, CISnRNA2 in nuc;
+  species CISRNA in cyt, CIS in cyt, SOCS3 in cyt;
+
+  // Assignment Rules:
+  Epo := epo_level;
+  Total_STAT5 := STAT5 + pSTAT5 + 0.275*npSTAT5;
+  measuralbe_pSTAT5 := (pSTAT5/Total_STAT5)*100;
+  _pSTAT5_Total_STAT5 := (pSTAT5/Total_STAT5)*100;
+
+  // Reactions:
+  v1_v_0: EpoRJAK2 => EpoRpJAK2; cyt*(Epo*EpoRJAK2*JAK2ActEpo/(SOCS3*SOCS3Inh/SOCS3Eqc + 1));
+  v2_v_1: EpoRpJAK2 => EpoRJAK2; cyt*(DeaEpoRJAKActSHP1*EpoRpJAK2*SHP1Act/SHP1ActEpoR);
+  v3_v_2: EpoRpJAK2 => p1EpoRpJAK2; cyt*(EpoRpJAK2*EpoRActJAK2/(SOCS3*SOCS3Inh/SOCS3Eqc + 1));
+  v4_v_3: EpoRpJAK2 => p2EpoRpJAK2; cyt*(3*EpoRpJAK2*EpoRActJAK2/(SOCS3*SOCS3Inh/SOCS3Eqc + 1));
+  v5_v_4: p1EpoRpJAK2 => p12EpoRpJAK2; cyt*(3*EpoRActJAK2*p1EpoRpJAK2/(SOCS3*SOCS3Inh/SOCS3Eqc + 1));
+  v6_v_5: p2EpoRpJAK2 => p12EpoRpJAK2; cyt*(EpoRActJAK2*p2EpoRpJAK2/(SOCS3*SOCS3Inh/SOCS3Eqc + 1));
+  v7_v_6: p1EpoRpJAK2 => EpoRJAK2; cyt*(DeaEpoRJAKActSHP1*SHP1Act*p1EpoRpJAK2/SHP1ActEpoR);
+  v8_v_7: p2EpoRpJAK2 => EpoRJAK2; cyt*(DeaEpoRJAKActSHP1*SHP1Act*p2EpoRpJAK2/SHP1ActEpoR);
+  v9_v_8: p12EpoRpJAK2 => EpoRJAK2; cyt*(DeaEpoRJAKActSHP1*SHP1Act*p12EpoRpJAK2/SHP1ActEpoR);
+  v12_v_11:  => SHP1Act; cyt*(SHP1*SHP1ActEpoR*(EpoRpJAK2 + p12EpoRpJAK2 + p1EpoRpJAK2 + p2EpoRpJAK2));
+  v13_v_12: SHP1Act => ; cyt*SHP1Dea*SHP1Act;
+  v14_v_13: STAT5 => pSTAT5; cyt*(STAT5*STAT5ActJAK2*(EpoRpJAK2 + p12EpoRpJAK2 + p1EpoRpJAK2 + p2EpoRpJAK2)/(SOCS3*SOCS3Inh/SOCS3Eqc + 1));
+  v15_v_14: STAT5 => pSTAT5; cyt*(STAT5*STAT5ActEpoR*(p12EpoRpJAK2 + p1EpoRpJAK2)^2/((SOCS3*SOCS3Inh/SOCS3Eqc + 1)*(CIS*CISInh/CISEqc + 1)));
+  v16_v_15: pSTAT5 => npSTAT5; cyt*STAT5Imp*pSTAT5;
+  v17_v_16: npSTAT5 => STAT5; nuc*STAT5Exp*npSTAT5;
+  v18_v_17:  => CISnRNA1; nuc*(-CISRNAEqc*CISRNATurn*npSTAT5*(ActD - 1));
+  v19_v_18: CISnRNA1 => CISnRNA2; nuc*CISRNADelay*CISnRNA1;
+  v20_v_19: CISnRNA2 => CISRNA; nuc*CISnRNA2*CISRNADelay;
+  v21_v_20: CISRNA => ; cyt*CISRNATurn*CISRNA;
+  v22_v_21:  => CIS; cyt*(CISRNA*CISEqc*CISTurn);
+  v23_v_22: CIS => ; cyt*CISTurn*CIS;
+  v24_v_23:  => SOCS3; cyt*-SOCS3Eqc*SOCS3Turn*npSTAT5*(ActD - 1);
+  v25_v_24: SOCS3 => ; cyt*SOCS3Turn*SOCS3;
+  v26_v_25:  => SOCS3; cyt*(SOCS3oe*SOCS3Eqc*SOCS3Turn*SOCS3EqcOE);
+
+  // Species initializations:
+  EpoRJAK2 = init_EpoRJAK2;
+  EpoRpJAK2 = 0;
+  p1EpoRpJAK2 = 0;
+  p2EpoRpJAK2 = 0;
+  p12EpoRpJAK2 = 0;
+  SHP1 = init_SHP1;
+  SHP1Act = 0;
+  STAT5 = init_STAT5;
+  pSTAT5 = 0;
+  npSTAT5 = 0;
+  CISnRNA1 = 0;
+  CISnRNA2 = 0;
+  CISRNA = 0;
+  CIS = 0;
+  SOCS3 = 0;
+
+  // Compartment initializations:
+  cyt = 0.4;
+  nuc = 0.275;
+
+  // Variable initializations:
+  init_EpoRJAK2 = 3.97504832099667;
+  init_SHP1 = 26.7236153222782;
+  init_STAT5 = 79.7242077843376;
+  ActD = 0;
+  CISEqc = 0.767538787148837;
+  CISInh = 438340395.29483;
+  CISRNADelay = 0.119845304696486;
+  CISRNAEqc = 1;
+  CISRNATurn = 0.119809412320528;
+  CISTurn = 0.0178232876161209;
+  DeaEpoRJAKActSHP1 = 0.000885910280224449;
+  EpoRActJAK2 = 0.326237934674659;
+  JAK2ActEpo = 0.0520769792397573;
+  SHP1ActEpoR = 1;
+  SHP1Dea = 0.00557392820000894;
+  SOCS3Eqc = 0.162493786913208;
+  SOCS3EqcOE = 828.06160444759;
+  SOCS3Inh = 0.010341350346111;
+  SOCS3Turn = 0.0806005449025786;
+  SOCS3oe = 0;
+  STAT5ActEpoR = 0.299136651563824;
+  STAT5ActJAK2 = 0.0513253755320527;
+  STAT5Exp = 0.0112157105187786;
+  STAT5Imp = 0.0404763494591488;
+  epo_level = 20;
+
+  // Other declarations:
+  var Epo, Total_STAT5, measuralbe_pSTAT5, _pSTAT5_Total_STAT5;
+  const cyt, nuc, init_EpoRJAK2, init_SHP1, init_STAT5, ActD, CISEqc, CISInh;
+  const CISRNADelay, CISRNAEqc, CISRNATurn, CISTurn, DeaEpoRJAKActSHP1, EpoRActJAK2;
+  const JAK2ActEpo, SHP1ActEpoR, SHP1Dea, SOCS3Eqc, SOCS3EqcOE, SOCS3Inh;
+  const SOCS3Turn, SOCS3oe, STAT5ActEpoR, STAT5ActJAK2, STAT5Exp, STAT5Imp;
+  const epo_level;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = 1e-12 litre;
+  unit time_unit = 60e-3 second;
+  unit substance = mole;
+
+  // Display Names:
+  time_unit is "time";
+  _pSTAT5_Total_STAT5 is "%pSTAT5/Total_STAT5";
+  v1_v_0 is "v_0";
+  v2_v_1 is "v_1";
+  v3_v_2 is "v_2";
+  v4_v_3 is "v_3";
+  v5_v_4 is "v_4";
+  v6_v_5 is "v_5";
+  v7_v_6 is "v_6";
+  v8_v_7 is "v_7";
+  v9_v_8 is "v_8";
+  v12_v_11 is "v_11";
+  v13_v_12 is "v_12";
+  v14_v_13 is "v_13";
+  v15_v_14 is "v_14";
+  v16_v_15 is "v_15";
+  v17_v_16 is "v_16";
+  v18_v_17 is "v_17";
+  v19_v_18 is "v_18";
+  v20_v_19 is "v_19";
+  v21_v_20 is "v_20";
+  v22_v_21 is "v_21";
+  v23_v_22 is "v_22";
+  v24_v_23 is "v_23";
+  v25_v_24 is "v_24";
+  v26_v_25 is "v_25";
+
+  // CV terms:
+  cyt identity "http://identifiers.org/go/GO:0005829"
+  nuc identity "http://identifiers.org/go/GO:0005634"
+  EpoRJAK2 hasPart "http://identifiers.org/uniprot/O60674"
+  EpoRJAK2 hasPart "http://identifiers.org/uniprot/P19235"
+  EpoRJAK2 hasPart "http://identifiers.org/uniprot/P01588"
+  EpoRpJAK2 hasPart "http://identifiers.org/uniprot/P19235"
+  EpoRpJAK2 hasPart "http://identifiers.org/uniprot/P01588"
+  EpoRpJAK2 hasPart "http://identifiers.org/uniprot/O60674"
+  EpoRpJAK2 hasProperty "http://identifiers.org/bao/0002007"
+  p1EpoRpJAK2 hasPart "http://identifiers.org/uniprot/O60674"
+  p1EpoRpJAK2 hasPart "http://identifiers.org/uniprot/P01588"
+  p1EpoRpJAK2 hasPart "http://identifiers.org/uniprot/P19235"
+  p1EpoRpJAK2 hasProperty "http://identifiers.org/bao/0002007"
+  p2EpoRpJAK2 hasPart "http://identifiers.org/uniprot/P19235"
+  p2EpoRpJAK2 hasPart "http://identifiers.org/uniprot/O60674"
+  p2EpoRpJAK2 hasPart "http://identifiers.org/uniprot/P01588"
+  p2EpoRpJAK2 hasProperty "http://identifiers.org/bao/0002007"
+  p12EpoRpJAK2 hasPart "http://identifiers.org/uniprot/O60674"
+  p12EpoRpJAK2 hasPart "http://identifiers.org/uniprot/P19235"
+  p12EpoRpJAK2 hasPart "http://identifiers.org/uniprot/P01588"
+  p12EpoRpJAK2 hasProperty "http://identifiers.org/bao/0002007"
+  SHP1 identity "http://identifiers.org/uniprot/P29350"
+  SHP1Act identity "http://identifiers.org/uniprot/P29350"
+  SHP1Act hasProperty "http://identifiers.org/bao/0002007"
+  STAT5 identity "http://identifiers.org/uniprot/P42229"
+  pSTAT5 identity "http://identifiers.org/uniprot/P42229"
+  pSTAT5 hasProperty "http://identifiers.org/bao/0002007"
+  npSTAT5 identity "http://identifiers.org/uniprot/P42229"
+  npSTAT5 hasProperty "http://identifiers.org/bao/0002007"
+  CISnRNA1 identity "http://identifiers.org/uniprot/Q9NSE2"
+  CISnRNA1 identity "http://identifiers.org/efo/0003738"
+  CISnRNA2 identity "http://identifiers.org/efo/0003738"
+  CISnRNA2 identity "http://identifiers.org/uniprot/Q9NSE2"
+  CISRNA identity "http://identifiers.org/uniprot/Q9NSE2"
+  CISRNA identity "http://identifiers.org/efo/0003738"
+  CIS identity "http://identifiers.org/uniprot/Q9NSE2"
+  SOCS3 identity "http://identifiers.org/uniprot/O14543"
+  v1_v_0 hasProperty "http://identifiers.org/go/GO:0016310"
+  v2_v_1 hasProperty "http://identifiers.org/go/GO:0016311"
+  v3_v_2 hasProperty "http://identifiers.org/go/GO:0016310"
+  v4_v_3 hasProperty "http://identifiers.org/go/GO:0016310"
+  v5_v_4 hasProperty "http://identifiers.org/go/GO:0016310"
+  v6_v_5 hasProperty "http://identifiers.org/go/GO:0016310"
+  v7_v_6 hasProperty "http://identifiers.org/go/GO:0016311"
+  v8_v_7 hasProperty "http://identifiers.org/go/GO:0016311"
+  v9_v_8 hasProperty "http://identifiers.org/go/GO:0016311"
+  v12_v_11 hasProperty "http://identifiers.org/go/GO:0010467"
+  v13_v_12 hasProperty "http://identifiers.org/SBO:0000179"
+  v14_v_13 hasProperty "http://identifiers.org/go/GO:0016310"
+  v15_v_14 hasProperty "http://identifiers.org/go/GO:0016310"
+  v16_v_15 hasProperty "http://identifiers.org/ncit/C28506"
+  v17_v_16 hasProperty "http://identifiers.org/go/GO:0016311"
+  v18_v_17 hasProperty "http://identifiers.org/ncit/C17208"
+  v19_v_18 hasProperty "http://identifiers.org/go/GO:0016556"
+  v20_v_19 hasProperty "http://identifiers.org/go/GO:0016556"
+  v21_v_20 hasProperty "http://identifiers.org/SBO:0000179"
+  v22_v_21 hasProperty "http://identifiers.org/go/GO:0006412"
+  v23_v_22 hasProperty "http://identifiers.org/SBO:0000179"
+  v24_v_23 hasProperty "http://identifiers.org/ncit/C17208"
+  v25_v_24 hasProperty "http://identifiers.org/SBO:0000179"
+  v26_v_25 hasProperty "http://identifiers.org/go/GO:0006412"
+
+  model publication "http://identifiers.org/pubmed:34380040"
+  model model_source "http://identifiers.org/biomodels.db/MODEL2103080001",
+                     "http://identifiers.org/biomodels.db/BIOMD0000001077"
+  model hasProperty "http://identifiers.org/mamo/MAMO_0000046"
+  model occursIn "http://identifiers.org/BTO:0004911"
+  model hasTaxon "http://identifiers.org/taxonomy/9606"
+  model isDescribedBy "http://identifiers.org/pubmed/34380040"
+  model hasProperty "http://identifiers.org/go/GO:0038162",
+                    "http://identifiers.org/go/GO:0046427",
+                    "http://identifiers.org/mamo/MAMO_0000046"
+  model created "2023-06-23T11:07:20Z"
+  model modified "2023-06-23T11:07:20Z"
+  model creator1.givenName "Krishna"
+  model creator1.familyName "Tiwari"
+  model creator1.organization "EMBL-EBI"
+  model creator1.email "ktiwari@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+A mathematical model for cell-to-cell variability in JAK2/STAT5 pathway components
+and cytoplasmic volumes defines survival threshold in erythroid progenitor cells
+```
+end
+
+Adlung2021___Cell_to_cell_variability_in_JAK2_STAT5_pathway is "Adlung2021 - Cell-to-cell variability in JAK2/STAT5 pathway"

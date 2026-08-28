@@ -24,6 +24,7 @@ class UnitDef;
 class SboTermWrapper;
 class UncertWrapper;
 class LayoutWrapper;
+class KineticLawWrapper;
 
 class Variable : public Annotated
 {
@@ -66,6 +67,7 @@ protected:
   SboTermWrapper* m_sboTermWrapper;
   std::vector<UncertWrapper*> m_uncertWrappers;
   std::vector<LayoutWrapper*> m_layoutWrappers;
+  KineticLawWrapper* m_kineticLawWrapper = NULL;
   //If we've set the compartment we're in, this tells us where we are.
   std::vector<std::string> m_compartment;
   std::vector<std::string> m_supercompartment;
@@ -125,6 +127,7 @@ public:
   const AntimonyConstraint* GetConstraint() const;
 
   virtual Variable* GetSubVariable(const std::string* name);
+  const KineticLawWrapper* GetKineticLawWrapper() const;
   virtual Variable* GetSameVariable();
   virtual const Variable* GetSameVariable() const;
   const DNAStrand* GetDNAStrand() const;
@@ -222,6 +225,9 @@ public:
   virtual std::string CreateSBOTermsAntimonySyntax(const std::string& elt_id, const std::string& indent, std::string sboStr) const;
   virtual std::string CreateUncertParamsAntimonySyntax(const std::string& indent) const;
   virtual std::string CreateLayoutParamsAntimonySyntax(const std::string& indent) const;
+  // SBO term and CV terms set on 'reaction.kineticLaw', if any.
+  std::string CreateKineticLawSBOTermAntimonySyntax(const std::string& indent, std::string cc) const;
+  std::string CreateKineticLawCVTermsAntimonySyntax(const std::string& indent, std::string cc) const;
 
   bool AllowedInFormulas() const;
 

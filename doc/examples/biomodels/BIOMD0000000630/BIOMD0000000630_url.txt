@@ -1,0 +1,215 @@
+// Created by libAntimony v3.2.0
+model *Venkatraman2011___PLS_UPA_behaviour_in_the_presence_of_substrate_competition_1_1_1()
+
+  // Compartments and Species:
+  compartment compartment_1;
+  species species_1 in compartment_1, species_2 in compartment_1, species_3 in compartment_1;
+  species species_4 in compartment_1, $species_5 in compartment_1, $species_6 in compartment_1;
+
+  // Reactions:
+  reaction_1: species_3 + species_1 => species_2 + species_3; compartment_1*reaction_1_k1*species_3*species_1;
+  reaction_2: species_2 + species_3 => species_4 + species_2; compartment_1*(reaction_2_parameter_8*species_2^parameter_13*species_3);
+  reaction_3: species_4 + species_1 => species_2 + species_4; compartment_1*reaction_3_k1*species_4*species_1;
+  reaction_4: species_3 => ; compartment_1*parameter_1*species_3;
+  reaction_5: species_1 => ; compartment_1*parameter_2*species_1;
+  reaction_6: species_2 => ; compartment_1*parameter_1*species_2;
+  reaction_7: species_4 => ; compartment_1*parameter_1*species_4;
+  reaction_8: species_2 + $species_5 -> $species_6; compartment_1*(reaction_8_k1*species_2*species_5 - reaction_8_k2*species_6);
+  reaction_9: $species_6 => species_2; compartment_1*reaction_9_k1*species_6;
+  reaction_10: $species_5 => ; compartment_1*parameter_2*species_5;
+  reaction_11: $species_6 => ; compartment_1*parameter_2*species_6;
+  reaction_12:  => species_3; compartment_1*reaction_12_v;
+  reaction_13:  => species_1; compartment_1*reaction_13_v;
+  reaction_14:  => $species_5; compartment_1*reaction_14_v;
+
+  // Species initializations:
+  species_1 = 0.01;
+  species_2 = 0;
+  species_3 = 0.002;
+  species_4 = 0;
+  species_5 = 0;
+  species_6 = 0;
+
+  // Compartment initializations:
+  compartment_1 = 1;
+
+  // Variable initializations:
+  parameter_1 = 0.084;
+  parameter_2 = 0.032;
+  parameter_13 = 2;
+  reaction_1_k1 = 0.035;
+  reaction_2_parameter_8 = 40;
+  reaction_3_k1 = 0.9;
+  reaction_8_k1 = 0;
+  reaction_8_k2 = 0.016;
+  reaction_9_k1 = 0.02;
+  reaction_12_v = 0.0032;
+  reaction_13_v = 0.01;
+  reaction_14_v = 0.01;
+
+  // Other declarations:
+  const compartment_1, parameter_1, parameter_2, parameter_13;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+
+  // Display Names:
+  compartment_1 is "extra cellular matrix";
+  species_1 is "plasminogen";
+  species_2 is "plasmin";
+  species_3 is "single intact chain urokinase-type plasminogen activator";
+  species_4 is "two-chain urokinase-type plasminogen activator";
+  species_5 is "x";
+  species_6 is "x-plasmin";
+  parameter_1 is "degradation constant 1";
+  parameter_2 is "degradation constant 2";
+  parameter_13 is "hill cooperativity";
+  reaction_1 is "cleavage of plasminogen";
+  reaction_2 is "activation of urokinase-type plasminogen activator";
+  reaction_3 is "activation of plasmin";
+  reaction_4 is "degradation of single intact chain urokinase-type plasminogen activator";
+  reaction_5 is "degradation of plasminogen";
+  reaction_6 is "degradation of plasmin";
+  reaction_7 is "degradation of two-chain urokinase type plasminogen activator";
+  reaction_8 is "reversible plasmin bonding x";
+  reaction_9 is "catalytic reaction of x-plasmin";
+  reaction_10 is "degradation of x";
+  reaction_11 is "degradation of x-plasmin";
+  reaction_12 is "synthesis of single intact chain urokinase-type plasminogen activator";
+  reaction_13 is "synthesis of plasminogen";
+  reaction_14 is "synthesis of x";
+
+  // SBO terms:
+  compartment_1.sboTerm = 290
+  parameter_13.sboTerm = 190
+  reaction_1.sboTerm = 178
+  reaction_2.sboTerm = 178
+  reaction_3.sboTerm = 178
+  reaction_4.sboTerm = 179
+  reaction_5.sboTerm = 179
+  reaction_6.sboTerm = 179
+  reaction_7.sboTerm = 179
+  reaction_8.sboTerm = 526
+  reaction_9.sboTerm = 180
+  reaction_10.sboTerm = 179
+  reaction_11.sboTerm = 179
+  reaction_12.sboTerm = 393
+  reaction_13.sboTerm = 393
+  reaction_14.sboTerm = 393
+
+  // CV terms:
+  compartment_1 isVersionOf "http://identifiers.org/go/GO:0005576"
+  species_1 isVersionOf "http://identifiers.org/uniprot/P00747"
+  species_2 isVersionOf "http://identifiers.org/uniprot/P00747"
+  species_3 isVersionOf "http://identifiers.org/uniprot/P00749"
+  species_4 isVersionOf "http://identifiers.org/uniprot/P00749"
+  species_5 isVersionOf "http://identifiers.org/pubchem.compound/10370340"
+  species_6 hasPart "http://identifiers.org/uniprot/P00747",
+                    "http://identifiers.org/pubchem.compound/10370340"
+  parameter_1 isDescribedBy "http://identifiers.org/pubmed/16339882",
+                            "http://identifiers.org/pubmed/15208304"
+  parameter_2 isDescribedBy "http://identifiers.org/pubmed/1906642",
+                            "http://identifiers.org/pubmed/6193754"
+  reaction_1 isDescribedBy "http://identifiers.org/pubmed/3667621"
+  reaction_2 isDescribedBy "http://identifiers.org/pubmed/3667621"
+  reaction_3 isDescribedBy "http://identifiers.org/pubmed/3667621"
+  reaction_4 isDescribedBy "http://identifiers.org/pubmed/15208304",
+                           "http://identifiers.org/pubmed/16339882"
+  reaction_5 isDescribedBy "http://identifiers.org/pubmed/1906642",
+                           "http://identifiers.org/pubmed/6193754"
+  reaction_6 isDescribedBy "http://identifiers.org/pubmed/15208304",
+                           "http://identifiers.org/pubmed/16339882"
+  reaction_7 isDescribedBy "http://identifiers.org/pubmed/15208304",
+                           "http://identifiers.org/pubmed/16339882"
+  reaction_8 isDescribedBy "http://identifiers.org/pubmed/16690877"
+  reaction_10 isDescribedBy "http://identifiers.org/pubmed/1906642",
+                            "http://identifiers.org/pubmed/6193754"
+  reaction_11 isDescribedBy "http://identifiers.org/pubmed/6193754",
+                            "http://identifiers.org/pubmed/1906642"
+  reaction_12 isDescribedBy "http://identifiers.org/pubmed/16339882",
+                            "http://identifiers.org/doi/10.1371/journal.pcbi.0020120"
+  reaction_13 isDescribedBy "http://identifiers.org/pubmed/16339882",
+                            "http://identifiers.org/doi/10.1371/journal.pcbi.0020120"
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1303130001"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000630"
+  model publication "http://identifiers.org/pubmed/22004735"
+  model hasTaxon "http://identifiers.org/taxonomy/131567"
+  model hasProperty "http://identifiers.org/go/GO:0031639",
+                    "http://identifiers.org/go/GO:0007596",
+                    "http://identifiers.org/mamo/MAMO_0000046"
+  model occursIn "urn:miriam:bao:BAO%3A0000366"
+  model created "2017-02-02T14:43:21Z"
+  model modified "2017-05-01T21:56:34Z"
+  model creator1.givenName "Lisa"
+  model creator1.familyName "Tucker-Kellogg"
+  model creator1.organization ```
+Institute of Bioengineering and
+Nanotechnology
+```
+  model creator1.email "LisaTK@nus.edu.sg"
+  model creator2.givenName "Furkan"
+  model creator2.familyName "Kurtoglu"
+  model creator2.organization "Gebze Technical University"
+  model creator2.email "fkurtoglu@gtu.edu.tr"
+
+  // Notes:
+  model notes ```
+Venkatraman2011 - PLS-UPA behaviour in thepresence of substrate competition 
+
+
+The posibility of ultrasensitivity and bistable activation of PLS (Plasmin) and
+UPA (Urokinase-type plasminogen activator) in the presence of substrate competition
+is explained here using a mathematical model. 
+
+
+This model is described in the article:
+
+
+[Steady states and dynamics of urokinase-mediated plasmin activation in silico and in vitro.](http://identifiers.org/pubmed/22004735 "Access to this publication") 
+
+
+Venkatraman L, Li H, Dewey CF Jr, White JK, Bhowmick SS, Yu H, Tucker-Kellogg L.
+
+
+Biophys. J. 2011 Oct; 101(8): 1825-1834 
+Abstract:
+
+
+Plasmin (PLS) and urokinase-type plasminogen activator (UPA) are ubiquitous proteases
+that regulate the extracellular environment. Although they are secreted in inactive
+forms, they can activate each other through proteolytic cleavage. This mutual
+interplay creates the potential for complex dynamics, which we investigated using
+mathematical modeling and in vitro experiments. We constructed ordinary differential
+equations to model the conversion of precursor plasminogen into active PLS, 
+and precursor urokinase (scUPA) into active urokinase (tcUPA). Although neither
+PLS nor UPA exhibits allosteric cooperativity, modeling showed that cooperativity
+occurred at the system level because of substrate competition. Computational simulations
+and bifurcation analysis predicted that the system would be bistable over a
+range of parameters for cooperativity and positive feedback. Cell-free experiments
+with recombinant proteins tested key predictions of the model. PLS activation
+in response to scUPA stimulus was found to be cooperative in vitro. Finally,
+bistability was demonstrated in vitro by the presence of two significantly different
+steady-state levels of PLS activation for the same levels of stimulus. We conclude
+that ultrasensitive, bistable activation of UPA-PLS is possible in the presence
+of substrate competition. An ultrasensitive threshold for activation of PLS and
+UPA would have ramifications for normal and disease processes, including angiogenesis,
+metastasis, wound healing, and fibrosis.
+
+
+The cooperativity parameter "ci" was missing in the original model. The
+parameter "ci" has been added to the added.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000630](http://identifiers.org/biomodels.db/BIOMD0000000630).
+
+To cite BioModels Database, please use: [BioModels Database: An enhanced, curated and annotated resource for published quantitative kinetic models](http://identifiers.org/pubmed/20587024 "Latest BioModels Database publication").
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+end
+
+Venkatraman2011___PLS_UPA_behaviour_in_the_presence_of_substrate_competition_1_1_1 is "Venkatraman2011 - PLS-UPA behaviour in the presence of substrate competition_1_1_1_1"

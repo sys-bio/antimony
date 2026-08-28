@@ -1,0 +1,94 @@
+// Created by libAntimony v3.2.0
+model *Holmes2006___Muscle_Contraction()
+
+  // Compartments and Species:
+  compartment Compartment;
+
+  // Assignment Rules:
+  v_ce := b*(P - P_0)/(P + a);
+  L_se := L - L_ce;
+  L := piecewise(1, time < 2, 0.95);
+  P := alpha*(L_se - ModelValue_1);
+
+  // Rate Rules:
+  L_ce' = v_ce;
+
+  // Compartment initializations:
+  Compartment = 1;
+
+  // Variable initializations:
+  L_ce = 0.7;
+  alpha = 1449.027;
+  ModelValue_1 = L_se;
+  a = 37.24;
+  b = 0.325;
+  P_0 = 144.9;
+
+  // Other declarations:
+  var L_ce, v_ce, L_se, L, P;
+  const Compartment, alpha, ModelValue_1, a, b, P_0;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = item;
+
+  // Display Names:
+  ModelValue_1 is "Initial for L_se";
+
+  model model_source "http://identifiers.org/biomodels.db/MODEL1006230007"
+  model model_source "http://identifiers.org/biomodels.db/BIOMD0000000677"
+  model publication "http://identifiers.org/pubmed/16709736"
+  model model_source "http://identifiers.org/biomodels.db/MODEL1006230007"
+  model isVersionOf "http://identifiers.org/go/GO:0006936"
+  model isDescribedBy "http://identifiers.org/pubmed/16709736"
+  model created "2018-02-21T16:45:17Z"
+  model modified "2018-03-14T09:36:07Z"
+  model creator1.givenName "Paul"
+  model creator1.familyName "Harrington"
+  model creator1.organization "The University of Auckland"
+  model creator1.email "paul.harrington@auckland.ac.nz"
+  model creator2.givenName "Matthew Grant"
+  model creator2.familyName "Roberts"
+  model creator2.organization "EMBL-EBI"
+  model creator2.email "mroberts@ebi.ac.uk"
+
+  // Notes:
+  model notes ```
+Holmes2006 - Hill&apos;s model of muscle contraction 
+
+
+This model is described in the article:
+
+
+[Teaching from classic papers: Hill&apos;s model of muscle contraction.](http://identifiers.org/pubmed/16709736 "Access to this publication") 
+
+
+Holmes JW. 
+
+Adv Physiol Educ 2006 Jun; 30(2): 67-72 
+Abstract:
+
+
+A. V. Hill&apos;s 1938 paper "The heat of shortening and the dynamic constants
+of muscle" is an enduring classic, presenting detailed methods, meticulous
+experiments, and the model of muscle contraction that now bears Hill&apos;s name.
+Pairing a simulation based on Hill&apos;s model with a reading of his paper 
+allows students to follow his thought process to discover key principles of muscle
+physiology and gain insight into how to develop quantitative models of physiological
+processes. In this article, the experience of the author using this approach in
+a graduate biomedical engineering course is outlined, along with suggestions
+for adapting this approach to other audiences.
+
+
+This model is hosted on [BioModels Database](http://www.ebi.ac.uk/biomodels/) and identified by: [BIOMD0000000677](http://identifiers.org/biomodels.db/BIOMD0000000677).
+
+To cite BioModels Database, please use: [Chelliah V et al. BioModels: ten-year anniversary. Nucl. Acids Res. 2015, 43(Database issue):D542-8](http://identifiers.org/pubmed/25414348).
+
+
+To the extent possible under law, all copyright and related or neighbouring rights
+to this encoded model have been dedicated to the public domain worldwide. Please
+refer to [CC0 Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ "Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication") for more information.
+```
+end
+
+Holmes2006___Muscle_Contraction is "Holmes2006 - Hill's model of muscle contraction"

@@ -1,20 +1,22 @@
-// Created by libAntimony v3.1.3
+// Created by libAntimony v3.2.0
 function get2DArrayElement(a, b, c)
   a;
 end
+
+get2DArrayElement is "get2DArrayElement"
 
 
 model QuorumTrigger()
 
   // Compartments and Species:
   compartment default;
-  species Env in default, LuxR in default, Complex in default, LuxI in default;
-  species GFP in default, P1 in default, P5 in default;
+  substanceOnly species Env in default, LuxR in default, Complex in default;
+  substanceOnly species LuxI in default, GFP in default, P1 in default, P5 in default;
 
   // Reactions:
-  Production_P1 in default:  => 10LuxR; (P1*(kb*(ko_f/ko_r)*nr + ka*(kao_f/kao_r)*nr*(ka_f/ka_r*Env)^nc))/(1 + ko_f/ko_r*nr + kao_f/kao_r*nr*(ka_f/ka_r*Env)^nc);
-  Complex_Complex in default: 2LuxR + 2LuxI -> Complex; kc_f*LuxR^nc*LuxI^nc - kc_r*Complex;
-  Production_P5 in default:  => 10GFP + 10LuxI + 10LuxR; (P5*(kb*(ko_f/ko_r)*nr + ka*(kao_f/kao_r)*nr*(ka_f/ka_r*Complex)^nc))/(1 + ko_f/ko_r*nr + kao_f/kao_r*nr*(ka_f/ka_r*Complex)^nc);
+  Production_P1 in default:  => 10 LuxR; P1*(kb*(ko_f/ko_r)*nr + ka*(kao_f/kao_r)*nr*((ka_f/ka_r)*Env)^nc)/(1 + (ko_f/ko_r)*nr + (kao_f/kao_r)*nr*((ka_f/ka_r)*Env)^nc);
+  Complex_Complex in default: 2 LuxR + 2 LuxI -> Complex; kc_f*LuxR^nc*LuxI^nc - kc_r*Complex;
+  Production_P5 in default:  => 10 GFP + 10 LuxI + 10 LuxR; P5*(kb*(ko_f/ko_r)*nr + ka*(kao_f/kao_r)*nr*((ka_f/ka_r)*Complex)^nc)/(1 + (ko_f/ko_r)*nr + (kao_f/kao_r)*nr*((ka_f/ka_r)*Complex)^nc);
   Degradation_GFP in default: GFP => ; kd*GFP;
   Degradation_LuxI in default: LuxI => ; kd*LuxI;
   Degradation_Complex in default: Complex => ; kd*Complex;
@@ -30,8 +32,8 @@ model QuorumTrigger()
   Complex = 0;
   LuxI = 0;
   GFP = 0;
-  P1 = 2/default;
-  P5 = 2/default;
+  P1 = 2;
+  P5 = 2;
 
   // Compartment initializations:
   default = 1;
@@ -89,6 +91,8 @@ model QuorumTrigger()
   kecdiff is "Extracellular diffusion rate";
 end
 
+QuorumTrigger is "QuorumTrigger"
+
 model *QTPop()
 
   // Sub-modules, and any changes to those submodules:
@@ -96,7 +100,7 @@ model *QTPop()
 
   // Compartments and Species:
   compartment default;
-  species LuxI in default;
+  substanceOnly species LuxI in default;
 
   // Reactions:
   Degradation_LuxI in default: LuxI => ; Degradation_LuxI_kecd*get2DArrayElement(LuxI, Degradation_LuxI_i, Degradation_LuxI_j);
@@ -192,3 +196,5 @@ model *QTPop()
   ka is "Activated production rate";
   kecdiff is "Extracellular diffusion rate";
 end
+
+QTPop is "QTPop"
