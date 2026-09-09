@@ -473,10 +473,15 @@ jobs:
         shell: bash
         run: |
           cd ${RUNNER_WORKSPACE}/install-antimony/bindings/python
-          python${{ matrix.python_version }} -m pip install setuptools wheel build
-          python${{ matrix.python_version }} -m build --wheel --no-isolation --outdir dist-sbml-test-suite
-          python${{ matrix.python_version }} -m pip install dist-sbml-test-suite/antimony*.whl
-          python${{ matrix.python_version }} -m pip install -r "${GITHUB_WORKSPACE}/src/bindings/python/sbml_test_suite/requirements.txt"
+          if [ "${{ matrix.platform.os_type }}" == 'windows' ]; then
+            PYTHON="${{env.python_exe}}"
+          else
+            PYTHON="python${{ matrix.python_version }}"
+          fi
+          $PYTHON -m pip install setuptools wheel build
+          $PYTHON -m build --wheel --no-isolation --outdir dist-sbml-test-suite
+          $PYTHON -m pip install dist-sbml-test-suite/antimony*.whl
+          $PYTHON -m pip install -r "${GITHUB_WORKSPACE}/src/bindings/python/sbml_test_suite/requirements.txt"
 
       - name: Download SBML Test Suite semantic cases
         if: matrix.platform.name == 'macos-14-release'
