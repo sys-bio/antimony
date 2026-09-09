@@ -85,7 +85,7 @@ jobs:
         antimony_deps_repo: [ "libroadrunner-deps" ]
         antimony_deps_name: [ "antimony-deps" ]
         antimony_deps_release_version: [ "v2.3.5" ]
-        python_version: [ "3.13" ]
+        python_version: [ "3.14" ]
 
     runs-on: ${{ matrix.platform.os_name }}
     container:
@@ -210,15 +210,18 @@ jobs:
           echo "python_exe=/Miniconda3/envs/py3/bin/python" >> $GITHUB_ENV
           echo "python_dir=/Miniconda3/envs/py3"  >> $GITHUB_ENV
 
-      - name: Save Python executable for Windows
-        if: matrix.platform.build_python == 'ON' && matrix.platform.os_type == 'windows'
+      - name: Save Python executable
+        if: matrix.platform.build_python == 'ON' && matrix.platform.os_type != 'manylinux'
+        shell: bash
         run: |
-          cd ${{ env.pythonLocation }}
-          $pattern = '[\\]'
-
-          $pythonWinExecutable = "${{env.pythonLocation }}" -replace $pattern, '/'
-          echo "python_exe=$pythonWinExecutable/python.exe" | Out-File -FilePath $env:GITHUB_ENV -Append
-          echo "python_v1_dir=$pythonWinExecutable" | Out-File -FilePath $env:GITHUB_ENV -Append
+          if [ "${{ matrix.platform.os_type }}" == 'windows' ]; then
+            python_win_dir="${{ env.pythonLocation }}"
+            python_win_dir="${python_win_dir//\\//}"
+            echo "python_exe=$python_win_dir/python.exe" >> "${GITHUB_ENV}"
+            echo "python_v1_dir=$python_win_dir" >> "${GITHUB_ENV}"
+          else
+            echo "python_exe=${{ env.pythonLocation }}/bin/python3" >> "${GITHUB_ENV}"
+          fi
 
       - name: Download dependencies binaries
         shell: bash
@@ -418,20 +421,15 @@ jobs:
         shell: bash
         run: |
           cd ${RUNNER_WORKSPACE}/install-antimony/bindings/python
-          if [ "${{ matrix.platform.os_type }}" == 'windows' ]; then
-            ${{env.python_exe}} -m pip install setuptools wheel build
-            ${{env.python_exe}} -m build --wheel --no-isolation --outdir dist
-          elif [ "${{ matrix.platform.os_type }}" == 'manylinux' ]; then
-            python${{ matrix.python_version }} -m pip install --root-user-action=ignore --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org setuptools wheel build
-            python${{ matrix.python_version }} -m build --wheel --no-isolation --outdir dist
-          elif [ "${{ matrix.platform.os_type }}" == 'macos' ]; then
+          if [ "${{ matrix.platform.os_type }}" == 'macos' ]; then
             export MACOSX_DEPLOYMENT_TARGET="$(sw_vers -productVersion | cut -d '.' -f 1).0"
-            python${{ matrix.python_version }} -m pip install setuptools wheel build
-            python${{ matrix.python_version }} -m build --wheel --no-isolation --outdir dist
-          else
-            python${{ matrix.python_version }} -m pip install setuptools wheel build
-            python${{ matrix.python_version }} -m build --wheel --no-isolation --outdir dist
           fi
+          if [ "${{ matrix.platform.os_type }}" == 'manylinux' ]; then
+            ${{env.python_exe}} -m pip install --root-user-action=ignore --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org setuptools wheel build
+          else
+            ${{env.python_exe}} -m pip install setuptools wheel build
+          fi
+          ${{env.python_exe}} -m build --wheel --no-isolation --outdir dist
 
       - name: Rename Python wheel artifacts
         if: matrix.platform.build_type == 'Release' && matrix.platform.build_python == 'ON'
@@ -464,22 +462,23 @@ jobs:
           name: ${{env.python_wheel_artifacts_name}}
           path: ${{env.python_wheel_artifacts_file}}
 
-      # The SBML Test Suite round-trip only runs on one leg of the matrix,
-      # same reasoning as valgrind above: it's slow, and doesn't need to run
-      # on every OS/config combination to be useful. macos-14-release is
-      # chosen since ubuntu-latest-release is already dedicated to valgrind.
+      # The SBML Test Suite and BioModels round-trips only run on two legs
+      # of the matrix, same reasoning as valgrind above: they're slow, and
+      # don't need to run on every OS/config combination to be useful.
+      # macos-14-release and windows-latest-release are used since
+      # ubuntu-latest-release is already dedicated to valgrind.
       - name: Build Antimony Python wheel for SBML Test Suite round-trip
-        if: matrix.platform.name == 'macos-14-release'
+        if: matrix.platform.name == 'macos-14-release' || matrix.platform.name == 'windows-latest-release'
         shell: bash
         run: |
           cd ${RUNNER_WORKSPACE}/install-antimony/bindings/python
-          python${{ matrix.python_version }} -m pip install setuptools wheel build
-          python${{ matrix.python_version }} -m build --wheel --no-isolation --outdir dist-sbml-test-suite
-          python${{ matrix.python_version }} -m pip install dist-sbml-test-suite/antimony*.whl
-          python${{ matrix.python_version }} -m pip install -r "${GITHUB_WORKSPACE}/src/bindings/python/sbml_test_suite/requirements.txt"
+          ${{env.python_exe}} -m pip install setuptools wheel build
+          ${{env.python_exe}} -m build --wheel --no-isolation --outdir dist-sbml-test-suite
+          ${{env.python_exe}} -m pip install dist-sbml-test-suite/antimony*.whl
+          ${{env.python_exe}} -m pip install -r "${GITHUB_WORKSPACE}/src/bindings/python/sbml_test_suite/requirements.txt"
 
       - name: Download SBML Test Suite semantic cases
-        if: matrix.platform.name == 'macos-14-release'
+        if: matrix.platform.name == 'macos-14-release' || matrix.platform.name == 'windows-latest-release'
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -508,15 +507,15 @@ jobs:
           echo "SBML_TEST_SUITE_DIR=$(dirname "$cases_dir")" >> "${GITHUB_ENV}"
 
       - name: Run SBML Test Suite round-trip tests
-        if: matrix.platform.name == 'macos-14-release'
+        if: matrix.platform.name == 'macos-14-release' || matrix.platform.name == 'windows-latest-release'
         shell: bash
         run: |
           cd "${GITHUB_WORKSPACE}/src/bindings/python/sbml_test_suite"
-          python${{ matrix.python_version }} -m pytest -ra --junitxml="${RUNNER_WORKSPACE}/sbml-test-suite-results.xml" \
+          ${{env.python_exe}} -m pytest -ra --junitxml="${RUNNER_WORKSPACE}/sbml-test-suite-results.xml" \
             --sbml-test-suite-dir="${SBML_TEST_SUITE_DIR}"
 
       - name: Upload SBML Test Suite round-trip results
-        if: always() && matrix.platform.name == 'macos-14-release'
+        if: always() && (matrix.platform.name == 'macos-14-release' || matrix.platform.name == 'windows-latest-release')
         uses: actions/upload-artifact@main
         with:
           name: sbml-test-suite-results
@@ -527,27 +526,27 @@ jobs:
       # original vs. round-tripped SBML. Shares the wheel installed for the
       # SBML Test Suite step above; only needs its own requirements on top.
       - name: Install BioModels round-trip test requirements
-        if: matrix.platform.name == 'macos-14-release'
+        if: matrix.platform.name == 'macos-14-release' || matrix.platform.name == 'windows-latest-release'
         shell: bash
-        run: python${{ matrix.python_version }} -m pip install -r "${GITHUB_WORKSPACE}/src/bindings/python/biomodels_roundtrip/requirements.txt"
+        run: ${{env.python_exe}} -m pip install -r "${GITHUB_WORKSPACE}/src/bindings/python/biomodels_roundtrip/requirements.txt"
 
       - name: Fetch BioModels SBML/SED-ML files
-        if: matrix.platform.name == 'macos-14-release'
+        if: matrix.platform.name == 'macos-14-release' || matrix.platform.name == 'windows-latest-release'
         shell: bash
         run: |
-          python${{ matrix.python_version }} "${GITHUB_WORKSPACE}/src/bindings/python/biomodels_roundtrip/fetch_biomodels.py" \
+          ${{env.python_exe}} "${GITHUB_WORKSPACE}/src/bindings/python/biomodels_roundtrip/fetch_biomodels.py" \
             --dest "${RUNNER_WORKSPACE}/biomodels"
 
       - name: Run BioModels round-trip tests
-        if: matrix.platform.name == 'macos-14-release'
+        if: matrix.platform.name == 'macos-14-release' || matrix.platform.name == 'windows-latest-release'
         shell: bash
         run: |
           cd "${GITHUB_WORKSPACE}/src/bindings/python/biomodels_roundtrip"
-          python${{ matrix.python_version }} -m pytest -ra --junitxml="${RUNNER_WORKSPACE}/biomodels-roundtrip-results.xml" \
+          ${{env.python_exe}} -m pytest -ra --junitxml="${RUNNER_WORKSPACE}/biomodels-roundtrip-results.xml" \
             --biomodels-dir="${RUNNER_WORKSPACE}/biomodels"
 
       - name: Upload BioModels round-trip results
-        if: always() && matrix.platform.name == 'macos-14-release'
+        if: always() && (matrix.platform.name == 'macos-14-release' || matrix.platform.name == 'windows-latest-release')
         uses: actions/upload-artifact@main
         with:
           name: biomodels-roundtrip-results
