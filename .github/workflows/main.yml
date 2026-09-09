@@ -85,7 +85,7 @@ jobs:
         antimony_deps_repo: [ "libroadrunner-deps" ]
         antimony_deps_name: [ "antimony-deps" ]
         antimony_deps_release_version: [ "v2.3.5" ]
-        python_version: [ "3.13" ]
+        python_version: [ "3.14" ]
 
     runs-on: ${{ matrix.platform.os_name }}
     container:
@@ -220,7 +220,7 @@ jobs:
             echo "python_exe=$python_win_dir/python.exe" >> "${GITHUB_ENV}"
             echo "python_v1_dir=$python_win_dir" >> "${GITHUB_ENV}"
           else
-            echo "python_exe=python" >> "${GITHUB_ENV}"
+            echo "python_exe=${{ env.pythonLocation }}/bin/python3" >> "${GITHUB_ENV}"
           fi
 
       - name: Download dependencies binaries
