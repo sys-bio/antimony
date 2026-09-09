@@ -469,7 +469,7 @@ jobs:
       # on every OS/config combination to be useful. macos-14-release is
       # chosen since ubuntu-latest-release is already dedicated to valgrind.
       - name: Build Antimony Python wheel for SBML Test Suite round-trip
-        if: matrix.platform.name == 'macos-14-release'
+        if: matrix.platform.name == 'macos-14-release' || matrix.platform.name == 'windows-latest-release'
         shell: bash
         run: |
           cd ${RUNNER_WORKSPACE}/install-antimony/bindings/python
