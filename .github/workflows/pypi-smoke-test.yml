@@ -1,29 +1,30 @@
 name: PyPI wheel smoke test
 
-# Round-trips a known model (SBML -> Antimony -> SBML) through antimony as
-# published on PyPI, rather than this checkout's own build -- the same
-# kind of check as sbmlutils' CI, which is what first caught issue #177
-# (a win_amd64 3.2.0 wheel regression the source-build CI in main.yml
-# never exercises, since it always builds from source).
+# Round-trips a known model (SBML -> Antimony -> SBML) through antimony
+# built fresh from this checkout, the same way main.yml's windows-latest-
+# release/macos-14-release legs do (MSVC setup, antimony-deps binaries,
+# CMake configure/build/install, then the Python wheel), but stripped down
+# to just what's needed to produce an installable wheel -- no Qt, no
+# ctest, no ccache. This is what first caught issue #177 (a win_amd64
+# 3.2.0 wheel regression) via sbmlutils' CI; building here instead of
+# installing a specific prior artifact means every push exercises whatever
+# fix is currently in the tree.
 
 on:
   push:
   workflow_dispatch:
-    inputs:
-      artifact-id:
-        description: "Numeric id of the GitHub Actions artifact zip containing the wheel to test (from its URL: .../actions/runs/<run-id>/artifacts/<artifact-id>)"
-        required: false
-        default: "10469152607"
 
-permissions:
-  contents: read
-  actions: read
+env:
+  ANTIMONY_DEPS_OWNER: sys-bio
+  ANTIMONY_DEPS_REPO: libroadrunner-deps
+  ANTIMONY_DEPS_NAME: antimony-deps
+  ANTIMONY_DEPS_RELEASE_VERSION: v2.3.5
 
 jobs:
   roundtrip:
-    name: pip install antimony (${{ matrix.os }}, py${{ matrix.python-version }})
+    name: build + install antimony (${{ matrix.os }}, py${{ matrix.python-version }})
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 15
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
@@ -54,24 +55,69 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Download wheel artifact
-        shell: bash
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ARTIFACT_ID_INPUT: ${{ inputs.artifact-id }}
-        run: |
-          ARTIFACT_ID="${ARTIFACT_ID_INPUT:-10469152607}"
-          echo "Downloading artifact $ARTIFACT_ID"
-          curl -sSL -H "Authorization: Bearer $GH_TOKEN" \
-               -H "Accept: application/vnd.github+json" \
-               "https://api.github.com/repos/sys-bio/antimony/actions/artifacts/$ARTIFACT_ID/zip" \
-               -o artifact.zip
-          python -m zipfile -e artifact.zip artifact_extracted
+      - name: Set MSVC as the default compiler on Windows
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
 
-      - name: Install antimony wheel from artifact
+      - name: Get host architecture
+        shell: bash
+        run: echo "HOST_ARCHITECTURE=$(uname -m)" >> "${GITHUB_ENV}"
+
+      - name: Download antimony-deps binaries
         shell: bash
         run: |
-          WHEEL=$(python -c "import glob, sys; m = glob.glob('artifact_extracted/**/*.whl', recursive=True); sys.exit('no .whl file found in artifact') if not m else print(m[0])")
+          mkdir -p "${RUNNER_TEMP}/antimony-deps-binaries"
+          cd "${RUNNER_TEMP}/antimony-deps-binaries"
+          if [ "$RUNNER_OS" == "Windows" ]; then
+            compiler_version=$(ls "C:\Program Files\Microsoft Visual Studio")
+            binary_file_name="${ANTIMONY_DEPS_NAME}-windows-msvc${compiler_version}-${HOST_ARCHITECTURE}-Release"
+          elif [ "$RUNNER_OS" == "macOS" ]; then
+            os_version=$(sw_vers -productVersion | cut -d '.' -f 1)
+            binary_file_name="${ANTIMONY_DEPS_NAME}-macos-${os_version}-${HOST_ARCHITECTURE}-Release"
+          else
+            os_version=$(lsb_release -rs | cut -d '.' -f 1)
+            binary_file_name="${ANTIMONY_DEPS_NAME}-ubuntu-${os_version}-${HOST_ARCHITECTURE}-Release"
+          fi
+          curl -LO "https://github.com/${ANTIMONY_DEPS_OWNER}/${ANTIMONY_DEPS_REPO}/releases/download/${ANTIMONY_DEPS_RELEASE_VERSION}/${binary_file_name}.zip"
+          unzip -q "${binary_file_name}.zip"
+          rm "${binary_file_name}.zip"
+          if [ -d "$binary_file_name" ]; then
+            mv "$binary_file_name"/* .
+            rmdir "$binary_file_name"
+          fi
+          echo "ANT_DEPENDENCIES_INSTALL_PREFIX=-DANT_DEPENDENCIES_INSTALL_PREFIX=${RUNNER_TEMP}/antimony-deps-binaries" >> "${GITHUB_ENV}"
+
+      - name: Configure CMake for Antimony
+        shell: bash
+        run: |
+          mkdir -p "${RUNNER_TEMP}/build-antimony"
+          cd "${RUNNER_TEMP}/build-antimony"
+          cmake "${GITHUB_WORKSPACE}" \
+          -G "Ninja" \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_INSTALL_PREFIX="${RUNNER_TEMP}/install-antimony" \
+          ${ANT_DEPENDENCIES_INSTALL_PREFIX} \
+          -DWITH_QTANTIMONY=OFF \
+          -DWITH_GTEST=OFF \
+          -DWITH_PYTHON=ON
+
+      - name: Build and install Antimony
+        shell: bash
+        run: |
+          cd "${RUNNER_TEMP}/build-antimony"
+          cmake --build . --target install --config Release
+
+      - name: Build antimony Python wheel
+        shell: bash
+        run: |
+          cd "${RUNNER_TEMP}/install-antimony/bindings/python"
+          python -m pip install setuptools wheel build
+          python -m build --wheel --no-isolation --outdir dist
+
+      - name: Install antimony wheel
+        shell: bash
+        run: |
+          WHEEL=$(python -c "import glob, sys; m = glob.glob('${RUNNER_TEMP}/install-antimony/bindings/python/dist/antimony*.whl'); sys.exit('no .whl file found') if not m else print(m[0])")
           echo "Installing $WHEEL"
           python -m pip install "$WHEEL"
 
