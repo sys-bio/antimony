@@ -78,6 +78,14 @@ jobs:
       - name: SBML -> Antimony -> SBML round trip (BIOMD0000000012, issue #177)
         run: python .github/scripts/pypi_roundtrip_smoke_test.py
 
+      - name: Upload generated Antimony text
+        if: always()
+        uses: actions/upload-artifact@main
+        with:
+          name: generated-antimony-${{ matrix.os }}-py${{ matrix.python-version }}
+          path: generated_antimony.txt
+          if-no-files-found: ignore
+
   tests:
     name: pypi-smoke-test
     needs: roundtrip
