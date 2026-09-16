@@ -1,5 +1,6 @@
 #include <cassert>
 #include <clocale>
+#include <exception>
 #include <string>
 #include <iostream>
 #include <cstdlib>
@@ -291,10 +292,17 @@ LIB_EXTERN long loadAntimonyString(const char* model)
     assert(ofreturn==1); //antimony file
     return ParseFile(oldlocale);
   }
+  catch (const std::exception& e)
+  {
+    g_registry.ClearModules();
+    g_registry.SetError("Parsing the given Antimony string caused an internal exception: " + string(e.what()));
+    setlocale(LC_NUMERIC, oldlocale.c_str());
+    return -1;
+  }
   catch (...)
   {
     g_registry.ClearModules();
-    g_registry.SetError("Parsing the given Antimony string caused an internal exception.");
+    g_registry.SetError("Parsing the given Antimony string caused an internal exception of unknown type.");
     setlocale(LC_NUMERIC, oldlocale.c_str());
     return -1;
   }
@@ -320,10 +328,17 @@ LIB_EXTERN long loadAntimonyFile(const char* filename)
     assert(ofreturn==1); //antimony file
     return ParseFile(oldlocale);
   }
+  catch (const std::exception& e)
+  {
+    g_registry.ClearModules();
+    g_registry.SetError("Parsing the given Antimony file caused an internal exception: " + string(e.what()));
+    setlocale(LC_NUMERIC, oldlocale.c_str());
+    return -1;
+  }
   catch (...)
   {
     g_registry.ClearModules();
-    g_registry.SetError("Parsing the given Antimony file caused an internal exception.");
+    g_registry.SetError("Parsing the given Antimony file caused an internal exception of unknown type.");
     setlocale(LC_NUMERIC, oldlocale.c_str());
     return -1;
   }
