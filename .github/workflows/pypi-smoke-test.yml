@@ -117,7 +117,12 @@ jobs:
       - name: Install antimony wheel
         shell: bash
         run: |
-          WHEEL=$(python -c "import glob, sys; m = glob.glob('${RUNNER_TEMP}/install-antimony/bindings/python/dist/antimony*.whl'); sys.exit('no .whl file found') if not m else print(m[0])")
+          WHEEL_DIR="${RUNNER_TEMP}/install-antimony/bindings/python/dist"
+          WHEEL=$(ls "$WHEEL_DIR"/antimony*.whl 2>/dev/null | head -n 1)
+          if [ -z "$WHEEL" ]; then
+            echo "no .whl file found in $WHEEL_DIR" >&2
+            exit 1
+          fi
           echo "Installing $WHEEL"
           python -m pip install "$WHEEL"
 
