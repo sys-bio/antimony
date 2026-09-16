@@ -10,10 +10,14 @@ on:
   push:
   workflow_dispatch:
     inputs:
-      antimony-version:
-        description: "antimony version to install (e.g. 3.2.0); empty installs the latest release"
+      artifact-id:
+        description: "Numeric id of the GitHub Actions artifact zip containing the wheel to test (from its URL: .../actions/runs/<run-id>/artifacts/<artifact-id>)"
         required: false
-        default: ""
+        default: "10099846961"
+
+permissions:
+  contents: read
+  actions: read
 
 jobs:
   roundtrip:
@@ -50,14 +54,26 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install antimony from PyPI
+      - name: Download wheel artifact
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ARTIFACT_ID_INPUT: ${{ inputs.artifact-id }}
+        run: |
+          ARTIFACT_ID="${ARTIFACT_ID_INPUT:-10099846961}"
+          echo "Downloading artifact $ARTIFACT_ID"
+          curl -sSL -H "Authorization: Bearer $GH_TOKEN" \
+               -H "Accept: application/vnd.github+json" \
+               "https://api.github.com/repos/sys-bio/antimony/actions/artifacts/$ARTIFACT_ID/zip" \
+               -o artifact.zip
+          python -m zipfile -e artifact.zip artifact_extracted
+
+      - name: Install antimony wheel from artifact
         shell: bash
         run: |
-          if [ -n "${{ inputs.antimony-version }}" ]; then
-            python -m pip install "antimony==${{ inputs.antimony-version }}"
-          else
-            python -m pip install antimony
-          fi
+          WHEEL=$(python -c "import glob, sys; m = glob.glob('artifact_extracted/**/*.whl', recursive=True); sys.exit('no .whl file found in artifact') if not m else print(m[0])")
+          echo "Installing $WHEEL"
+          python -m pip install "$WHEEL"
 
       - name: SBML -> Antimony -> SBML round trip (BIOMD0000000012, issue #177)
         run: python .github/scripts/pypi_roundtrip_smoke_test.py
