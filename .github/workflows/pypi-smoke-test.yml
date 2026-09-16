@@ -1,0 +1,77 @@
+name: PyPI wheel smoke test
+
+# Round-trips a known model (SBML -> Antimony -> SBML) through antimony as
+# published on PyPI, rather than this checkout's own build -- the same
+# kind of check as sbmlutils' CI, which is what first caught issue #177
+# (a win_amd64 3.2.0 wheel regression the source-build CI in main.yml
+# never exercises, since it always builds from source).
+
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      antimony-version:
+        description: "antimony version to install (e.g. 3.2.0); empty installs the latest release"
+        required: false
+        default: ""
+
+jobs:
+  roundtrip:
+    name: pip install antimony (${{ matrix.os }}, py${{ matrix.python-version }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.11", "3.12", "3.13", "3.14"]
+        # mirrors sbmlutils' matrix: linux covers the full range, windows
+        # and macos only the newest version
+        exclude:
+          - os: windows-latest
+            python-version: "3.11"
+          - os: windows-latest
+            python-version: "3.12"
+          - os: windows-latest
+            python-version: "3.13"
+          - os: macos-latest
+            python-version: "3.11"
+          - os: macos-latest
+            python-version: "3.12"
+          - os: macos-latest
+            python-version: "3.13"
+
+    steps:
+      - name: Checkout Antimony
+        uses: actions/checkout@main
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install antimony from PyPI
+        shell: bash
+        run: |
+          if [ -n "${{ inputs.antimony-version }}" ]; then
+            python -m pip install "antimony==${{ inputs.antimony-version }}"
+          else
+            python -m pip install antimony
+          fi
+
+      - name: SBML -> Antimony -> SBML round trip (BIOMD0000000012, issue #177)
+        run: python .github/scripts/pypi_roundtrip_smoke_test.py
+
+  tests:
+    name: pypi-smoke-test
+    needs: roundtrip
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check the result of the test matrix
+        env:
+          RESULT: ${{ needs.roundtrip.result }}
+        run: |
+          echo "roundtrip matrix: $RESULT"
+          test "$RESULT" = "success"

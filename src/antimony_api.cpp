@@ -278,17 +278,26 @@ LIB_EXTERN long loadAntimonyString(const char* model)
   setlocale(LC_ALL, "C");
   g_registry.ClearModules();
   g_registry.ClearWarnings();
-  int ofreturn = g_registry.OpenString(model);
-  if (ofreturn==0) return -1; //file read failure
-  if (ofreturn==2) {
-    //SBML model
+  try {
+    int ofreturn = g_registry.OpenString(model);
+    if (ofreturn==0) return -1; //file read failure
+    if (ofreturn==2) {
+      //SBML model
+      g_registry.ClearModules();
+      g_registry.SetError("The provided string is actually an SBML model, and is not in the Antimony format.  Use 'loadString' or 'loadSBMLString' to correctly parse it.");
+      setlocale(LC_ALL, oldlocale.c_str());
+      return -1;
+    }
+    assert(ofreturn==1); //antimony file
+    return ParseFile(oldlocale);
+  }
+  catch (...)
+  {
     g_registry.ClearModules();
-    g_registry.SetError("The provided string is actually an SBML model, and is not in the Antimony format.  Use 'loadString' or 'loadSBMLString' to correctly parse it.");
+    g_registry.SetError("Parsing the given Antimony string caused an internal exception.");
     setlocale(LC_ALL, oldlocale.c_str());
     return -1;
   }
-  assert(ofreturn==1); //antimony file
-  return ParseFile(oldlocale);
 }
 
 LIB_EXTERN long loadAntimonyFile(const char* filename)
@@ -297,18 +306,27 @@ LIB_EXTERN long loadAntimonyFile(const char* filename)
   setlocale(LC_ALL, "C");
   g_registry.ClearModules();
   g_registry.ClearWarnings();
-  int ofreturn = g_registry.OpenFile(filename, true);
-  if (ofreturn==0) return -1; //file read failure
-  if (ofreturn==2) {
-    //SBML file
-    string file(filename);
+  try {
+    int ofreturn = g_registry.OpenFile(filename, true);
+    if (ofreturn==0) return -1; //file read failure
+    if (ofreturn==2) {
+      //SBML file
+      string file(filename);
+      g_registry.ClearModules();
+      g_registry.SetError("The file '" + file + "' is actually an SBML file, and is not in the Antimony format.  Use 'loadFile' or 'loadSBMLFile' to correctly parse it.");
+      setlocale(LC_ALL, oldlocale.c_str());
+      return -1;
+    }
+    assert(ofreturn==1); //antimony file
+    return ParseFile(oldlocale);
+  }
+  catch (...)
+  {
     g_registry.ClearModules();
-    g_registry.SetError("The file '" + file + "' is actually an SBML file, and is not in the Antimony format.  Use 'loadFile' or 'loadSBMLFile' to correctly parse it.");
+    g_registry.SetError("Parsing the given Antimony file caused an internal exception.");
     setlocale(LC_ALL, oldlocale.c_str());
     return -1;
   }
-  assert(ofreturn==1); //antimony file
-  return ParseFile(oldlocale);
 }
 
 void LoadSBML(SBMLDocument* doc)
