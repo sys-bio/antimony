@@ -2,8 +2,11 @@
 """Round-trips BIOMD0000000012 (the repressilator model from issue #177,
 https://github.com/sys-bio/antimony/issues/177) through antimony: SBML ->
 Antimony -> SBML. Uses whichever antimony build is importable -- for this
-workflow, the one \'pip install antimony\' fetched from PyPI, not this
-checkout\'s own build.
+workflow, the wheel pulled from a specific CI artifact, not this
+checkout's own build.
+
+Prints the intermediate Antimony text before attempting to reload it, so a
+failure here still shows the exact string that triggered it.
 """
 
 import sys
@@ -31,6 +34,10 @@ def main():
     antimony_text = antimony.getAntimonyString()
     if not antimony_text:
         sys.exit(f"failed to convert to Antimony: {antimony.getLastError()}")
+
+    print("----- BEGIN generated Antimony string -----")
+    print(antimony_text)
+    print("----- END generated Antimony string -----")
 
     if antimony.loadAntimonyString(antimony_text) < 0:
         sys.exit(f"failed to reload converted Antimony: {antimony.getLastError()}")

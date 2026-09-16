@@ -13,7 +13,7 @@ on:
       artifact-id:
         description: "Numeric id of the GitHub Actions artifact zip containing the wheel to test (from its URL: .../actions/runs/<run-id>/artifacts/<artifact-id>)"
         required: false
-        default: "10099846961"
+        default: "10469152607"
 
 permissions:
   contents: read
@@ -60,7 +60,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ARTIFACT_ID_INPUT: ${{ inputs.artifact-id }}
         run: |
-          ARTIFACT_ID="${ARTIFACT_ID_INPUT:-10099846961}"
+          ARTIFACT_ID="${ARTIFACT_ID_INPUT:-10469152607}"
           echo "Downloading artifact $ARTIFACT_ID"
           curl -sSL -H "Authorization: Bearer $GH_TOKEN" \
                -H "Accept: application/vnd.github+json" \
