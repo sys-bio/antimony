@@ -519,6 +519,13 @@ jobs:
       # TEMPORARY: diagnoses which antimony call produces the malformed
       # UTF-8 behind the BioModels round-trip UnicodeDecodeErrors. Remove
       # this step and tmp_diagnose_encoding.py once the cause is found.
+      - name: Fetch BioModels SBML/SED-ML files
+        if: matrix.platform.name == 'macos-14-release' || matrix.platform.name == 'windows-latest-release'
+        shell: bash
+        run: |
+          ${{ env.roundtrip_python }} "${GITHUB_WORKSPACE}/src/bindings/python/biomodels_roundtrip/fetch_biomodels.py" \
+            --dest "${RUNNER_WORKSPACE}/biomodels"
+
       - name: "TEMP: diagnose BioModels notes round-trip encoding failures"
         if: matrix.platform.name == 'macos-14-release' || matrix.platform.name == 'windows-latest-release'
         shell: bash
@@ -550,13 +557,6 @@ jobs:
         shell: bash
         run: |
           ${{ env.roundtrip_python }} -m pip install -r "${GITHUB_WORKSPACE}/src/bindings/python/biomodels_roundtrip/requirements.txt"
-
-      - name: Fetch BioModels SBML/SED-ML files
-        if: matrix.platform.name == 'macos-14-release' || matrix.platform.name == 'windows-latest-release'
-        shell: bash
-        run: |
-          ${{ env.roundtrip_python }} "${GITHUB_WORKSPACE}/src/bindings/python/biomodels_roundtrip/fetch_biomodels.py" \
-            --dest "${RUNNER_WORKSPACE}/biomodels"
 
       - name: Run BioModels round-trip tests
         if: matrix.platform.name == 'macos-14-release' || matrix.platform.name == 'windows-latest-release'
