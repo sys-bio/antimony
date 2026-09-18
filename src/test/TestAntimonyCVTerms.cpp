@@ -9,6 +9,7 @@
 #include "sbml/SBMLTypes.h"
 #include "stringx.h"
 
+#include <cstring>
 #include <string>
 #include "gtest/gtest.h"
 
@@ -291,6 +292,11 @@ TEST(AntimonyCVTerms, test_notes_model_markdown_link)
 {
     compareFileTranslation("notes_model_markdown_link");
     compareStringTranslation("model foo(); a=3; end; foo notes ```Please refer to [CC0  Public Domain Dedication](http://creativecommons.org/publicdomain/zero/1.0/ \"Access to: CC0 1.0 Universal (CC0 1.0), Public Domain Dedication\") for more information.```", "notes_model_markdown_link.xml");
+}
+
+TEST(AntimonyCVTerms, test_notes_dense_links)
+{
+  compareFileTranslation("notes_dense_links");
 }
 
 TEST(AntimonyCVTerms, test_modified_model)
