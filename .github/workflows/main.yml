@@ -516,6 +516,16 @@ jobs:
           cases_dir=$(dirname "$settings_file")
           echo "SBML_TEST_SUITE_DIR=$(dirname "$cases_dir")" >> "${GITHUB_ENV}"
 
+      # TEMPORARY: diagnoses which antimony call produces the malformed
+      # UTF-8 behind the BioModels round-trip UnicodeDecodeErrors. Remove
+      # this step and tmp_diagnose_encoding.py once the cause is found.
+      - name: "TEMP: diagnose BioModels notes round-trip encoding failures"
+        if: matrix.platform.name == 'macos-14-release' || matrix.platform.name == 'windows-latest-release'
+        shell: bash
+        continue-on-error: true
+        run: |
+          ${{ env.roundtrip_python }} "${GITHUB_WORKSPACE}/src/bindings/python/biomodels_roundtrip/tmp_diagnose_encoding.py"
+
       - name: Run SBML Test Suite round-trip tests
         if: matrix.platform.name == 'macos-14-release' || matrix.platform.name == 'windows-latest-release'
         shell: bash
@@ -547,16 +557,6 @@ jobs:
         run: |
           ${{ env.roundtrip_python }} "${GITHUB_WORKSPACE}/src/bindings/python/biomodels_roundtrip/fetch_biomodels.py" \
             --dest "${RUNNER_WORKSPACE}/biomodels"
-
-      # TEMPORARY: diagnoses which antimony call produces the malformed
-      # UTF-8 behind the BioModels round-trip UnicodeDecodeErrors. Remove
-      # this step and tmp_diagnose_encoding.py once the cause is found.
-      - name: "TEMP: diagnose BioModels notes round-trip encoding failures"
-        if: matrix.platform.name == 'macos-14-release' || matrix.platform.name == 'windows-latest-release'
-        shell: bash
-        continue-on-error: true
-        run: |
-          ${{ env.roundtrip_python }} "${GITHUB_WORKSPACE}/src/bindings/python/biomodels_roundtrip/tmp_diagnose_encoding.py"
 
       - name: Run BioModels round-trip tests
         if: matrix.platform.name == 'macos-14-release' || matrix.platform.name == 'windows-latest-release'
