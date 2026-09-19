@@ -10,6 +10,7 @@
 #include "stringx.h"
 
 #include <string>
+#include <clocale>
 #include "gtest/gtest.h"
 
 #include "TestAntimonyUtil.h"
@@ -557,5 +558,24 @@ TEST(AntimonyBasic, test_function_flattening_with_predefined_constants)
 TEST(AntimonyBasic, test_table_example)
 {
   compareFileTranslation("table_example");
+}
+
+TEST(AntimonyBasic, test_trim_preserves_utf8_multibyte_chars)
+{
+  // std::isspace() is locale-dependent above byte 127; under some
+  // locales 0xA0 (the second byte of a UTF-8 non-breaking space) reads
+  // as whitespace, so ltrim/rtrim must not rely on it.
+  string savedLocale = setlocale(LC_ALL, NULL);
+#ifdef _WIN32
+  setlocale(LC_ALL, ".1252");
+#else
+  setlocale(LC_ALL, "en_US.ISO-8859-1");
+#endif
+
+  string s = "some text\xC2\xA0";
+  trimAndRemoveDoubleSpaces(s);
+  EXPECT_STREQ(s.c_str(), "some text\xC2\xA0");
+
+  setlocale(LC_ALL, savedLocale.c_str());
 }
 

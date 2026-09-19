@@ -84,7 +84,7 @@ jobs:
         antimony_deps_owner: [ "sys-bio" ]
         antimony_deps_repo: [ "libroadrunner-deps" ]
         antimony_deps_name: [ "antimony-deps" ]
-        antimony_deps_release_version: [ "v2.3.5" ]
+        antimony_deps_release_version: [ "v2.3.6" ]
         python_version: [ "3.13" ]
 
     runs-on: ${{ matrix.platform.os_name }}
@@ -464,22 +464,31 @@ jobs:
           name: ${{env.python_wheel_artifacts_name}}
           path: ${{env.python_wheel_artifacts_file}}
 
-      # The SBML Test Suite round-trip only runs on one leg of the matrix,
-      # same reasoning as valgrind above: it's slow, and doesn't need to run
-      # on every OS/config combination to be useful. macos-14-release is
-      # chosen since ubuntu-latest-release is already dedicated to valgrind.
+      # The round-trip suites below run on two legs of the matrix instead
+      # of every OS/config combination, same reasoning as valgrind above:
+      # they're slow
+      - name: Set Python executable for round-trip tests
+        if: matrix.platform.name == 'macos-14-release' || matrix.platform.name == 'windows-latest-release'
+        shell: bash
+        run: |
+          if [ "${{ matrix.platform.os_type }}" == 'windows' ]; then
+            echo "roundtrip_python=${{ env.python_exe }}" >> "${GITHUB_ENV}"
+          else
+            echo "roundtrip_python=python${{ matrix.python_version }}" >> "${GITHUB_ENV}"
+          fi
+
       - name: Build Antimony Python wheel for SBML Test Suite round-trip
-        if: matrix.platform.name == 'macos-14-release'
+        if: matrix.platform.name == 'macos-14-release' || matrix.platform.name == 'windows-latest-release'
         shell: bash
         run: |
           cd ${RUNNER_WORKSPACE}/install-antimony/bindings/python
-          python${{ matrix.python_version }} -m pip install setuptools wheel build
-          python${{ matrix.python_version }} -m build --wheel --no-isolation --outdir dist-sbml-test-suite
-          python${{ matrix.python_version }} -m pip install dist-sbml-test-suite/antimony*.whl
-          python${{ matrix.python_version }} -m pip install -r "${GITHUB_WORKSPACE}/src/bindings/python/sbml_test_suite/requirements.txt"
+          ${{ env.roundtrip_python }} -m pip install setuptools wheel build
+          ${{ env.roundtrip_python }} -m build --wheel --no-isolation --outdir dist-sbml-test-suite
+          ${{ env.roundtrip_python }} -m pip install dist-sbml-test-suite/antimony*.whl
+          ${{ env.roundtrip_python }} -m pip install -r "${GITHUB_WORKSPACE}/src/bindings/python/sbml_test_suite/requirements.txt"
 
       - name: Download SBML Test Suite semantic cases
-        if: matrix.platform.name == 'macos-14-release'
+        if: matrix.platform.name == 'macos-14-release' || matrix.platform.name == 'windows-latest-release'
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -507,19 +516,36 @@ jobs:
           cases_dir=$(dirname "$settings_file")
           echo "SBML_TEST_SUITE_DIR=$(dirname "$cases_dir")" >> "${GITHUB_ENV}"
 
+      # TEMPORARY: diagnoses which antimony call produces the malformed
+      # UTF-8 behind the BioModels round-trip UnicodeDecodeErrors. Remove
+      # this step and tmp_diagnose_encoding.py once the cause is found.
+      - name: Fetch BioModels SBML/SED-ML files
+        if: matrix.platform.name == 'macos-14-release' || matrix.platform.name == 'windows-latest-release'
+        shell: bash
+        run: |
+          ${{ env.roundtrip_python }} "${GITHUB_WORKSPACE}/src/bindings/python/biomodels_roundtrip/fetch_biomodels.py" \
+            --dest "${RUNNER_WORKSPACE}/biomodels"
+
+      - name: "TEMP: diagnose BioModels notes round-trip encoding failures"
+        if: matrix.platform.name == 'macos-14-release' || matrix.platform.name == 'windows-latest-release'
+        shell: bash
+        continue-on-error: true
+        run: |
+          ${{ env.roundtrip_python }} "${GITHUB_WORKSPACE}/src/bindings/python/biomodels_roundtrip/tmp_diagnose_encoding.py"
+
       - name: Run SBML Test Suite round-trip tests
-        if: matrix.platform.name == 'macos-14-release'
+        if: matrix.platform.name == 'macos-14-release' || matrix.platform.name == 'windows-latest-release'
         shell: bash
         run: |
           cd "${GITHUB_WORKSPACE}/src/bindings/python/sbml_test_suite"
-          python${{ matrix.python_version }} -m pytest -ra --junitxml="${RUNNER_WORKSPACE}/sbml-test-suite-results.xml" \
+          ${{ env.roundtrip_python }} -m pytest -ra --junitxml="${RUNNER_WORKSPACE}/sbml-test-suite-results.xml" \
             --sbml-test-suite-dir="${SBML_TEST_SUITE_DIR}"
 
       - name: Upload SBML Test Suite round-trip results
-        if: always() && matrix.platform.name == 'macos-14-release'
+        if: always() && (matrix.platform.name == 'macos-14-release' || matrix.platform.name == 'windows-latest-release')
         uses: actions/upload-artifact@main
         with:
-          name: sbml-test-suite-results
+          name: sbml-test-suite-results-${{ matrix.platform.name }}
           path: ${{ runner.workspace }}/sbml-test-suite-results.xml
 
       # Round-trips every curated BioModels model (sys-bio/temp-biomodels)
@@ -527,28 +553,22 @@ jobs:
       # original vs. round-tripped SBML. Shares the wheel installed for the
       # SBML Test Suite step above; only needs its own requirements on top.
       - name: Install BioModels round-trip test requirements
-        if: matrix.platform.name == 'macos-14-release'
-        shell: bash
-        run: python${{ matrix.python_version }} -m pip install -r "${GITHUB_WORKSPACE}/src/bindings/python/biomodels_roundtrip/requirements.txt"
-
-      - name: Fetch BioModels SBML/SED-ML files
-        if: matrix.platform.name == 'macos-14-release'
+        if: matrix.platform.name == 'macos-14-release' || matrix.platform.name == 'windows-latest-release'
         shell: bash
         run: |
-          python${{ matrix.python_version }} "${GITHUB_WORKSPACE}/src/bindings/python/biomodels_roundtrip/fetch_biomodels.py" \
-            --dest "${RUNNER_WORKSPACE}/biomodels"
+          ${{ env.roundtrip_python }} -m pip install -r "${GITHUB_WORKSPACE}/src/bindings/python/biomodels_roundtrip/requirements.txt"
 
       - name: Run BioModels round-trip tests
-        if: matrix.platform.name == 'macos-14-release'
+        if: matrix.platform.name == 'macos-14-release' || matrix.platform.name == 'windows-latest-release'
         shell: bash
         run: |
           cd "${GITHUB_WORKSPACE}/src/bindings/python/biomodels_roundtrip"
-          python${{ matrix.python_version }} -m pytest -ra --junitxml="${RUNNER_WORKSPACE}/biomodels-roundtrip-results.xml" \
+          ${{ env.roundtrip_python }} -m pytest -ra --junitxml="${RUNNER_WORKSPACE}/biomodels-roundtrip-results.xml" \
             --biomodels-dir="${RUNNER_WORKSPACE}/biomodels"
 
       - name: Upload BioModels round-trip results
-        if: always() && matrix.platform.name == 'macos-14-release'
+        if: always() && (matrix.platform.name == 'macos-14-release' || matrix.platform.name == 'windows-latest-release')
         uses: actions/upload-artifact@main
         with:
-          name: biomodels-roundtrip-results
+          name: biomodels-roundtrip-results-${{ matrix.platform.name }}
           path: ${{ runner.workspace }}/biomodels-roundtrip-results.xml

@@ -1,6 +1,7 @@
 #include "annotated.h"
 #include "registry.h"
 #include "stringx.h"
+#include <exception>
 #include "sbml/annotation/Date.h"
 #include <string>
 #include <regex>
@@ -48,14 +49,18 @@ bool Annotated::TransferAnnotationTo(SBase* sbmlobj, string metaid) const
     }
   }
   if (!m_notes.empty()) {
+      string attemptedNotes;
+      try {
       sbmlobj->setMetaId(metaid);
       bool usedCachedHTML = false;
       if (!m_notesHTML.empty()) {
+          attemptedNotes = m_notesHTML;
           int ret = sbmlobj->setNotes(m_notesHTML, false);
           usedCachedHTML = (ret == libsbml::LIBSBML_OPERATION_SUCCESS);
       }
       if (!usedCachedHTML) {
       string notes = getNotesString();
+      attemptedNotes = notes;
       if (notes[0] == '<') {
           int ret = sbmlobj->setNotes(notes, false);
           if (ret != libsbml::LIBSBML_OPERATION_SUCCESS) {
@@ -76,12 +81,22 @@ bool Annotated::TransferAnnotationTo(SBase* sbmlobj, string metaid) const
       else {
           regex triple_quotes("\"\"\"");
           notes = regex_replace(notes, triple_quotes, "```");
+          attemptedNotes = notes;
           sbmlobj->setNotesFromMarkdown(notes);
           // Cache the generated HTML so a subsequent TransferAnnotationTo
           // call for this same object (e.g. the comp=false build after the
           // comp=true one) can skip the markdown conversion entirely.
           m_notesHTML = sbmlobj->getNotesString();
       }
+      }
+      }
+      catch (const std::exception& e)
+      {
+          g_registry.AddWarning("Unable to set notes on SBML object: " + string(e.what()) + ". Notes string: " + attemptedNotes);
+      }
+      catch (...)
+      {
+          g_registry.AddWarning("Unable to set notes on SBML object due to an unknown internal exception. Notes string: " + attemptedNotes);
       }
   }
   ModelHistory* mh = const_cast<ModelHistory*>(&m_history);

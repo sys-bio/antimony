@@ -295,17 +295,24 @@ void FixUnitName(string& name)
 }
 
 //From https://stackoverflow.com/questions/216823/how-to-trim-an-stdstring
+// std::isspace is locale-dependent for byte values above 127. UTF-8
+// continuation bytes fall in that range, so treat only ASCII whitespace
+// as trimmable to avoid splitting a multi-byte character in half.
+static bool isAsciiSpace(unsigned char ch) {
+    return ch == ' ' || ch == '\t' || ch == '\n' || ch == '\v' || ch == '\f' || ch == '\r';
+}
+
 // trim from start (in place)
 void ltrim(std::string& s) {
     s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) {
-        return !std::isspace(ch);
+        return !isAsciiSpace(ch);
         }));
 }
 
 // trim from end (in place)
 void rtrim(std::string& s) {
     s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
-        return !std::isspace(ch);
+        return !isAsciiSpace(ch);
         }).base(), s.end());
 }
 

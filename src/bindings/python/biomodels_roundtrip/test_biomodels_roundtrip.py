@@ -535,12 +535,7 @@ def test_biomodels_roundtrip(biomodels_case):
 
     # Every SBML file the manifest declares gets round-tripped, since we
     # don't know ahead of time which one(s) the SED-ML actually references
-    # (see _build_archive) -- but a load/convert failure on a real-world
-    # BioModels export is at least as likely to mean "this uses something
-    # antimony was never meant to support" (old SBML L1, unsupported
-    # packages, malformed legacy exports) as it is to mean a real bug, so
-    # it's a skip here rather than the hard failure test_roundtrip.py uses
-    # for the SBML Test Suite's curated cases.
+    # (see _build_archive).
     roundtrip_errors = {}
     overrides = {}
     for location, _ in sbml_entries:
@@ -551,7 +546,7 @@ def test_biomodels_roundtrip(biomodels_case):
 
     if roundtrip_errors:
         detail = "; ".join(f"{location}: {exc}" for location, exc in roundtrip_errors.items())
-        pytest.skip(
+        pytest.fail(
             f"{model_id}: antimony couldn't round-trip {len(roundtrip_errors)} of "
             f"{len(sbml_entries)} SBML file(s) -- {detail}"
         )
