@@ -2,6 +2,17 @@
 
 from setuptools import setup, Distribution
 
+try:
+    from setuptools.command.bdist_wheel import bdist_wheel
+except ImportError:
+    from wheel.bdist_wheel import bdist_wheel
+
+class PureTagBdistWheel(bdist_wheel):
+    """Tags the wheel py3-none-<platform>, since it does not depend on the Python version"""
+    def get_tag(self):
+        _, _, plat = super().get_tag()
+        return ("py3", "none", plat)
+
 class BinaryDistribution(Distribution):
     """Distribution which always forces a binary package with platform name"""
     def has_ext_modules(foo):
@@ -21,5 +32,6 @@ setup(name='antimony',
       long_description_content_type='text/markdown',
 #      install_requires=['ctypes'], #ctypes is built in.
       distclass=BinaryDistribution,
+      cmdclass={'bdist_wheel': PureTagBdistWheel},
      )
 
