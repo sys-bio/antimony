@@ -20,7 +20,9 @@ static string loadAndTranslate(const string& filename, bool useLoadFile)
     EXPECT_NE(ret, -1) << path << ": " << (getLastError() ? getLastError() : "");
     char* ant = getAntimonyString(NULL);
     EXPECT_TRUE(ant != NULL);
-    return ant ? string(ant) : string();
+    string result = ant ? string(ant) : string();
+    freeAll();
+    return result;
 }
 
 TEST(AntimonyCompressed, loadSBMLFile_bzip2)
