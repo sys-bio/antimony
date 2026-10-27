@@ -172,6 +172,13 @@ if (NOT DEFINED LIBSBML_INCLUDE_DIR)
 endif()
 
 if (NOT DEFINED LIBSBML_LIBRARY)
+    # libsbml links zlib and bzip2 only if it was built with them; make the packages available either way.
+    find_package(ZLIB CONFIG QUIET COMPONENTS static)
+    find_package(bzip2 CONFIG QUIET)
+    if (TARGET ZLIB::ZLIBSTATIC)
+        get_target_property(ZLIB_LIBRARY ZLIB::ZLIBSTATIC LOCATION)
+        set(ZLIB_INCLUDE_DIR "${ANT_DEPENDENCIES_INSTALL_PREFIX}/include/")
+    endif()
     find_package(${SBML_TARGET_NAME} CONFIG REQUIRED)
     set(LIBSBML_LIBRARY ${SBML_TARGET_NAME})
 endif()
