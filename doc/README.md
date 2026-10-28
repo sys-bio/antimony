@@ -32,3 +32,20 @@ Output goes to doc/_readthedocs_doxygen_build/html/. Requires Doxygen
 <= 1.11 on PATH (newer versions duplicate markdown link text, see
 https://github.com/doxygen/doxygen/issues/11207) -- set
 ANTIMONY_DOXYGEN_EXECUTABLE to point at a specific binary otherwise.
+
+Comparing the tutorial against Tellurium's copy
+================================================
+
+Tellurium keeps a hand-maintained copy of the tutorial (docs/antimony.rst in
+the tellurium repo). doc/sync_tellurium_docs.py reports which sections of the
+generated doc/AntimonyTutorial.rst have changed relative to that copy, so only
+those need to be copied over by hand. Run the 'docs' target first so the .rst
+is current, then, from the repository root:
+
+    python doc/sync_tellurium_docs.py path/to/tellurium/docs/antimony.rst
+
+Sections are matched by heading, so differences in RST rendering and
+Tellurium-specific sections are tolerated. The script only prints a report
+and never modifies either file. It exits with status 1 if any sections
+changed or are new, and 0 otherwise. Use --ignore HEADING (repeatable) to
+skip additional sections.

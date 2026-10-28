@@ -9,6 +9,9 @@ The shared library is looked up, in order, at:
 
 Functions are not exported; call them as `Antimony.loadAntimonyString(...)`.
 Module indices passed to the library are 0-based, as in the C API.
+
+Based on RoadRunner.jl, Copyright (c) 2020 Jin Xu, by Jin Xu and Adel Heydarabadipour
+(MIT license, see NOTICE.txt).
 """
 module Antimony
 

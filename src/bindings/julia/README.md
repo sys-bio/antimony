@@ -2,6 +2,8 @@
 
 A pure-Julia package that calls libAntimony through its C API.
 
+The bindings are derived from [RoadRunner.jl](https://github.com/sys-bio/RoadRunner.jl) by Jin Xu and Adel Heydarabadipour (Copyright (c) 2020 Jin Xu, MIT license, see `NOTICE.txt`).
+
 ## Installing a prebuilt package
 
 1. Download the `antimony-julia-<platform>` asset for your system from the [Antimony releases](https://github.com/sys-bio/antimony/releases): `windows-latest`, `macos-14` (Apple silicon), `macos-15-intel`, `manylinux_2_28` or `ubuntu-latest`. The package is platform-specific because it carries the library.
