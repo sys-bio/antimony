@@ -39,6 +39,10 @@ if(WITH_PYTHON)
 add_subdirectory(python)
 endif()
 
+if(WITH_JULIA)
+add_subdirectory(julia)
+endif()
+
 if(WITH_RUBY)
 add_subdirectory(ruby)
 endif()

@@ -223,6 +223,12 @@ jobs:
             echo "python_exe=${{ env.pythonLocation }}/bin/python3" >> "${GITHUB_ENV}"
           fi
 
+      - name: Setup Julia
+        if: matrix.platform.os_type != 'manylinux'
+        uses: julia-actions/setup-julia@master
+        with:
+          version: '1'
+
       - name: Download dependencies binaries
         shell: bash
         run: |
@@ -296,6 +302,7 @@ jobs:
           -DWITH_QTANTIMONY=${{ matrix.platform.build_qt_antimony }} \
           -DWITH_GTEST=ON \
           -DWITH_PYTHON=${{ matrix.platform.build_python }} \
+          -DWITH_JULIA=ON \
           "${EXTRA_CMAKE_ARGS[@]}"
 
       - name: Build and install Antimony
@@ -362,7 +369,7 @@ jobs:
         run: |
           cd ${RUNNER_WORKSPACE}/build-antimony
           chunk_size=20
-          total=$(ctest -N -C ${{ matrix.platform.build_type }} | grep "Total Tests:" | awk '{print $NF}')
+          total=$(ctest -N -LE julia -C ${{ matrix.platform.build_type }} | grep "Total Tests:" | awk '{print $NF}')
           echo "Running $total tests under valgrind, $chunk_size at a time"
           overall_exit=0
           start=1
@@ -373,7 +380,7 @@ jobs:
             fi
 
             echo "::group::Running tests $start-$end of $total under valgrind"
-            ctest -T memcheck -C ${{ matrix.platform.build_type }} -I ${start},${end} --output-on-failure || overall_exit=1
+            ctest -T memcheck -LE julia -C ${{ matrix.platform.build_type }} -I ${start},${end} --output-on-failure || overall_exit=1
             echo "::endgroup::"
 
             found_any=0
@@ -409,12 +416,21 @@ jobs:
           echo "artifacts_name=antimony-${{ matrix.platform.name }}" >> "${GITHUB_ENV}"
           # we need to use relative path as actions/upload-artifact@v1 cannot find it on containerized runners
           echo "artifacts_path=${RUNNER_WORKSPACE}/install-antimony" >> "${GITHUB_ENV}"
+          echo "julia_artifacts_path=${RUNNER_WORKSPACE}/install-antimony/bindings/julia" >> "${GITHUB_ENV}"
 
       - name: Upload Antimony binaries
         uses: actions/upload-artifact@main
         with:
           name: ${{env.artifacts_name}}
           path: ${{env.artifacts_path}}
+
+      # The package folder is self-contained: sources plus a copy of libantimony.
+      - name: Upload Julia package artifacts
+        if: matrix.platform.build_type == 'Release'
+        uses: actions/upload-artifact@main
+        with:
+          name: antimony-julia-${{ matrix.platform.name }}
+          path: ${{env.julia_artifacts_path}}
 
       - name: Create Python wheel artifacts
         if: matrix.platform.build_type == 'Release' && matrix.platform.build_python == 'ON'
@@ -555,3 +571,25 @@ jobs:
         with:
           name: biomodels-roundtrip-results
           path: ${{ runner.workspace }}/biomodels-roundtrip-results.xml
+
+  # Runs the tests shipped inside the manylinux Julia package on a different Linux
+  # distribution, to check the packaged library loads there.
+  test_manylinux_julia_package:
+    name: Test the manylinux Julia package on ubuntu
+    needs: build_on_OSs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Julia
+        uses: julia-actions/setup-julia@v2
+        with:
+          version: '1'
+
+      - name: Download the manylinux Julia package
+        uses: actions/download-artifact@main
+        with:
+          name: antimony-julia-manylinux_2_28-release
+          path: antimony-julia
+
+      - name: Run the Julia package tests
+        shell: bash
+        run: julia --project=antimony-julia/Antimony antimony-julia/Antimony/test/runtests.jl
