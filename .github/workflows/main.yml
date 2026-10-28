@@ -571,3 +571,25 @@ jobs:
         with:
           name: biomodels-roundtrip-results
           path: ${{ runner.workspace }}/biomodels-roundtrip-results.xml
+
+  # Runs the tests shipped inside the manylinux Julia package on a different Linux
+  # distribution, to check the packaged library loads there.
+  test_manylinux_julia_package:
+    name: Test the manylinux Julia package on ubuntu
+    needs: build_on_OSs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Julia
+        uses: julia-actions/setup-julia@v2
+        with:
+          version: '1'
+
+      - name: Download the manylinux Julia package
+        uses: actions/download-artifact@main
+        with:
+          name: antimony-julia-manylinux_2_28-release
+          path: antimony-julia
+
+      - name: Run the Julia package tests
+        shell: bash
+        run: julia --project=antimony-julia/Antimony antimony-julia/Antimony/test/runtests.jl
