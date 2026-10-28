@@ -11,8 +11,8 @@ project(libantimony)
 # Set up version information.
 #
 SET(LIBANTIMONY_VERSION_MAJOR 3)
-SET(LIBANTIMONY_VERSION_MINOR 2)
-SET(LIBANTIMONY_VERSION_PATCH ".1")
+SET(LIBANTIMONY_VERSION_MINOR 3)
+SET(LIBANTIMONY_VERSION_PATCH ".0")
 SET(LIBANTIMONY_VERSION_RELEASE "")
 
 
@@ -101,6 +101,7 @@ if (WITH_PYTHON)
   option(WITH_CONDA_BUILDER     "Install files required to build Anaconda packages"  OFF)
 endif()
 option(INSTALL_SYSTEM_RUNTIMES "Install system runtime libraries (e.g. MSVC runtimes)")
+option(WITH_JULIA        "Generate Julia language bindings." OFF)
 
 set(EXTRA_LIBS "" CACHE STRING "Libraries the other libraries depend on that are in non-standard locations" )
 #set(EXTRA_LIBS "" CACHE_STRING "")

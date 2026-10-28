@@ -223,6 +223,12 @@ jobs:
             echo "python_exe=${{ env.pythonLocation }}/bin/python3" >> "${GITHUB_ENV}"
           fi
 
+      - name: Setup Julia
+        if: matrix.platform.os_type != 'manylinux'
+        uses: julia-actions/setup-julia@master
+        with:
+          version: '1'
+
       - name: Download dependencies binaries
         shell: bash
         run: |
@@ -296,6 +302,7 @@ jobs:
           -DWITH_QTANTIMONY=${{ matrix.platform.build_qt_antimony }} \
           -DWITH_GTEST=ON \
           -DWITH_PYTHON=${{ matrix.platform.build_python }} \
+          -DWITH_JULIA=ON \
           "${EXTRA_CMAKE_ARGS[@]}"
 
       - name: Build and install Antimony
@@ -362,7 +369,7 @@ jobs:
         run: |
           cd ${RUNNER_WORKSPACE}/build-antimony
           chunk_size=20
-          total=$(ctest -N -C ${{ matrix.platform.build_type }} | grep "Total Tests:" | awk '{print $NF}')
+          total=$(ctest -N -LE julia -C ${{ matrix.platform.build_type }} | grep "Total Tests:" | awk '{print $NF}')
           echo "Running $total tests under valgrind, $chunk_size at a time"
           overall_exit=0
           start=1
@@ -373,7 +380,7 @@ jobs:
             fi
 
             echo "::group::Running tests $start-$end of $total under valgrind"
-            ctest -T memcheck -C ${{ matrix.platform.build_type }} -I ${start},${end} --output-on-failure || overall_exit=1
+            ctest -T memcheck -LE julia -C ${{ matrix.platform.build_type }} -I ${start},${end} --output-on-failure || overall_exit=1
             echo "::endgroup::"
 
             found_any=0
