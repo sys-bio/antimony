@@ -3,8 +3,9 @@ Julia bindings for libAntimony, a thin layer over the Antimony C API (antimony_a
 
 The shared library is looked up, in order, at:
   1. the path in the ANTIMONY_LIBRARY environment variable,
-  2. <install prefix>/lib, when this package sits in <install prefix>/bindings/julia/Antimony,
-  3. the system library search path.
+  2. the lib folder inside this package,
+  3. <install prefix>/lib, when this package sits in <install prefix>/bindings/julia/Antimony,
+  4. the system library search path.
 
 Functions are not exported; call them as `Antimony.loadAntimonyString(...)`.
 Module indices passed to the library are 0-based, as in the C API.
@@ -22,6 +23,7 @@ function _library_candidates()
     if haskey(ENV, "ANTIMONY_LIBRARY")
         push!(candidates, ENV["ANTIMONY_LIBRARY"])
     end
+    push!(candidates, normpath(joinpath(@__DIR__, "..", "lib", _libname())))
     push!(candidates, normpath(joinpath(@__DIR__, "..", "..", "..", "..", "lib", _libname())))
     push!(candidates, _libname())
     return candidates

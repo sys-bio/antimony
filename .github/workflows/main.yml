@@ -416,12 +416,21 @@ jobs:
           echo "artifacts_name=antimony-${{ matrix.platform.name }}" >> "${GITHUB_ENV}"
           # we need to use relative path as actions/upload-artifact@v1 cannot find it on containerized runners
           echo "artifacts_path=${RUNNER_WORKSPACE}/install-antimony" >> "${GITHUB_ENV}"
+          echo "julia_artifacts_path=${RUNNER_WORKSPACE}/install-antimony/bindings/julia" >> "${GITHUB_ENV}"
 
       - name: Upload Antimony binaries
         uses: actions/upload-artifact@main
         with:
           name: ${{env.artifacts_name}}
           path: ${{env.artifacts_path}}
+
+      # The package folder is self-contained: sources plus a copy of libantimony.
+      - name: Upload Julia package artifacts
+        if: matrix.platform.build_type == 'Release'
+        uses: actions/upload-artifact@main
+        with:
+          name: antimony-julia-${{ matrix.platform.name }}
+          path: ${{env.julia_artifacts_path}}
 
       - name: Create Python wheel artifacts
         if: matrix.platform.build_type == 'Release' && matrix.platform.build_python == 'ON'

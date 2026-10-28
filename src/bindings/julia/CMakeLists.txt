@@ -17,7 +17,9 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/Project.toml.in"      "${JULIA_PACKA
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/src/Antimony.jl"      "${JULIA_PACKAGE_BUILD_DIR}/src/Antimony.jl"   COPYONLY)
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/test/runtests.jl"     "${JULIA_PACKAGE_BUILD_DIR}/test/runtests.jl"  COPYONLY)
 
-# The package finds libantimony at <prefix>/lib relative to this install location.
+# A copy of the library goes inside the package, so the installed package is self-contained.
+install(PROGRAMS "$<TARGET_FILE:${LIBANTIMONY_LIBRARY}>" DESTINATION ${JULIA_PACKAGE_INSTALL_DIR}/lib)
+
 install(FILES "${JULIA_PACKAGE_BUILD_DIR}/Project.toml"     DESTINATION ${JULIA_PACKAGE_INSTALL_DIR})
 install(FILES "${JULIA_PACKAGE_BUILD_DIR}/src/Antimony.jl"  DESTINATION ${JULIA_PACKAGE_INSTALL_DIR}/src)
 install(FILES "${JULIA_PACKAGE_BUILD_DIR}/test/runtests.jl" DESTINATION ${JULIA_PACKAGE_INSTALL_DIR}/test)
