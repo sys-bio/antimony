@@ -28,7 +28,7 @@ Antimony is a human-readable, human-writable modular model definition language, 
 
 For a working online example, see [MakeSBML](https://sys-bio.github.io/makesbml/)
 
-Antimony is free to use in any application: a simple API is provided to allow Antimony strings to be converted to and from SBML, so the application's users can interact with their models in an easy-to-comprehend format.  C/C++ applications can use the library directly, and Python applications can use the Python bindings.
+Antimony is free to use in any application: a simple API is provided to allow Antimony strings to be converted to and from SBML, so the application's users can interact with their models in an easy-to-comprehend format.  C/C++ applications can use the library directly, Python applications can use the Python bindings, and Julia applications can use the Julia bindings.
 
 Documentation can be found:
 * [In the doc/ subdirectory](https://github.com/sys-bio/antimony/blob/develop/doc/AntimonyTutorial.md) 
@@ -39,6 +39,8 @@ Since Antimony is used within Tellurium, the general [Tellurium documentation](h
 Python bindings are available via pypi, and can be installed with pip:
 
 ```pip install antimony```
+
+Julia bindings are available as a self-contained package for each platform, named `antimony-julia-<platform>`, on the releases page below.  Unzip the one for your system, then in Julia run `using Pkg; Pkg.develop(path="/path/to/Antimony")` and `using Antimony`.  See [the Julia bindings README](https://github.com/sys-bio/antimony/blob/develop/src/bindings/julia/README.md) for details.
 
 Other binaries are available from https://github.com/sys-bio/antimony/releases
 
@@ -110,6 +112,7 @@ The above represents a typical build, but modifications are available:
 * If you want to compile for a different architecture than the environment where you're running CMake, use (for example) `-A x86` or `DCMAKE_OSX_ARCHITECTURES="$(uname -m)` 
 * If you do want to build QTAntimony, change WITH_QTANTIMONY to ON, and set QT5_DIR to the location of the CMake files where you installed QT5 (i.e. `Qt5.15.16/5.15.16/msvc2019_64/lib/cmake/Qt5`).
 * If you don't want the python bindings, change WITH_PYTHON to OFF.
+* If you want the Julia bindings, add `-DWITH_JULIA=ON`.
 * If you want to build the tests, change WITH_GTEST to ON
 
 ## Build and Install
@@ -133,5 +136,6 @@ The compiled files will be installed in the `install-antimony` directory. This d
 - Antimony libraries in `lib`,
 - Public C/C++ header files in `include`,
 - If `WITH_PYTHON=ON`, Python bindings in `bindings/python`. This directory can be used to build a Python wheel (see [these instructions](https://packaging.python.org/en/latest/flow/#the-built-distributions-wheels)),
+- If `WITH_JULIA=ON`, the Julia package in `bindings/julia/Antimony`, which includes a copy of the library,
 - If `WITH_QTANTIMONY=ON`, the QtAntimony graphical application in `bin`.
 

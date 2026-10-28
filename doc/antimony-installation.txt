@@ -10,6 +10,13 @@ The various command-line translators are hopefully self-explanatory; running the
 <h3>Programming with the .dll files</h3>
 To use the libAntimony libraries, include the file antimony_api.h in your source for access to the commands, and then link in the libraries, either the provided pre-compiled versions for Windows, or the ones you have created yourself.  The resulting executables will need access to the libAntimony dll as well as its dependencies:  libSBML (which comes statically linked to expat) and the various CellML dlls (all provided).  At the current time, in order for both CellML and libSBML to work together nicely, they must use different XML-parsing libraries, which means, since CellML only uses libxml, that libSBML must be compiled using expat or xerces--the one that uses expat is provided.  These libraries were all compiled with Visual Studio 2010; using some other version of Visual Studio will probably not work with the provided binaries.
 
+<h2>Julia Bindings</h2>
+The Julia package for libAntimony is a pure-Julia layer over the C API.  Each release includes a self-contained package for each platform, named 'antimony-julia-&lt;platform&gt;' (windows-latest, macos-14 for Apple silicon, macos-15-intel, or manylinux_2_28.  Download the one for your system from https://github.com/sys-bio/antimony/releases and unzip it to get a folder called 'Antimony'.  Then, in Julia (1.6 or newer):
+
+<code>using Pkg; Pkg.develop(path="/path/to/Antimony"); using Antimony</code>
+
+Functions are called with the module name, for example <code>Antimony.loadAntimonyString(...)</code> and <code>Antimony.getSBMLString(...)</code>.  To build the package from source, turn on WITH_JULIA when configuring; it is installed, along with a copy of the library, to 'bindings/julia/Antimony' in the install directory.
+
 <h2>Compiling From Source</h2>
 To compile libAntimony from source, use CMake (http://cmake.org/).  For most systems, 'cmake-gui' is your best bet, but if you are trying to compile remotely via a terminal program, 'ccmake' will also work, and has a similar interface.  Antimony, libSBML, and the CellML API all now use CMake as their core build system, so once you learn the basics for one, your knowledge should transfer to the others.
 
@@ -27,6 +34,7 @@ From here, select what options you want on and off.  In particular, here are wha
 
 <!-- - <code>WITH_CELLML</code>  Incorporates the CellML API, allowing translation to and from CellML.  Requires the <A target="_top" HREF="http://www.cellml.org/tools/downloads/cellml_api/releases/1.10">CellML SDK</a> to work.-->
 - <code>WITH_QTANTIMONY</code>  Produces the QTAntimony editor.  Requires QT (http://qt.nokia.com/).
+- <code>WITH_JULIA</code>  Installs the Julia bindings.
 - CMake will need to know where libSBML was installed; both LIBSBML_INCLUDE_DIR and LIBSBML_LIBRARY need to be set.
 - If WITH_CELLML is turned on, CMake will need to know where the CellML API was installed:  you need only set 'CELLML_API_INSTALL_DIR' and it will find the include directories and the various libraries automatically (if it can't, you may need to track down those libraries yourself).  Note that using the CellML API will trigger a flurry of warnings from the compiler, particularly in Windows.  They may all be safely ignored.
 - If WITH_QTANTIMONY is turned on, CMake will need to know where qmake was installed; QT_QMAKE_EXECUTABLE will need to be set.
