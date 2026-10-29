@@ -417,6 +417,13 @@ jobs:
           # we need to use relative path as actions/upload-artifact@v1 cannot find it on containerized runners
           echo "artifacts_path=${RUNNER_WORKSPACE}/install-antimony" >> "${GITHUB_ENV}"
           echo "julia_artifacts_path=${RUNNER_WORKSPACE}/install-antimony/bindings/julia" >> "${GITHUB_ENV}"
+          julia_platform="${{ matrix.platform.name }}"
+          julia_platform="${julia_platform%-release}"
+          julia_platform="${julia_platform%-debug}"
+          if [ "${{ matrix.platform.os_type }}" == 'ubuntu' ]; then
+            julia_platform="ubuntu-$(lsb_release -rs)"
+          fi
+          echo "julia_platform=${julia_platform}" >> $GITHUB_ENV
 
       - name: Upload Antimony binaries
         uses: actions/upload-artifact@main
@@ -429,7 +436,7 @@ jobs:
         if: matrix.platform.build_type == 'Release'
         uses: actions/upload-artifact@main
         with:
-          name: antimony-julia-${{ matrix.platform.name }}
+          name: antimony-julia-${{ env.julia_platform }}-release
           path: ${{env.julia_artifacts_path}}
 
       - name: Create Python wheel artifacts
@@ -572,24 +579,85 @@ jobs:
           name: biomodels-roundtrip-results
           path: ${{ runner.workspace }}/biomodels-roundtrip-results.xml
 
-  # Runs the tests shipped inside the manylinux Julia package on a different Linux
-  # distribution, to check the packaged library loads there.
-  test_manylinux_julia_package:
-    name: Test the manylinux Julia package on ubuntu
+  # Tests the Julia packages from the uploaded artifacts, rather than the build tree, on
+  # runners other than the ones that built them. The manylinux package is tested on ubuntu
+  # to check the packaged libraries load on a different Linux distribution. On macOS the
+  # files are marked as downloaded from the web, as a browser would, to check that the
+  # unsigned libraries still load.
+  test_julia_package:
+    name: Test Julia package ${{ matrix.package }} on ${{ matrix.runner }}, Julia ${{ matrix.julia }}
     needs: build_on_OSs
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runner }}
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {package: manylinux_2_28, runner: ubuntu-latest, julia: "1.6"}
+          - {package: manylinux_2_28, runner: ubuntu-latest, julia: "1.10"}
+          - {package: manylinux_2_28, runner: ubuntu-latest, julia: "1"}
+          - {package: windows-latest, runner: windows-latest, julia: "1"}
+          - {package: macos-14, runner: macos-14, julia: "1"}
+          - {package: macos-15-intel, runner: macos-15-intel, julia: "1"}
     steps:
+      - name: Show the OS version
+        if: runner.os == 'Linux'
+        run: |
+          . /etc/os-release
+          echo "Testing on $PRETTY_NAME"
+
+      - name: Download the Julia package
+        uses: actions/download-artifact@main
+        with:
+          name: antimony-julia-${{ matrix.package }}-release
+          path: antimony-julia
+
       - name: Setup Julia
         uses: julia-actions/setup-julia@v2
         with:
-          version: '1'
+          version: ${{ matrix.julia }}
 
-      - name: Download the manylinux Julia package
-        uses: actions/download-artifact@main
-        with:
-          name: antimony-julia-manylinux_2_28-release
-          path: antimony-julia
+      - name: Check that the package DLLs find all their dependencies
+        if: runner.os == 'Windows'
+        run: |
+          python -m pip install pefile
+          python - <<'EOF'
+          import os, re, sys
+          import pefile
+          root = 'antimony-julia/Antimony'
+          system32 = os.path.join(os.environ['SystemRoot'], 'System32')
+          # The Visual C++ runtime must be shipped in the package, not found on the machine.
+          redist = re.compile(r'^(vcruntime|msvcp|concrt|vcomp)', re.I)
+          problems = []
+          for folder, _, files in os.walk(root):
+              for name in files:
+                  if not name.lower().endswith('.dll'):
+                      continue
+                  path = os.path.join(folder, name)
+                  pe = pefile.PE(path, fast_load=True)
+                  pe.parse_data_directories([pefile.DIRECTORY_ENTRY['IMAGE_DIRECTORY_ENTRY_IMPORT']])
+                  imports = [e.dll.decode() for e in getattr(pe, 'DIRECTORY_ENTRY_IMPORT', [])]
+                  print(path, '->', ', '.join(imports))
+                  for dep in imports:
+                      if dep.lower().startswith(('api-ms-win-', 'ext-ms-win-')):
+                          continue
+                      if os.path.exists(os.path.join(folder, dep)):
+                          continue
+                      if os.path.exists(os.path.join(system32, dep)) and not redist.match(dep):
+                          continue
+                      problems.append(path + ' needs ' + dep)
+          if problems:
+              print('\n'.join(problems))
+              sys.exit(1)
+          EOF
+
+      - name: Mark the package as downloaded from the web
+        if: runner.os == 'macOS'
+        run: |
+          find antimony-julia -type f -exec xattr -w com.apple.quarantine "0081;$(printf '%x' "$(date +%s)");Safari;" {} +
+          xattr -l antimony-julia/Antimony/lib/*.dylib
 
       - name: Run the Julia package tests
-        shell: bash
         run: julia --project=antimony-julia/Antimony antimony-julia/Antimony/test/runtests.jl

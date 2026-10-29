@@ -6,7 +6,7 @@ The bindings are derived from [RoadRunner.jl](https://github.com/sys-bio/RoadRun
 
 ## Installing a prebuilt package
 
-1. Download the `antimony-julia-<platform>` asset for your system from the [Antimony releases](https://github.com/sys-bio/antimony/releases): `windows-latest`, `macos-14` (Apple silicon), `macos-15-intel`, `manylinux_2_28` or `ubuntu-latest`. The package is platform-specific because it carries the library.
+1. Download the `antimony-julia-<platform>-release` asset for your system from the [Antimony releases](https://github.com/sys-bio/antimony/releases): `windows-latest`, `macos-14` (Apple silicon), `macos-15-intel`, `manylinux_2_28` or `ubuntu-<version>` (for example `ubuntu-24.04`). The package is platform-specific because it carries the library.
 2. Unzip it to get an `Antimony` folder, and leave that folder where you want to use it from.
 3. In Julia (1.6 or newer):
 
