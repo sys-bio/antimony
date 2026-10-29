@@ -20,6 +20,11 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/test/runtests.jl"     "${JULIA_PACKA
 # A copy of the library goes inside the package, so the installed package is self-contained.
 install(PROGRAMS "$<TARGET_FILE:${LIBANTIMONY_LIBRARY}>" DESTINATION ${JULIA_PACKAGE_INSTALL_DIR}/lib)
 
+# On Windows the MSVC runtime goes in the package too, so it does not need to be installed.
+if (WIN32 AND CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS)
+    install(FILES ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} DESTINATION ${JULIA_PACKAGE_INSTALL_DIR}/lib)
+endif ()
+
 install(FILES "${JULIA_PACKAGE_BUILD_DIR}/Project.toml"     DESTINATION ${JULIA_PACKAGE_INSTALL_DIR})
 install(FILES "${JULIA_PACKAGE_BUILD_DIR}/src/Antimony.jl"  DESTINATION ${JULIA_PACKAGE_INSTALL_DIR}/src)
 install(FILES "${JULIA_PACKAGE_BUILD_DIR}/test/runtests.jl" DESTINATION ${JULIA_PACKAGE_INSTALL_DIR}/test)
